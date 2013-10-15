@@ -2,8 +2,16 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                           controllers.Application.index()
+GET         /                      controllers.MainController.index(path = "")
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET         /admin                 controllers.AdminController.getAdmin
+GET         /publishers            controllers.AdminController.getPublishers(page: Int ?= 0, perPage: Int ?= 10)
+POST        /admin                 controllers.AdminController.saveAdmin
+
+GET         /lib/require.js        controllers.WebJarAssets.requirejs
+GET         /webjars/*file         controllers.WebJarAssets.at(file)
+GET         /assets/*file          controllers.Assets.at(path="/public", file)
+GET         /routes.js             controllers.MainController.router
+
+# Every other page
+GET         /*path                 controllers.MainController.index(path)
