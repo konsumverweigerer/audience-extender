@@ -1,0 +1,7 @@
+admins:
+
+    - !!models.Admin
+        email:      sysadmin@audience-extender.com
+        name:       System Administrator
+        password:   secret
+        admin_roles:      sysadmin

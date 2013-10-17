@@ -4,8 +4,8 @@ import play.Project._
 
 object ApplicationBuild extends Build {
 
-  val appName         = "audience-extender"
-  val appVersion      = "0.1"
+  val appName = "audience-extender"
+  val appVersion = "0.1"
 
   val appDependencies = Seq(
     javaCore,
@@ -22,11 +22,9 @@ object ApplicationBuild extends Build {
     "org.webjars" % "bootstrap" % "3.0.0",
     "org.webjars" % "knockout" % "2.3.0",
     "org.webjars" % "requirejs" % "2.1.8",
-    "org.mockito" % "mockito-core" % "1.9.5" % "test"
-  )
+    "org.mockito" % "mockito-core" % "1.9.5" % "test")
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(
-    // ebeanEnabled := false
+  val main = play.Project(appName, appVersion, appDependencies).settings( // ebeanEnabled := false
   )
 
 }

@@ -2,16 +2,25 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /                      controllers.MainController.index(path = "")
+# The home page
+GET    /                controllers.MainController.index(path = "")
 
-GET         /admin                 controllers.AdminController.getAdmin
-GET         /publishers            controllers.AdminController.getPublishers(page: Int ?= 0, perPage: Int ?= 10)
-POST        /admin                 controllers.AdminController.saveAdmin
+# Authentication
+GET    /login           controllers.MainController.login
+POST   /login           controllers.MainController.authenticate
+GET    /logout          controllers.MainController.logout
 
-GET         /lib/require.js        controllers.WebJarAssets.requirejs
-GET         /webjars/*file         controllers.WebJarAssets.at(file)
-GET         /assets/*file          controllers.Assets.at(path="/public", file)
-GET         /routes.js             controllers.MainController.router
+# Dashboard
+GET    /dashboard           controllers.MainController.dashboard
+
+GET    /admin           controllers.AdminController.getAdmin
+GET    /publishers      controllers.AdminController.getPublishers(page: Int ?= 0, perPage: Int ?= 10)
+POST   /admin           controllers.AdminController.saveAdmin
+
+GET    /require.js      controllers.WebJarAssets.requirejs
+GET    /routes.js       controllers.MainController.javascriptRoutes
+GET    /webjars/*file   controllers.WebJarAssets.at(file)
+GET    /assets/*file    controllers.Assets.at(path="/public", file)
 
 # Every other page
-GET         /*path                 controllers.MainController.index(path)
+GET    /*path           controllers.MainController.index(path)

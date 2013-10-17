@@ -1,9 +1,8 @@
 package controllers
 
-import play.api.mvc._
 import play.api.libs.json.Json
-import play.api.libs.concurrent.Execution.Implicits._
-import models._
+import play.api.mvc.Action
+import play.api.mvc.Controller
 
 object AdminController extends Controller {
 
@@ -16,9 +15,9 @@ object AdminController extends Controller {
   def getAdmin = Action(parse.json) { req =>
     Ok(Json.toJson(""))
   }
+
   /** Action to save a admin */
   def saveAdmin = Action(parse.json) { req =>
     Ok(Json.toJson(""))
   }
-
 }
