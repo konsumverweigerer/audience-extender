@@ -1,15 +1,21 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.data.format.Formats.NonEmpty;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import scala.Option;
+import scala.Some;
 
 @Entity
 public class Admin extends Model {
@@ -29,6 +35,28 @@ public class Admin extends Model {
 	@Required
 	public String password;
 
+	public String passwordChangeToken;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date passwordChangeTokenDate;
+
+	public Boolean locked;
+	public Boolean needPasswordChange;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date loggedIn;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date changed;
+
+	public String url;
+	public String streetaddress1;
+	public String streetaddress2;
+	public String streetaddress3;
+	public String state;
+	public String country;
+	public String telephone;
+
 	@MaxLength(512)
 	public String admin_roles;
 
@@ -39,30 +67,58 @@ public class Admin extends Model {
 		this.admin_roles = "";
 	}
 
+	public String getIdString() {
+		return this.id != null ? Long.toString(this.id) : "";
+	}
+
 	public static Admin authenticate(String email, String password) {
 		return find.where().eq("email", email).eq("password", password)
 				.findUnique();
 	}
 
-	public static Finder<String, Admin> find = new Finder<String, Admin>(
-			String.class, Admin.class);
+	public static Finder<Long, Admin> find = new Finder<Long, Admin>(
+			Long.class, Admin.class);
 
 	/**
-	 * Retrieve all users.
+	 * Retrieve all admins.
 	 */
 	public static List<Admin> findAll() {
 		return find.all();
 	}
 
 	/**
-	 * Retrieve a User from email.
+	 * Retrieve a Admin from email.
 	 */
 	public static Admin findByEmail(String email) {
-		return find.where().eq("email", email).findUnique();
+		if (email != null && !email.isEmpty()) {
+			return find.where().eq("email", email).findUnique();
+		}
+		return null;
+	}
+
+	public static Admin findById(String id) {
+		if (id != null && !id.isEmpty()) {
+			return find.byId(Long.parseLong(id));
+		}
+		return null;
+	}
+
+	public static Option<Admin> findByEmailOption(String email) {
+		final Admin admin = findByEmail(email);
+		return new Some<Admin>(admin);
+	}
+
+	public List<String> getRoles() {
+		final List<String> roles = new ArrayList<String>();
+		if (this.admin_roles != null) {
+			for (final String role : this.admin_roles.split("[,]")) {
+				roles.add(role);
+			}
+		}
+		return roles;
 	}
 
 	public String toString() {
 		return "Admin(" + email + ")";
 	}
-
 }

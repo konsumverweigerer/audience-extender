@@ -9,7 +9,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
-public class Cookie extends Model {
+public class Creative extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
@@ -18,21 +18,21 @@ public class Cookie extends Model {
 	@Required
 	public String name;
 
-	public Cookie(String name) {
+	public Creative(String name) {
 		this.name = name;
 	}
 
-	public static Finder<String, Cookie> find = new Finder<String, Cookie>(
-			String.class, Cookie.class);
+	public static Finder<String, Creative> find = new Finder<String, Creative>(
+			String.class, Creative.class);
 
 	/**
-	 * Retrieve all cookies.
+	 * Retrieve all creatives.
 	 */
-	public static List<Cookie> findAll() {
+	public static List<Creative> findAll() {
 		return find.all();
 	}
 
 	public String toString() {
-		return "Cookie(" + name + ")";
+		return "Creative(" + name + ")";
 	}
 }

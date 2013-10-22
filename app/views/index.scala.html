@@ -1,9 +1,16 @@
-@main("Audience Extender") {
-@helper.form(routes.MainController.authenticate) {
+@(admin: Admin) @main("Audience Extender") {
+@helper.form(routes.MainController.authenticate) { @if(admin==null) {
 <input type="email" name="email" placeholder="Email" id="email">
 <input type="password" name="password" id="password"
 	placeholder="Password">
 <button type="submit" id="loginbutton">Login</button>
-} }{
+} else {
+<span>
+	@admin.name <span>(@admin.email)</span>
+</span>
+<span>
+	<a href="@routes.MainController.logout()">Logout</a>
+</span>
+}}}{
 <div class="row"></div>
 }
