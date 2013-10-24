@@ -95,19 +95,19 @@ alter table publisher_admin add constraint fk_publisher_admin_admin_02 foreign k
 
 SET REFERENTIAL_INTEGRITY FALSE;
 
+drop table if exists publisher_admin;
+
 drop table if exists admin;
 
 drop table if exists audience;
 
-drop table if exists cookie;
-
 drop table if exists cookie_stat_data;
+
+drop table if exists cookie;
 
 drop table if exists creative;
 
 drop table if exists publisher;
-
-drop table if exists publisher_admin;
 
 SET REFERENTIAL_INTEGRITY TRUE;
 
