@@ -1,7 +1,21 @@
 admins:
 
-    - !!models.Admin
-        email:      sysadmin@audience-extender.com
-        name:       System Administrator
-        password:   secret
-        admin_roles:      sysadmin
+ - &sysadmin !!models.Admin
+  email:       sysadmin@audience-extender.com
+  name:        System Administrator
+  password:    secret
+  admin_roles: sysadmin
+        
+publishers:
+
+ - !!models.Publisher
+  name:   First publisher
+  owners:
+   - *sysadmin
+        
+ - !!models.Publisher
+  name:   Second publisher
+
+ - !!models.Publisher
+  name:   Third publisher
+

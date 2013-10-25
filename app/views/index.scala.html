@@ -1,62 +1,79 @@
 @(admin: Admin) @main("Audience Extender") {
-@helper.form(routes.MainController.authenticate) { @if(admin==null) {
-<input type="email" name="email" placeholder="Email" id="email">
-<input type="password" name="password" id="password"
-	placeholder="Password">
-<button type="submit" id="loginbutton">Login</button>
+@helper.form(routes.MainController.authenticate,'class -> "form-inline pull-right", 'role -> "form") { 
+@if(admin==null) {
+<div class="form-group">
+	<input type="email" name="email" class="form-control"
+		placeholder="Email" id="email">
+</div>
+<div class="form-group">
+	<input type="password" class="form-control" name="password"
+		id="password" placeholder="Password">
+</div>
+<div class="form-group">
+	<button type="submit" id="loginbutton" class="btn btn-default">Login</button>
+</div>
 } else {
-<span>
-	@admin.name <span>(@admin.email)</span>
-</span>
-<span>
-	<a href="@routes.MainController.logout()">Logout</a>
-</span>
-}}}{
+<p class="navbar-text pull-right">
+	<span> @admin.name <span>(@admin.email)</span>
+	</span> <span> <a href="@routes.MainController.logout()" class="navbar-link">Logout @admin.email</a>
+	</span>
+</p>
+} } }{
 <div class="" id="s-content">
-<div class="container">
-<div class="seven columns s-logo-column" data-bind-page="css:{'twelve offset-two center': !showNav}">
-<h5 style="margin-top: 7px;" class="caps">
-<span style="max-width: none;" class="text ib"><div class="text-component" data-component="text" data-name="title" data-text-type="title"><div style="font-family: inherit;" class="content content2" data-bind="visible: !(title.isState('editor') || !title.hasContent()), htmlValue: title.value, style: (window.edit_page.data.titleFont() != '') ? {fontFamily: window.edit_page.data.titleFont } : {fontFamily: 'inherit' }"><div><a href="http://www.strikingly.com/audienceextender" target="_self"><strong>Audience </strong></a></div>
-<div><a href="http://www.audience-extender.com" target="_self"><strong>Extender</strong></a></div></div></div></span>
-</h5>
-</div>
-<div class="nine columns s-nav-column" data-bind-page="visible: showNav()">
-<div style="margin-top: 15px;" class="nav">
-<ul>
-<span data-bind-page="template: {name:'navbarItemTemplate', foreach: slides}"><!----><li> <a href="#welcome" class=" selected">Welcome</a> </li><!----><li> <a href="#how-it-works">How it works</a> </li><!----><li> <a href="#benefits">Benefits</a> </li><!----><li> <a href="#pricing">Pricing</a> </li><!----><li> <a href="#getting-started">Getting Started</a> </li></span>
-<span data-bind-page="template: {name:'navbarLinkTemplate', foreach: submenu.list}"></span>
-</ul>
-</div>
-</div>
-</div>
+	<div class="wide header navigator">
+		<div class="container">
+			<div class="seven columns s-logo-column">
+				<h5 style="margin-top: 7px;" class="caps">
+					<span style="max-width: none;" class="text ib"><div
+							class="text-component" data-component="text" data-name="title"
+							data-text-type="title">
+							<div style="font-family: inherit;" class="content content2">
+								<div>
+									<a href="http://www.audience-extender.com" target="_self"><strong>Audience
+									</strong></a>
+								</div>
+								<div>
+									<a href="http://www.audience-extender.com" target="_self"><strong>Extender</strong></a>
+								</div>
+							</div>
+						</div></span>
+				</h5>
+			</div>
+		</div>
+		<div class="nine columns s-nav-column">
+			<div style="margin-top: 15px;" class="nav">
+				<ul>
+					<span>
+						<li><a href="#welcome" class=" selected">Welcome</a></li>
+						<li><a href="#how-it-works">How it works</a></li>
+						<li><a href="#benefits">Benefits</a></li>
+						<li><a href="#pricing">Pricing</a></li>
+						<li><a href="#getting-started">Getting Started</a></li>
+					</span>
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>
 <div style="height: 70px;" class="header-spacer"></div>
-<script id="navbarItemTemplate" type="text/x-jquery-tmpl">
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { visible: components.slideSettings.show_nav, '_ko_property_writers' : { visible : function(__ko_value) { components.slideSettings.show_nav = __ko_value; } }  } })()                     }) })()) }}<li >
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { text:components.slideSettings.name, css: {selected: isHighlighted()}, attr: { href: hashHref() }, '_ko_property_writers' : { text : function(__ko_value) { components.slideSettings.name = __ko_value; } }  } })()                     }) })()) }}<a ></a>
-</li>
-</script>
-<script id="navbarLinkTemplate" type="text/x-jquery-tmpl">
-<li>
-<a data-bind='text:components.link.text, attr: { href: components.link.link_url(), target: components.link.target() }'></a>
-</li>
-</script>
-
 <ul class="slides">
-<li class="slide selected">
-<a style="top: -70px;" class="section-anchor" data-scroll-name="#1"></a>
-<a class="section-name-anchor" data-section-name="Welcome"></a>
-<div data-background="http://uploads.striking.ly/page/images/backgrounds/bg4.jpg" style="background-position: 49% 50%; background-image: url(&quot;http://uploads.striking.ly/page/images/backgrounds/bg4.jpg&quot;); background-repeat: no-repeat; background-size: cover;" class="wide image s-app-intro strikingly-light-text lazy-background" data-bind="'className': background.selectedClassName, 'style': background.selectedStyleLazy(), 'css':{lazy:true, 'lazy-background':true}, 'attr': {'data-background': background.assetUrl()}">
-
-<div class="container">
-<div class="seven columns fixed-center">
-<div class="br"><div class="media content"><div class="content">
-<div class="video-content" data-bind="visible: media.showVideo()" style="display:none;">
-<div class="player" data-bind="html: media.video.html"></div>
+	<li class="slide selected"><a style="top: -70px;"
+		class="section-anchor" data-scroll-name="#1" name="welcome"></a> <a
+		class="section-name-anchor" data-section-name="Welcome"></a>
+		<div
+			style='background-position: 49% 50%; background-image: url('@routes.Assets.at("bg4.png")'); background-repeat: no-repeat; background-size: cover;"
+			class="wide image s-app-intro strikingly-light-text lazy-background">
+			<div class="container">
+				<div class="seven columns fixed-center">
+					<div class="br">
+						<div class="media content">
+							<div class="content">
+								<div class="video-content" style="display: none;">
+<div class="player"></div>
 </div>
-<div class="image-content" data-bind="visible: media.showImage()" style="display:none;">
-<a target="_blank" href="javascript:void(0);" class="image-link" data-bind="attr: {href: media.image.link(), target: media.image.target() }">
-<img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent.png" class="lazy-img" alt="" data-bind="attr: { 'class': 'lazy lazy-img', 'data-original': media.image.assetUrl, alt: media.image.caption, title: media.image.caption }" src="Audience%20Extender_files/transparent.png">
+<div class="image-content" style="display:none;">
+<a target="_blank" href="javascript:void(0);" class="image-link">
+<img style="position: relative;" title="" data-original="@routes.Assets.at("images/transparent.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/transparent.png")">
 </a>
 </div>
 </div>
@@ -75,14 +92,14 @@ seasoned B2B media experts and advertising technology professionals.<br></strong
 <span class="image ib" data-component="image" data-name="image1" data-use-url="true" id="logo"><div style="visibility: visible; opacity: 1;" class="content content2" data-bind="fadeVisibleAndHide: !image1.isState('editor')">
 
 <a target="_blank" href="javascript:void(0);" class="image-link" data-bind="attr: {href: image1.link(), target: image1.target() }">
-<img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent.png" class="lazy-img" alt="" data-bind="attr: { 'class': 'lazy lazy-img', 'data-original': image1.assetUrl, alt: image1.caption, title: image1.caption }" src="Audience%20Extender_files/transparent.png">
+<img style="position: relative;" title="" data-original="@routes.Assets.at("images/transparent.png")" class="lazy-img" alt="" data-bind="attr: { 'class': 'lazy lazy-img', 'data-original': image1.assetUrl, alt: image1.caption, title: image1.caption }" src="@routes.Assets.at("images/transparent.png")">
 </a>
 
 </div></span>
 <span class="image ib" data-component="image" data-name="image2" data-use-url="true" id="logo"><div style="visibility: visible; opacity: 1;" class="content content2" data-bind="fadeVisibleAndHide: !image2.isState('editor')">
 
 <a target="_blank" href="javascript:void(0);" class="image-link" data-bind="attr: {href: image2.link(), target: image2.target() }">
-<img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent.png" class="lazy-img" alt="" data-bind="attr: { 'class': 'lazy lazy-img', 'data-original': image2.assetUrl, alt: image2.caption, title: image2.caption }" src="Audience%20Extender_files/transparent.png">
+<img style="position: relative;" title="" data-original="@routes.Assets.at("images/transparent.png")" class="lazy-img" alt="" data-bind="attr: { 'class': 'lazy lazy-img', 'data-original': image2.assetUrl, alt: image2.caption, title: image2.caption }" src="@routes.Assets.at("images/transparent.png")">
 </a>
 
 </div></span>
@@ -94,60 +111,33 @@ seasoned B2B media experts and advertising technology professionals.<br></strong
 
 </li>
 <li class="slide">
-<a style="top: -70px;" class="section-anchor" data-scroll-name="#2"></a>
+<a style="top: -70px;" class="section-anchor" data-scroll-name="#2" name="how-it-works"></a>
 <a class="section-name-anchor" data-section-name="How it works"></a>
 <div class="wide has-divider">
 <div class="container"><div class="features content repeatable-component" data-bind="template: {
         foreach: features.list,
         name: 'alt_feature_box'
-      }, sortableRepeatable: features.list"><br> <!----><div class="row repeatable">  <div class="five columns offset-one center"> <div class="image ib br" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/ipad.png" class="lazy-img" alt="" src="Audience%20Extender_files/ipad.png"> </a>  </div></div> </div> <div class="eight columns offset-one"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>
-<strong>1.</strong>&nbsp;&nbsp; Get set up in less than 5 minutes ...</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>Place a small snippet of HTML on your website. Your website looks the same. No changes required or made to your content.</div></div></div> </div> <br> </div> <br><br> <!----><div class="row repeatable">  <div class="five columns offset-one center right"> <div class="image ib br" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/ipad.png" class="lazy-img" alt="" src="Audience%20Extender_files/ipad.png"> </a>  </div></div> </div> <div class="eight columns offset-one right"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>2. &nbsp;&nbsp;Share the new opportunity with your Exhibitors</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>With
+      }, sortableRepeatable: features.list"><br> <!----><div class="row repeatable">  <div class="five columns offset-one center"> <div class="image ib br" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/ipad.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/ipad.png")"> </a>  </div></div> </div> <div class="eight columns offset-one"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>
+<strong>1.</strong>&nbsp;&nbsp; Get set up in less than 5 minutes ...</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>Place a small snippet of HTML on your website. Your website looks the same. No changes required or made to your content.</div></div></div> </div> <br> </div> <br><br> <!----><div class="row repeatable">  <div class="five columns offset-one center right"> <div class="image ib br" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/ipad.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/ipad.png")"> </a>  </div></div> </div> <div class="eight columns offset-one right"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>2. &nbsp;&nbsp;Share the new opportunity with your Exhibitors</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>With
  Audience Extender you have another arrow in your quicker to help your
 sponsors, exhibitors, and advertisers enhance their brand and grow their
  client base. Our custom built sales tools will help you easily sell
 access to your audience, with very little work.</div>
-<div>&nbsp;</div></div></div> </div> <br> </div> <br><br> <!----><div class="row repeatable">  <div class="five columns offset-one center"> <div class="image ib br" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/ipad.png" class="lazy-img" alt="" src="Audience%20Extender_files/ipad.png"> </a>  </div></div> </div> <div class="eight columns offset-one"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>3.&nbsp;&nbsp; Earn money in your sleep</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>"Fire
+<div>&nbsp;</div></div></div> </div> <br> </div> <br><br> <!----><div class="row repeatable">  <div class="five columns offset-one center"> <div class="image ib br" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/ipad.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/ipad.png")"> </a>  </div></div> </div> <div class="eight columns offset-one"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>3.&nbsp;&nbsp; Earn money in your sleep</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>"Fire
  and Forget": because Audience Extender enables you to make money off
 your audience wherever they are online, you earn money without having to
- worry about a thing.</div></div></div> </div> <br> </div> <br></div><noscript><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/ipad.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'>
-<strong>1.</strong>   Get set up in less than 5 minutes ... </div><div data-component='text' data-name='text' data-text-type='body'> Place a small snippet of HTML on your website. Your website looks the same. No changes required or made to your content. </div><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/ipad.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'> 2.   Share the new opportunity with your Exhibitors </div><div data-component='text' data-name='text' data-text-type='body'> With Audience Extender you have another arrow in your quicker to help your sponsors, exhibitors, and advertisers enhance their brand and grow their client base. Our custom built sales tools will help you easily sell access to your audience, with very little work.
-   </div><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/ipad.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'> 3.   Earn money in your sleep </div><div data-component='text' data-name='text' data-text-type='body'> "Fire and Forget": because Audience Extender enables you to make money off your audience wherever they are online, you earn money without having to worry about a thing. </div></noscript></div>
+ worry about a thing.</div></div></div> </div> <br> </div> <br></div></div>
 <div class="container">
 <div class="sixteen columns line-shadow center">
-<img alt="Line-shadow" src="Audience%20Extender_files/line-shadow-f32161891ab37c9ef783af2dee19fa31.png">
+<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
 </div>
 </div>
 </div>
-<script data-component="repeatable_item_template" id="alt_feature_box" type="text/x-jquery-tmpl">
-<br>
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { sortableItem: $data, mouseenter: mouseenterHandler, mouseleave: mouseleaveHandler, '_ko_property_writers' : { sortableItem : function(__ko_value) { $data = __ko_value; }, mouseenter : function(__ko_value) { mouseenterHandler = __ko_value; }, mouseleave : function(__ko_value) { mouseleaveHandler = __ko_value; } }  } })()                     }) })()) }}<div class="row repeatable" >
-
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { css: {'right': index()%2} } })()                     }) })()) }}<div class="five columns offset-one center" >
-<div class="image ib br" data-component="image" data-name="components.image" data-use-url="true">{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { fadeVisibleAndHide: !components.image.isState('editor') } })()                     }) })()) }}<div class="content content2" >
-
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { attr: {href: components.image.link(), target: components.image.target() } } })()                     }) })()) }}<a class="image-link" >
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { attr: { 'class': 'lazy lazy-img', 'data-original': components.image.assetUrl, alt: components.image.caption, title: components.image.caption } } })()                     }) })()) }}<img alt="Transparent"  src="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent-646dc08a9b2d44aa74bf29cd18f5e9a5.png">
-</a>
-
-</div></div>
-</div>
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { css: {'right': index()%2} } })()                     }) })()) }}<div class="eight columns offset-one" >
-<h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true">{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { visible: !(components.subtitle.isState('editor') || !components.subtitle.hasContent()), htmlValue: components.subtitle.value, style: (window.edit_page.data.headingFont() != '') ? {fontFamily: window.edit_page.data.headingFont } : {fontFamily: 'inherit' }, '_ko_property_writers' : { htmlValue : function(__ko_value) { components.subtitle.value = __ko_value; } }  } })()                     }) })()) }}<div class="content content2" >
-
-</div></h3>
-<div class="p text-component" data-component="text" data-name="components.text" data-use-font="true">{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { visible: !(components.text.isState('editor') || !components.text.hasContent()), htmlValue: components.text.value, style: (window.edit_page.data.bodyFont() != '') ? {fontFamily: window.edit_page.data.bodyFont } : {fontFamily: 'inherit' }, '_ko_property_writers' : { htmlValue : function(__ko_value) { components.text.value = __ko_value; } }  } })()                     }) })()) }}<div class="content content2" >
-
-</div></div>
-</div>
-<br>
-</div>
-<br>
-</script>
 
 
 </li>
 <li class="slide">
-<a style="top: -70px;" class="section-anchor" data-scroll-name="#3"></a>
+<a style="top: -70px;" class="section-anchor" data-scroll-name="#3" name="benefits"></a>
 <a class="section-name-anchor" data-section-name="Benefits"></a>
 <div class="wide has-divider">
 <div class="container center">
@@ -167,7 +157,7 @@ they surf other sites - maximum yield&nbsp;with minimum effort. "<br></em></p>
 <div class="clearfix s-mh"><div class="features content repeatable-component" data-bind="template: {
         foreach: features.list,
         name: 'feature_box'
-      }, sortableRepeatable: features.list"><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/tag.png" class="lazy-img" alt="" src="Audience%20Extender_files/tag.png"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>AUTOMATED WORKFLOWS</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><p>( Ph D. not required )</p>
+      }, sortableRepeatable: features.list"><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/tag.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/tag.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>AUTOMATED WORKFLOWS</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><p>( Ph D. not required )</p>
 <p>&nbsp;</p>
 <ul>
 <li style="text-align: left;">Easy to use tools allow you to provide
@@ -179,7 +169,7 @@ self-service, fully branded, white-labeled interface.</li>
 <ul>
 <li style="text-align: left;">The Audience Extender "Yield Optimizer" ensures the highest value mix of campaigns are shown to your Audience.</li>
 </ul>
-</div></div></div> </div> <br> <br class="fixed-hidden"> </div><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/location.png" class="lazy-img" alt="" src="Audience%20Extender_files/location.png"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>smart Sales Tools</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div style="text-align: center;">( work less + earn more )</div>
+</div></div></div> </div> <br> <br class="fixed-hidden"> </div><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/location.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/location.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>smart Sales Tools</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div style="text-align: center;">( work less + earn more )</div>
 <div style="text-align: center;">&nbsp;</div>
 <ul style="text-align: left;">
 <li>Pricing Assistant to help you quickly create packages specific to
@@ -190,7 +180,7 @@ price, cpm etc)</li>
 <li>Audience Management tools tell your sales staff exactly how many
 advertiser campaigns are available, and how many are required to
 generate optimal revenue yield..</li>
-</ul></div></div> </div> <br> <br class="fixed-hidden"> </div><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/heart.png" class="lazy-img" alt="" src="Audience%20Extender_files/heart.png"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>Guaranteed Profits</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>( sleep better )</div>
+</ul></div></div> </div> <br> <br class="fixed-hidden"> </div><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/heart.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/heart.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div>Guaranteed Profits</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="font-family: Open Sans;" class="content content2"><div>( sleep better )</div>
 <div>&nbsp;</div>
 <div>
 <ul>
@@ -200,58 +190,19 @@ without having made money first. Costs are always controlled and mapped
 to revenue. Yield Optimizer makes sure your advertisers get what they
 need and that you make the most possible..</li>
 </ul>
-</div></div></div> </div> <br> <br class="fixed-hidden"> </div></div><noscript><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/tag.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'> AUTOMATED WORKFLOWS </div><div data-component='text' data-name='text' data-text-type='body'> ( Ph D. not required )
-  
-  Easy to use tools allow you to provide full service to your advertisers with little effort. Power advertisers can book and manage their own campaigns using a self-service, fully branded, white-labeled interface.
-   
-
-  The Audience Extender "Yield Optimizer" ensures the highest value mix of campaigns are shown to your Audience.
-  </div><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/location.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'> smart Sales Tools </div><div data-component='text' data-name='text' data-text-type='body'> ( work less + earn more )
-  
-  Pricing Assistant to help you quickly create packages specific to the needs of your exhibitors, weather they be large or small (i.e. fix price, cpm etc)
-   
-  Audience Management tools tell your sales staff exactly how many advertiser campaigns are available, and how many are required to generate optimal revenue yield..
- </div><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/themes/app/heart.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'> Guaranteed Profits </div><div data-component='text' data-name='text' data-text-type='body'> ( sleep better )
-  
-
-  Campaigns only run when you want and only when you have advertisers scheduled. You can never spend money without having made money first. Costs are always controlled and mapped to revenue. Yield Optimizer makes sure your advertisers get what they need and that you make the most possible..
-  </div></noscript></div>
+</div></div></div> </div> <br> <br class="fixed-hidden"> </div></div></div>
 </div>
 <div class="container">
 <div class="sixteen columns center line-shadow">
-<img alt="Line-shadow" src="Audience%20Extender_files/line-shadow-f32161891ab37c9ef783af2dee19fa31.png">
+<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
 </div>
 </div>
 </div>
-<script data-component="repeatable_item_template" id="feature_box" type="text/x-jquery-tmpl">
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { sortableItem: $data, mouseenter: mouseenterHandler, mouseleave: mouseleaveHandler, '_ko_property_writers' : { sortableItem : function(__ko_value) { $data = __ko_value; }, mouseenter : function(__ko_value) { mouseenterHandler = __ko_value; }, mouseleave : function(__ko_value) { mouseleaveHandler = __ko_value; } }  } })()                     }) })()) }}<div class="third columns repeatable no-float" >
-<div class="relative center">
-
-<div class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true">{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { fadeVisibleAndHide: !components.image.isState('editor') } })()                     }) })()) }}<div class="content content2" >
-
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { attr: {href: components.image.link(), target: components.image.target() } } })()                     }) })()) }}<a class="image-link" >
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { attr: { 'class': 'lazy lazy-img', 'data-original': components.image.assetUrl, alt: components.image.caption, title: components.image.caption } } })()                     }) })()) }}<img alt="Transparent"  src="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent-646dc08a9b2d44aa74bf29cd18f5e9a5.png">
-</a>
-
-</div></div>
-<br>
-<br class="fixed-hidden">
-<h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true">{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { visible: !(components.subtitle.isState('editor') || !components.subtitle.hasContent()), htmlValue: components.subtitle.value, style: (window.edit_page.data.headingFont() != '') ? {fontFamily: window.edit_page.data.headingFont } : {fontFamily: 'inherit' }, '_ko_property_writers' : { htmlValue : function(__ko_value) { components.subtitle.value = __ko_value; } }  } })()                     }) })()) }}<div class="content content2" >
-
-</div></h3>
-<div class="p text-component" data-component="text" data-name="components.text" data-use-font="true">{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { visible: !(components.text.isState('editor') || !components.text.hasContent()), htmlValue: components.text.value, style: (window.edit_page.data.bodyFont() != '') ? {fontFamily: window.edit_page.data.bodyFont } : {fontFamily: 'inherit' }, '_ko_property_writers' : { htmlValue : function(__ko_value) { components.text.value = __ko_value; } }  } })()                     }) })()) }}<div class="content content2" >
-
-</div></div>
-</div>
-<br>
-<br class="fixed-hidden">
-</div>
-</script>
 
 
 </li>
 <li class="slide">
-<a style="top: -70px;" class="section-anchor" data-scroll-name="#4"></a>
+<a style="top: -70px;" class="section-anchor" data-scroll-name="#4" name="pricing"></a>
 <a class="section-name-anchor" data-section-name="Pricing"></a>
 <div class="wide has-divider">
 <div class="container center">
@@ -272,7 +223,7 @@ need and that you make the most possible..</li>
 <div class="clearfix s-mh"><div class="features content repeatable-component" data-bind="template: {
         foreach: features.list,
         name: 'feature_box'
-      }, sortableRepeatable: features.list"><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent.png" class="lazy-img" alt="" src="Audience%20Extender_files/transparent.png"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div style="text-align: center;">1. Lightening Fast Integration</div>
+      }, sortableRepeatable: features.list"><!----><div class="third columns repeatable no-float"> <div class="relative center">  <div class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" data-original="@routes.Assets.at("images/transparent.png")" class="lazy-img" alt="" src="@routes.Assets.at("images/transparent.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div style="font-family: Bebas Neue;" class="content content2"><div style="text-align: center;">1. Lightening Fast Integration</div>
 <div style="text-align: center;">&nbsp;</div>
 <div style="text-align: center;">
 <p>2. Fair revenue sharing with no fix costs</p>
@@ -284,55 +235,17 @@ need and that you make the most possible..</li>
 <p>=</p>
 <p>&nbsp;</p>
 <p>Audience Extender</p>
-</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="display: none; font-family: Open Sans;" class="content content2"></div></div> </div> <br> <br class="fixed-hidden"> </div></div><noscript><img alt="" src="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent.png" title="" /><div data-component='text' data-name='subtitle' data-text-type='heading'> 1. Lightening Fast Integration
-  
-
- 2. Fair revenue sharing with no fix costs
-  
- 3. Generation of additional incremental revenues
-  
- 4. Greater Profits and Zero Risk
-  
- =
-  
- Audience Extender
- </div><div data-component='text' data-name='text' data-text-type='body'></div></noscript></div>
+</div></div></h3> <div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div style="display: none; font-family: Open Sans;" class="content content2"></div></div> </div> <br> <br class="fixed-hidden"> </div></div></div>
 </div>
 <div class="container">
 <div class="sixteen columns center line-shadow">
-<img alt="Line-shadow" src="Audience%20Extender_files/line-shadow-f32161891ab37c9ef783af2dee19fa31.png">
+<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
 </div>
 </div>
 </div>
-<script data-component="repeatable_item_template" id="feature_box" type="text/x-jquery-tmpl">
-<div class="third columns repeatable no-float" data-bind="sortableItem: $data, mouseenter: mouseenterHandler, mouseleave: mouseleaveHandler">
-<div class="relative center">
-
-<div class="image ib feature-box s-mhi" data-component="image" data-name="components.image" data-use-url="true"><div class="content content2" data-bind="fadeVisibleAndHide: !components.image.isState('editor')">
-
-<a class="image-link" data-bind="attr: {href: components.image.link(), target: components.image.target() }">
-<img alt="Transparent" data-bind="attr: { 'class': 'lazy lazy-img', 'data-original': components.image.assetUrl, alt: components.image.caption, title: components.image.caption }" src="//d29uxiuh8l8uy9.cloudfront.net/assets/icons/transparent-646dc08a9b2d44aa74bf29cd18f5e9a5.png">
-</a>
-
-</div></div>
-<br>
-<br class="fixed-hidden">
-<h3 class="light text-component" data-component="text" data-name="components.subtitle" data-text-type="heading" data-use-font="true"><div class="content content2" data-bind="visible: !(components.subtitle.isState('editor') || !components.subtitle.hasContent()), htmlValue: components.subtitle.value, style: (window.edit_page.data.headingFont() != '') ? {fontFamily: window.edit_page.data.headingFont } : {fontFamily: 'inherit' }">
-
-</div></h3>
-<div class="p text-component" data-component="text" data-name="components.text" data-use-font="true"><div class="content content2" data-bind="visible: !(components.text.isState('editor') || !components.text.hasContent()), htmlValue: components.text.value, style: (window.edit_page.data.bodyFont() != '') ? {fontFamily: window.edit_page.data.bodyFont } : {fontFamily: 'inherit' }">
-
-</div></div>
-</div>
-<br>
-<br class="fixed-hidden">
-</div>
-</script>
-
-
 </li>
 <li class="slide">
-<a style="top: -70px;" class="section-anchor" data-scroll-name="#5"></a>
+<a style="top: -70px;" class="section-anchor" data-scroll-name="#5" name="getting-started"></a>
 <a class="section-name-anchor" data-section-name="Getting Started"></a>
 <div class="wide has-divider">
 <div class="container">
@@ -366,7 +279,7 @@ Invalid email.
 </div>
 <div class="input" data-bind="visible: email.hasMessageBox()">
 <label style="font-family: Open Sans;" data-bind-page="style: (bodyFont &amp;&amp; bodyFont() !== '') ? {fontFamily: bodyFont()  } : {fontFamily : 'inherit'}" data-bind="text: email.message_label">Message</label>
-<textarea cols="40" html="{:rows=&gt;4, :cols=&gt;35}" id="collected_email_comment" name="collected_email[comment]" rows="20"></textarea><img style="cursor: pointer ! important; display: none ! important; position: absolute ! important; padding: 0px ! important; margin: 0px ! important; border: medium none ! important; width: 28px ! important; height: 14px ! important; opacity: 0.0152174 ! important; left: 785px ! important; top: 3502px ! important;" title="It's All Text!" src="Audience%20Extender_files/gumdrop.png">
+<textarea cols="40" html="{:rows=&gt;4, :cols=&gt;35}" id="collected_email_comment" name="collected_email[comment]" rows="20"></textarea><img style="cursor: pointer ! important; display: none ! important; position: absolute ! important; padding: 0px ! important; margin: 0px ! important; border: medium none ! important; width: 28px ! important; height: 14px ! important; opacity: 0.0152174 ! important; left: 785px ! important; top: 3502px ! important;" title="It's All Text!" src="@routes.Assets.at("images/gumdrop.png")">
 </div>
 <div class="input">
 <input value="Go!" style="font-family: Open Sans;" class="submit-button" data-bind-page="style: (bodyFont &amp;&amp; bodyFont() !== '') ? {fontFamily: bodyFont()  } : {fontFamily : 'inherit'}" data-bind="mouseclick: email.submit, value: email.submit_label" type="button">
@@ -381,7 +294,7 @@ Invalid email.
 <br>
 </div>
 <div class="sixteen columns center line-shadow">
-<img alt="Line-shadow" src="Audience%20Extender_files/line-shadow-f32161891ab37c9ef783af2dee19fa31.png">
+<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
 </div>
 </div>
 </div>
@@ -394,7 +307,7 @@ Invalid email.
 <div class="sixteen columns">
 <div class="center" id="footer-social-media">
 <div class="socialMedia content"><div class="social-media-display">
-<ul class="links" data-bind="template: {name:'socialMediaLinks', foreach: socialMedia.link_list }" style="clear:both;"><!----><li style="display: none;"><!----><a href="" target="_blank"> <img src="Audience%20Extender_files/facebook-006df763e767e6198c6e922e7d560056.png"> </a></li><!----><li style="display: none;"><!----><a href="" target="_blank"> <img src="Audience%20Extender_files/twitter-287881e23131de8062be8c2da861dec0.png"> </a></li><!----><li style="display: none;"><!----><a href="" target="_blank"> <img src="Audience%20Extender_files/gplus-3e1280ac0334cf0254794201449e9c4a.png"> </a></li></ul>
+<ul class="links" data-bind="template: {name:'socialMediaLinks', foreach: socialMedia.link_list }" style="clear:both;"><!----><li style="display: none;"><!----><a href="" target="_blank"> <img src="@routes.Assets.at("images/facebook.png")"> </a></li><!----><li style="display: none;"><!----><a href="" target="_blank"> <img src="@routes.Assets.at("images/twitter.png")"> </a></li><!----><li style="display: none;"><!----><a href="" target="_blank"> <img src="@routes.Assets.at("images/gplus.png")"> </a></li></ul>
 <ul class="buttons" data-bind="html: socialMedia.mediaListHtml"></ul>
 </div>
 </div>
@@ -422,47 +335,9 @@ Invalid email.
 <span data-bind-page="template: {name:'strikinglyNavbarTouchItemTemplate', foreach: slides}"><!----><li> <a href="#welcome" class=" selected">Welcome</a> </li><!----><li> <a href="#how-it-works">How it works</a> </li><!----><li> <a href="#benefits">Benefits</a> </li><!----><li> <a href="#pricing">Pricing</a> </li><!----><li> <a href="#getting-started">Getting Started</a> </li></span>
 <span data-bind-page="template: {name:'strikinglyNavbarTouchLinkTemplate', foreach: submenu.list}"></span>
 <li style="display: none;" class="logo" data-bind-page="visible: showStrikinglyLogo" id="strikingly-footer-logo">
-<a class="logo" href="https://www.striking.ly/?ref=logo&amp;permalink=audienceextender&amp;m=1" target="_blank">
-<div class="msg">Powered By</div>
-<img alt="Strikingly" src="Audience%20Extender_files/logo-small-2-7ce27e9d28a0eef8e281f282fe26a890.png">
+<a class="logo" href="http://www.audienceextender.com" target="_blank">
 </a>
 </li>
 </ul>
 </div>
-<div style="height: 35px;" class="mobile-actions strikingly-nav-transition">
-<ul id="mobile-action-list">
-<li class="pad">
-<a href="tel:+1%20%28917%29%20934-3019">
-<i class="icon-phone"></i>
-</a>
-</li>
-<li class="pad">
-<a href="mailto:sales&0x40;audienceextender.com" target="_blank">
-<i class="icon-envelope-alt"></i>
-</a>
-</li>
-</ul>
-</div>
-<div class="navbar-drawer-bar strikingly-nav-transition">
-<div class="drawer-container">
-<a class="navbar" href="javascript:void(0);" onclick="Bobcat.TH.toggleDrawer(); return false;">
-<div class="menu-icon"></div>
-</a>
-<a class="mobile blue" href="javascript:void(0);" onclick="Bobcat.TH.toggleMobileDrawer(); return false;">
-<i class="icon-user"></i>
-</a>
-<div class="navbar-drawer-title-container">
-</div>
-</div>
-</div>
-<script id="strikinglyNavbarTouchItemTemplate" type="text/x-jquery-tmpl">
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { visible: components.slideSettings.show_nav, '_ko_property_writers' : { visible : function(__ko_value) { components.slideSettings.show_nav = __ko_value; } }  } })()                     }) })()) }}<li >
-{{ko_code ((function() { return ko.templateRewriting.applyMemoizedBindingsToNextSibling(function() {                         return (function() { return { text:components.slideSettings.name, css: {selected: isHighlighted()}, attr: { href: hashHref() }, mouseclick: Bobcat.TH.toggleDrawer , '_ko_property_writers' : { text : function(__ko_value) { components.slideSettings.name = __ko_value; }, mouseclick : function(__ko_value) { Bobcat.TH.toggleDrawer = __ko_value; } }  } })()                     }) })()) }}<a ></a>
-</li>
-</script>
-<script id="strikinglyNavbarTouchLinkTemplate" type="text/x-jquery-tmpl">
-<li>
-<a data-bind='text:components.link.text, attr: { href: components.link.link_url(), target: components.link.target() }'></a>
-</li>
-</script>
 }

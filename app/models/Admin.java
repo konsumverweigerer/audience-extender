@@ -96,6 +96,14 @@ public class Admin extends Model {
 		return null;
 	}
 
+	public static boolean hasRole(String adminid, String role) {
+		final Admin admin = findById(adminid);
+		if (admin != null) {
+			return admin.getRoles().contains(role);
+		}
+		return false;
+	}
+
 	public static Admin findById(String id) {
 		if (id != null && !id.isEmpty()) {
 			return find.byId(Long.parseLong(id));
@@ -103,9 +111,29 @@ public class Admin extends Model {
 		return null;
 	}
 
+	public static List<Admin> findByAdmin(Admin admin) {
+		final List<Admin> admins = new ArrayList<Admin>();
+		if (admin != null) {
+			if (admin.isSysAdmin()) {
+				return findAll();
+			}
+			admins.add(admin);
+		}
+		return admins;
+	}
+
+	public static void delete(Long id) {
+		final Admin admin = find.byId(id);
+		admin.delete();
+	}
+
 	public static Option<Admin> findByEmailOption(String email) {
 		final Admin admin = findByEmail(email);
 		return new Some<Admin>(admin);
+	}
+
+	public boolean isSysAdmin() {
+		return getRoles().contains("sysadmin");
 	}
 
 	public List<String> getRoles() {

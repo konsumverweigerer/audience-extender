@@ -13,17 +13,14 @@
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 <script data-main="@routes.Assets.at("javascripts/app.js")" type="text/javascript"
 	src="@routes.WebJarAssets.requirejs"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<nav class="navbar navbar-inverse" role="navigation">
+	<nav class="navbar navbar-inverse loginbar" role="navigation">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
-			</button>
 			<a class="navbar-brand" href="#">@title</a>
 		</div>
-		<div class="collapse navbar-collapse navbar-ex1-collapse">
+		<div class="collapse navbar-collapse navbar-ex4-collapse">
 			@header
 	</nav>
 	<div class="container">@content</div>

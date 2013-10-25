@@ -13,25 +13,57 @@ object AdminController extends Controller with Secured {
     def reads(json: JsValue) = JsSuccess(new Publisher(
       (json \ "name").as[String],
       (json \ "url").as[Option[String]]))
-      
+
     def writes(publisher: Publisher) = JsObject(Seq(
       "name" -> JsString(publisher.name),
       "url" -> Json.toJson(publisher.url)))
   }
 
+  def deleteAdmin(adminid: Long) = HasRole("sysadmin") { admin =>
+    _ =>
+      Admin.delete(adminid)
+      Ok
+  }
+
+  def admins = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(
+          html.admins(
+            Admin.findByAdmin(admin).asScala,
+            admin))
+      }.getOrElse(Forbidden)
+  }
+
   /** Action to get the publishers */
-  def getPublishers(page: Int, perPage: Int) = IsAuthenticated { adminid =>
+  def publishers(page: Int, perPage: Int) = IsAuthenticated { adminid =>
     implicit req =>
       Ok(Json.toJson(Publisher.findByAdmin(adminid).asScala))
   }
 
-  /** Action to get admin */
-  def getAdmin = Action(parse.json) { implicit req =>
+  /** Action to save a admin */
+  def saveAdmin(adminid: Long) = Action(parse.json) { implicit req =>
     Ok(Json.toJson(""))
   }
 
-  /** Action to save a admin */
-  def saveAdmin = Action(parse.json) { implicit req =>
+  def admin(adminid: Long) = Action(parse.json) { implicit req =>
+    Ok(Json.toJson(""))
+  }
+
+  def addAdmin = Action(parse.json) { implicit req =>
+    Ok(Json.toJson(""))
+  }
+
+  def current = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(
+          html.current(
+            admin))
+      }.getOrElse(Forbidden)
+  }
+
+  def saveCurrent = Action(parse.json) { implicit req =>
     Ok(Json.toJson(""))
   }
 }

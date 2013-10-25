@@ -62,8 +62,11 @@ public class Publisher extends Model {
 	public static List<Publisher> findByAdmin(String adminid) {
 		final Long id = adminid != null && !adminid.isEmpty() ? Long
 				.parseLong(adminid) : -1L;
-		return find.fetch("owners.id").where().eq("owners.id", id)
-				.findList();
+		final Admin admin = Admin.findById(adminid);
+		if (admin != null && admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("owners.id", id).findList();
 	}
 
 	public static boolean isAdmin(Long publisher_id, String admin_id) {

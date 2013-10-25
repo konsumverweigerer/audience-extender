@@ -1,0 +1,15 @@
+@(admins: Seq[Admin], current: Admin)
+@main("Admins") { }{ 
+
+<article class="admins">
+	@admins.map {
+		case admin => {
+			<div class="admin">
+				<header>
+					<h2>@admin.email</h2>
+				</header>
+			</div>
+		}
+	}
+</article>
+}

@@ -24,4 +24,21 @@ public class ModelsTest extends WithApplication {
 		assertNotNull(bob);
 		assertEquals("Bob", bob.name);
 	}
+
+	@Test
+	public void retrieveSysAdmin() {
+		Admin sysadmin = Admin.find.where()
+				.eq("email", "sysadmin@audience-extender.com").findUnique();
+		assertNotNull(sysadmin);
+	}
+
+	@Test
+	public void retrieveSysAdminPublisher() {
+		Admin sysadmin = Admin.find.where()
+				.eq("email", "sysadmin@audience-extender.com").findUnique();
+		Publisher publisher = Publisher.find.where()
+				.eq("owners.id", sysadmin.getIdString()).findUnique();
+		assertNotNull(sysadmin);
+		assertNotNull(publisher);
+	}
 }

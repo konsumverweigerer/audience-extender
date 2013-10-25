@@ -4,6 +4,7 @@ import play.api.mvc._
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
+import scala.collection.JavaConverters._
 
 import models._
 import views._
@@ -54,7 +55,7 @@ object MainController extends Controller with Secured {
 
   def dashboard = Action { implicit request =>
     request.session.get("adminid").map {
-      id => Ok(html.index(Admin.findById(id)))
+      id => Ok(html.dashboard(Publisher.findByAdmin(id).asScala, Admin.findById(id)))
     }.getOrElse(
       Ok(html.index(Admin.findByEmail(""))))
   }
@@ -63,9 +64,8 @@ object MainController extends Controller with Secured {
   def javascriptRoutes = Action { implicit req =>
     Ok(
       Routes.javascriptRouter("routes")(
-        routes.javascript.AdminController.getPublishers,
-        routes.javascript.AdminController.getAdmin,
-        routes.javascript.AdminController.saveAdmin)).as("text/javascript")
+        routes.javascript.AdminController.publishers,
+        routes.javascript.AdminController.admins)).as("text/javascript")
   }
 }
 
@@ -74,8 +74,10 @@ object MainController extends Controller with Secured {
  */
 trait Secured {
 
+  private def username(request: RequestHeader) = request.session.get("adminid")
+
   /**
-   * Retrieve the connected user email.
+   * Retrieve the connected user id.
    */
   private def adminid(request: RequestHeader) = request.session.get("adminid")
 
@@ -99,6 +101,18 @@ trait Secured {
   def IsAdminOf(publisher: Long)(f: => String => Request[AnyContent] => Result) = IsAuthenticated { admin =>
     request =>
       if (Publisher.isAdmin(publisher, admin)) {
+        f(admin)(request)
+      } else {
+        Results.Forbidden
+      }
+  }
+
+  /**
+   * Check if the connected user has role.
+   */
+  def HasRole(role: String)(f: => String => Request[AnyContent] => Result) = IsAuthenticated { admin =>
+    request =>
+      if (Admin.hasRole(admin, role)) {
         f(admin)(request)
       } else {
         Results.Forbidden
