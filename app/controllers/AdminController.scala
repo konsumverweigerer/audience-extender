@@ -50,8 +50,18 @@ object AdminController extends Controller with Secured {
     Ok(Json.toJson(""))
   }
 
-  def addAdmin = Action(parse.json) { implicit req =>
-    Ok(Json.toJson(""))
+  def addAdmin = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        val newAdmin = Admin.newAdmin(admin)
+        if (newAdmin != null) {
+          Ok(
+            html.admin(newAdmin,
+              admin))
+        } else {
+          Forbidden
+        }
+      }.getOrElse(Forbidden)
   }
 
   def current = IsAuthenticated { adminid =>

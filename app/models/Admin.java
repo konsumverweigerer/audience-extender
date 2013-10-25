@@ -111,6 +111,16 @@ public class Admin extends Model {
 		return null;
 	}
 
+	public static Admin newAdmin(Admin admin) {
+		if (admin != null && admin.isSysAdmin()) {
+			final Admin newAdmin = new Admin("email@provider.com", "New Login",
+					"");
+			admin.save();
+			return newAdmin;
+		}
+		return null;
+	}
+
 	public static List<Admin> findByAdmin(Admin admin) {
 		final List<Admin> admins = new ArrayList<Admin>();
 		if (admin != null) {
