@@ -3,6 +3,9 @@ package controllers
 import play.api.libs.json._
 import play.api.mvc.Action
 import play.api.mvc.Controller
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import scala.collection.JavaConverters._
 
 import models._
@@ -18,6 +21,13 @@ object AdminController extends Controller with Secured {
       "name" -> JsString(publisher.name),
       "url" -> Json.toJson(publisher.url)))
   }
+
+  val basicAdminForm: Form[Admin] = Form(
+    mapping(
+      "name" -> text,
+      "email" -> text)(
+        (name: String, email: String) => new Admin(email, name, null))(
+          (admin: Admin) => Some(admin.name, admin.email)))
 
   def deleteAdmin(adminid: Long) = HasRole("sysadmin") { admin =>
     _ =>

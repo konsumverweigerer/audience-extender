@@ -14,6 +14,8 @@ object ApplicationBuild extends Build {
     "org.springframework" % "spring-context" % "3.2.2.RELEASE",
     "javax.inject" % "javax.inject" % "1",
 
+    "edu.vt.middleware" % "vt-password" % "3.1.2",
+
     "org.springframework.data" % "spring-data-jpa" % "1.3.2.RELEASE",
     "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
