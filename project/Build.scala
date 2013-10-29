@@ -15,7 +15,7 @@ object ApplicationBuild extends Build {
     "javax.inject" % "javax.inject" % "1",
 
     "edu.vt.middleware" % "vt-password" % "3.1.2",
-    "com.typesafe" %% "play-plugins-mailer" % "2.1-RC2",
+    "com.typesafe" %% "play-plugins-mailer" % "2.2.0",
 
     "org.springframework.data" % "spring-data-jpa" % "1.3.2.RELEASE",
     "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
