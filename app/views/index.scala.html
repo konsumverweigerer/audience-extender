@@ -1,4 +1,5 @@
-@(admin: Admin) @main("Audience Extender") {
+@(admin: Admin)
+@main("Audience Extender") {
 @helper.form(routes.MainController.authenticate,'class -> "form-inline pull-right", 'role -> "form") {
 @if(admin==null) {
 <div class="form-group">
