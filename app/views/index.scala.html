@@ -1,418 +1,148 @@
 @(admin: Admin)
 @main("Audience Extender") {
-@helper.form(routes.MainController.authenticate,'class -> "form-inline pull-right", 'role -> "form") {
 @if(admin==null) {
-<div class="form-group">
-	<input type="email" name="email" class="form-control"
-		placeholder="Email" id="email">
-</div>
-<div class="form-group">
-	<input type="password" class="form-control" name="password"
-		id="password" placeholder="Password">
-</div>
-<div class="form-group">
-	<button type="submit" id="loginbutton" class="btn btn-default">Login</button>
-</div>
-} else {
-<p class="navbar-text pull-right">
-	<span> @admin.name <span>(@admin.email)</span>
-	</span> <span> <a href="@routes.MainController.logout()" class="navbar-link">Logout @admin.email</a>
-	</span>
-</p>
+@helper.form(routes.MainController.authenticate, 'class -> "navbar-form navbar-right", 'role -> "form") {
+	<div class="form-group">
+		<input type="email" class="form-control" id="email" name="email" placeholder="Email">
+	</div>
+	<div class="form-group">
+		<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+	</div>
+	<button type="submit" class="btn btn-default" id="loginbutton">Login</button>
+} } else {
+@helper.form(routes.MainController.authenticate, 'role -> "form") {
+	<ul class="nav navbar-nav navbar-right">
+		<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @admin.email (@admin.name)</a></li>
+	</ul>
 } } }{
-<div class="" id="s-content">
-	<div class="wide header navigator">
-		<div class="container">
-			<div class="seven columns s-logo-column">
-				<h5 style="margin-top: 7px;" class="caps">
-					<span style="max-width: none;" class="text ib"><div
-							class="text-component">
-							<div style="font-family: inherit;" class="content content2">
-								<div>
-									<a href="http://www.audience-extender.com" target="_self"><strong>Audience
-									</strong></a>
-								</div>
-								<div>
-									<a href="http://www.audience-extender.com" target="_self"><strong>Extender</strong></a>
-								</div>
-							</div>
-						</div></span>
-				</h5>
-			</div>
-		</div>
-		<div class="nine columns s-nav-column">
-			<div style="margin-top: 15px;" class="nav">
-				<ul>
-					<span>
-						<li><a href="#welcome" class=" selected">Welcome</a></li>
-						<li><a href="#how-it-works">How it works</a></li>
-						<li><a href="#benefits">Benefits</a></li>
-						<li><a href="#pricing">Pricing</a></li>
-						<li><a href="#getting-started">Getting Started</a></li>
-					</span>
-				</ul>
-			</div>
-		</div>
+<a name="welcome"></a>
+<div class="head">
+	<div class="container">
+		<h1>Monetize Your Online Audience Like Never Before ...</h1>
+		<h5>AudienceExtender helps Event Owners and Managers unleash the hidden revenue potential of their website visitors. Built specifically for B2B media companies by seasoned B2B media experts and advertising technology professionals.</h5>
 	</div>
 </div>
-<div style="height: 70px;" class="header-spacer"></div>
-<ul class="slides">
-	<li class="slide selected"><a style="top: -70px;"
-		class="section-anchor" name="welcome"></a> <a
-		class="section-name-anchor"></a>
-		<div style="background-position: 49% 50%; background-repeat: no-repeat; background-size: cover;" class="wide image s-app-intro strikingly-light-text lazy-background">
-			<div class="container">
-				<div class="seven columns fixed-center">
-					<div class="br">
-						<div class="media content">
-							<div class="content">
-								<div class="video-content" style="display: none;">
-									<div class="player"></div>
-								</div>
-								<div class="image-content" style="display:none;">
-									<a target="_blank" href="javascript:void(0);" class="image-link">
-										<img style="position: relative;" title="" class="lazy-img" alt="" src="@routes.Assets.at("images/transparent.png")">
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="nine columns fixed-center">
-					<div class="half-offset-left">
-						<h1>
-							<div class="text-component">
-								<div style="font-family: Bebas Neue;" class="content content2" >
-									<div>Monetize Your Online Audience Like Never Before ...</div>
-									<div>&nbsp;</div>
-								</div>
-							</div>
-						</h1>
-						<div class="p" >
-							<div class="text-component">
-								<div style="font-family: Open Sans;" class="content content2">
-									<div>
-										<strong>AudienceExtender helps Event Owners and Managers unleash the hidden revenue potential of their website visitors. Built specifically for B2B media companies by seasoned B2B media experts and advertising technology professionals.<br></strong>
-									</div>
-								</div>
-							</div>
-						</div>
-						<br>
-						<br>
-						<span class="image ib" id="logo">
-							<div style="visibility: visible; opacity: 1;" class="content content2">
-								<a target="_blank" href="javascript:void(0);" class="image-link">
-									<img style="position: relative;" title="" class="lazy-img" alt="" src="@routes.Assets.at("images/transparent.png")">
-								</a>
-							</div>
-						</span>
-						<span class="image ib" id="logo">
-							<div style="visibility: visible; opacity: 1;" class="content content2">
-								<a target="_blank" href="javascript:void(0);" class="image-link">
-									<img style="position: relative;" title="" class="lazy-img" alt="" src="@routes.Assets.at("images/transparent.png")">
-								</a>
-							</div>
-						</span>
-					</div>
+
+<div class="container">
+	<ul class="list-unstyled slides">
+		<li>
+			<a name="how-it-works"></a>
+			<div class="row">
+				<div class="col-md-4"><img alt="" src="@routes.Assets.at("images/ipad.png")" class="img-responsive" /></div>
+				<div class="col-md-8">
+					<h3>1. Get set up in less than 5 minutes...</h3>
+					<p>Place a small snippet of HTML on your website. Your website looks the same. No changes required or made to your content.</p>
 				</div>
 			</div>
-		</div>
-	</li>
-	<li class="slide">
-		<a style="top: -70px;" class="section-anchor"  name="how-it-works"></a>
-		<a class="section-name-anchor" ></a>
-		<div class="wide has-divider">
-			<div class="container">
-				<div class="features content repeatable-component">
-					<br>
-					<div class="row repeatable">
-						<div class="five columns offset-one center">
-							<div class="image ib br">
-								<div style="display: block; visibility: visible; opacity: 1;" class="content content2">
-								<a target="_blank" href="javascript:void(0);" class="image-link">
-									<img style="position: relative;" title=""  class="lazy-img" alt="" src="@routes.Assets.at("images/ipad.png")"></a>
-								</div>
-							</div>
-						</div>
-						<div class="eight columns offset-one">
-							<h3 class="light text-component">
-								<div style="font-family: Bebas Neue;" class="content content2">
-									<div>
-										<strong>1.</strong>&nbsp;&nbsp; Get set up in less than 5 minutes ...
-									</div>
-								</div>
-							</h3>
-							<div class="p text-component">
-								<div style="font-family: Open Sans;" class="content content2">
-									<div>Place a small snippet of HTML on your website. Your website looks the same. No changes required or made to your content.</div></div></div> </div> <br> </div> <br><br> <div class="row repeatable">  <div class="five columns offset-one center right"> <div class="image ib br"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title="" class="lazy-img" alt="" src="@routes.Assets.at("images/ipad.png")"> </a>  </div></div> </div> <div class="eight columns offset-one right"> <h3 class="light text-component" ><div style="font-family: Bebas Neue;" class="content content2"><div>2. &nbsp;&nbsp;Share the new opportunity with your Exhibitors</div></div></h3> <div class="p text-component"><div style="font-family: Open Sans;" class="content content2"><div>With
- Audience Extender you have another arrow in your quicker to help your
-sponsors, exhibitors, and advertisers enhance their brand and grow their
- client base. Our custom built sales tools will help you easily sell
-access to your audience, with very little work.</div>
-<div>&nbsp;</div></div></div> </div> <br> </div> <br><br> <div class="row repeatable">  <div class="five columns offset-one center"> <div class="image ib br"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title=""  class="lazy-img" alt="" src="@routes.Assets.at("images/ipad.png")"> </a>  </div></div> </div> <div class="eight columns offset-one"> <h3 class="light text-component" ><div style="font-family: Bebas Neue;" class="content content2"><div>3.&nbsp;&nbsp; Earn money in your sleep</div></div></h3> <div class="p text-component"><div style="font-family: Open Sans;" class="content content2"><div>"Fire
- and Forget": because Audience Extender enables you to make money off
-your audience wherever they are online, you earn money without having to
- worry about a thing.</div></div></div> </div> <br> </div> <br></div></div>
-<div class="container">
-<div class="sixteen columns line-shadow center">
-<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
-</div>
-</div>
-</div>
-
-
-	</li>
-	<li class="slide">
-<a style="top: -70px;" class="section-anchor"  name="benefits"></a>
-<a class="section-name-anchor" ></a>
-<div class="wide has-divider">
-<div class="container center">
-<div class="clearfix" >
-<div class="sixteen columns">
-<h1 ><div class="text-component"><div style="font-family: Bebas Neue;" class="content content2" ><div>
-<p><em>" Our unique tools help you monetize your high value audience as
-they surf other sites - maximum yield&nbsp;with minimum effort. "<br></em></p>
-</div></div></div></h1>
-<div class="p" ><div class="text-component"><div style="font-family: Open Sans;" class="content content2" ><div><strong>&nbsp;</strong></div>
-<div><strong>&nbsp;</strong></div>
-<div><strong>--- FEATURES &amp; BENEFITS ---</strong></div></div></div></div>
-<br>
-<br>
-</div>
-</div>
-<div class="clearfix s-mh"><div class="features content repeatable-component" ><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title=""  class="lazy-img" alt="" src="@routes.Assets.at("images/tag.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" ><div style="font-family: Bebas Neue;" class="content content2"><div>AUTOMATED WORKFLOWS</div></div></h3> <div class="p text-component"><div style="font-family: Open Sans;" class="content content2"><p>( Ph D. not required )</p>
-<p>&nbsp;</p>
-<ul>
-<li style="text-align: left;">Easy to use tools allow you to provide
-full service to your advertisers with little effort.&nbsp;Power
-advertisers can book and manage their own campaigns using a
-self-service, fully branded, white-labeled interface.</li>
-</ul><div style="text-align: left;">&nbsp;</div>
-<div>
-<ul>
-	<li style="text-align: left;">The Audience Extender "Yield Optimizer" ensures the highest value mix of campaigns are shown to your Audience.</li>
-</ul>
-</div></div></div> </div> <br> <br class="fixed-hidden"> </div><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title=""  class="lazy-img" alt="" src="@routes.Assets.at("images/location.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" ><div style="font-family: Bebas Neue;" class="content content2"><div>smart Sales Tools</div></div></h3> <div class="p text-component"><div style="font-family: Open Sans;" class="content content2"><div style="text-align: center;">( work less + earn more )</div>
-<div style="text-align: center;">&nbsp;</div>
-<ul style="text-align: left;">
-<li>Pricing Assistant to help you quickly create packages specific to
-the needs of your exhibitors, weather they be large or small (i.e. fix
-price, cpm etc)</li>
-</ul><div>&nbsp;</div>
-<ul style="text-align: left;">
-<li>Audience Management tools tell your sales staff exactly how many
-advertiser campaigns are available, and how many are required to
-generate optimal revenue yield..</li>
-</ul></div></div> </div> <br> <br class="fixed-hidden"> </div><div class="third columns repeatable no-float"> <div class="relative center">  <div style="height: 66px;" class="image ib feature-box s-mhi"><div style="display: block; visibility: visible; opacity: 1;" class="content content2">  <a target="_blank" href="javascript:void(0);" class="image-link"> <img style="position: relative;" title=""  class="lazy-img" alt="" src="@routes.Assets.at("images/heart.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" ><div style="font-family: Bebas Neue;" class="content content2"><div>Guaranteed Profits</div></div></h3> <div class="p text-component"><div style="font-family: Open Sans;" class="content content2"><div>( sleep better )</div>
-<div>&nbsp;</div>
-<div>
-<ul>
-<li style="text-align: left;">Campaigns only run&nbsp;when you want and
-only when you have advertisers scheduled. You can never spend money
-without having made money first. Costs are always controlled and mapped
-to revenue. Yield Optimizer makes sure your advertisers get what they
-need and that you make the most possible..</li>
-</ul>
-</div></div></div> </div> <br> <br class="fixed-hidden"> </div></div></div>
-</div>
-<div class="container">
-<div class="sixteen columns center line-shadow">
-<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
-</div>
-</div>
-</div>
-
-
-	</li>
-	<li class="slide"><a style="top: -70px;" class="section-anchor"
-		name="pricing"></a> <a class="section-name-anchor"></a>
-		<div class="wide has-divider">
-			<div class="container center">
-				<div class="clearfix">
-					<div class="sixteen columns">
-						<h1>
-							<div class="text-component">
-								<div style="font-family: Bebas Neue;" class="content content2">
-									<div>
-										<em>"holistic audience monetization": Pay a fair revenue
-											share to automatically run the most profitable campaigns.</em>
-									</div>
-								</div>
-							</div>
-						</h1>
-						<div class="p">
-							<div class="text-component">
-								<div style="font-family: Open Sans;" class="content content2">
-									<div>Should you boost ticket sales, generate additional
-										qualified buyers or show more sponsor messages?&nbsp;</div>
-									<div>Máking the most of your audience is difficult when
-										there are so many competing options.</div>
-									<div>&nbsp;</div>
-									<div>AudienceExtender take cares of the heavy
-										lifting.and&nbsp;automatically manages the mix.</div>
-									<div>Revenues are maximized by showing highest yield
-										campaigns to the right users at the right time.&nbsp;</div>
-									<div>&nbsp;</div>
-									<div>
-										<strong>Your profits are guaranteed - and you pay
-											only a fair revenue share of these profits.</strong>
-									</div>
-								</div>
-							</div>
-						</div>
-						<br> <br>
-					</div>
+			<div class="row">
+				<div class="col-md-8">
+					<h3>2. Share the new opportunity with your Exhibitors</h3>
+					<p>With Audience Extender you have another arrow in your quiver to help your sponsors, exhibitors, and advertisers enhance their brand and grow their client base. Our custom built sales tools will help you easily sell access to your audience, with very little work.</p>
 				</div>
-				<div class="clearfix s-mh">
-					<div class="features content repeatable-component">
-						
-						<div class="third columns repeatable no-float">
-							<div class="relative center">
-								<div class="image ib feature-box s-mhi">
-									<div style="display: block; visibility: visible; opacity: 1;"
-										class="content content2">
-										<a target="_blank" href="javascript:void(0);"
-											class="image-link"> <img style="position: relative;"
-											title=""  class="lazy-img" alt="" src="@routes.Assets.at("images/transparent.png")"> </a>  </div></div> <br> <br class="fixed-hidden"> <h3 class="light text-component" ><div style="font-family: Bebas Neue;" class="content content2"><div style="text-align: center;">1. Lightening Fast Integration</div>
-<div style="text-align: center;">&nbsp;</div>
-<div style="text-align: center;">
-<p>2. Fair revenue sharing with no fix costs</p>
-<p>&nbsp;</p>
-<p>3. Generation of additional incremental revenues</p>
-<p>&nbsp;</p>
-<p>4. Greater Profits and Zero Risk</p>
-<p>&nbsp;</p>
-<p>=</p>
-<p>&nbsp;</p>
-<p>Audience Extender</p>
-</div></div></h3> <div class="p text-component"><div style="display: none; font-family: Open Sans;" class="content content2"></div></div> </div> <br> <br class="fixed-hidden"> </div></div></div>
-</div>
-<div class="container">
-<div class="sixteen columns center line-shadow">
-<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
-</div>
-</div>
-</div>
+				<div class="col-md-4"><img alt="" src="@routes.Assets.at("images/ipad.png")" class="img-responsive" /></div>
+			</div>
+			<div class="row">
+				<div class="col-md-4"><img alt="" src="@routes.Assets.at("images/ipad.png")" class="img-responsive" /></div>
+				<div class="col-md-8">
+					<h3>3. Earn money in your sleep</h3>
+					<p>"Fire and Forget": because Audience Extender enables you to make money off your audience wherever they are online, you earn money without having to worry about a thing.</p>
+				</div>
+			</div>
 		</li>
-		<li class="slide">
-			<a style="top: -70px;" class="section-anchor"  name="getting-started"></a>
-			<a class="section-name-anchor" ></a>
-			<div class="wide has-divider">
-				<div class="container">
-					<div class="twelve columns offset-two center">
-						<h1><div class="text-component">
-							<div style="font-family: Bebas Neue;" class="content content2" >
-								<div>Let's monetize together</div>
-							</div>
-						</div></h1>
-						<div class="p">
-							<div class="text-component">
-								<div style="font-family: Open Sans;" class="content content2" >
-									<div style="text-align: center;">Reach out today, and find out what you could be earning tomorrow.</div>
-									<div style="text-align: center;">
-										<p>Call us at <strong>+1 (917) 934-3019</strong> or fill in the below form and we'll get back to you.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<br>
-						<br>
-						<div class="email content">
-							<div class="email-form">
-								<div class="form" >
-									<form accept-charset="UTF-8" action="/audienceextender/collected_emails.jsm" class="new_collected_email" id="new_collected_email" method="post">
-										<div style="margin:0;padding:0;display:inline">
-											<input name="utf8" value="✓" type="hidden">
-											<input name="authenticity_token" value="8liId7JtpuyoQDIT/FpsvtBudeBUMmO9HMeIAN2ESCc=" type="hidden">
-										</div>
-										<input value="trent&0x40;audienceextender.com"  id="collected_email_recipient" name="collected_email[recipient]" type="hidden">
-										<input  id="collected_email_skip_email" name="collected_email[skip_email]" value="false" type="hidden">
-										<input  id="collected_email_skip_name" name="collected_email[skip_name]" value="false" type="hidden">
-										<div class="input" >
-											<label style="font-family: Open Sans;"  >Name</label>
-											<input id="collected_email_name" name="collected_email[name]" size="30" type="text">
-											<div style="display: none;" class="error" >
-												Please enter a name.
-											</div>
-										</div>
-										<div class="input" >
-											<label style="font-family: Open Sans;"  >Email</label>
-											<input id="collected_email_email" name="collected_email[email]" size="30" type="text">
-											<div style="display: none;" class="error" >
-												Invalid email.
-											</div>
-										</div>
-										<div class="input" >
-											<label style="font-family: Open Sans;"  >Message</label>
-											<textarea cols="40" html="{:rows=&gt;4, :cols=&gt;35}" id="collected_email_comment" name="collected_email[comment]" rows="20"></textarea>
-											<img style="cursor: pointer ! important; display: none ! important; position: absolute ! important; padding: 0px ! important; margin: 0px ! important; border: medium none ! important; width: 28px ! important; height: 14px ! important; opacity: 0.0152174 ! important; left: 785px ! important; top: 3502px ! important;" title="It's All Text!" src="@routes.Assets.at("images/gumdrop.png")">
-										</div>
-										<div class="input">
-											<input value="Go!" style="font-family: Open Sans;" class="submit-button" type="button">
-											<div style="display: none;" class="loading-icon" ></div>
-										</div>
-									</form>
-								</div>
-								<div style="font-family: Open Sans; display: none;" class="hint s-form-submit-message thanks"  >Your interest is greatly appreciated! We promise to get back to you within the next 48 hours.</div>
-							</div>
-						</div>
-						<br>
-						<br>
-					</div>
-					<div class="sixteen columns center line-shadow">
-						<img alt="Line-shadow" src="@routes.Assets.at("images/line-shadow.png")">
-					</div>
+
+		<li>
+			<a name="benefits"></a>
+			<h2 class="text-center">"Our unique tools help you monetize your high value audience as they surf other sites - maximum yield with minimum effort."</h2>
+			<h4 class="text-center">--- FEATURES &amp; BENEFITS ---</h4>
+
+			<div class="row">
+				<div class="col-md-4">
+					<p class="text-center">
+						<img src="//s3-strikingly-production-v1.global.ssl.fastly.net/assets/themes/app/tag.png" alt="" />
+					</p>
+					<h3 class="text-center">AUTOMATED WORKFLOWS</h3>
+					<p class="text-center">( Ph D. not required )</p>
+					<ul>
+						<li>Easy to use tools allow you to provide full service to your advertisers with little effort. Power advertisers can book and manage their own campaigns using a self-service, fully branded, white-labeled interface.</li>
+						<li>The Audience Extender "Yield Optimizer" ensures the highest value mix of campaigns are shown to your Audience.</li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<p class="text-center">
+						<img src="//s3-strikingly-production-v1.global.ssl.fastly.net/assets/themes/app/location.png" alt="" />
+					</p>
+					<h3 class="text-center">SMART SALES TOOLS</h3>
+					<p class="text-center">( work less + earn more )</p>
+					<ul>
+						<li>Pricing Assistant to help you quickly create packages specific to the needs of your exhibitors, weather they be large or small (i.e. fix price, cpm etc)</li>
+						<li>Audience Management tools tell your sales staff exactly how many advertiser campaigns are available, and how many are required to generate optimal revenue yield.</li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<p class="text-center">
+						<img src="//s3-strikingly-production-v1.global.ssl.fastly.net/assets/themes/app/heart.png" alt="" />
+					</p>
+					<h3 class="text-center">GUARANTEED PROFITS</h3>
+					<p class="text-center">( sleep better )</p>
+					<ul>
+						<li>Campaigns only run when you want and only when you have advertisers scheduled. You can never spend money without having made money first. Costs are always controlled and mapped to revenue. Yield Optimizer makes sure your advertisers get what they need and that you make the most possible.</li>
+					</ul>
 				</div>
 			</div>
+		</li>
+
+		<li>
+			<a name="pricing"></a>
+			<h2 class="text-center">"Holistic audience monetization": Pay a fair revenue share to automatically run the most profitable campaigns.</h2>
+			<p class="text-center">Should you boost ticket sales, generate additional qualified buyers or show more sponsor messages?<br />Máking the most of your audience is difficult when there are so many competing options.</p>
+			<p class="text-center">AudienceExtender take cares of the heavy lifting.and automatically manages the mix.<br />Revenues are maximized by showing highest yield campaigns to the right users at the right time.</p>
+			<p class="text-center"><strong>Your profits are guaranteed - and you pay only a fair revenue share of these profits.</strong></p>
+			<h3 class="text-center">
+				1. Lightening Fast Integration<br /><br />
+				2. Fair revenue sharing with no fix costs<br /><br />
+				3. Generation of additional incremental revenues<br /><br />
+				4. Greater Profits and Zero Risk<br /><br />
+				=<br /><br />
+				Audience Extender
+			</h3>
+		</li>
+
+		<li>
+			<a name="getting-started"></a>
+			<h2 class="text-center">Let's monetize together</h2>
+			<p class="text-center">Reach out today, and find out what you could be earning tomorrow.</p>
+			<p class="text-center">Call us at <strong>+1 (917) 934-3019</strong> or fill in the below form and we'll get back to you.</p>
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="name" class="col-sm-2 control-label">Name</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="name" placeholder="Name">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="email" class="col-sm-2 control-label">Email</label>
+					<div class="col-sm-10">
+						<input type="email" class="form-control" id="email" placeholder="Email">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="message" class="col-sm-2 control-label">Message</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" id="message" placeholder="Message"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default">Go!</button>
+					</div>
+				</div>
+			</form>
 		</li>
 	</ul>
-	<div class="wide footer"  id="footer">
-		<div class="container">
-			<div class="sixteen columns">
-				<div class="center" id="footer-social-media">
-					<div class="socialMedia content">
-						<div class="social-media-display">
-							<ul class="links"  style="clear:both;">
-								<li style="display: none;"><a href="" target="_blank"> <img src="@routes.Assets.at("images/facebook.png")"> </a></li>
-								<li style="display: none;"><a href="" target="_blank"> <img src="@routes.Assets.at("images/twitter.png")"> </a></li>
-								<li style="display: none;"><a href="" target="_blank"> <img src="@routes.Assets.at("images/gplus.png")"> </a></li>
-							</ul>
-							<ul class="buttons" ></ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="sixteen columns">
-				<div class="center" id="footer-text">
-					<div class="p">
-						<div class="text-component">
-							<div style="font-family: Open Sans;" class="content content2" >
-								<div>
-									<p>Copyright 2013 - Audience Extender LLC</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="navigation-buttons strikingly-fixed" >
-		<span style="display: block; opacity: 0; visibility: hidden;" class="prev"  title="Previous Section"></span>
-		<span style="visibility: visible; opacity: 1;" class="next"  title="Next Section"></span>
-	</div>
 
-<div class="navbar-drawer strikingly-drawer strikingly-nav-transition">
-	<ul style="height: 700px;" id="nav-drawer-list">
-		<li> <a href="#welcome" class=" selected">Welcome</a> </li>
-		<li> <a href="#how-it-works">How it works</a> </li>
-		<li> <a href="#benefits">Benefits</a> </li>
-		<li> <a href="#pricing">Pricing</a> </li>
-		<li> <a href="#getting-started">Getting Started</a> </li>
-		<li style="display: none;" class="logo"  id="strikingly-footer-logo">
-			<a class="logo" href="http://www.audienceextender.com" target="_blank">
-			</a>
-		</li>
-	</ul>
+
+	<div class="footer">
+		<p class="footer">&copy; Copyright 2013 - Audience Extender LLC</p>
+	</div>
 </div>
 }

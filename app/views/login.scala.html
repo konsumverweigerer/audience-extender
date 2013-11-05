@@ -1,28 +1,15 @@
 @(form: play.api.data.Form[(String,String)])(implicit flash:
-play.api.mvc.Flash) @main("Login") { }{
-<div class="row">
-	@helper.form(routes.MainController.authenticate) {
-
-	<h1>Sign in</h1>
+play.api.mvc.Flash) @main("Login") { } {
+@helper.form(routes.MainController.authenticate, 'class -> "form-signin") {
+	<h2 class="form-signin-heading">Please sign in</h2>
 
 	@form.globalError.map { error =>
-	<p class="error">@error.message</p>
+	<div class="alert alert-danger">@error.message</div>
 	} @flash.get("success").map { message =>
-	<p class="success">@message</p>
+	<div class="alert alert-success">@message</div>
 	}
-
-	<p>
-		<input type="email" name="email" placeholder="Email" id="email"
-			value="@form("email").value">
-	</p>
-	<p>
-		<input type="password" name="password" id="password"
-			placeholder="Password">
-	</p>
-	<p>
-		<button type="submit" id="loginbutton">Login</button>
-	</p>
-
-	}
-</div>
+	<input type="email" autofocus="" required="" placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
+	<input type="password" required="" placeholder="Password" class="form-control" id="password" name="password">
+	<button type="submit" class="btn btn-lg btn-primary btn-block" id="loginbutton">Sign in</button>
+}
 }
