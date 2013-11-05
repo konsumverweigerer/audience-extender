@@ -1,14 +1,28 @@
 @(publishers: Seq[Publisher], current: Admin)
-@main("Dashboard") { 
+@main("Dashboard") {
 <h3><a href="@routes.AdminController.admins">Admins</a></h3>
 <h3><a href="@routes.AdminController.current">My Account</a></h3>
 }{
+<script data-main="@routes.Assets.at("javascripts/dashboard.js")" type="text/javascript"
+    src="@routes.WebJarAssets.requirejs"></script>
+
+<div id="chart" class="dashboard">
+  <svg></svg>
+</div>
+
 <article class="publishers">
 	@publishers.map {
 		case publisher => {
 			<div class="publisher">
 				<header>
 					<h2>@publisher.name</h2>
+                    <ul>
+                        @publisher.owners.map {
+                            case adm => {
+                                <li>@adm.email</li>
+                            }
+                        }
+                    </ul>
 				</header>
 			</div>
 		}

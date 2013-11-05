@@ -22,12 +22,13 @@ object ApplicationBuild extends Build {
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
 
     "org.webjars" %% "webjars-play" % "2.2.0",
+    "org.webjars" % "requirejs" % "2.1.8",
     "org.webjars" % "bootstrap" % "3.0.1",
     "org.webjars" % "knockout" % "2.3.0",
-    "org.webjars" % "requirejs" % "2.1.8",
+    "org.webjars" % "d3js" % "2.10.3",
+    "org.webjars" % "nvd3" % "8415ee55d3",
     "org.mockito" % "mockito-core" % "1.9.5" % "test")
 
   val main = play.Project(appName, appVersion, appDependencies).settings( // ebeanEnabled := false
   )
-
 }
