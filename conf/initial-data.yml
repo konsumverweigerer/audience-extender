@@ -3,8 +3,14 @@ admins:
  - &sysadmin !!models.Admin
   email:       sysadmin@audience-extender.com
   name:        System Administrator
-  password:    secret
+  password:    AevaiShaeposhohng9ah
   admin_roles: sysadmin
+        
+ - &dummy !!models.Admin
+  email:       dummy@audience-extender.com
+  name:        Dummy user
+  password:    $1$ojRtK.WM$EuBh4J3ot4F2WHV.8f1bB0
+  admin_roles: none
         
 publishers:
 
@@ -15,7 +21,11 @@ publishers:
         
  - !!models.Publisher
   name:   Second publisher
+  owners:
+   - *dummy
 
  - !!models.Publisher
   name:   Third publisher
+  owners:
+   - *dummy
 
