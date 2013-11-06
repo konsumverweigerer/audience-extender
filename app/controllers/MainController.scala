@@ -64,7 +64,7 @@ object MainController extends Controller with Secured {
   def javascriptRoutes = Action { implicit req =>
     Ok(
       Routes.javascriptRouter("routes")(
-        routes.javascript.AdminController.publishers,
+        routes.javascript.PublisherController.publishers,
         routes.javascript.AdminController.admins)).as("text/javascript")
   }
 }

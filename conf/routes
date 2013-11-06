@@ -3,23 +3,26 @@
 # ~~~~
 
 # The home page
-GET      /                controllers.MainController.index(path = "")
+GET      /                        controllers.MainController.index(path = "")
 
 # Authentication
-GET      /login           controllers.MainController.login
-POST     /login           controllers.MainController.authenticate
-GET      /logout          controllers.MainController.logout
+GET      /login                   controllers.MainController.login
+POST     /login                   controllers.MainController.authenticate
+GET      /logout                  controllers.MainController.logout
 
 # Admins
-GET      /admin           controllers.AdminController.current
-PUT      /admin           controllers.AdminController.saveCurrent
+GET      /admin                   controllers.AdminController.current
+PUT      /admin                   controllers.AdminController.saveCurrent
 
-GET      /admins          controllers.AdminController.admins
-POST     /admins          controllers.AdminController.addAdmin
-DELETE   /admins/:admin   controllers.AdminController.deleteAdmin(admin: Long)
+GET      /admins                  controllers.AdminController.admins
+POST     /admins                  controllers.AdminController.addAdmin
+DELETE   /admins/:admin           controllers.AdminController.deleteAdmin(admin: Long)
 
-GET      /admins/:admin   controllers.AdminController.admin(admin: Long)
-PUT      /admins/:admin   controllers.AdminController.saveAdmin(admin: Long)
+GET      /admins/:admin           controllers.AdminController.admin(admin: Long)
+PUT      /admins/:admin           controllers.AdminController.saveAdmin(admin: Long)
+
+GET      /data/dashboard          controllers.PublisherController.dashboard
+GET      /data/stats/:publisher   controllers.PublisherController.stats(publisher: Long)
 
 #POST     /admins/publishers   controllers.AdminController.addPublisher()
 #DELETE   /admins/publishers   controllers.AdminController.removePublisher(group: Long)
@@ -28,15 +31,15 @@ PUT      /admins/:admin   controllers.AdminController.saveAdmin(admin: Long)
 #PUT      /admins/:admin       controllers.AdminController.rename(project: Long)                      
 
 # Publishers
-GET      /publishers      controllers.AdminController.publishers(page: Int ?= 0, perPage: Int ?= 10)
+GET      /publishers              controllers.PublisherController.publishers(page: Int ?= 0, perPage: Int ?= 10)
 
 # Dashboard
-GET      /dashboard       controllers.MainController.dashboard
+GET      /dashboard               controllers.MainController.dashboard
 
-GET      /require.js      controllers.WebJarAssets.requirejs
-GET      /routes.js       controllers.MainController.javascriptRoutes
-GET      /webjars/*file   controllers.WebJarAssets.at(file)
-GET      /assets/*file    controllers.Assets.at(path="/public", file)
+GET      /require.js              controllers.WebJarAssets.requirejs
+GET      /routes.js               controllers.MainController.javascriptRoutes
+GET      /webjars/*file           controllers.WebJarAssets.at(file)
+GET      /assets/*file            controllers.Assets.at(path="/public", file)
 
 # Every other page
-GET      /*path           controllers.MainController.index(path)
+GET      /*path                   controllers.MainController.index(path)

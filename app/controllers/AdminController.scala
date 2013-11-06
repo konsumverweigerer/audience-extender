@@ -12,16 +12,6 @@ import models._
 import views._
 
 object AdminController extends Controller with Secured {
-  implicit object PublisherFormat extends Format[Publisher] {
-    def reads(json: JsValue) = JsSuccess(new Publisher(
-      (json \ "name").as[String],
-      (json \ "url").as[Option[String]]))
-
-    def writes(publisher: Publisher) = JsObject(Seq(
-      "name" -> JsString(publisher.name),
-      "url" -> Json.toJson(publisher.url)))
-  }
-
   val basicAdminForm: Form[Admin] = Form(
     mapping(
       "name" -> text,
@@ -43,12 +33,6 @@ object AdminController extends Controller with Secured {
             Admin.findByAdmin(admin).asScala,
             admin))
       }.getOrElse(Forbidden)
-  }
-
-  /** Action to get the publishers */
-  def publishers(page: Int, perPage: Int) = IsAuthenticated { adminid =>
-    implicit req =>
-      Ok(Json.toJson(Publisher.findByAdmin(adminid).asScala))
   }
 
   /** Action to save a admin */

@@ -7,6 +7,9 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], () ->
       }
     )
 
+  stream_index = (d, i) ->
+   	{x: i, y: Math.max(0, d)}
+         
   stream_layers = (n, m, o) -> 
     if arguments.length < 3
       o = 0    
@@ -28,17 +31,6 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], () ->
           bump(a)
         return a.map(stream_index)
     );
-
-  stream_waves = (n, m) ->
-    return d3.range(n).map((i) ->
-      return d3.range(m).map((j) ->
-          x = 20 * j / m - i / 3
-          return 2 * x * Math.exp(-.5 * x)
-        ).map(stream_index)
-      )
-
-  stream_index = (d, i) ->
-    return {x: i, y: Math.max(0, d)}
 
   $(document).ready( () ->
     nv.addGraph(() ->

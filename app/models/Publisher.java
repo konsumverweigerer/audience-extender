@@ -59,6 +59,11 @@ public class Publisher extends Model {
 		return find.byId(id);
 	}
 
+	public static List<Dataset> statsByAdmin(Admin admin) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
 	public static List<Publisher> findByAdmin(String adminid) {
 		final Long id = adminid != null && !adminid.isEmpty() ? Long
 				.parseLong(adminid) : -1L;
