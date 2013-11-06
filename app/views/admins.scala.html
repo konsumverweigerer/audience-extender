@@ -1,14 +1,22 @@
 @(admins: Seq[Admin], current: Admin)
-@main("Admins") { } {
-	<div class="container">
-		<article class="admins">
-			@admins.map {
-				case admin => {
-					<div class="admin">
-						<h2>@admin.email</h2>
-					</div>
-				}
+@main("Admins") { 
+<ul class="nav navbar-nav">
+	<li><a href="@routes.MainController.dashboard">Dashboard</a></li>
+	<li><a href="@routes.AdminController.current">My Account</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+	<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @current.email (@current.name)</a></li>
+</ul>
+} {
+<div class="container">
+	<article class="admins">
+		@admins.map {
+			case admin => {
+				<div class="admin">
+					<h2>@admin.email</h2>
+				</div>
 			}
-		</article>
-	</div>
+		}
+	</article>
+</div>
 }

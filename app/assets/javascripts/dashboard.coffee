@@ -1,13 +1,11 @@
-require(["webjars!knockout.js", "webjars!jquery.js", 
-    "webjars!bootstrap.js", "webjars!d3.v2.js", "webjars!nv.d3.js",
-    "/routes.js"], (ko) ->
+require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], () ->
   data = ->
     return stream_layers(3,10+Math.random()*100,.1).map( (data, i) ->
       return {
         key: 'Stream' + i,
         values: data
-      };
-    );
+      }
+    )
 
   stream_layers = (n, m, o) -> 
     if arguments.length < 3
@@ -36,22 +34,24 @@ require(["webjars!knockout.js", "webjars!jquery.js",
       return d3.range(m).map((j) ->
           x = 20 * j / m - i / 3
           return 2 * x * Math.exp(-.5 * x)
-        ).map(stream_index);
-      );
+        ).map(stream_index)
+      )
 
   stream_index = (d, i) ->
-    return {x: i, y: Math.max(0, d)};
+    return {x: i, y: Math.max(0, d)}
 
-  nv.addGraph(() ->
-    chart = nv.models.multiBarChart()
-    chart.xAxis
+  $(document).ready( () ->
+    nv.addGraph(() ->
+      chart = nv.models.multiBarChart()
+      chart.xAxis
         .tickFormat(d3.format(',f'));
-    chart.yAxis
+      chart.yAxis
         .tickFormat(d3.format(',.1f'));
-    d3.select('#chart svg')
+      d3.select('#chart svg')
         .datum(data())
-      .transition().duration(500).call(chart);
-    nv.utils.windowResize(chart.update);
-    return chart;
-  );
+        .transition().duration(500).call(chart)
+      nv.utils.windowResize(chart.update)
+      return chart
+    )
+  )
 )

@@ -1,5 +1,15 @@
-@(admin: Admin, current: Admin) @main("My Account") { } {
-	<div class="container">
-		<article class="current"></article>
-	</div>
+@(admin: Admin, current: Admin) 
+@main("Account: @admin.name") { 
+<ul class="nav navbar-nav">
+	<li><a href="@routes.MainController.dashboard">Dashboard</a></li>
+	<li><a href="@routes.AdminController.admins">Admins</a></li>
+	<li><a href="@routes.AdminController.current">My Account</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+	<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @current.email (@current.name)</a></li>
+</ul>
+} {
+<div class="container">
+	<article class="current"></article>
+</div>
 }

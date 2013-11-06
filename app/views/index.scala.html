@@ -1,19 +1,25 @@
 @(admin: Admin)
 @main("Audience Extender") {
+<ul class="nav navbar-nav">
+	<li><a href="#how-it-works">How it works</a></li>
+	<li><a href="#benefits">Benefits</a></li>
+	<li><a href="#pricing">Pricing</a></li>
+	<li><a href="#getting-started">Getting Started</a></li>
+</ul>
 @if(admin==null) {
 @helper.form(routes.MainController.authenticate, 'class -> "navbar-form navbar-right", 'role -> "form") {
-	<div class="form-group">
-		<input type="email" class="form-control" id="email" name="email" placeholder="Email">
-	</div>
-	<div class="form-group">
-		<input type="password" class="form-control" id="password" name="password" placeholder="Password">
-	</div>
-	<button type="submit" class="btn btn-default" id="loginbutton">Login</button>
+<div class="form-group">
+	<input type="email" class="form-control" id="email" name="email" placeholder="Email">
+</div>
+<div class="form-group">
+	<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+</div>
+<button type="submit" class="btn btn-default" id="loginbutton">Login</button>
 } } else {
 @helper.form(routes.MainController.authenticate, 'role -> "form") {
-	<ul class="nav navbar-nav navbar-right">
-		<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @admin.email (@admin.name)</a></li>
-	</ul>
+<ul class="nav navbar-nav navbar-right">
+	<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @admin.email (@admin.name)</a></li>
+</ul>
 } } }{
 <a name="welcome"></a>
 <div class="head">
