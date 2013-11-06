@@ -7,6 +7,7 @@ import javax.persistence.Id;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import services.UuidHelper;
 
 @Entity
 public class Cookie extends Model {
@@ -18,8 +19,14 @@ public class Cookie extends Model {
 	@Required
 	public String name;
 
+	public String variant;
+
+	public String uuid;
+	public String content;
+
 	public Cookie(String name) {
 		this.name = name;
+		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");
 	}
 
 	public static Finder<String, Cookie> find = new Finder<String, Cookie>(
@@ -30,6 +37,10 @@ public class Cookie extends Model {
 	 */
 	public static List<Cookie> findAll() {
 		return find.all();
+	}
+
+	public static List<Cookie> findByUuid(String uuid) {
+		return find.where().eq("uuid", uuid).findList();
 	}
 
 	public String toString() {
