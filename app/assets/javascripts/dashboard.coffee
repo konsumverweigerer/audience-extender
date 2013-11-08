@@ -1,4 +1,4 @@
-require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], () ->
+require(["webjars!jquery.js", "webjars!bootstrap.js", "webjars!d3.v2.js", "/routes.js"], () ->
   data = ->
     return stream_layers(3,10+Math.random()*100,.1).map( (data, i) ->
       return {
@@ -32,7 +32,7 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], () ->
         return a.map(stream_index)
     );
 
-  $(document).ready( () ->
+  require(["webjars!nv.d3.js"], () ->
     nv.addGraph(() ->
       chart = nv.models.multiBarChart()
       chart.xAxis
