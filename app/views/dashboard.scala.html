@@ -2,7 +2,7 @@
 @main("Dashboard") {
 @menu.admin("Dashboard")
 @menu.logout(current)
-    <script type="text/javascript" data-main="@routes.Assets.at("javascripts/dashboard.js")" src="@routes.WebJarAssets.requirejs"></script>
+<script type="text/javascript" data-main="@routes.Assets.at("javascripts/dashboard.js")" src="@routes.WebJarAssets.requirejs"></script>
 }{
 <div class="container">
 	<div class="row">
@@ -99,7 +99,7 @@
 </div>
 
 <div class="secondary">
-  <div class="container">
+	<div class="container">
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
@@ -125,7 +125,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-6">
-						<p class="" style="margin:20px 0;padding:5px 0;"><strong>Displaying: 1 - 20 of 141</strong></p>
+						<p class="pagination-fix"><strong>Displaying: 1 - 20 of 141</strong></p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
@@ -141,101 +141,103 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<table class="table table-striped table-bordered m-null">
-							<tr>
-								<th>Name</th>
-								<th>Status</th>
-								<th>Revenue</th>
-								<th>Cost</th>
-								<th>Start</th>
-								<th>End</th>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-							<tr>
-								<td>Leads Con Web Retargeting</td>
-								<td>11,83 %</td>
-								<td>$534,76</td>
-								<td>$4,35</td>
-								<td>7/19/2013</td>
-								<td>8/09/2013</td>
-							</tr>
-						</table>
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered m-null">
+								<tr>
+									<th>Name</th>
+									<th>Status</th>
+									<th class="sorting-up">Revenue</th>
+									<th>Cost</th>
+									<th>Start</th>
+									<th>End</th>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+								<tr>
+									<td>Leads Con Web Retargeting</td>
+									<td>11,83 %</td>
+									<td>$534,76</td>
+									<td>$4,35</td>
+									<td>7/19/2013</td>
+									<td>8/09/2013</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-6">
-						<p class="" style="margin:20px 0;padding:5px 0;"><strong>Displaying: 1 - 20 of 141</strong></p>
+						<p class="pagination-fix"><strong>Displaying: 1 - 20 of 141</strong></p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
@@ -252,16 +254,16 @@
 			</div>
 			<div class="col-md-3">
 				<p>
-					<button type="button" class="btn btn-default btn-block">New Campaign</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> New Campaign</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-block">New Audience</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> New Audience</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-block">Yield Maximiser</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> Yield Maximiser</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-block">AD Packages</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> AD Packages</button>
 				</p>
 				<!--
 				<article class="publishers">
