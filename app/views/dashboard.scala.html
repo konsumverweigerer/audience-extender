@@ -2,30 +2,92 @@
 @main("Dashboard") {
 <ul class="nav navbar-nav">
 	<li><a href="@routes.AdminController.admins">Admins</a></li>
-	<li><a href="@routes.AdminController.current">My Account</a></li>
 </ul>
 <ul class="nav navbar-nav navbar-right">
-	<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @current.email (@current.name)</a></li>
+	<li class="dropdown">
+		<a data-toggle="dropdown" class="dropdown-toggle" href="#">My Account <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+			<li><a href="@routes.AdminController.current">My Account</a></li>
+			<li class="divider"></li>
+			<li class="dropdown-header">@current.email (@current.name)</li>
+			<li><a href="@routes.MainController.logout()" class="navbar-link">Logout</a></li>
+		</ul>
+	</li>
 </ul>
 <script data-main="@routes.Assets.at("javascripts/dashboard.js")" type="text/javascript" src="@routes.WebJarAssets.requirejs"></script>
 }{
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
+			<div class="row legends">
+				<div class="col-sm-4">
+					<div class="legend-revenu">
+						<span></span> $5000 Revenue
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="legend-ad-spent">
+						<span></span> $5000 Ad spend
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="legend-profit">
+						<span></span> $3300 Profit
+					</div>
+				</div>
+			</div>
 			<div class="row">
-				<div class="col-md-4">
-					<div class="revenu">
-						$5000 Revenue
-					</div>
+				<div class="col-sm-4">
+					<form class="form-horizontal" role="form">
+						<div class="form-group well-fix">
+							<label for="selectDate" class="col-sm-2 control-label">Dates</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="selectDate">
+									<option>Last Day</option>
+									<option>Last Week</option>
+									<option>Last Month</option>
+									<option>Last Year</option>
+								</select>
+							</div>
+						</div>
+					</form>
 				</div>
-				<div class="col-md-4">
-					<div class="ad-spent">
-						$5000 Ad spend
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="profit">
-						$3300 Profit
+				<div class="col-sm-8">
+					<div class="well well-sm m-null">
+						<div class="row">
+							<div class="col-sm-6">
+								<form class="form-horizontal" role="form">
+									<div class="form-group m-null">
+										<label for="selectDateFrom" class="col-sm-2 control-label">From</label>
+										<div class="col-sm-10">
+											<select class="form-control" id="selectDateFrom">
+												<option>08/01/2013</option>
+												<option>08/01/2013</option>
+												<option>08/01/2013</option>
+												<option>08/01/2013</option>
+												<option>08/01/2013</option>
+											</select>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="col-sm-6">
+								<form class="form-horizontal" role="form">
+									<div class="form-group m-null">
+										<label for="selectDateTo" class="col-sm-2 control-label">To</label>
+										<div class="col-sm-10">
+											<select class="form-control" id="selectDateTo">
+												<option>08/06/2013</option>
+												<option>08/06/2013</option>
+												<option>08/06/2013</option>
+												<option>08/06/2013</option>
+												<option>08/06/2013</option>
+											</select>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -213,6 +275,7 @@
 				<p>
 					<button type="button" class="btn btn-default btn-block">AD Packages</button>
 				</p>
+				<!--
 				<article class="publishers">
 					@publishers.map {
 						case publisher => {
@@ -222,6 +285,7 @@
 						}
 					}
 				</article>
+				-->
 			</div>
 		</div>
 	</div>

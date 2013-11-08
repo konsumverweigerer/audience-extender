@@ -9,7 +9,11 @@
 @color-blue:#275980;
 @color-red:#bf0c0c;
 @color-yellow:#f3b300;
-
+.rounded-corners (@radius: 5px) {
+	border-radius:@radius;
+	-webkit-border-radius:@radius;
+	-moz-border-radius:@radius;
+}
 
 
 /*fixed-navbar*/
@@ -65,6 +69,7 @@ html,body {
 
 .m-null {margin:0}
 .p-null {padding:0}
+.well-fix {margin-top:10px;}
 
 
 .header {
@@ -115,22 +120,37 @@ html,body {
 
 
 
-.revenu,
-.ad-spent,
-.profit {
+.legends {
+	border-bottom:1px solid #c6c6c5;
+	margin-bottom:20px;
+	padding-bottom:20px;
+}
+.legend-revenu,
+.legend-ad-spent,
+.legend-profit {
 	font-family:'Titillium Web',sans-serif;
 	font-size:24px;
 	font-weight:300;
 }
-.revenu {
-	color:@color-blue;
+.legend-revenu,
+.legend-ad-spent,
+.legend-profit {
+	span {
+		display:inline-block;
+		float:left;
+    height: 21px;
+    margin:7px 7px 0 0;
+		width:24px;
+		.rounded-corners;
+	}
 }
-.ad-spent {
-	color:@color-red;
-}
-.profit {
-	color:@color-yellow;
-}
+.legend-revenu   {color:@color-blue;}
+.legend-ad-spent {color:@color-red;}
+.legend-profit   {color:@color-yellow;}
+.legend-revenu span   {background-color:@color-blue;}
+.legend-ad-spent span {background-color:@color-red;}
+.legend-profit span   {background-color:@color-yellow;}
+
 .secondary {
 	background:#e8e8e8;
 	padding:30px 0;
@@ -173,5 +193,5 @@ nav.loginbar {
 
 .dashboard svg {
 	height:300px;
-	margin-top:30px;
+	margin-top:15px;
 }
