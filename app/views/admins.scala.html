@@ -1,12 +1,7 @@
 @(admins: Seq[Admin], current: Admin)
-@main("Admins") { 
-<ul class="nav navbar-nav">
-	<li><a href="@routes.MainController.dashboard">Dashboard</a></li>
-	<li><a href="@routes.AdminController.current">My Account</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-	<li><a href="@routes.MainController.logout()" class="navbar-link">Logout @current.email (@current.name)</a></li>
-</ul>
+@main("Admins") {
+@menu.admin("Admins")
+@menu.logout(current)
 } {
 <div class="container">
 	<article class="admins">

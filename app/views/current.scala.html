@@ -1,18 +1,7 @@
 @(current: Admin)
-@main("My Account") { 
-<ul class="nav navbar-nav">
-	<li><a href="@routes.MainController.dashboard">Dashboard</a></li>
-	<li><a href="@routes.AdminController.admins">Admins</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-	<li class="dropdown">
-		<a data-toggle="dropdown" class="dropdown-toggle" href="#">My Account <b class="caret"></b></a>
-		<ul class="dropdown-menu">
-			<li class="dropdown-header">@current.email (@current.name)</li>
-			<li><a href="@routes.MainController.logout()" class="navbar-link">Logout</a></li>
-		</ul>
-	</li>
-</ul>
+@main("My Account") {
+@menu.admin("My Account")
+@menu.logout(current)
 } {
 <div class="container">
 	<article class="current"></article>
