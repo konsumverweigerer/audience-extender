@@ -64,14 +64,11 @@ public class Publisher extends Model {
 		return stats;
 	}
 
-	public static List<Publisher> findByAdmin(String adminid) {
-		final Long id = adminid != null && !adminid.isEmpty() ? Long
-				.parseLong(adminid) : -1L;
-		final Admin admin = Admin.findById(adminid);
-		if (admin != null && admin.isSysAdmin()) {
+	public static List<Publisher> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("owners.id", id).findList();
+		return find.where().eq("owners.id", admin.id).findList();
 	}
 
 	public static boolean isAdmin(Long publisher_id, String admin_id) {

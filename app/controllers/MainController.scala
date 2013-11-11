@@ -53,19 +53,21 @@ object MainController extends Controller with Secured {
       Ok(html.index(Admin.findByEmail(""))))
   }
 
-  def dashboard = Action { implicit request =>
-    request.session.get("adminid").map {
-      id => Ok(html.dashboard(Publisher.findByAdmin(id).asScala, Admin.findById(id)))
-    }.getOrElse(
-      Ok(html.index(Admin.findByEmail(""))))
+  def dashboard = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(html.dashboard(Publisher.findByAdmin(admin).asScala, admin))
+      }.getOrElse(
+        Ok(html.index(Admin.findByEmail(""))))
   }
 
   /** The javascript router. */
   def javascriptRoutes = Action { implicit req =>
     Ok(
       Routes.javascriptRouter("routes")(
-        routes.javascript.PublisherController.publishers,
-        routes.javascript.AdminController.admins)).as("text/javascript")
+        routes.javascript.PublisherController.publisherList,
+        routes.javascript.AudienceController.audienceList,
+        routes.javascript.AdminController.adminList)).as("text/javascript")
   }
 }
 

@@ -5,6 +5,8 @@ import static play.test.Helpers.contentType;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import models.Admin;
+
 import org.junit.Test;
 
 import play.api.libs.json.JsValue;
@@ -35,7 +37,7 @@ public class ApplicationTest {
 
 	@Test
 	public void publisherStatsJson() {
-		JsValue json = PublisherController.publisherJson("1");
+		JsValue json = PublisherController.publisherJson(Admin.findById("1"));
 		Logger.getLogger("test").info(json.toString());
 		assertThat(json.toString()).contains("name");
 	}

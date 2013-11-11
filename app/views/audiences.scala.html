@@ -1,0 +1,17 @@
+@(audiences: Seq[Audience], current: Admin)
+@main("Audiences") {
+@menu.admin("Audiences")
+@menu.logout(current)
+} {
+<div class="container">
+	<article class="admins">
+		@audiences.map {
+			case audience => {
+				<div class="audience">
+					<h2>@audience.name</h2>
+				</div>
+			}
+		}
+	</article>
+</div>
+}

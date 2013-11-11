@@ -3,7 +3,9 @@ package models;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -17,6 +19,9 @@ public class Audience extends Model {
 
 	@Required
 	public String name;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Publisher publisher;
 
 	public Audience(String name) {
 		this.name = name;
@@ -32,8 +37,14 @@ public class Audience extends Model {
 		return find.all();
 	}
 
+	public static List<Audience> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("publisher.owners.id", admin.id).findList();
+	}
+
 	public String toString() {
 		return "Audience(" + name + ")";
 	}
-
 }

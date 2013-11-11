@@ -12,12 +12,25 @@ import models._
 import views._
 
 object AdminController extends Controller with Secured {
+  implicit object AdminFormat extends Format[Admin] {
+    def reads(json: JsValue) = JsSuccess(new Admin(
+      (json \ "name").as[String],
+      (json \ "email").as[String]))
+
+    def writes(admin: Admin) = JsObject(Seq(
+      "name" -> JsString(admin.name),
+      "url" -> JsString(admin.email)))
+  }
+
   val basicAdminForm: Form[Admin] = Form(
     mapping(
       "name" -> text,
       "email" -> text)(
         (name: String, email: String) => new Admin(email, name, null))(
           (admin: Admin) => Some(admin.name, admin.email)))
+
+  def adminJson(admin: Admin) : JsValue =
+    Json.toJson(Admin.findByAdmin(admin).asScala)
 
   def deleteAdmin(adminid: Long) = HasRole("sysadmin") { admin =>
     _ =>
@@ -33,6 +46,13 @@ object AdminController extends Controller with Secured {
             Admin.findByAdmin(admin).asScala,
             admin))
       }.getOrElse(Forbidden)
+  }
+
+  /** Action to get the publishers */
+  def adminList(page: Int, perPage: Int) = IsAuthenticated { adminid =>
+    _ => Option[Admin](Admin.findById(adminid)).map { admin =>
+      Ok(adminJson(admin))
+    }.getOrElse(Forbidden)
   }
 
   /** Action to save a admin */

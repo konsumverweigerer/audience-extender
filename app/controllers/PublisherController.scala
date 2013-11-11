@@ -39,21 +39,33 @@ object PublisherController extends Controller with Secured {
       "name" -> JsString(dataset.getName())))
   }
 
-  def publisherJson(adminid: String) =
-    Json.toJson(Publisher.findByAdmin(adminid).asScala)
+  def publishers = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(
+          html.publishers(
+            Publisher.findByAdmin(admin).asScala,
+            admin))
+      }.getOrElse(Forbidden)
+  }
+
+  def publisherJson(admin: Admin) : JsValue =
+    Json.toJson(Publisher.findByAdmin(admin).asScala)
 
   /** Action to get the publishers */
-  def publishers(page: Int, perPage: Int) = IsAuthenticated { adminid =>
-    _ => Option(adminid).map { id =>
-          Ok(publisherJson(id))
+  def publisherList(page: Int, perPage: Int) = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(publisherJson(admin))
       }.getOrElse(Forbidden)
   }
 
   def dashboard = IsAuthenticated { adminid =>
-    _ => Option[Admin](Admin.findById(adminid)).map { admin =>
-        Ok(Json.toJson(
-          Publisher.statsByAdmin(admin).asScala))
-      }.getOrElse(Forbidden)
+    _ => 
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Ok(Json.toJson(
+        Publisher.statsByAdmin(admin).asScala))
+    }.getOrElse(Forbidden)
   }
 
   def stats(publisherid: Long) = Action(parse.json) { implicit req =>
