@@ -6,8 +6,6 @@
  * Designed and built with all the love in the world by @mdo and @fat.
  */
 
-
-
 @color-blue:#275980;
 
 @btn-default-color:#fff;
@@ -24,8 +22,10 @@
 
 
 
+//links color
 a {color:@color-blue;}
 
+//pagination colors
 .pagination > .active > a,
 .pagination > .active > span,
 .pagination > .active > a:hover,
@@ -36,6 +36,7 @@ a {color:@color-blue;}
 	border-color:@color-blue;
 }
 
+//thead colors
 .table-striped > tbody > tr:nth-child(2n+1) > th {
 	background-color:#818181;
 	color:#fff;
@@ -46,40 +47,43 @@ a {color:@color-blue;}
 	background-color:#275980;
 }
 
+//buttons colors
 .btn-default {
 	background-color:@btn-default-bg;
 	border-color:@btn-default-border;
 	color:@btn-default-color;
-}
-.btn-default:hover,
-.btn-default:focus {
-	background-color:@btn-default-bg-hover;
-	border-color:@btn-default-border-hover;
-	color:@btn-default-color;
-}
-.btn-default:active,
-.btn-default.active {
-	background-color:@btn-default-bg-hover;
-	border-color:@btn-default-border-hover;
+	&:hover,
+	&:focus {
+		background-color:@btn-default-bg-hover;
+		border-color:@btn-default-border-hover;
+		color:@btn-default-color;
+	}
+	&:active,
+	.active {
+		background-color:@btn-default-bg-hover;
+		border-color:@btn-default-border-hover;
+	}
 }
 
 .btn-primary {
 	background-color:@btn-primary-bg;
 	border-color:@btn-primary-border;
 	color:@btn-primary-color;
-}
-.btn-primary:hover,
-.btn-primary:focus {
-	background-color:@btn-primary-bg-hover;
-	border-color:@btn-primary-border-hover;
-	color:@btn-primary-color;
-}
-.btn-primary:active,
-.btn-primary.active {
-	background-color:@btn-primary-bg-hover;
-	border-color:@btn-primary-border-hover;
+	&:hover,
+	&:focus {
+		background-color:@btn-primary-bg-hover;
+		border-color:@btn-primary-border-hover;
+		color:@btn-primary-color;
+	}
+	&:active,
+	.active {
+		background-color:@btn-primary-bg-hover;
+		border-color:@btn-primary-border-hover;
+	}
 }
 
+
+//to delete later
 /*
 .btn-success {
   background-image: -webkit-gradient(linear, left 0%, left 100%, from(#5cb85c), to(#419641));
