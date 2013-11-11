@@ -5,9 +5,11 @@
 	<li><a href="@routes.AdminController.admins">Admins</a></li>
 </ul>
 <ul class="nav navbar-nav navbar-right">
-	<li class="dropdown">
-		<a data-toggle="dropdown" class="dropdown-toggle" href="#">My Account <b class="caret"></b></a>
+	<li class="dropdown active">
+		<a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-user"></span> My Account <b class="caret"></b></a>
 		<ul class="dropdown-menu">
+			<li class="active"><a href="@routes.AdminController.current">My Account</a></li>
+			<li class="divider"></li>
 			<li class="dropdown-header">@current.email (@current.name)</li>
 			<li><a href="@routes.MainController.logout()" class="navbar-link">Logout</a></li>
 		</ul>
