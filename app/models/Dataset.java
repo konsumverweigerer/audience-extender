@@ -14,11 +14,11 @@ public class Dataset extends AbstractMap<String, Object> implements
 	private Iterable<String> labels;
 
 	@Override
-	public Set<Entry<String, Object>> entrySet() {
-		final Set<Entry<String, Object>> entries = new HashSet<Entry<String, Object>>();
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		final Set<java.util.Map.Entry<String, Object>> entries = new HashSet<java.util.Map.Entry<String, Object>>();
 		for (final String key : Arrays.asList("name", "type", "values",
 				"labels")) {
-			entries.add(new Entry<String, Object>() {
+			entries.add(new java.util.Map.Entry<String, Object>() {
 				@Override
 				public String getKey() {
 					return key;
