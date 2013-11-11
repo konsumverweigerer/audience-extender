@@ -8,6 +8,8 @@
 
 
 
+@color-blue:#275980;
+
 @btn-default-color:#fff;
 @btn-default-bg:#afab98;
 @btn-default-border:#afab98;
@@ -22,6 +24,17 @@
 
 
 
+a {color:@color-blue;}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+	background-color:@color-blue;
+	border-color:@color-blue;
+}
 
 .table-striped > tbody > tr:nth-child(2n+1) > th {
 	background-color:#818181;
