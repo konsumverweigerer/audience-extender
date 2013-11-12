@@ -1,7 +1,8 @@
-require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/routes.js"], (jq, dd, ko) ->
+require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjars!bootstrap.js", "/routes.js"], (jq, dd, ko) ->
+  day = 24*60*60*1000
+
   truncateToDay = (d,s,e,u) ->
     base = new Date(d.getFullYear(),d.getMonth(),d.getDate())
-    day = 24*60*60*1000
     if u && u == 'week'
       dw = base.getDay()
       s = (7-dw)-(7*s)
@@ -30,6 +31,12 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/route
       
       @endDate = ko.observable(truncateToDay(new Date(),2,1)[1])
       
+      @format = ko.computed(()->
+        if self.endDate().getTime()-self.startDate().getTime() < 2*day
+          return '%H:%M'
+        return '%m/%d/%Y'
+      )
+  
       @formattedStartDate = ko.computed({
         read: () ->
           datetostr(self.startDate())
@@ -55,10 +62,10 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/route
       @dateRange = ko.computed({
       	read: () ->
       	  lastDay = truncateToDay(new Date(),2,1)
-      	  if lastDay[0]==self.startDate && lastDay[1]==self.endDate
+      	  if Math.abs(lastDay[0].getTime()-self.startDate().getTime())<10 && Math.abs(lastDay[1].getTime()-self.endDate().getTime())<10
       	    return 'Last Day' 
       	  lastWeek = truncateToDay(new Date(),2,1,'week')
-      	  if lastWeek[0]==self.startDate && lastWeek[1]==self.endDate
+      	  if Math.abs(lastWeek[0].getTime()-self.startDate().getTime())<10 && Math.abs(lastWeek[1].getTime()-self.endDate().getTime())<10
       	    return 'Last Week' 
       	  return ''
       	write: (v) ->
@@ -68,7 +75,8 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/route
       	  if v == 'Last Week'
             self.lastWeek()
             self.loadData()
-      	owner: self
+      	owner: self,
+      	deferEvaluation: true
       })
       
       @lastDay = () ->
@@ -87,12 +95,87 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/route
       @dataloader = () ->
         {}
         
-  chartdaterange = new DateRange
-  ko.applyBindings(chartdaterange)
-  chartdaterange.loadData()
+  class Scroller
+    constructor: () ->
+      self = @
+      
+      @currentPage = ko.observable(1)
+
+      @maxPage = ko.observable(1)
+
+      @shownPages = ko.observable(5)
+
+      @pageSize = ko.observable(10)
+
+      @availablePages = ko.computed(() ->
+        a = []
+        i = 1
+        m = self.maxPage()
+        while i <= m
+          a[i-1] = i++
+        return a
+      )
+
+      @visiblePages = ko.computed(()->
+        p = []
+        i = 1
+        mp = self.maxPage()
+        sp = self.shownPages()
+        cp = self.currentPage()
+        while (i + (sp/2) - 1) < cp && (i + sp - 1) < mp
+          i++
+        j = 0
+        while j < sp && i+j <= mp
+          p[j] = {
+            page: i+j,
+            active: (i+j)==cp
+          }
+          j++
+        return p
+      )
+
+      @previous = () ->
+        c = self.currentPage()
+        if c > 1
+          self.currentPage(c-1)
+
+      @next = () ->
+        c = self.currentPage()
+        mp = self.maxPage()
+        if c < mp
+          self.currentPage(c+1)
+
+      @gotoPage = () ->
+        self.currentPage(@page)
+  
+  class Searchbar
+    constructor: () ->
+      self = @
+
+      @availableCategories = ko.observableArray(['Status 1','Status 2','Status 3'])
+      
+      @category = ko.observable('')
+
+      @query = ko.observable('')
+      
+      @search = () ->
+        self.filldata()
+        
+      @filldata = () ->
+        {}
+      
+  models = {
+    chartdaterange: new DateRange,
+    datatablescroller: new Scroller,
+    datatablesearchbar: new Searchbar
+  }
+  
+  ko.applyBindings(models)
+  
+  models.chartdaterange.loadData()
   require(["webjars!nv.d3.js"], () ->
     data = ->
-      m = (chartdaterange.endDate()-chartdaterange.startDate())/(24*60*60*1000)
+      m = (models.chartdaterange.endDate()-models.chartdaterange.startDate())/(24*60*60*1000)
       tf = 'days'
       if m==1
         m = 24
@@ -112,11 +195,11 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/route
       )
 
     stream_index = (d, i) ->
-      m = (chartdaterange.endDate()-chartdaterange.startDate())/(24*60*60*1000)
+      m = (models.chartdaterange.endDate()-models.chartdaterange.startDate())/(24*60*60*1000)
       if m==1
-        i = chartdaterange.startDate().getTime()+(i*60*60*1000)
+        i = models.chartdaterange.startDate().getTime()+(i*60*60*1000)
       else
-        i = chartdaterange.startDate().getTime()+(i*24*60*60*1000)
+        i = models.chartdaterange.startDate().getTime()+(i*24*60*60*1000)
       {x: i, y: 100*Math.max(0, d)}
          
     stream_layers = (n, m, o) -> 
@@ -140,45 +223,97 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "/route
             bump(a)
           return a.map(stream_index)
       );
-    chartdaterange.dataloader = () ->
-      nv.addGraph(() ->
-        chart = nv.models.lineChart()
-        currentdata = data()
-        if currentdata.length > 0 && currentdata[0].timeframe == 'days'
-          chart.xAxis
+    require(["webjars!bootstrap-datepicker.js"], () ->
+      $('.input-daterange').datepicker({
+        calendarWeeks: true,
+        autoclose: true,
+        todayHighlight: true
+      });
+      models.chartdaterange.dataloader = () ->
+        nv.graphs.pop()
+        nv.addGraph(() ->
+          chart = nv.models.lineChart()
+          currentdata = data()
+          chart.xAxis.showMaxMin(false).staggerLabels(true)
             .tickFormat((d) ->
-              d3.time.format('%m/%d/%y')(new Date(d))
+              d3.time.format(models.chartdaterange.format())(new Date(d))
             );
-        else
-          chart.xAxis
-            .tickFormat((d) ->
-              d3.time.format('%H:%M')(new Date(d))
+          chart.yAxis.showMaxMin(false)
+            .tickFormat((d) -> 
+              '$'+(d3.format('.2f'))(d)
             );
-        chart.yAxis
-          .tickFormat((d) -> 
-            '$'+(d3.format('.2f'))(d)
-          );
-        d3.select('#chart svg')
-          .datum(currentdata)
-          .transition().duration(500).call(chart)
-        nv.utils.windowResize(chart.update)
-        return chart
+          chart.color(['#bf0c0c','#275980','#f3b300'])
+          d3.select('#chart svg')
+            .datum(currentdata)
+            .transition().duration(500).call(chart)
+          nv.utils.windowResize(chart.update)
+          return chart
+        )
+      models.chartdaterange.dateRange.subscribe((nv)->
+        $('input.date-picker[name=start]').datepicker('setDate',models.chartdaterange.startDate())
+        $('input.date-picker[name=end]').datepicker('setDate',models.chartdaterange.endDate())
       )
-  )
-  $('input.date-picker').on('changeDate',(v) ->
-    if v.target.name == 'start'
-      chartdaterange.formattedStartDate(datetostr(v.date))
-    if v.target.name == 'end'
-      chartdaterange.formattedEndDate(datetostr(v.date))
-  )
-)
-
-require(["webjars!jquery.js", "webjars!bootstrap.js"], () ->
-  require(["webjars!bootstrap-datepicker.js"], () ->
-    $('.input-daterange').datepicker({
-      calendarWeeks: true,
-      autoclose: true,
-      todayHighlight: true
-    });
+      $('input.date-picker').on('changeDate',(v) ->
+        if v.target.name == 'start'
+          models.chartdaterange.formattedStartDate(datetostr(v.date))
+        if v.target.name == 'end'
+          models.chartdaterange.formattedEndDate(datetostr(v.date))
+      )
+      models.chartdaterange.dateRange('Last Day')
+    )
+    require(["webjars!jquery.dataTables.js"], () ->
+      $.extend($.fn.dataTableExt.oSort, {
+        'currency-asc': (a,b) -> 
+          a-b
+        'currency-desc': (a,b) -> 
+          b-a
+        'currency-pre': (a) ->
+          if a=='-'
+            return 0
+          parseFloat(a.replace(/[^\d\-\.]/g,''))
+        'percent-asc': (a,b) -> 
+          a-b
+        'percent-desc': (a,b) -> 
+          b-a
+        'percent-pre': (a) ->
+          if a==''
+            return 0
+          parseFloat(a.replace(/[^\d\-\.]/g,''))
+      })
+      datatable = $('table.data-table').dataTable({
+        bLengthChange: false,
+        aoColumns: [
+          { sType: "string" },
+          { sType: "percent" },
+          { sType: "currency" },
+          { sType: "currency" },
+          { sType: "date" },
+          { sType: "date" }
+        ],
+        sDom: 'lrti',
+        fnInfoCallback: (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
+          $('.pagination-text').html('Displaying '+iStart+' - '+iEnd+' of '+iMax)
+          dl = oSettings._iDisplayLength
+          page = 1
+          i = iStart
+          while i-dl > 0
+            i = i-dl
+            page++ 
+          models.datatablescroller.maxPage(Math.ceil(iMax/dl))
+          return ''
+      });
+      models.datatablescroller.currentPage.subscribe((nv)->
+        datatable.fnPageChange(nv-1)
+      )
+      models.datatablesearchbar.filldata = () ->
+        datatable.fnClearTable()
+        i = 0
+        n = new Date()
+        m = 40+Math.ceil(100*Math.random())
+        while i++ < m
+          d = truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
+          datatable.fnAddData(['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
+          	'$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),datetostr(d[0]),datetostr(d[1])])
+    )
   )
 )
