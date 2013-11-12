@@ -202,7 +202,7 @@
 
 
 
-<div class="modal fade" id="editAudience" tabindex="-1" role="dialog" aria-labelledby="New/Edit Audience" aria-hidden="true">
+<div class="modal fade" id="editAudience" tabindex="-1" role="dialog" aria-labelledby="editAudience" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -210,9 +210,99 @@
 				<h4 class="modal-title">New/Edit Audience</h4>
 			</div>
 			<div class="modal-body">
-				<p>
-					Coming soon...
-				</p>
+				<p><a href="#" id="audiencename" data-type="text" data-pk="1" data-url="/post" data-title="Enter Audience Name">Audience Name</a></p>
+				<h3>Select Website</h3>
+				<div class="box-strips">
+					<div class="row">
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" />
+						</div>
+						<div class="col-md-2 text-center">
+
+						</div>
+					</div>
+				</div>
+
+				<div style="margin:15px 0;">
+					<h3>Path targeting</h3>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-primary">
+									<input type="radio" name="options" id="option1"> On
+								</label>
+								<label class="btn btn-primary active">
+									<input type="radio" name="options" id="option2"> Off
+								</label>
+							</div>
+							All
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-primary">
+									<input type="radio" name="options" id="option1"> On
+								</label>
+								<label class="btn btn-primary active">
+									<input type="radio" name="options" id="option2"> Off
+								</label>
+							</div>
+							/terms
+						</div>
+					</div>
+					<!--
+					<div class="row">
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+						</div>
+						<div class="col-md-2 text-center">
+							<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" />
+						</div>
+						<div class="col-md-2 text-center">
+
+						</div>
+					</div>
+					-->
+				</div>
+
+				<div class="panel-group" id="accordion">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+									3rd Party Tracking
+								</a>
+							</h4>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse">
+							<div class="panel-body">
+								<textarea class="form-control" rows="3">Code here...</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
