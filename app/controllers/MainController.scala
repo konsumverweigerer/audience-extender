@@ -14,9 +14,18 @@ object MainController extends Controller with Secured {
 
   val loginForm = Form(
     tuple(
-      "email" -> text,
-      "password" -> text) verifying ("Invalid email or password", result => result match {
+      "email" -> nonEmptyText,
+      "password" -> text)
+      verifying ("Invalid email or password", result => result match {
         case (email, password) => (Admin.authenticate(email, password) != null)
+      }))
+
+  val forgotPasswordForm = Form(
+    tuple(
+      "email" -> nonEmptyText,
+      "name" -> text)
+      verifying ("Unknown email address", result => result match {
+        case (email, name) => (Admin.forgotPassword(email) != null)
       }))
 
   /**
@@ -32,7 +41,15 @@ object MainController extends Controller with Secured {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.MainController.dashboard).withSession("email" -> user._1, "adminid" -> Admin.findByEmail(user._1).getIdString))
+      user => Redirect(routes.MainController.dashboard).withSession(
+        "email" -> user._1,
+        "adminid" -> Admin.findByEmail(user._1).getIdString))
+  }
+
+  def forgotPassword = Action { implicit request =>
+    forgotPasswordForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.login(formWithErrors)),
+      user => Redirect(routes.MainController.login).flashing("success" -> "Password reset e-mail sent"))
   }
 
   /**

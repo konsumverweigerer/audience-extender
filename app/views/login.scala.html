@@ -1,15 +1,38 @@
-@(form: play.api.data.Form[(String,String)])(implicit flash:
-play.api.mvc.Flash) @main("Login") { } {
+@(form: play.api.data.Form[(String,String)])(implicit flash: play.api.mvc.Flash) 
+@main("Login") { } {
 @helper.form(routes.MainController.authenticate, 'class -> "form-signin") {
 	<h2 class="form-signin-heading">Please sign in</h2>
 
 	@form.globalError.map { error =>
 	<div class="alert alert-danger">@error.message</div>
-	} @flash.get("success").map { message =>
+	}
+	@flash.get("success").map { message =>
 	<div class="alert alert-success">@message</div>
 	}
 	<input type="email" autofocus="" required="" placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
 	<input type="password" required="" placeholder="Password" class="form-control" id="password" name="password">
 	<button type="submit" class="btn btn-lg btn-primary btn-block" id="loginbutton">Sign in</button>
+    <a href="#" data-toggle="modal" data-target="#forgottenPassword">Password forgotten</a>
 }
+<div class="modal fade" id="forgottenPassword" tabindex="-1" role="dialog" aria-labelledby="Forgot password" aria-hidden="true">
+    <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Forgot password</h4>
+			</div>
+@helper.form(routes.MainController.forgotPassword) {
+			<div class="modal-body">
+				<p>
+                    <input type="email" autofocus="" required="" placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
+					<input type="hidden" id="name" name="name">
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary btn-default">Request password reset link</button>
+			</div>
+}
+		</div>
+	</div>
+</div>
 }

@@ -85,10 +85,20 @@ public class Admin extends Model {
 	}
 
 	public static Admin authenticate(String email, String password) {
+        email = email.toLowerCase();
 		for (final Admin admin : find.where().eq("email", email).findList()) {
 			if (admin.checkPwd(password)) {
 				return admin;
 			}
+		}
+		return null;
+	}
+
+    public static Admin forgotPassword(String email) {
+        email = email.toLowerCase();
+		for (final Admin admin : find.where().eq("email", email).findList()) {
+            // TODO: send password change link
+			return admin;
 		}
 		return null;
 	}

@@ -1,10 +1,10 @@
 @(admin: Admin)
 @main("Audience Extender") {
 <ul class="nav navbar-nav">
-	<li><a href="#how-it-works">How it works</a></li>
-	<li><a href="#benefits">Benefits</a></li>
-	<li><a href="#pricing">Pricing</a></li>
-	<li><a href="#getting-started">Getting Started</a></li>
+	<li><a class="scroll" href="#howitworks">How it works</a></li>
+	<li><a class="scroll" href="#benefits">Benefits</a></li>
+	<li><a class="scroll" href="#pricing">Pricing</a></li>
+	<li><a class="scroll" href="#gettingstarted">Getting Started</a></li>
 </ul>
 @if(admin==null) {
 	@menu.login()
@@ -12,6 +12,14 @@
 	@menu.logout(admin)
 }
 }{
+<div class="scroll-buttons">
+	<div>
+		<a class="scroll-prev"><span class="glyphicon glyphicon-chevron-up"></span></a>
+	</div>
+	<div>
+	 	<a class="scroll-next"><span class="glyphicon glyphicon-chevron-down"></span></a>
+	</div>
+</div>
 <a name="welcome"></a>
 <div class="head">
 	<div class="container">
@@ -27,7 +35,7 @@
 <div class="container">
 	<ul class="list-unstyled slides">
 		<li>
-			<a name="how-it-works"></a>
+			<a name="howitworks"></a>
 			<div class="row">
 				<div class="col-md-8 col-md-push-4">
 					<h3>1. Get set up in less than 5 minutes...</h3>
@@ -109,7 +117,7 @@
 		</li>
 
 		<li>
-			<a name="getting-started"></a>
+			<a name="gettingstarted"></a>
 			<h2 class="text-center">Let's monetize together</h2>
 			<p class="text-center">Reach out today, and find out what you could be earning tomorrow.</p>
 			<p class="text-center">Call us at <strong>+1 (917) 934-3019</strong> or fill in the below form and we'll get back to you.</p>
