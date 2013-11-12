@@ -38,31 +38,22 @@
 						<div class="form-group well-fix">
 							<label for="selectDate" class="col-sm-2 control-label">Dates</label>
 							<div class="col-sm-10">
-								<select class="form-control" id="selectDate">
-									<option>Last Day</option>
-									<option>Last Week</option>
-									<option>Last Month</option>
-									<option>Last Year</option>
+								<select class="form-control" data-bind="options: availableDateRanges, value: dateRange" id="selectDate">
 								</select>
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="col-sm-8">
-					<div class="well well-sm m-null">
+					<div class="well well-sm m-null input-daterange">
 						<div class="row">
 							<div class="col-sm-6">
 								<form class="form-horizontal" role="form">
 									<div class="form-group m-null">
 										<label for="selectDateFrom" class="col-sm-2 control-label">From</label>
 										<div class="col-sm-10">
-											<select class="form-control" id="selectDateFrom">
-												<option>08/01/2013</option>
-												<option>08/01/2013</option>
-												<option>08/01/2013</option>
-												<option>08/01/2013</option>
-												<option>08/01/2013</option>
-											</select>
+											<input class="form-control date-picker" data-bind="value: formattedStartDate" id="selectDateFrom" name="start">
+											</input>
 										</div>
 									</div>
 								</form>
@@ -72,13 +63,8 @@
 									<div class="form-group m-null">
 										<label for="selectDateTo" class="col-sm-2 control-label">To</label>
 										<div class="col-sm-10">
-											<select class="form-control" id="selectDateTo">
-												<option>08/06/2013</option>
-												<option>08/06/2013</option>
-												<option>08/06/2013</option>
-												<option>08/06/2013</option>
-												<option>08/06/2013</option>
-											</select>
+											<input class="form-control date-picker" data-bind="value: formattedEndDate" id="selectDateTo" name="end">
+											</input>
 										</div>
 									</div>
 								</form>
