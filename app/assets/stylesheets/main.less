@@ -226,6 +226,7 @@ th {
 
 
 
+//dashboard
 .legends {
 	border-bottom:1px solid #c6c6c5;
 	margin-bottom:20px;
@@ -265,6 +266,23 @@ th {
 	}
 }
 
+.btn-plus {
+	font-family:@font1;
+	padding-left:15px;
+	position:relative;
+	text-align:left;
+	span:first-child {
+		border-right:2px solid #fff;
+		position:absolute;
+		left:48px;
+		top:-1px;
+		height:46px;
+	}
+	.glyphicon {
+		padding-right:45px;
+	}
+}
+
 .secondary {
 	background:#e8e8e8;
 	padding:30px 0;
@@ -288,21 +306,18 @@ th {
 	margin:15px auto;
 }
 
-.btn-plus {
-	font-family:@font1;
-	padding-left:15px;
-	position:relative;
-	text-align:left;
-	span:first-child {
-		border-right:2px solid #fff;
-		position:absolute;
-		left:48px;
-		top:-1px;
-		height:46px;
-	}
-	.glyphicon {
-		padding-right:45px;
-	}
+.btn-group-first .btn {
+	border-bottom-right-radius:0;
+	border-bottom-left-radius:0;
+}
+.btn-group-middle .btn {
+	border-radius:0;
+	margin-top:-1px;
+}
+.btn-group-last .btn {
+	border-top-right-radius:0;
+	border-top-left-radius:0;
+	margin-top:-1px;
 }
 
 
