@@ -30,8 +30,11 @@ object ApplicationBuild extends Build {
     "org.webjars" % "datatables-tools" % "2.1.5",
     "org.webjars" % "jquery-file-upload" % "8.4.2",
     "org.webjars" % "bootstrap-datepicker" % "1.2.0",
+    "org.webjars" % "x-editable-bootstrap" % "1.5.1",
     "org.mockito" % "mockito-core" % "1.9.5" % "test")
 
   val main = play.Project(appName, appVersion, appDependencies).settings( // ebeanEnabled := false
+      requireJs += "app.js",
+      requireJs += "dashboard.js"
   )
 }
