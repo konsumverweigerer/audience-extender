@@ -111,21 +111,19 @@ html,body {
 th {
 	&.sorting {
 		background-image:url("/assets/images/icons/sorting.gif");
-		cursor:pointer;
 	}
-	&.sorting-up, &.sorting_asc {
+	&.sorting_asc {
 		background-image:url("/assets/images/icons/sorting-up.gif");
 	}
-	&.sorting-down, &.sorting_desc {
+	&.sorting_desc {
 		background-image:url("/assets/images/icons/sorting-down.gif");
 	}
 	&.sorting,
 	&.sorting_asc,
-	&.sorting_desc,
-	&.sorting-up,
-	&.sorting-down {
+	&.sorting_desc {
 		background-position:right center;
 		background-repeat:no-repeat;
+		cursor:pointer;
 	}
 }
 
