@@ -18,17 +18,17 @@
 			<div class="row legends">
 				<div class="col-sm-4">
 					<div class="legend-revenu">
-						<span></span> $<span data-bind="text: chartdata.sum0"></span> Revenue
+						<span></span> $<span data-bind="text: chartdata.sumrevenue"></span> Revenue
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="legend-ad-spent">
-						<span></span> $<span data-bind="text: chartdata.sum1"></span> Ad spend
+						<span></span> $<span data-bind="text: chartdata.sumadspend"></span> Ad spend
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="legend-profit">
-						<span></span> $<span data-bind="text: chartdata.sum2"></span> Profit
+						<span></span> $<span data-bind="text: chartdata.sumprofit"></span> Profit
 					</div>
 				</div>
 			</div>
@@ -81,12 +81,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-3" data-bind="foreach: messages">
 			<div class="panel panel-default">
-				<div class="panel-heading">Kampagne MegaAudiences läuft bald aus</div>
-				<div class="panel-body">
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-				</div>
+				<div class="panel-heading" data-bind="text: title"></div>
+				<div class="panel-body" data-bind="text: content"></div>
 			</div>
 		</div>
 	</div>
@@ -114,7 +112,14 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-6">
-						<p class="pagination-fix"><strong class="pagination-text">Displaying: 1 - 20 of 141</strong></p>
+						<p class="pagination-fix">
+							<!--  ko if: datatablescroller.hasData -->
+							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
+							<!--  /ko -->
+							<!--  ko ifnot: datatablescroller.hasData -->
+							<strong class="pagination-text">No Data</strong>
+							<!--  /ko -->
+						</p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
@@ -153,7 +158,14 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-6">
-						<p class="pagination-fix"><strong class="pagination-text">Displaying: 1 - 20 of 141</strong></p>
+						<p class="pagination-fix">
+							<!--  ko if: datatablescroller.hasData -->
+							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
+							<!--  /ko -->
+							<!--  ko ifnot: datatablescroller.hasData -->
+							<strong class="pagination-text">No Data</strong>
+							<!--  /ko -->
+						</p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
