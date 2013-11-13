@@ -113,25 +113,25 @@
 				<div class="row">
 					<div class="col-xs-6">
 						<p class="pagination-fix">
-							<!--  ko if: datatablescroller.hasData -->
+							<!-- ko if: datatablescroller.hasData -->
 							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
-							<!--  /ko -->
-							<!--  ko ifnot: datatablescroller.hasData -->
+							<!-- /ko -->
+							<!-- ko ifnot: datatablescroller.hasData -->
 							<strong class="pagination-text">No Data</strong>
-							<!--  /ko -->
+							<!-- /ko -->
 						</p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
 							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
-							<!--  ko foreach: datatablescroller.visiblePages -->
-							<!--  ko if: active -->
+							<!-- ko foreach: datatablescroller.visiblePages -->
+							<!-- ko if: active -->
 							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!--  /ko -->
-							<!--  ko ifnot: active -->
+							<!-- /ko -->
+							<!-- ko ifnot: active -->
 							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!--  /ko -->
-							<!--  /ko -->
+							<!-- /ko -->
+							<!-- /ko -->
 							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 						</ul>
 					</div>
@@ -140,7 +140,7 @@
 					<div class="col-md-12">
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered m-null data-table">
-							    <thead>
+								<thead>
 									<tr>
 										<th class="sorting">Name</th>
 										<th class="sorting">Status</th>
@@ -159,25 +159,25 @@
 				<div class="row">
 					<div class="col-xs-6">
 						<p class="pagination-fix">
-							<!--  ko if: datatablescroller.hasData -->
+							<!-- ko if: datatablescroller.hasData -->
 							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
-							<!--  /ko -->
-							<!--  ko ifnot: datatablescroller.hasData -->
+							<!-- /ko -->
+							<!-- ko ifnot: datatablescroller.hasData -->
 							<strong class="pagination-text">No Data</strong>
-							<!--  /ko -->
+							<!-- /ko -->
 						</p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
 							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
-							<!--  ko foreach: datatablescroller.visiblePages -->
-							<!--  ko if: active -->
+							<!-- ko foreach: datatablescroller.visiblePages -->
+							<!-- ko if: active -->
 							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!--  /ko -->
-							<!--  ko ifnot: active -->
+							<!-- /ko -->
+							<!-- ko ifnot: active -->
 							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!--  /ko -->
-							<!--  /ko -->
+							<!-- /ko -->
+							<!-- /ko -->
 							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 						</ul>
 					</div>
