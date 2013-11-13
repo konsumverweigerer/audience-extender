@@ -25,9 +25,9 @@ object MainController extends Controller with Secured {
     tuple(
       "email" -> nonEmptyText,
       "name" -> text,
-      "message" -> text)
+      "msg" -> text)
       verifying ("Could not send message", result => result match {
-        case (email, name, message) => (SendMail.sendContactMessage(email, name, message) != null)
+        case (email, name, msg) => (SendMail.sendContactMessage(email, name, msg) != null)
       }))
 
   val forgotPasswordForm = Form(
