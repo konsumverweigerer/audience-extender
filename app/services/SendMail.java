@@ -4,8 +4,13 @@ import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 
 public class SendMail {
-	private static boolean sendHtmlMail(String subject, String from, String text,
-			String html, String[] ccs, String... recipients) {
+	public static Boolean sendContactMessage(String email, String name,
+			String message) {
+		return null;
+	}
+
+	private static boolean sendHtmlMail(String subject, String from,
+			String text, String html, String[] ccs, String... recipients) {
 		final MailerPlugin mailer = play.Play.application().plugin(
 				MailerPlugin.class);
 		try {

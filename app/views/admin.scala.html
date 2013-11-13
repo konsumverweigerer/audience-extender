@@ -1,5 +1,5 @@
 @(admin: Admin, current: Admin) 
-@main("Account: @admin.name") { 
+@templates.main("Account: @admin.name") { 
 <ul class="nav navbar-nav">
 	<li><a href="@routes.MainController.dashboard">Dashboard</a></li>
 	<li><a href="@routes.AdminController.admins">Admins</a></li>

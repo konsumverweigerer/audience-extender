@@ -1,5 +1,5 @@
 @(admin: Admin)
-@main("Audience Extender") {
+@templates.public("Audience Extender") {
 <ul class="nav navbar-nav">
 	<li><a class="scroll" href="#howitworks">How it works</a></li>
 	<li><a class="scroll" href="#benefits">Benefits</a></li>
@@ -121,7 +121,7 @@
 			<h2 class="text-center">Let's monetize together</h2>
 			<p class="text-center">Reach out today, and find out what you could be earning tomorrow.</p>
 			<p class="text-center">Call us at <strong>+1 (917) 934-3019</strong> or fill in the below form and we'll get back to you.</p>
-			<form class="form-horizontal" role="form">
+@helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal form-contact", 'role -> "form") {
 				<div class="form-group">
 					<label for="name" class="col-sm-2 control-label">Name</label>
 					<div class="col-sm-10">
@@ -145,7 +145,7 @@
 						<button type="submit" class="btn btn-default">Go!</button>
 					</div>
 				</div>
-			</form>
+}
 		</li>
 	</ul>
 </div>

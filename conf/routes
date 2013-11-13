@@ -11,6 +11,13 @@ GET      /forgotpassword          controllers.MainController.forgotPassword
 POST     /login                   controllers.MainController.authenticate
 GET      /logout                  controllers.MainController.logout
 
+# Misc
+
+GET      /contact                 controllers.MainController.contact
+POST     /contact                 controllers.MainController.sendMessage
+GET      /policy                  controllers.MainController.policy
+GET      /tos                     controllers.MainController.tos
+
 # Admins
 GET      /admin                   controllers.AdminController.current
 PUT      /admin                   controllers.AdminController.saveCurrent

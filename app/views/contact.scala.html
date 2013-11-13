@@ -1,0 +1,17 @@
+@(form: play.api.data.Form[(String,String,String)])(implicit flash: play.api.mvc.Flash) 
+@templates.public("Contact") { } {
+@helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal form-contact") {
+<h2 class="form-contact">Contact Us</h2>
+
+@form.globalError.map { error =>
+<div class="alert alert-danger">@error.message</div>
+}
+@flash.get("success").map { message =>
+<div class="alert alert-success">@message</div>
+}
+<input type="email" autofocus="" required="" placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
+<input type="text" autofocus="" placeholder="Name" class="form-control" id="email" name="name" value="@form("name").value">
+<textarea placeholder="Message" required="" class="form-control" id="message" name="name">@form("message").value</textarea>
+<button type="submit" class="btn btn-lg btn-primary btn-block" id="sendbutton">Send Message</button>
+}
+}

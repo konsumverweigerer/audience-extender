@@ -1,5 +1,5 @@
 @(form: play.api.data.Form[(String,String)])(implicit flash: play.api.mvc.Flash) 
-@main("Login") { } {
+@templates.public("Login") { } {
 @helper.form(routes.MainController.authenticate, 'class -> "form-signin") {
 	<h2 class="form-signin-heading">Please sign in</h2>
 

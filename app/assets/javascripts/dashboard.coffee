@@ -197,6 +197,7 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
             p.y
           ).reduce((x,y) ->
             x+y
+          , 0
           )
         )
       )

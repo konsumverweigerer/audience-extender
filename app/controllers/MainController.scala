@@ -7,6 +7,7 @@ import play.api.data.Forms._
 import scala.collection.JavaConverters._
 
 import models._
+import services._
 import views._
 
 object MainController extends Controller with Secured {
@@ -18,6 +19,15 @@ object MainController extends Controller with Secured {
       "password" -> text)
       verifying ("Invalid email or password", result => result match {
         case (email, password) => (Admin.authenticate(email, password) != null)
+      }))
+
+  val contactForm = Form(
+    tuple(
+      "email" -> nonEmptyText,
+      "name" -> text,
+      "message" -> text)
+      verifying ("Could not send message", result => result match {
+        case (email, name, message) => (SendMail.sendContactMessage(email, name, message) != null)
       }))
 
   val forgotPasswordForm = Form(
@@ -33,6 +43,27 @@ object MainController extends Controller with Secured {
    */
   def login = Action { implicit request =>
     Ok(html.login(loginForm))
+  }
+
+  def policy = Action { implicit request =>
+    Ok(html.policy())
+  }
+
+  def tos = Action { implicit request =>
+    Ok(html.tos())
+  }
+
+  /**
+   * Contact page.
+   */
+  def contact = Action { implicit request =>
+    Ok(html.contact(contactForm))
+  }
+
+  def sendMessage = Action { implicit request =>
+    contactForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.contact(formWithErrors)),
+      message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent"))
   }
 
   /**
