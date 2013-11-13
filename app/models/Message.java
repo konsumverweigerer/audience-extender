@@ -6,18 +6,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Dataset extends AbstractMap<String, Object> implements
+public class Message extends AbstractMap<String, Object> implements
 		Map<String, Object> {
-	private String name = "dataset";
-	private String type;
-	private Iterable<Map<String, String>> values;
-	private Iterable<String> labels;
+	private String title;
+	private String content;
+	private String priority = "info";
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
 		final Set<java.util.Map.Entry<String, Object>> entries = new HashSet<java.util.Map.Entry<String, Object>>();
-		for (final String key : Arrays.asList("name", "type", "values",
-				"labels")) {
+		for (final String key : Arrays.asList("title", "content", "priority")) {
 			entries.add(new java.util.Map.Entry<String, Object>() {
 				@Override
 				public String getKey() {
@@ -38,47 +36,37 @@ public class Dataset extends AbstractMap<String, Object> implements
 		return entries;
 	}
 
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getType() {
-		return type;
+	public String getContent() {
+		return content;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
-	public Iterable<Map<String, String>> getValues() {
-		return values;
+	public String getPriority() {
+		return priority;
 	}
 
-	public void setValues(Iterable<Map<String, String>> values) {
-		this.values = values;
-	}
-
-	public Iterable<String> getLabels() {
-		return labels;
-	}
-
-	public void setLabels(Iterable<String> labels) {
-		this.labels = labels;
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 	public Object entry(String key) {
-		if ("name".equals(key)) {
-			return this.name;
-		} else if ("type".equals(key)) {
-			return this.type;
-		} else if ("values".equals(key)) {
-			return this.values;
-		} else if ("labels".equals(key)) {
-			return this.labels;
+		if ("title".equals(key)) {
+			return this.title;
+		} else if ("priority".equals(key)) {
+			return this.priority;
+		} else if ("content".equals(key)) {
+			return this.content;
 		}
 		return null;
 	}
