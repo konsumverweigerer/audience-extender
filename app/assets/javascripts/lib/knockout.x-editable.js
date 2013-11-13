@@ -1,6 +1,6 @@
 define(
-		[ "webjars!knockout.js", "webjars!jquery.js" ],
-		function(ko, $) {
+		[ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery.js" ],
+		function(ko) {
 			ko.bindingHandlers.editable = {
 				init : function(element, valueAccessor, allBindingsAccessor,
 						viewModel, bindingContext) {

@@ -267,6 +267,18 @@ define(["webjars!knockout.js"], (ko) ->
       
       @dismiss = () ->
         {}
+
+  class Campaign
+    constructor: (name) ->
+      self = @
+
+      @name = ko.observable(name)
+
+  class Audience
+    constructor: (name) ->
+      self = @
+
+      @name = ko.observable(name)
         
   { Message: Message,
   Datatable: Datatable, 
@@ -274,6 +286,8 @@ define(["webjars!knockout.js"], (ko) ->
   Searchbar: Searchbar, 
   Scroller: Scroller, 
   DateRange: DateRange,
+  Campaign: Campaign,
+  Audience: Audience,
   truncateToDay: truncateToDay,
   datetostr: datetostr,
   strtodate: strtodate }

@@ -5,6 +5,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     datatablesearchbar: new mod.Searchbar,
     chartdata: new mod.Chartdata,
     datatable: new mod.Datatable,
+    currentcampaign: new mod.Campaign('Campaign name'),
+    currentaudience: new mod.Audience('Audience name'),
     messages: ko.observableArray([])
   }
   
@@ -172,12 +174,6 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
           datatable.fnAddData(['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
           	'$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])])
-    )
-  )
-  require(["webjars!bootstrap-editable.js"], () -> 
-    $.fn.editable.defaults.mode = 'inline'
-    $(document).ready(() ->
-      $('#audiencename').editable()
     )
   )
 )
