@@ -1,4 +1,4 @@
-require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", "webjars!bootstrap-editable.js", "/routes.js"], (ko, mod) ->
+require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", "lib/knockout.x-editable", "/routes.js"], (ko, mod) ->
   models = {
     chartdaterange: new mod.DateRange,
     datatablescroller: new mod.Scroller,
@@ -172,6 +172,12 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
           datatable.fnAddData(['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
           	'$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])])
+    )
+  )
+  require(["webjars!bootstrap-editable.js"], () -> 
+    $.fn.editable.defaults.mode = 'inline'
+    $(document).ready(() ->
+      $('#audiencename').editable()
     )
   )
 )
