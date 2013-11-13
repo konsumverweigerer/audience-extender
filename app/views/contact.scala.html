@@ -1,7 +1,7 @@
 @(form: play.api.data.Form[(String,String,String)])(implicit flash: play.api.mvc.Flash) 
 @templates.public("Contact") { } {
 	<div class="container">
-		<h2 class="h2">Contact Us</h2>
+		<h2>Contact Us</h2>
 		@helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal") {
 		@form.globalError.map { error =>
 		<div class="alert alert-danger">@error.message</div>
