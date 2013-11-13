@@ -179,7 +179,7 @@ th {
 	font-family:@font1;
 	font-size:24px;
 	font-weight:300;
-	span {
+	span:first-child {
 		display:inline-block;
 		float:left;
 		height:21px;
@@ -190,19 +190,19 @@ th {
 }
 .legend-revenu {
 	color:@color-blue;
-	span {
+	span:first-child {
 		background-color:@color-blue;
 	}
 }
 .legend-ad-spent {
 	color:@color-red;
-	span {
+	span:first-child {
 		background-color:@color-red;
 	}
 }
 .legend-profit {
 	color:@color-yellow;
-	span {
+	span:first-child {
 		background-color:@color-yellow;
 	}
 }
@@ -293,6 +293,7 @@ nav.loginbar {
 
 div.scroll-buttons {
 	position: fixed;
+	z-index: 1000;
 	bottom: 20px;
 	right: 20px;
 	height: 95px;

@@ -1,6 +1,11 @@
 require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjars!bootstrap.js", "/routes.js"], (jq, dd, ko) ->
   day = 24*60*60*1000
 
+  ranges = [{ name: 'Last Day', from: 2, to: 1, unit: 'day' },
+     { name: 'This Week', from: 1, to: 0, unit: 'week' },
+     { name: 'Last Week', from: 2, to: 1, unit: 'week' }, 
+     { name: 'Last 2 Weeks', from: 3, to: 1, unit: 'week' }]
+
   truncateToDay = (d,s,e,u) ->
     base = new Date(d.getFullYear(),d.getMonth(),d.getDate())
     if u && u == 'week'
@@ -13,19 +18,26 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
       from = new Date(base.getTime()+((1-s)*day))
       to = new Date(base.getTime()+((1-e)*day))
     [from,to]
-  
+
   datetostr = (v) ->
     (v.getMonth()+1)+"/"+v.getDate()+"/"+v.getFullYear()
-  	
+	
   strtodate = (s) ->
     v = s.split('/')
     new Date(v[2],v[0]-1,v[1])
+
+  rangeNames = () ->
+    a = ['']
+    ranges.map( (n,i) ->
+      a.push(n.name)
+    )
+    return a
 
   class DateRange
     constructor: () ->
       self = @
       
-      @availableDateRanges = ko.observableArray(['','Last Day','Last Week'])
+      @availableDateRanges = ko.observableArray(rangeNames())
       
       @startDate = ko.observable(truncateToDay(new Date(),2,1)[0])
       
@@ -61,20 +73,26 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
       
       @dateRange = ko.computed({
       	read: () ->
-      	  lastDay = truncateToDay(new Date(),2,1)
-      	  if Math.abs(lastDay[0].getTime()-self.startDate().getTime())<10 && Math.abs(lastDay[1].getTime()-self.endDate().getTime())<10
-      	    return 'Last Day' 
-      	  lastWeek = truncateToDay(new Date(),2,1,'week')
-      	  if Math.abs(lastWeek[0].getTime()-self.startDate().getTime())<10 && Math.abs(lastWeek[1].getTime()-self.endDate().getTime())<10
-      	    return 'Last Week' 
-      	  return ''
+      	  v = ''
+      	  nd = new Date()
+      	  sd = self.startDate()
+      	  ed = self.endDate()
+      	  ranges.map( (n,i)->
+      	    t = truncateToDay(nd,n.from,n.to,n.unit)
+      	    if Math.abs(t[0].getTime()-sd.getTime())<3600001 && Math.abs(t[1].getTime()-ed.getTime())<3600001
+      	      v = n.name 
+      	  )
+      	  return v
       	write: (v) ->
-      	  if v == 'Last Day'
-            self.lastDay()
-            self.loadData()
-      	  if v == 'Last Week'
-            self.lastWeek()
-            self.loadData()
+          ranges.map( (n,i)->
+            if v == n.name
+              t = truncateToDay(new Date(),n.from,n.to,n.unit)
+              self.startDate(t[0])
+              self.endDate(t[1])
+              self.loadData()
+            return
+          )
+          return
       	owner: self,
       	deferEvaluation: true
       })
@@ -163,11 +181,50 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
         
       @filldata = () ->
         {}
+
+  class Chartdata
+    constructor: () ->
+      self = @
+
+      @charts = ko.observableArray([
+        {key: 'Revenue', values: [{x:0,y:5000}]},
+        {key: 'Ad spend', values: [{x:0,y:4000}]},
+        {key: 'Profit', values: [{x:0,y:3000}]}])
+
+      @sums = ko.computed(() ->
+        self.charts().map((n,i) ->
+          n.values.map((p,j) -> 
+            p.y
+          ).reduce((x,y) ->
+            x+y
+          )
+        )
+      )
+
+      @sum0 = ko.computed(() ->
+        self.sums()[0].toFixed(0)
+      )
+
+      @sum1 = ko.computed(() ->
+        self.sums()[1].toFixed(0)
+      )
+
+      @sum2 = ko.computed(() ->
+        self.sums()[2].toFixed(0)
+      )
+
+  class Datatable
+    constructor: () ->
+      self = @
+
+      @rows = ko.observableArray([])
       
   models = {
     chartdaterange: new DateRange,
     datatablescroller: new Scroller,
-    datatablesearchbar: new Searchbar
+    datatablesearchbar: new Searchbar,
+    chartdata: new Chartdata,
+    datatable: new Datatable
   }
   
   ko.applyBindings(models)
@@ -232,8 +289,9 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
       models.chartdaterange.dataloader = () ->
         nv.graphs.pop()
         nv.addGraph(() ->
-          chart = nv.models.lineChart()
           currentdata = data()
+          models.chartdata.charts(currentdata)
+          chart = nv.models.lineChart()
           chart.xAxis.showMaxMin(false).staggerLabels(true)
             .tickFormat((d) ->
               d3.time.format(models.chartdaterange.format())(new Date(d))
