@@ -121,9 +121,19 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
 
       @maxPage = ko.observable(1)
 
+      @fromIndex = ko.observable(1)
+
+      @toIndex = ko.observable(10)
+
+      @maxIndex = ko.observable(0)
+
       @shownPages = ko.observable(5)
 
       @pageSize = ko.observable(10)
+
+      @hasData = ko.computed(() ->
+        self.maxIndex() > 0
+      )
 
       @availablePages = ko.computed(() ->
         a = []
@@ -202,16 +212,31 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
         )
       )
 
-      @sum0 = ko.computed(() ->
-        self.sums()[0].toFixed(0)
+      @calcsum = (cls) ->
+        f = self.charts().filter((n,i) ->
+            cls == n.cls
+          ).map((n,i) ->
+            n.values.map((p,j) -> 
+              p.y
+            ).reduce((x,y) ->
+              x+y
+            , 0
+            )
+          )
+        if f.length == 0
+          return 0
+        f[0]
+      
+      @sumadspend = ko.computed(() ->
+        self.calcsum('adspend').toFixed(0)
       )
 
-      @sum1 = ko.computed(() ->
-        self.sums()[1].toFixed(0)
+      @sumrevenue = ko.computed(() ->
+        self.calcsum('revenue').toFixed(0)
       )
 
-      @sum2 = ko.computed(() ->
-        self.sums()[2].toFixed(0)
+      @sumprofit = ko.computed(() ->
+        self.calcsum('profit').toFixed(0)
       )
 
   class Datatable
@@ -220,12 +245,30 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
 
       @rows = ko.observableArray([])
       
+  class Message
+    constructor: (title,content,priority) ->
+      self = @
+
+      @title = ko.observable(title)
+
+      @content = ko.observable(content)
+
+      @priority = ko.observable(priority)
+
+
   models = {
     chartdaterange: new DateRange,
     datatablescroller: new Scroller,
     datatablesearchbar: new Searchbar,
     chartdata: new Chartdata,
-    datatable: new Datatable
+    datatable: new Datatable,
+    messages: ko.observableArray([
+      new Message('Kampagne MegaAudiences läuft bald aus',
+        'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
+        sed diam nonumy eirmod tempor invidunt ut labore et dolore 
+        magna aliquyam erat, sed diam voluptua. At vero eos et accusam 
+        et justo duo dolores et ea rebum. Stet clita kasd gubergren, 
+        no sea takimata sanctus est Lorem ipsum dolor sit amet.','info')])
   }
   
   ko.applyBindings(models)
@@ -240,13 +283,17 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
         tf = 'hours'
       return stream_layers(3,m,.1).map( (data, i) ->
         if i==0
-          s = 'Ad spend'
+          s = 'Ad Spend'
+          t = 'adspend'
         if i==1
           s = 'Revenue'
+          t = 'revenue'
         if i==2
           s = 'Profit'
+          t = 'profit'
         return {
           key: s,
+          cls: t,
           values: data,
           timeframe: tf 
         }
@@ -351,7 +398,6 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
         ],
         sDom: 'lrti',
         fnInfoCallback: (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
-          $('.pagination-text').html('Displaying '+iStart+' - '+iEnd+' of '+iMax)
           dl = oSettings._iDisplayLength
           page = 1
           i = iStart
@@ -359,10 +405,17 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
             i = i-dl
             page++ 
           models.datatablescroller.maxPage(Math.ceil(iMax/dl))
+          models.datatablescroller.fromIndex(iStart)
+          models.datatablescroller.toIndex(iEnd)
+          models.datatablescroller.maxIndex(iMax)
+          if datatable && !datatable.fPageChange
+            models.datatablescroller.currentPage(Math.ceil(iStart/dl))
           return ''
       });
       models.datatablescroller.currentPage.subscribe((nv)->
+        datatable.fPageChange = true
         datatable.fnPageChange(nv-1)
+        datatable.fPageChange = false
       )
       models.datatablesearchbar.filldata = () ->
         datatable.fnClearTable()
