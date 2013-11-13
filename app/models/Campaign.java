@@ -36,6 +36,19 @@ public class Campaign extends Model {
 		return stats;
 	}
 
+	public static List<Dataset> statsByAdmin(Admin admin, String from,
+			String to, String state, String query) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
+	public static List<Campaign> findByAdmin(Admin admin, String state, String query) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("publisher.owners.id", admin.id).findList();
+	}
+
 	/**
 	 * Retrieve all users.
 	 */

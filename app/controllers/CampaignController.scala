@@ -47,23 +47,23 @@ object CampaignController extends Controller with Secured {
       }.getOrElse(Forbidden)
   }
 
-  def campaignJson(admin: Admin) : JsValue =
+  def campaignJson(admin: Admin, state: String, query: String): JsValue =
     Json.toJson(Campaign.findByAdmin(admin).asScala)
 
   /** Action to get the campaigns */
-  def campaignList(page: Int, perPage: Int) = IsAuthenticated { adminid =>
+  def campaignList(state: String, query: String, page: Int, perPage: Int) = IsAuthenticated { adminid =>
     _ =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
-        Ok(campaignJson(admin))
+        Ok(campaignJson(admin,state, query))
       }.getOrElse(Forbidden)
   }
 
-  def dashboard = IsAuthenticated { adminid =>
-    _ => 
+  def dashboard(from: String, to: String, state: String, query: String) = IsAuthenticated { adminid =>
+    _ =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
-      Ok(Json.toJson(
-        Campaign.statsByAdmin(admin).asScala))
-    }.getOrElse(Forbidden)
+        Ok(Json.toJson(
+          Campaign.statsByAdmin(admin, from, to, state, query).asScala))
+      }.getOrElse(Forbidden)
   }
 
   def stats(campaignid: Long) = Action(parse.json) { implicit req =>
