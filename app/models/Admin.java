@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -68,6 +70,9 @@ public class Admin extends Model {
 
 	@MaxLength(512)
 	public String admin_roles;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Publisher publisher;
 
 	public Admin(String name, String email) {
 		this(email, name, null);

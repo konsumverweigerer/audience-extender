@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -29,6 +30,24 @@ public class Campaign extends Model {
 
 	public static Finder<String, Campaign> find = new Finder<String, Campaign>(
 			String.class, Campaign.class);
+
+	public static List<Dataset> statsByAdmin(Admin admin) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
+	public static List<Dataset> statsByAdmin(Admin admin, String from,
+			String to, String state, String query) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
+	public static List<Campaign> findByAdmin(Admin admin, String state, String query) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("publisher.owners.id", admin.id).findList();
+	}
 
 	/**
 	 * Retrieve all users.

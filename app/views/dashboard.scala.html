@@ -83,7 +83,7 @@
 		</div>
 		<div class="col-md-3" data-bind="foreach: messages">
 			<div class="panel panel-default">
-				<div class="panel-heading" data-bind="text: title"></div>
+				<div class="panel-heading" data-bind="text: title, click: dismiss"></div>
 				<div class="panel-body" data-bind="text: content"></div>
 			</div>
 		</div>
@@ -196,23 +196,10 @@
 				<p>
 					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> AD Packages</button>
 				</p>
-				<!--
-				<article class="publishers">
-					@publishers.map {
-						case publisher => {
-							<div class="publisher">
-								<p>@publisher.name</p>
-							</div>
-						}
-					}
-				</article>
-				-->
 			</div>
 		</div>
 	</div>
 </div>
-
-
 
 <div class="modal fade" id="editAudience" tabindex="-1" role="dialog" aria-labelledby="editAudience" aria-hidden="true">
 	<div class="modal-dialog">
