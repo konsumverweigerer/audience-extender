@@ -1,4 +1,4 @@
-require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "lib/models", "webjars!bootstrap.js", "webjars!bootstrap-editable.js", "/routes.js"], (jq, dd, ko, mod, ex, r) ->
+require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", "webjars!bootstrap-editable.js", "/routes.js"], (ko, mod) ->
   models = {
     chartdaterange: new mod.DateRange,
     datatablescroller: new mod.Scroller,

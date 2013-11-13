@@ -123,16 +123,15 @@
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
+							<!--  ko if: datatablescroller.hasData -->
+							<li data-bind="css: { disabled: datatablescroller.hasNoPrev }"><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
+							<!--  /ko -->
 							<!--  ko foreach: datatablescroller.visiblePages -->
-							<!--  ko if: active -->
-							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<li data-bind="css: { active: active }"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
 							<!--  /ko -->
-							<!--  ko ifnot: active -->
-							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<!--  ko if: datatablescroller.hasData -->
+							<li data-bind="css: { disabled: datatablescroller.hasNoNext }"><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 							<!--  /ko -->
-							<!--  /ko -->
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 						</ul>
 					</div>
 				</div>
@@ -169,16 +168,15 @@
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
+							<!--  ko if: datatablescroller.hasData -->
+							<li data-bind="css: { disabled: datatablescroller.hasNoPrev }"><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
+							<!--  /ko -->
 							<!--  ko foreach: datatablescroller.visiblePages -->
-							<!--  ko if: active -->
-							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<li data-bind="css: { active: active }"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
 							<!--  /ko -->
-							<!--  ko ifnot: active -->
-							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<!--  ko if: datatablescroller.hasData -->
+							<li data-bind="css: { disabled: datatablescroller.hasNoNext }"><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 							<!--  /ko -->
-							<!--  /ko -->
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 						</ul>
 					</div>
 				</div>

@@ -135,6 +135,14 @@ define(["webjars!knockout.js"], (ko) ->
         self.maxIndex() > 0
       )
 
+      @hasNoPrev = ko.computed(() ->
+        self.currentPage() < 2
+      )
+
+      @hasNoNext = ko.computed(() ->
+        self.currentPage() >= self.maxPage()
+      )
+
       @availablePages = ko.computed(() ->
         a = []
         i = 1

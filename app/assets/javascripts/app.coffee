@@ -1,4 +1,7 @@
 require(["webjars!jquery.js", "webjars!bootstrap.js", "/routes.js"], () ->
+  scrollPos = () ->
+    $('html, body').map((i,a) -> $(a).scrollTop()).toArray().reduce((x,y) -> Math.max(x,y))
+
   $(document).ready( () =>
     firstoffs = 100
     speed = 500
@@ -16,7 +19,7 @@ require(["webjars!jquery.js", "webjars!bootstrap.js", "/routes.js"], () ->
       $('html,body').animate({scrollTop:dest}, speed,'swing');
     )
     $('.scroll-prev').click( (event) =>
-      current = $('body').scrollTop()
+      current = scrollPos()
       pos = 0
       $('a.scroll').each( (i,el) => 
         offs = $('a[name='+el.hash.substr(1)+']').offset().top
@@ -28,7 +31,7 @@ require(["webjars!jquery.js", "webjars!bootstrap.js", "/routes.js"], () ->
       $('html,body').animate({scrollTop:pos}, speed,'swing');
     )
     $('.scroll-next').click( (event) =>
-      current = $('body').scrollTop()
+      current = scrollPos()
       winheight = $(window).height()
       docheight = $(document).height()
       maxpos = docheight-winheight
@@ -43,7 +46,7 @@ require(["webjars!jquery.js", "webjars!bootstrap.js", "/routes.js"], () ->
       $('html,body').animate({scrollTop:pos}, speed,'swing');
     )
     $(window).scroll( (event) =>
-      pos = $('body').scrollTop()
+      pos = scrollPos()
       winheight = $(window).height()
       docheight = $(document).height()
       maxpos = docheight-winheight
