@@ -114,6 +114,7 @@ object MainController extends Controller with Secured {
     Ok(
       Routes.javascriptRouter("routes")(
         routes.javascript.PublisherController.publisherList,
+        routes.javascript.PublisherController.dashboard,
         routes.javascript.AudienceController.audienceList,
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }

@@ -1,0 +1,17 @@
+@(campaigns: Seq[Campaign], current: Admin)
+@templates.main("Campaigns") {
+@menu.admin("Campaigns")
+@menu.logout(current)
+} {
+<div class="container">
+	<article class="campaigns">
+		@campaigns.map {
+			case campaign => {
+				<div class="campaign">
+					<h2>@campaign.name</h2>
+				</div>
+			}
+		}
+	</article>
+</div>
+}

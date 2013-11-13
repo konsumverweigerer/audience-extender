@@ -255,6 +255,10 @@ require(["webjars!jquery.js", "webjars!d3.v2.js", "webjars!knockout.js", "webjar
 
       @priority = ko.observable(priority)
 
+      @priority = ko.observable(priority)
+      
+      @dismiss = () ->
+        {}
 
   models = {
     chartdaterange: new DateRange,
