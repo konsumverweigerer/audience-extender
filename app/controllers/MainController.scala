@@ -45,27 +45,45 @@ object MainController extends Controller with Secured {
     Ok(html.login(loginForm))
   }
 
-  def policy = Action { implicit request =>
-    Ok(html.policy())
+  def policy = CheckIfIsAuthenticated { adminid =>
+    implicit request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(html.policy(admin))
+      }.getOrElse(
+        Ok(html.policy(null)))
   }
 
-  def tos = Action { implicit request =>
-    Ok(html.tos())
+  def tos = CheckIfIsAuthenticated { adminid =>
+    implicit request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(html.tos(admin))
+      }.getOrElse(
+        Ok(html.tos(null)))
   }
 
   /**
    * Contact page.
    */
-  def contact = Action { implicit request =>
-    Ok(html.contact(contactForm))
+  def contact = CheckIfIsAuthenticated { adminid =>
+    implicit request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(html.contact(contactForm, admin))
+      }.getOrElse(
+        Ok(html.contact(contactForm, null)))
   }
 
-  def sendMessage = Action { implicit request =>
-    contactForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.contact(formWithErrors)),
-      message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent"))
+  def sendMessage = IsAuthenticated { adminid =>
+    implicit request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        contactForm.bindFromRequest.fold(
+          formWithErrors => BadRequest(html.contact(formWithErrors,admin)),
+          message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent"))
+      }.getOrElse(
+        contactForm.bindFromRequest.fold(
+          formWithErrors => BadRequest(html.contact(formWithErrors,null)),
+          message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")))
   }
-
+  
   /**
    * Handle login form submission.
    */
@@ -73,8 +91,7 @@ object MainController extends Controller with Secured {
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
       user => Redirect(routes.MainController.dashboard).withSession(
-        "email" -> user._1,
-        "adminid" -> Admin.findByEmail(user._1).getIdString))
+        Security.username -> Admin.findByEmail(user._1).getIdString))
   }
 
   def forgotPassword = Action { implicit request =>
@@ -95,14 +112,16 @@ object MainController extends Controller with Secured {
    * The index page.  This is the main entry point, seeing as this is a single page app.
    */
   def index(path: String) = Action { implicit request =>
-    request.session.get("adminid").map {
+    request.session.get(Security.username).map {
       id => Ok(html.index(Admin.findById(id)))
     }.getOrElse(
       Ok(html.index(Admin.findByEmail(""))))
   }
 
+  def base = index("")
+  
   def dashboard = IsAuthenticated { adminid =>
-    _ =>
+   implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Ok(html.dashboard(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
@@ -128,12 +147,12 @@ object MainController extends Controller with Secured {
  */
 trait Secured {
 
-  private def username(request: RequestHeader) = request.session.get("adminid")
+  private def username(request: RequestHeader) = request.session.get(Security.username)
 
   /**
    * Retrieve the connected user id.
    */
-  private def adminid(request: RequestHeader) = request.session.get("adminid")
+  private def adminid(request: RequestHeader) = request.session.get(Security.username)
 
   /**
    * Redirect to login if the user in not authorized.
@@ -146,6 +165,22 @@ trait Secured {
    * Action for authenticated users.
    */
   def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(adminid, onUnauthorized) { admin =>
+    Action(request => f(admin)(request))
+  }
+
+  def TryAuthenticated(
+    userinfo: RequestHeader => Option[String])(action: String => EssentialAction): EssentialAction = {
+
+    EssentialAction { request =>
+      userinfo(request).map { user =>
+        action(user)(request)
+      }.getOrElse {
+        action(null)(request)
+      }
+    }
+  }
+    
+  def CheckIfIsAuthenticated(f: => String => Request[AnyContent] => Result) = TryAuthenticated(adminid) { admin =>
     Action(request => f(admin)(request))
   }
 

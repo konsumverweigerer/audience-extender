@@ -19,6 +19,7 @@ object PublisherController extends Controller with Secured {
 
     def writes(publisher: Publisher) = JsObject(Seq(
       "name" -> JsString(publisher.name),
+      "active" -> JsString(if (publisher.active) "true" else "false"),
       "url" -> JsString(publisher.url)))
   }
 

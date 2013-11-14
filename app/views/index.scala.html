@@ -1,5 +1,5 @@
 @(admin: Admin)
-@templates.public("Audience Extender") {
+@templates.public("Audience Extender", homelink = if(admin!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
 <ul class="nav navbar-nav">
 	<li><a class="scroll" href="#howitworks">How it works</a></li>
 	<li><a class="scroll" href="#benefits">Benefits</a></li>
@@ -9,7 +9,7 @@
 @if(admin==null) {
 	@menu.login()
 } else {
-	@menu.logout(admin)
+	@menu.public(admin)
 }
 }{
 <div class="scroll-buttons">

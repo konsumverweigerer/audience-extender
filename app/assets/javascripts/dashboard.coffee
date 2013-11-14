@@ -5,6 +5,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     datatablesearchbar: new mod.Searchbar,
     chartdata: new mod.Chartdata,
     datatable: new mod.Datatable,
+    publisher: new mod.Publisher,
+    publishers: ko.observableArray([])
     currentcampaign: new mod.Campaign('Campaign name'),
     currentaudience: new mod.Audience('Audience name'),
     messages: ko.observableArray([])
@@ -12,6 +14,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
   
   ko.applyBindings(models)
   
+  window.models = models
   #init
   
   models.messages.push(new mod.Message('Kampagne MegaAudiences läuft bald aus',

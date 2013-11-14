@@ -296,6 +296,8 @@ define(["webjars!knockout.js"], (ko) ->
 
       @name = ko.observable(d && d.name)
 
+      @active = ko.observable(d && d.active)
+
   class Admin
     constructor: (d) ->
       self = @

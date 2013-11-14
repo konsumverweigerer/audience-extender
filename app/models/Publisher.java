@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -40,6 +41,9 @@ public class Publisher extends Model {
 	@ManyToMany
 	public List<Admin> owners = new ArrayList<Admin>();
 
+	@Transient
+	public boolean active = false;
+
 	public Publisher(String name) {
 		this.name = name;
 	}
@@ -65,10 +69,18 @@ public class Publisher extends Model {
 	}
 
 	public static List<Publisher> findByAdmin(Admin admin) {
+		List<Publisher> ret = null;
 		if (admin.isSysAdmin()) {
-			return find.findList();
+			ret = find.findList();
+		} else {
+			ret = find.where().eq("owners.id", admin.id).findList();
 		}
-		return find.where().eq("owners.id", admin.id).findList();
+		for (final Publisher publisher: ret) {
+			if (admin.publisher.id.equals(publisher.id)) {
+				publisher.active = true;
+			}
+		}
+		return ret;
 	}
 
 	public static boolean isAdmin(Long publisher_id, String admin_id) {

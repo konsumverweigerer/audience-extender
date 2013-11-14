@@ -3,7 +3,7 @@
 # ~~~~
 
 # The home page
-GET      /                               controllers.MainController.index(path = "")
+GET      /                               controllers.MainController.base
 
 # Authentication
 GET      /login                          controllers.MainController.login

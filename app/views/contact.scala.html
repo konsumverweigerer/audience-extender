@@ -1,5 +1,9 @@
-@(form: play.api.data.Form[(String,String,String)])(implicit flash: play.api.mvc.Flash) 
-@templates.public("Contact") { } {
+@(form: play.api.data.Form[(String,String,String)], admin: Admin)(implicit flash: play.api.mvc.Flash) 
+@templates.public("Contact", homelink = if(admin!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
+@if(admin!=null) {
+	@menu.public(admin)
+}
+}{
 @helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal form-contact") {
 <h2 class="form-contact">Contact Us</h2>
 

@@ -1,2 +1,8 @@
-@templates.public("Privacy Policy") { } {
+@(admin: Admin)
+@templates.public("Privacy Policy", homelink = if(admin!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
+@if(admin!=null) {
+	@menu.public(admin)
+}
+}{
+<h2>Privacy Policy</h2>
 }
