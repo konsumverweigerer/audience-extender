@@ -39,7 +39,6 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 					if val == null
 						val = ''
 					$datepicker.datepicker('setDate', val, true)
-				, owner : this, disposeWhenNodeIsRemoved : element
-			)
+				, owner : this, disposeWhenNodeIsRemoved : element })
 	}
 )

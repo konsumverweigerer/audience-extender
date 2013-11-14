@@ -23,15 +23,14 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
 				)
 				
 			if datatableOptions.save
-				$datatable.on('save', datatableOptions.save);
+				$datatable.on('save', datatableOptions.save)
 
 			ko.computed({
 				read : () ->
 					val = ko.utils.unwrapObservable(valueAccessor())
 					if val == null
 						val = ''
-				, owner : this, disposeWhenNodeIsRemoved : element
-			})
+				, owner : this, disposeWhenNodeIsRemoved : element })
 
 			if datatableOptions.visible && ko.isObservable(datatableOptions.visible)
 				ko.computed({
@@ -39,11 +38,10 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
 						val = ko.utils.unwrapObservable(datatableOptions.visible())
 						if val
 							$datatable.datatable('show')
-					, owner : this,disposeWhenNodeIsRemoved : element
-				})
+					, owner : this,disposeWhenNodeIsRemoved : element })
 
 				$datatable.on('hidden.ko', (e, params) ->
-					datatableOptions.visible(false);
+					datatableOptions.visible(false)
 				)
 	}
 )
