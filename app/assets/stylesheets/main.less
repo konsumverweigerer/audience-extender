@@ -13,6 +13,7 @@
 @color-blue:#275980;
 @color-red:#bf0c0c;
 @color-yellow:#f3b300;
+@color-green:#81c53e;
 
 .rounded-corners (@radius:5px) {
 	border-radius:@radius;
@@ -76,8 +77,15 @@ html,body {
 h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
 	font-family:@font1;
 }
+h3 {
+	color:@color-blue;
+	text-transform:uppercase;
+}
 
 .m-null {margin:0}
+.m-top {margin-top:15px;}
+.m-btm {margin-bottom:15px;}
+.m-top-btm {margin:15px 0;}
 .p-null {padding:0}
 .pagination-fix {margin:20px 0;padding:5px 0;}
 .well-fix {margin-top:10px;}
@@ -297,13 +305,53 @@ th {
 	margin:15px 0;
 	padding:15px;
 }
+.box-1 h3 {
+	margin-top:0;
+}
+.website-name {
+	font-family:@font1;
+	height:40px;
+	margin-top:10px;
+	overflow:hidden;
+	position:relative;
+	text-align:center;
+	text-overflow:ellipsis;
+	div {
+		bottom:0;
+		max-height:40px;
+		overflow:hidden;
+		position:absolute;
+		text-overflow:ellipsis;
+		width:100%;
+	}
+}
+.website-audience {
+	color:@color-green;
+	font-family:@font1;
+	font-size:14px;
+	margin-bottom:15px;
+	overflow:hidden;
+	text-align:center;
+	text-overflow:ellipsis;
+}
+.thumbnail-link {
+	display:block;
+	margin-top:5px;
+	max-height:120px;
+	max-width:160px;
+	padding:5px;
+	&:hover,
+	&.selected {
+		background-color:rgba(39, 89, 128, 0.3);
+	}
+}
 .thumbnail-site {
 	border:1px solid #ccc;
-	margin:15px auto;
+	margin:5px auto;
 }
 .thumbnail-add {
 	border:1px solid @color-yellow;
-	margin:15px auto;
+	margin:5px auto;
 }
 
 .btn-group-first .btn {
