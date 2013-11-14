@@ -21,7 +21,7 @@ define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery
 					value(testValue)
 					res = value.isValid() ? null : ko.utils.unwrapObservable(value.error)
 					value(initalValue)
-					return res;
+					return res
 
 			if editableOptions.type == 'select' || editableOptions.type == 'checklist' || editableOptions.type == 'typeahead' && !editableOptions.source && editableOptions.options
 				if editableOptions.optionsCaption
