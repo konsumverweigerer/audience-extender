@@ -2,7 +2,13 @@
 @templates.main("Dashboard") {
 @menu.admin("Dashboard")
 @menu.logout(current)
-<script type="text/javascript" data-main="@routes.Assets.at("javascripts/dashboard.js")" src="@routes.WebJarAssets.requirejs"></script>
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard").url)
+<script type="text/javascript">
+//<![CDATA[
+window.data = {};
+window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());}
+//]]>
+</script>
 }{
 <div class="header">
 	<div class="container">
@@ -109,30 +115,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-6">
-						<p class="pagination-fix">
-							<!-- ko if: datatablescroller.hasData -->
-							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
-							<!-- /ko -->
-							<!-- ko ifnot: datatablescroller.hasData -->
-							<strong class="pagination-text">No Data</strong>
-							<!-- /ko -->
-						</p>
-					</div>
-					<div class="col-xs-6">
-						<ul class="pagination pagination-sm pull-right">
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
-							<!-- ko foreach: datatablescroller.visiblePages -->
-							<!-- ko if: active -->
-							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!-- /ko -->
-							<!-- ko ifnot: active -->
-							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!-- /ko -->
-							<!-- /ko -->
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
-						</ul>
-					</div>
+				    @elements.pagination("datatablescroller")
 				</div>
 				<div class="row">
 					<div class="col-md-12">
@@ -155,30 +138,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-6">
-						<p class="pagination-fix">
-							<!-- ko if: datatablescroller.hasData -->
-							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
-							<!-- /ko -->
-							<!-- ko ifnot: datatablescroller.hasData -->
-							<strong class="pagination-text">No Data</strong>
-							<!-- /ko -->
-						</p>
-					</div>
-					<div class="col-xs-6">
-						<ul class="pagination pagination-sm pull-right">
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
-							<!-- ko foreach: datatablescroller.visiblePages -->
-							<!-- ko if: active -->
-							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!-- /ko -->
-							<!-- ko ifnot: active -->
-							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!-- /ko -->
-							<!-- /ko -->
-							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
-						</ul>
-					</div>
+				    @elements.pagination("datatablescroller")
 				</div>
 			</div>
 			<div class="col-md-3">

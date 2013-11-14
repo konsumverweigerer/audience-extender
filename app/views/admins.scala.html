@@ -2,22 +2,40 @@
 @templates.main("Admins") {
 @menu.admin("Admins")
 @menu.logout(current)
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/admins").url)
+<script type="text/javascript">
+//<![CDATA[
+window.data = {};
+window.data.admins = @{import play.api.libs.json._;import controllers.AdminController.AdminFormat;Html(Json.toJson(admins).toString());}
+//]]>
+</script>
 } {
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
 			<div class="row">
+			    @elements.pagination("datatablescroller")
 			</div>
 			<div class="row">
-				@admins.map {
-					case admin => {
-						<div class="admin">
-							<h2>@admin.email</h2>
-						</div>
-					}
-				}
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered m-null data-table">
+							<thead>
+								<tr>
+									<th class="sorting">Name</th>
+									<th class="sorting">Email</th>
+									<th class="sorting">Roles</th>
+									<th class="sorting">Publishers</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 			<div class="row">
+			    @elements.pagination("datatablescroller")
 			</div>
 		</div>
 		<div class="col-md-3">

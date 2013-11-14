@@ -260,10 +260,21 @@ define(["webjars!knockout.js"], (ko) ->
       )
 
   class Datatable
-    constructor: () ->
+    constructor: (headers) ->
       self = @
 
-      @rows = ko.observableArray([])
+      @headers = ko.observableArray(headers)
+      
+      @data = ko.observableArray([])
+
+      @rows = ko.computed(() ->
+        h = self.headers()
+        self.data().map( (n,i) ->
+          h.map( (m,j) ->
+            n[m]()
+          )   
+        )
+      )
       
   class Message
     constructor: (dortitle,content,priority) ->
@@ -320,7 +331,9 @@ define(["webjars!knockout.js"], (ko) ->
 
       @email = ko.observable(d && d.email)
 
-      @publishers = ko.observable(d && d.publishers.map((v) ->
+      @roles = ko.observableArray(d && d.roles)
+
+      @publishers = ko.observableArray(((d && d.publishers) || []).map((v) ->
         new Publisher(v)
       ))
 
