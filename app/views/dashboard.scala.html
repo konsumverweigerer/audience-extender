@@ -167,24 +167,33 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 				<h4 class="modal-title">New/Edit Audience: <span data-bind="text: currentaudience.name"></span></h4>
 			</div>
 			<div class="modal-body">
-				<p><a href="#" id="audiencename" data-bind="editable: currentaudience.name" data-type="text" data-pk="1" data-title="Enter Audience Name">Audience Name</a></p>
+				<p class="h4"><a href="#" id="audiencename" data-bind="editable: currentaudience.name" data-type="text" data-pk="1" data-title="Enter Audience Name">Audience Name</a></p>
 				<h3>Select Website</h3>
 				<div class="box-strips">
 					<div class="row">
 						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+							<div class="website-name"><div>Leads Con Web Retargeting</div></div>
+							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
+							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
 						</div>
 						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+							<div class="website-name"><div>Google.com</div></div>
+							<a href="#" class="thumbnail-link selected"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
+							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
 						</div>
 						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+							<div class="website-name"><div>Leads Con Web Retargeting Leads Con Web Retargeting</div></div>
+							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
+							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
 						</div>
 						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
+							<div class="website-name"><div>Leads Con Web RetargetingLeadsConWebRetargeting</div></div>
+							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
+							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
 						</div>
 						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" />
+							<div class="website-name"><div>Add New Website</div></div>
+							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" /></a>
 						</div>
 						<div class="col-md-2 text-center">
 
@@ -192,7 +201,69 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 					</div>
 				</div>
 
-				<div style="margin:15px 0;">
+				<div class="box-1">
+					<h3>New Website</h3>
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="websitename" placeholder="Website Name">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
+							<div class="col-sm-9">
+								<textarea class="form-control" rows="3" id="trackingcode">Tracking Code here...</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
+							<div class="col-sm-9">
+								<input type="email" class="form-control" id="email" placeholder="Email">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<button type="submit" class="btn btn-primary">Send to Your Mail</button>
+								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
+								<button type="submit" class="btn btn-primary">Save Settings</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="box-1">
+					<h3>Edit Website</h3>
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="websitename" placeholder="Google.com" disabled>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
+							<div class="col-sm-9">
+								<textarea class="form-control" rows="3" id="trackingcode">Tracking Code here...</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
+							<div class="col-sm-9">
+								<input type="email" class="form-control" id="email" placeholder="Email">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<button type="submit" class="btn btn-primary">Send to Your Mail</button>
+								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
+								<button type="submit" class="btn btn-primary">Save Settings</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="m-top-btm">
 					<h3>Path targeting</h3>
 					<div class="row">
 						<div class="col-md-12">
@@ -234,40 +305,19 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-lg-6">
-							<div class="input-group">
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
-								</span>
-								<input type="text" class="form-control">
-							</div>
+						<div class="col-sm-12 m-top">
+							<form class="form-horizontal" role="form">
+								<div class="input-group">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
+									</span>
+									<input type="text" class="form-control">
+								</div>
+							</form>
 						</div>
 					</div>
-
-
-					<!--
-					<div class="row">
-						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
-						</div>
-						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
-						</div>
-						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
-						</div>
-						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" />
-						</div>
-						<div class="col-md-2 text-center">
-							<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" />
-						</div>
-						<div class="col-md-2 text-center">
-
-						</div>
-					</div>
-					-->
 				</div>
+
 				<div class="panel-group" id="accordion-example-plus">
 					<div class="panel panel-default">
 						<div class="panel-heading link">
