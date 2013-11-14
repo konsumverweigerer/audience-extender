@@ -117,19 +117,25 @@ define(["webjars!knockout.js"], (ko) ->
     constructor: () ->
       self = @
       
-      @currentPage = ko.observable(1)
-
-      @maxPage = ko.observable(1)
-
       @fromIndex = ko.observable(1)
-
-      @toIndex = ko.observable(10)
 
       @maxIndex = ko.observable(0)
 
       @shownPages = ko.observable(5)
 
       @pageSize = ko.observable(10)
+
+      @currentPage = ko.computed(() ->
+        Math.ceil(self.fromIndex() / self.pageSize())
+      )
+
+      @toIndex = ko.computed(() ->
+        Math.min(self.maxIndex(),self.fromIndex()+self.pageSize()-1)
+      )
+
+      @maxPage = ko.computed(() ->
+        Math.ceil(self.maxIndex() / self.pageSize())
+      )
 
       @hasData = ko.computed(() ->
         self.maxIndex() > 0
@@ -171,18 +177,24 @@ define(["webjars!knockout.js"], (ko) ->
       )
 
       @previous = () ->
-        c = self.currentPage()
-        if c > 1
-          self.currentPage(c-1)
+        c = self.fromIndex()
+        ps = self.pageSize()
+        if c > ps
+          self.fromIndex(c-ps)
 
       @next = () ->
-        c = self.currentPage()
-        mp = self.maxPage()
-        if c < mp
-          self.currentPage(c+1)
+        c = self.fromIndex()
+        ps = self.pageSize()
+        mp = self.maxIndex()
+        if c+ps <= mp
+          self.fromIndex(c+ps)
 
       @gotoPage = () ->
-        self.currentPage(@page)
+        ps = self.pageSize()
+        mp = self.maxIndex()
+        ni = 1+((@page-1)*ps)
+        if ni>0 && ni<=mp
+          self.fromIndex(ni)
   
   class Searchbar
     constructor: () ->

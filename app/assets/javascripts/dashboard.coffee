@@ -7,8 +7,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     datatable: new mod.Datatable,
     publisher: new mod.Publisher,
     publishers: ko.observableArray([])
-    currentcampaign: new mod.Campaign('Campaign name'),
-    currentaudience: new mod.Audience('Audience name'),
+    currentcampaign: new mod.Campaign({name:'Campaign name'}),
+    currentaudience: new mod.Audience({name:'Audience name'}),
     messages: ko.observableArray([])
   }
   
@@ -150,23 +150,13 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         sDom: 'lrti',
         fnInfoCallback: (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
           dl = oSettings._iDisplayLength
-          page = 1
-          i = iStart
-          while i-dl > 0
-            i = i-dl
-            page++ 
-          models.datatablescroller.maxPage(Math.ceil(iMax/dl))
+          models.datatablescroller.pageSize(dl)
           models.datatablescroller.fromIndex(iStart)
-          models.datatablescroller.toIndex(iEnd)
           models.datatablescroller.maxIndex(iMax)
-          if datatable && !datatable.fPageChange
-            models.datatablescroller.currentPage(Math.ceil(iStart/dl))
           return ''
       });
       models.datatablescroller.currentPage.subscribe((nv)->
-        datatable.fPageChange = true
         datatable.fnPageChange(nv-1)
-        datatable.fPageChange = false
       )
       models.datatablesearchbar.filldata = () ->
         datatable.fnClearTable()
