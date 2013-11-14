@@ -75,8 +75,9 @@ public class Publisher extends Model {
 		} else {
 			ret = find.where().eq("owners.id", admin.id).findList();
 		}
-		for (final Publisher publisher: ret) {
-			if (admin.publisher.id.equals(publisher.id)) {
+		for (final Publisher publisher : ret) {
+			if (admin.publisher != null
+					&& admin.publisher.id.equals(publisher.id)) {
 				publisher.active = true;
 			}
 		}
