@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -74,6 +75,9 @@ public class Admin extends Model {
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
 
+	@Transient
+	public List<Publisher> publishers = new ArrayList<Publisher>();
+
 	public Admin(String name, String email) {
 		this(email, name, null);
 	}
@@ -90,7 +94,7 @@ public class Admin extends Model {
 	}
 
 	public static Admin authenticate(String email, String password) {
-        email = email.toLowerCase();
+		email = email.toLowerCase();
 		for (final Admin admin : find.where().eq("email", email).findList()) {
 			if (admin.checkPwd(password)) {
 				return admin;
@@ -99,10 +103,10 @@ public class Admin extends Model {
 		return null;
 	}
 
-    public static Admin forgotPassword(String email) {
-        email = email.toLowerCase();
+	public static Admin forgotPassword(String email) {
+		email = email.toLowerCase();
 		for (final Admin admin : find.where().eq("email", email).findList()) {
-            // TODO: send password change link
+			// TODO: send password change link
 			return admin;
 		}
 		return null;
@@ -209,9 +213,18 @@ public class Admin extends Model {
 		final List<Admin> admins = new ArrayList<Admin>();
 		if (admin != null) {
 			if (admin.isSysAdmin()) {
-				return findAll();
+				admins.addAll(findAll());
+			} else {
+				admins.add(admin);
 			}
-			admins.add(admin);
+		}
+		for (final Admin c : admins) {
+			final List<Publisher> p = Publisher.findByAdmin(c);
+			if (p != null) {
+				c.publishers = p;
+			} else {
+				c.publishers = Collections.emptyList();
+			}
 		}
 		return admins;
 	}

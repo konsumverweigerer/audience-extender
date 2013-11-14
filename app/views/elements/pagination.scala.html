@@ -1,0 +1,32 @@
+@(model: String)
+<div class="col-xs-6">
+	<p class="pagination-fix">
+		<!-- ko if: @{model}.hasData -->
+		<strong class="pagination-text">Displaying: <span
+			data-bind="text: @{model}.fromIndex"></span> - <span
+			data-bind="text: @{model}.toIndex"></span> of <span
+			data-bind="text: @{model}.maxIndex"></span></strong>
+		<!-- /ko -->
+		<!-- ko ifnot: @{model}.hasData -->
+		<strong class="pagination-text">No Data</strong>
+		<!-- /ko -->
+	</p>
+</div>
+<div class="col-xs-6">
+	<ul class="pagination pagination-sm pull-right">
+		<li><a href="javascript:void(0)"
+			data-bind="click: @{model}.previous">&laquo;</a></li>
+		<!-- ko foreach: @{model}.visiblePages -->
+		<!-- ko if: active -->
+		<li class="active"><a href="javascript:void(0)"
+			data-bind="click: $parent.@{model}.gotoPage, text: page"></a></li>
+		<!-- /ko -->
+		<!-- ko ifnot: active -->
+		<li><a href="javascript:void(0)"
+			data-bind="click: $parent.@{model}.gotoPage, text: page"></a></li>
+		<!-- /ko -->
+		<!-- /ko -->
+		<li><a href="javascript:void(0)"
+			data-bind="click: @{model}.next">&raquo;</a></li>
+	</ul>
+</div>

@@ -7,6 +7,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import scala.collection.JavaConverters._
+import PublisherController.PublisherFormat
 
 import models._
 import views._
@@ -18,8 +19,11 @@ object AdminController extends Controller with Secured {
       (json \ "email").as[String]))
 
     def writes(admin: Admin) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(admin.id)),
       "name" -> JsString(admin.name),
-      "url" -> JsString(admin.email)))
+      "roles" -> Json.toJson(admin.getRoles().asScala),
+      "publishers" -> Json.toJson(admin.publishers.asScala),
+      "email" -> JsString(admin.email)))
   }
 
   val basicAdminForm: Form[Admin] = Form(

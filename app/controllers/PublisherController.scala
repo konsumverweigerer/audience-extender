@@ -18,6 +18,7 @@ object PublisherController extends Controller with Secured {
       (json \ "url").as[Option[String]]))
 
     def writes(publisher: Publisher) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(publisher.id)),
       "name" -> JsString(publisher.name),
       "active" -> JsString(if (publisher.active) "true" else "false"),
       "url" -> JsString(publisher.url)))

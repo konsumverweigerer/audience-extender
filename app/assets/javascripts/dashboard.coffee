@@ -5,7 +5,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     datatablesearchbar: new mod.Searchbar,
     chartdata: new mod.Chartdata,
     datatable: new mod.Datatable,
-    publisher: new mod.Publisher,
+    publisher: ko.observable(),
     publishers: ko.observableArray([])
     currentcampaign: new mod.Campaign({name:'Campaign name'}),
     currentaudience: new mod.Audience({name:'Audience name'}),
@@ -16,7 +16,16 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
   
   window.models = models
   #init
-  
+
+  window.data.publishers.map( (p,i) ->
+    pm = new mod.Publisher(p)
+    models.publishers.push(pm)
+    if p.active == "true"
+      models.publisher(pm)
+  )
+  if !models.publisher() && models.publishers().length
+  	models.publisher(models.publishers()[0])
+
   models.messages.push(new mod.Message('Kampagne MegaAudiences läuft bald aus',
         'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
         sed diam nonumy eirmod tempor invidunt ut labore et dolore 
@@ -166,7 +175,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         while i++ < m
           d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
           datatable.fnAddData(['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
-          	'$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])])
+            '$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])])
     )
   )
 )
