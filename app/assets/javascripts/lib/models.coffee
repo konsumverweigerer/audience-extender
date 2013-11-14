@@ -254,7 +254,13 @@ define(["webjars!knockout.js"], (ko) ->
       @rows = ko.observableArray([])
       
   class Message
-    constructor: (title,content,priority) ->
+    constructor: (dortitle,content,priority) ->
+      if dortitle instanceof Object
+        title = dortitle.title
+        content = dortitle.content
+        priority = dortitle.priority
+      else
+        title = dortitle
       self = @
 
       @title = ko.observable(title)
@@ -263,31 +269,57 @@ define(["webjars!knockout.js"], (ko) ->
 
       @priority = ko.observable(priority)
 
-      @priority = ko.observable(priority)
-      
       @dismiss = () ->
         {}
 
   class Campaign
-    constructor: (name) ->
+    constructor: (d) ->
       self = @
 
-      @name = ko.observable(name)
+      @id = ko.observable(d && d.id)
+
+      @name = ko.observable(d && d.name)
 
   class Audience
-    constructor: (name) ->
+    constructor: (d) ->
       self = @
 
-      @name = ko.observable(name)
-        
+      @id = ko.observable(d && d.id)
+
+      @name = ko.observable(d && d.name)
+
+  class Publisher
+    constructor: (d) ->
+      self = @
+
+      @id = ko.observable(d && d.id)
+
+      @name = ko.observable(d && d.name)
+
+  class Admin
+    constructor: (d) ->
+      self = @
+
+      @id = ko.observable(d && d.id)
+
+      @name = ko.observable(d && d.name)
+
+      @email = ko.observable(d && d.email)
+
+      @publishers = ko.observable(d && d.publishers.map((v) ->
+        new Publisher(v)
+      ))
+
   { Message: Message,
   Datatable: Datatable, 
-  Chartdata: Chartdata, 
-  Searchbar: Searchbar, 
-  Scroller: Scroller, 
+  Chartdata: Chartdata,
+  Searchbar: Searchbar,
+  Scroller: Scroller,
   DateRange: DateRange,
   Campaign: Campaign,
   Audience: Audience,
+  Admin: Admin,
+  Publisher: Publisher,
   truncateToDay: truncateToDay,
   datetostr: datetostr,
   strtodate: strtodate }

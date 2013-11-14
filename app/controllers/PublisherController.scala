@@ -60,6 +60,13 @@ object PublisherController extends Controller with Secured {
       }.getOrElse(Forbidden)
   }
 
+  def message = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(publisherJson(admin))
+      }.getOrElse(Forbidden)
+  }
+
   def dashboard = IsAuthenticated { adminid =>
     _ => 
       Option[Admin](Admin.findById(adminid)).map { admin =>
