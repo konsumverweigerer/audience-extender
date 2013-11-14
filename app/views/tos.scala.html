@@ -1,8 +1,10 @@
-@(admin: Admin)
 @templates.public("Terms of Service", homelink = if(admin!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
 @if(admin!=null) {
 	@menu.public(admin)
 }
 }{
-<h2>Terms of Service</h2>
+	<div class="container">
+		<h2>Terms of Service</h2>
+		<p>...</p>
+	</div>
 }

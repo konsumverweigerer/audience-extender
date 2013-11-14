@@ -111,25 +111,26 @@
 				<div class="row">
 					<div class="col-xs-6">
 						<p class="pagination-fix">
-							<!--  ko if: datatablescroller.hasData -->
+							<!-- ko if: datatablescroller.hasData -->
 							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
-							<!--  /ko -->
-							<!--  ko ifnot: datatablescroller.hasData -->
+							<!-- /ko -->
+							<!-- ko ifnot: datatablescroller.hasData -->
 							<strong class="pagination-text">No Data</strong>
-							<!--  /ko -->
+							<!-- /ko -->
 						</p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
-							<!--  ko if: datatablescroller.hasData -->
-							<li data-bind="css: { disabled: datatablescroller.hasNoPrev }"><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
-							<!--  /ko -->
-							<!--  ko foreach: datatablescroller.visiblePages -->
-							<li data-bind="css: { active: active }"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!--  /ko -->
-							<!--  ko if: datatablescroller.hasData -->
-							<li data-bind="css: { disabled: datatablescroller.hasNoNext }"><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
-							<!--  /ko -->
+							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
+							<!-- ko foreach: datatablescroller.visiblePages -->
+							<!-- ko if: active -->
+							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<!-- /ko -->
+							<!-- ko ifnot: active -->
+							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<!-- /ko -->
+							<!-- /ko -->
+							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 						</ul>
 					</div>
 				</div>
@@ -137,7 +138,7 @@
 					<div class="col-md-12">
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered m-null data-table">
-							    <thead>
+								<thead>
 									<tr>
 										<th class="sorting">Name</th>
 										<th class="sorting">Status</th>
@@ -156,41 +157,42 @@
 				<div class="row">
 					<div class="col-xs-6">
 						<p class="pagination-fix">
-							<!--  ko if: datatablescroller.hasData -->
+							<!-- ko if: datatablescroller.hasData -->
 							<strong class="pagination-text">Displaying: <span data-bind="text: datatablescroller.fromIndex"></span> - <span data-bind="text: datatablescroller.toIndex"></span> of <span data-bind="text: datatablescroller.maxIndex"></span></strong>
-							<!--  /ko -->
-							<!--  ko ifnot: datatablescroller.hasData -->
+							<!-- /ko -->
+							<!-- ko ifnot: datatablescroller.hasData -->
 							<strong class="pagination-text">No Data</strong>
-							<!--  /ko -->
+							<!-- /ko -->
 						</p>
 					</div>
 					<div class="col-xs-6">
 						<ul class="pagination pagination-sm pull-right">
-							<!--  ko if: datatablescroller.hasData -->
-							<li data-bind="css: { disabled: datatablescroller.hasNoPrev }"><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
-							<!--  /ko -->
-							<!--  ko foreach: datatablescroller.visiblePages -->
-							<li data-bind="css: { active: active }"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
-							<!--  /ko -->
-							<!--  ko if: datatablescroller.hasData -->
-							<li data-bind="css: { disabled: datatablescroller.hasNoNext }"><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
-							<!--  /ko -->
+							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.previous">&laquo;</a></li>
+							<!-- ko foreach: datatablescroller.visiblePages -->
+							<!-- ko if: active -->
+							<li class="active"><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<!-- /ko -->
+							<!-- ko ifnot: active -->
+							<li><a href="javascript:void(0)" data-bind="click: $parent.datatablescroller.gotoPage, text: page"></a></li>
+							<!-- /ko -->
+							<!-- /ko -->
+							<li><a href="javascript:void(0)" data-bind="click: datatablescroller.next">&raquo;</a></li>
 						</ul>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3">
 				<p>
-					<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-toggle="modal" data-target="#editAudience"><div></div><span class="glyphicon glyphicon-plus-sign"></span> New Campaign</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> New Campaign</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> New Audience</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-toggle="modal" data-target="#editAudience"><span></span><span class="glyphicon glyphicon-plus-sign"></span> New Audience</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> Yield Maximiser</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> Yield Maximiser</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><div></div><span class="glyphicon glyphicon-plus-sign"></span> AD Packages</button>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> AD Packages</button>
 				</p>
 			</div>
 		</div>
@@ -234,7 +236,7 @@
 					<h3>Path targeting</h3>
 					<div class="row">
 						<div class="col-md-12">
-							<div class="btn-group" data-toggle="buttons">
+							<div class="btn-group btn-group-first" data-toggle="buttons">
 								<label class="btn btn-primary">
 									<input type="radio" name="options" id="option1"> On
 								</label>
@@ -247,17 +249,42 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<div class="btn-group" data-toggle="buttons">
+							<div class="btn-group btn-group-middle" data-toggle="buttons">
 								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option1"> On
+									<input type="radio" name="options" id="option3"> On
 								</label>
 								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option2"> Off
+									<input type="radio" name="options" id="option4"> Off
 								</label>
 							</div>
 							/terms
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="btn-group btn-group-last" data-toggle="buttons">
+								<label class="btn btn-primary">
+									<input type="radio" name="options" id="option9"> On
+								</label>
+								<label class="btn btn-primary active">
+									<input type="radio" name="options" id="option10"> Off
+								</label>
+							</div>
+							/contact
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="input-group">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
+								</span>
+								<input type="text" class="form-control">
+							</div>
+						</div>
+					</div>
+
+
 					<!--
 					<div class="row">
 						<div class="col-md-2 text-center">
@@ -281,13 +308,12 @@
 					</div>
 					-->
 				</div>
-
-				<div class="panel-group" id="accordion">
+				<div class="panel-group" id="accordion-example-plus">
 					<div class="panel panel-default">
-						<div class="panel-heading">
+						<div class="panel-heading link">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-									3rd Party Tracking
+								<a data-toggle="collapse" data-parent="#accordion-example-plus" href="#collapseOne" class="collapsed">
+									3rd Party Tracking <span class="glyphicon"></span>
 								</a>
 							</h4>
 						</div>

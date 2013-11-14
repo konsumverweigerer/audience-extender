@@ -73,11 +73,39 @@ html,body {
 	font-family:@font2;
 }
 
+h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
+	font-family:@font1;
+}
+
 .m-null {margin:0}
 .p-null {padding:0}
 .pagination-fix {margin:20px 0;padding:5px 0;}
 .well-fix {margin-top:10px;}
 
+//panel heading umstyling
+.panel-heading.link {
+	padding:0;
+	a {
+		display:block;
+		padding:10px 15px;
+		&:hover,
+		&:focus {
+			background:#eee;
+			text-decoration:none;
+		}
+	}
+	span {
+		float:right;
+		&:before {
+			content:"−";
+		}
+	}
+	a.collapsed {
+		span:before {
+			content:"+";
+		}
+	}
+}
 
 .header {
 	background:#1c5078 url("/assets/images/bg-header.jpg") no-repeat top center;
@@ -162,10 +190,43 @@ th {
 		font-size:18px;
 	}
 }
+.scroll-buttons {
+	bottom:20px;
+	height:70px;
+	line-height:30px;
+	position:fixed;
+	right:20px;
+	width:30px;
+	z-index:1000;
+	div {
+		height:30px;
+		margin-top:5px;
+		width:30px;
+	}
+	a {
+		background:#222;
+		color:#fff;
+		cursor:pointer;
+		display:block;
+		height:30px;
+		line-height:30px;
+		text-align:center;
+		width:30px;
+		visibility:hidden;
+		.rounded-corners;
+		&:hover {
+			background:#444;
+		}
+		span {
+			line-height:27px;
+		}
+	}
+}
 //end of frontend
 
 
 
+//dashboard
 .legends {
 	border-bottom:1px solid #c6c6c5;
 	margin-bottom:20px;
@@ -205,6 +266,23 @@ th {
 	}
 }
 
+.btn-plus {
+	font-family:@font1;
+	padding-left:15px;
+	position:relative;
+	text-align:left;
+	span:first-child {
+		border-right:2px solid #fff;
+		position:absolute;
+		left:48px;
+		top:-1px;
+		height:46px;
+	}
+	.glyphicon {
+		padding-right:45px;
+	}
+}
+
 .secondary {
 	background:#e8e8e8;
 	padding:30px 0;
@@ -228,21 +306,18 @@ th {
 	margin:15px auto;
 }
 
-.btn-plus {
-	font-family:@font1;
-	padding-left:15px;
-	position:relative;
-	text-align:left;
-	div {
-		border-right:2px solid #fff;
-		position:absolute;
-		left:48px;
-		top:-1px;
-		height:46px;
-	}
-	span {
-		padding-right:45px;
-	}
+.btn-group-first .btn {
+	border-bottom-right-radius:0;
+	border-bottom-left-radius:0;
+}
+.btn-group-middle .btn {
+	border-radius:0;
+	margin-top:-1px;
+}
+.btn-group-last .btn {
+	border-top-right-radius:0;
+	border-top-left-radius:0;
+	margin-top:-1px;
 }
 
 
@@ -287,35 +362,4 @@ nav.loginbar {
 .dashboard svg {
 	height:300px;
 	margin-top:15px;
-}
-
-div.scroll-buttons {
-	position: fixed;
-	z-index: 1000;
-	bottom: 20px;
-	right: 20px;
-	height: 95px;
-	width: 50px;
-}
-
-div.scroll-buttons div {
-	width: 40px;
-	margin: 5px;
-	height: 40px;
-}
-
-div.scroll-buttons a {
-	display: block;
-	visibility: hidden;
-	width: 40px;
-	height: 40px;
-	border: 1px solid #555;
-	border-radius: 10px;
-	padding: 11px;
-	background: #333;
-}
-
-.form-contact {
-	margin: 20px;
-	max-width: 600px;
 }
