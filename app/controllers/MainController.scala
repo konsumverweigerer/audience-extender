@@ -1,7 +1,6 @@
 package controllers
 
 import scala.collection.JavaConverters.asScalaBufferConverter
-
 import models.Admin
 import models.Publisher
 import play.api.Mode
@@ -22,6 +21,7 @@ import play.api.mvc.Results
 import play.api.mvc.Security
 import services.SendMail
 import views.html
+import play.Logger
 
 object MainController extends Controller with Secured {
   // -- Authentication
@@ -178,10 +178,19 @@ object MainController extends Controller with Secured {
 
   /** TODO: handle NotFound **/
   def minAssetsAt(path: String, file: String) = {
+    import Play.current
+    Logger.info("get minified " + path + " / " + file)
     if (file.endsWith(".min.js")) {
       controllers.Assets.at(path, file)
     } else {
-      controllers.Assets.at(path, file.replace(".js", ".min.js"))
+      val newfile = file.replace(".js", ".min.js")
+      Logger.info("really get minified " + path + " / " + newfile)
+      if (Play.resource(newfile).isEmpty) {
+        Logger.info("fall back to non-minified " + path + " / " + file)
+        controllers.Assets.at(path, file)
+      } else {
+        controllers.Assets.at(path, newfile)
+      }
     }
   }
 
@@ -191,7 +200,7 @@ object MainController extends Controller with Secured {
         val newpath = controllers.WebJarAssets.locate(file.replace(".js", ".min.js"))
         return controllers.WebJarAssets.at(newpath)
       } catch {
-        case nf: IllegalArgumentException =>
+        case nf: java.lang.IllegalArgumentException =>
       }
       controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
     } else {
@@ -201,6 +210,7 @@ object MainController extends Controller with Secured {
 
   /** TODO: handle NotFound **/
   def minProdAssetsAt(path: String, file: String): Action[AnyContent] = {
+    Logger.info("get prod minified " + path + " / " + file)
     if (file.endsWith(".js")) {
       if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
         return controllers.Assets.at(path, file.replace(".js", ".min.js"))
