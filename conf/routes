@@ -59,8 +59,12 @@ GET      /dashboard/:t                   controllers.MainController.dashboardSel
 
 GET      /require.js                     controllers.WebJarAssets.requirejs
 GET      /routes.js                      controllers.MainController.javascriptRoutes
-GET      /webjars/*file                  controllers.WebJarAssets.at(file)
+GET      /webjars/*file                  controllers.MainController.minProdWebJarAssetsAt(file)
+# workaround js-min path probs
 GET      /assets/javascripts-min/*file   controllers.MainController.minAssetsAt(path="/public/javascripts/", file)
+GET      /assets/javascripts/*file       controllers.MainController.minProdAssetsAt(path="/public/javascripts/", file)
+#GET      /assets/stylesheets/*file       controllers.MainController.minProdAssetsAt(path="/public/stylesheets", file)
+
 GET      /assets/*file                   controllers.Assets.at(path="/public", file)
 
 # Every other page

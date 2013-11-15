@@ -17,29 +17,33 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 
 			if !datepickerOptions.validate && value.isValid
 				datepickerOptions.validate = (testValue) ->
-					initalValue = value()
-					value(testValue)
-					res = value.isValid() ? null : ko.utils.unwrapObservable(value.error)
-					value(initalValue)
+					initalValue = valueAccessor()()
+					valueAccessor()(testValue)
+					res = valueAccessor().isValid() ? null : ko.utils.unwrapObservable(valueAccessor().error)
+					valueAccessor()(initalValue)
 					return res
 
 			$datepicker = $element.datepicker(datepickerOptions)
 
 			if ko.isObservable(value)
-				$datepicker.on('save.ko', (e, params) ->
-					value(params.newValue)
-				)
+				if $datepicker.is('.input-daterange')
+					$dp = $datepicker.data("datepicker").pickers
+					$dp[0].on('save.ko', (e, params) ->
+						v = valueAccessor()()
+						valueAccessor()([params.newValue,v[1]])
+					)					
+					$dp[1].on('save.ko', (e, params) ->
+						v = valueAccessor()()
+						valueAccessor()([v[0],params.newValue])
+					)					
+				else
+					$datepicker.on('save.ko', (e, params) ->
+						valueAccessor()(params.newValue)
+					)
 
 			if datepickerOptions.save
 				$datepicker.on('save', datepickerOptions.save)
 
-			ko.computed({
-				read : () ->
-					val = ko.utils.unwrapObservable(valueAccessor())
-					if val == null
-						val = ''
-					$datepicker.datepicker('setDate', val, true)
-				, owner : this, disposeWhenNodeIsRemoved : element })
 		, update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
 			$element = $(element)
 			value = valueAccessor()
@@ -50,9 +54,15 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 			if $datepicker.is('.input-daterange')
 				val = ko.utils.unwrapObservable(valueAccessor())
 				if val == null
-					val = '';
-				$editable.editable('setDate', val, true)
+					val = [];
+				$dp = $datepicker.data("datepicker").pickers
+				if val.length == 2 && $dp.length == 2
+					$dp[0].dadatepicker('setDate', val[0])
+					$dp[1].dadatepicker('setDate', val[1])
 			else
-				$datepicker = $element.datepicker()
+				val = ko.utils.unwrapObservable(valueAccessor())
+				if val == null
+					val = '';
+				$datepicker.datepicker('setDate', val)
 	}
 )
