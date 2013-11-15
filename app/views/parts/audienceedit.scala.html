@@ -52,18 +52,22 @@
 						<div class="form-group">
 							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
 							<div class="col-sm-9">
-								<textarea class="form-control" rows="3" id="trackingcode">Tracking Code here...</textarea>
+								<textarea class="form-control" rows="3" id="trackingcode" readonly>Tracking Code here...</textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">
-								<input type="email" class="form-control" id="email" placeholder="Email">
+								<div class="input-group">
+									<input type="email" class="form-control" id="email" placeholder="Email">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="button">Send to Your Mail</button>
+									</span>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Send to Your Mail</button>
 								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
 								<button type="submit" class="btn btn-primary">Save Settings</button>
 							</div>
@@ -81,7 +85,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
+							<label for="trackingcode" class="col-sm-3 control-label" readonly>Tracking Code</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" rows="3" id="trackingcode">Tracking Code here...</textarea>
 							</div>
@@ -89,12 +93,16 @@
 						<div class="form-group">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">
-								<input type="email" class="form-control" id="email" placeholder="Email">
+								<div class="input-group">
+									<input type="email" class="form-control" id="email" placeholder="Email">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="button">Send to Your Mail</button>
+									</span>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Send to Your Mail</button>
 								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
 								<button type="submit" class="btn btn-primary">Save Settings</button>
 							</div>
@@ -175,6 +183,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Delete</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary">Save</button>
 			</div>
