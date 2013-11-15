@@ -1,14 +1,27 @@
 package controllers
 
-import play.api.mvc._
-import play.api._
-import play.api.data._
-import play.api.data.Forms._
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.asScalaBufferConverter
 
-import models._
-import services._
-import views._
+import models.Admin
+import models.Publisher
+import play.api.Mode
+import play.api.Play
+import play.api.Routes
+import play.api.data.Form
+import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.text
+import play.api.data.Forms.tuple
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.Controller
+import play.api.mvc.EssentialAction
+import play.api.mvc.Request
+import play.api.mvc.RequestHeader
+import play.api.mvc.Result
+import play.api.mvc.Results
+import play.api.mvc.Security
+import services.SendMail
+import views.html
 
 object MainController extends Controller with Secured {
   // -- Authentication
@@ -163,8 +176,44 @@ object MainController extends Controller with Secured {
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }
 
-  def minAssetsAt(path: String, file: String) =
-    controllers.Assets.at(path, if (file.endsWith(".min.js")) (file) else (file.replace(".js", ".min.js")))
+  /** TODO: handle NotFound **/
+  def minAssetsAt(path: String, file: String) = {
+    if (file.endsWith(".min.js")) {
+      controllers.Assets.at(path, file)
+    } else {
+      controllers.Assets.at(path, file.replace(".js", ".min.js"))
+    }
+  }
+
+  def minProdWebJarAssetsAt(file: String): Action[AnyContent] = {
+    if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
+      try {
+        val newpath = controllers.WebJarAssets.locate(file.replace(".js", ".min.js"))
+        return controllers.WebJarAssets.at(newpath)
+      } catch {
+        case nf: IllegalArgumentException =>
+      }
+      controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
+    } else {
+      controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
+    }
+  }
+
+  /** TODO: handle NotFound **/
+  def minProdAssetsAt(path: String, file: String): Action[AnyContent] = {
+    if (file.endsWith(".js")) {
+      if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
+
+        return controllers.Assets.at(path, file.replace(".js", ".min.js"))
+      }
+    } else if (file.endsWith(".css")) {
+      if (!file.endsWith(".min.css") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
+
+        return controllers.Assets.at(path, file.replace(".css", ".min.css"))
+      }
+    }
+    controllers.Assets.at(path, file)
+  }
 }
 
 /**

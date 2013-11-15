@@ -2,7 +2,7 @@
 @templates.main("Dashboard") {
 @menu.admin("Dashboard")
 @menu.logout(current)
-<script type="text/javascript" data-main="@routes.Assets.at("javascripts/dashboard.audience.js")" src="@routes.WebJarAssets.requirejs"></script>
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard.audience.js").url, productionFolderPrefix = "")
 <script type="text/javascript">
 //<![CDATA[
 window.data = {};
