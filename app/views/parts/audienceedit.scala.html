@@ -4,11 +4,10 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">New/Edit Audience: <span data-bind="text: currentaudience().name"></span></h4>
+				<h4 class="modal-title">New/Edit Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
 			</div>
 			<div class="modal-body">
-				<p class="h4"><a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">Audience Name</a></p>
-				<h3>Select Website</h3>
+				<h3 class="m-null-top">Select Website</h3>
 				<div class="box-strips">
 					<div class="row">
 						<div class="col-md-2 text-center">
