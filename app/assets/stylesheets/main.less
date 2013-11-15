@@ -310,50 +310,75 @@ th {
 .box-1 h3 {
 	margin-top:0;
 }
+
+.website-block,
+.website-block-add {
+	margin:10px auto;
+}
+.website-block,
+.website-block-add,
+.website-name,
+.thumbnail-site,
+.website-audience,
+.website-actions {
+	display:block;
+	max-width:160px;
+	text-align:center;
+}
 .website-name {
 	font-family:@font1;
-	height:40px;
-	margin-top:10px;
+	height:20px;
 	overflow:hidden;
 	position:relative;
-	text-align:center;
 	text-overflow:ellipsis;
-	div {
-		bottom:0;
-		max-height:40px;
-		overflow:hidden;
-		position:absolute;
-		text-overflow:ellipsis;
-		width:100%;
+}
+.thumbnail-site {
+	position:relative;
+	img {
+		border:5px solid rgba(39, 89, 128, 0.0);
+		margin:0 auto;
 	}
 }
 .website-audience {
 	color:@color-green;
 	font-family:@font1;
 	font-size:14px;
-	margin-bottom:15px;
+	margin-bottom:5px;
 	overflow:hidden;
-	text-align:center;
 	text-overflow:ellipsis;
 }
-.thumbnail-link {
-	display:block;
-	margin-top:5px;
-	max-height:120px;
-	max-width:160px;
-	padding:5px;
-	&:hover,
-	&.selected {
-		background-color:rgba(39, 89, 128, 0.3);
+.website-actions {
+	height:22px;
+}
+.website-actions .btn {
+	display:none;
+}
+.website-block:hover {
+	text-decoration:none;
+	.website-actions .btn {
+		display:inline-block;
+		max-width:160px;
+		text-align:center;
 	}
 }
-.thumbnail-site {
-	border:1px solid #ccc;
-	margin:5px auto;
+.selected .thumbnail-site img {
+	border:5px solid rgba(39, 89, 128, 0.5);
 }
-.thumbnail-add {
-	border:1px solid @color-yellow;
-	margin:5px auto;
+.active .thumbnail-site img {
+	border:5px solid rgba(150, 150, 150, 1.0);
+}
+.website-block-add .thumbnail-site img {
+	border:5px solid rgba(243, 179, 0, 0.3);
+	margin:0 auto;
+}
+.website-block-add:hover {
+	text-decoration:none;
+	.thumbnail-site img {
+		border:5px solid rgba(243, 179, 0, 1.0);
+	}
+}
+.website-block-add .website-name {
+	color:@color-yellow;
 }
 
 .btn-group-first .btn {

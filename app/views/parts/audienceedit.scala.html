@@ -10,32 +10,43 @@
 				<h3 class="m-null-top">Select Website</h3>
 				<div class="box-strips">
 					<div class="row">
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Leads Con Web Retargeting</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
+						<div class="col-sm-3 text-center">
+							<a href="#" class="website-block">
+								<span class="website-name">Google.com</span>
+								<span class="thumbnail-site">
+									<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
+								</span>
+								<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
+								<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
+							</a>
 						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Google.com</div></div>
-							<a href="#" class="thumbnail-link selected"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
+						<div class="col-sm-3 text-center">
+							<a href="#" class="website-block selected">
+								<span class="website-name">Google.com selected</span>
+								<span class="thumbnail-site">
+									<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
+								</span>
+								<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
+								<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
+							</a>
 						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Leads Con Web Retargeting Leads Con Web Retargeting</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
+						<div class="col-sm-3 text-center">
+							<a href="#" class="website-block active">
+								<span class="website-name">Google.com active</span>
+								<span class="thumbnail-site">
+									<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
+								</span>
+								<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
+								<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
+							</a>
 						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Leads Con Web RetargetingLeadsConWebRetargeting</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
-						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Add New Website</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" /></a>
-						</div>
-						<div class="col-md-2 text-center">
-
+						<div class="col-sm-3 text-center">
+							<a href="#" class="website-block-add">
+								<span class="website-name">Add New Website</span>
+								<span class="thumbnail-site">
+									<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" />
+								</span>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -53,6 +64,11 @@
 							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" rows="3" id="trackingcode" readonly>Tracking Code here...</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<div class="alert alert-info m-null-btm">Explanation about Tracking code here...</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -91,6 +107,11 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<div class="alert alert-info m-null-btm">Explanation about Tracking code here...</div>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">
 								<div class="input-group">
@@ -111,7 +132,7 @@
 				</div>
 
 				<div class="m-top-btm">
-					<h3>Path targeting</h3>
+					<h3>Path targeting for <span>Google.com selected</span></h3>
 					<div class="row">
 						<div class="col-md-12">
 							<div class="btn-group btn-group-first" data-toggle="buttons">
@@ -183,9 +204,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Delete</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save</button>
+				<button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
 			</div>
 		</div>
 	</div>
