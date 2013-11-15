@@ -1,17 +1,40 @@
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", "lib/knockout-editable", "/routes.js"], (ko, mod) ->
-  models = {
-    chartdaterange: new mod.DateRange,
-    datatablescroller: new mod.Scroller,
-    datatablesearchbar: new mod.Searchbar,
-    chartdata: new mod.Chartdata,
-    datatable: new mod.Datatable,
-    publisher: ko.observable(),
-    publishers: ko.observableArray([])
-    currentcampaign: new mod.Campaign({name:'Campaign name'}),
-    currentaudience: new mod.Audience({name:'Audience name'}),
-    messages: ko.observableArray([])
-  }
-  
+  class Dashboard
+    constructor: (d) ->
+      self = @
+
+      @chartdaterange = new mod.DateRange
+
+      @datatablescroller = new mod.Scroller
+
+      @datatablesearchbar = new mod.Searchbar
+
+      @chartdata = new mod.Chartdata
+
+      @datatable = new mod.Datatable(["name","state","revenue","cost","from","to"])
+
+      @publisher = ko.observable()
+
+      @publishers = ko.observableArray([])
+
+      @websites = ko.observableArray([])
+
+      @currentcampaign = ko.observable()
+
+      @messages = ko.observableArray([])
+
+      @newcampaign = () ->
+        self.currentcampaign(new mod.Campaign({name:'New Campaign'}))
+
+      @savecampaign = () ->
+        a = self.currentcampaign()
+        if a.id()
+          alert('update campaign')
+        else
+          alert('persist campaign')
+
+  models = new Dashboard
+    
   ko.applyBindings(models)
   
   window.models = models

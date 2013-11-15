@@ -55,6 +55,7 @@ GET      /json/audiences                 controllers.AudienceController.audience
 
 # Dashboard
 GET      /dashboard                      controllers.MainController.dashboard
+GET      /dashboard/:t                   controllers.MainController.dashboardSelect(t: String)
 
 GET      /require.js                     controllers.WebJarAssets.requirejs
 GET      /routes.js                      controllers.MainController.javascriptRoutes

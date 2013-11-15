@@ -18,6 +18,8 @@ public class Creative extends Model {
 	@Required
 	public String name;
 
+	public String uuid;
+	
 	public Creative(String name) {
 		this.name = name;
 	}

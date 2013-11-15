@@ -311,6 +311,22 @@ define(["webjars!knockout.js"], (ko) ->
 
       @name = ko.observable(d && d.name)
 
+      @tracking = ko.observable(d && d.tracking)
+
+      @websites = ko.observableArray(d && d.websites)
+
+  class Website
+    constructor: (d) ->
+      self = @
+
+      @id = ko.observable(d && d.id)
+
+      @name = ko.observable(d && d.name)
+
+      @active = ko.observableArray(d && d.audiences)
+
+      @url = ko.observable(d && d.url)
+
   class Publisher
     constructor: (d) ->
       self = @
@@ -345,6 +361,7 @@ define(["webjars!knockout.js"], (ko) ->
   DateRange: DateRange,
   Campaign: Campaign,
   Audience: Audience,
+  Website: Website,
   Admin: Admin,
   Publisher: Publisher,
   truncateToDay: truncateToDay,
