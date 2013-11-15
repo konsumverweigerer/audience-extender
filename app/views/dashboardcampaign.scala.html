@@ -2,7 +2,7 @@
 @templates.main("Dashboard") {
 @menu.admin("Dashboard")
 @menu.logout(current)
-@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard.campaign.js").url)
+<script type="text/javascript" data-main="@routes.Assets.at("javascripts/dashboard.campaign.js")" src="@routes.WebJarAssets.requirejs"></script>
 <script type="text/javascript">
 //<![CDATA[
 window.data = {};
