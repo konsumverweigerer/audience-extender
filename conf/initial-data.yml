@@ -4,13 +4,13 @@ admins:
   email:       sysadmin@audience-extender.com
   name:        System Administrator
   password:    AevaiShaeposhohng9ah
-  admin_roles: sysadmin
+  adminRoles: sysadmin
         
  - &dummy !!models.Admin
   email:       dummy@audience-extender.com
   name:        Dummy user
   password:    $1$ojRtK.WM$EuBh4J3ot4F2WHV.8f1bB0
-  admin_roles: none
+  adminRoles: none
         
 publishers:
 
