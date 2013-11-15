@@ -120,10 +120,32 @@ object MainController extends Controller with Secured {
 
   def base = index("")
   
-  def dashboard = IsAuthenticated { adminid =>
+  def dashboardAudience = IsAuthenticated { adminid =>
    implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
-        Ok(html.dashboard(Publisher.findByAdmin(admin).asScala, admin))
+        Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
+      }.getOrElse(
+        Ok(html.index(Admin.findByEmail(""))))
+  }
+
+  def dashboardCampaign = IsAuthenticated { adminid =>
+   implicit request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
+      }.getOrElse(
+        Ok(html.index(Admin.findByEmail(""))))
+  }
+
+  def dashboard = dashboardAudience
+
+  def dashboardSelect(t: String = "audience") = IsAuthenticated { adminid =>
+   implicit request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        if ("campaign".equals(t)) {
+        	Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
+        }else {
+        	Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
+        }
       }.getOrElse(
         Ok(html.index(Admin.findByEmail(""))))
   }

@@ -17,10 +17,10 @@ define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery
 
 			if !editableOptions.validate && value.isValid
 				editableOptions.validate = (testValue) ->
-					initalValue = value()
-					value(testValue)
-					res = value.isValid() ? null : ko.utils.unwrapObservable(value.error)
-					value(initalValue)
+					initalValue = valueAccessor()()
+					valueAccessor()(testValue)
+					res = valueAccessor().isValid() ? null : ko.utils.unwrapObservable(valueAccessor().error)
+					valueAccessor()(initalValue)
 					return res
 
 			if editableOptions.type == 'select' || editableOptions.type == 'checklist' || editableOptions.type == 'typeahead' && !editableOptions.source && editableOptions.options
@@ -50,18 +50,11 @@ define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery
 
 			if ko.isObservable(value)
 				$editable.on('save.ko', (e, params) ->
-					value(params.newValue)
+					valueAccessor()(params.newValue)
 				)
 
 			if editableOptions.save
 				$editable.on('save', editableOptions.save)
-
-			ko.computed({ read : () ->
-				val = ko.utils.unwrapObservable(valueAccessor())
-				if val == null
-					val = '';
-				$editable.editable('setValue', val, true)
-			, owner : this, disposeWhenNodeIsRemoved : element })
 
 			if editableOptions.visible && ko.isObservable(editableOptions.visible)
 				ko.computed({ read : () ->
@@ -69,9 +62,16 @@ define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery
 					if (val)
 						$editable.editable('show')
 				, owner : this, disposeWhenNodeIsRemoved : element })
-
-				$editable.on('hidden.ko', (e, params) ->
-					editableOptions.visible(false)
-				)
+		, update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
+			$element = $(element)
+			value = valueAccessor()
+			allBindings = allBindingsAccessor()
+			
+			$editable = $element.editable()
+			
+			val = ko.utils.unwrapObservable(valueAccessor())
+			if val == null
+				val = '';
+			$editable.editable('setValue', val, true)
 	}
 )

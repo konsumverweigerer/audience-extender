@@ -29,6 +29,9 @@ public class Cookie extends Model {
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Audience audience;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Website website;
+
 	public Cookie(String name) {
 		this.name = name;
 		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");

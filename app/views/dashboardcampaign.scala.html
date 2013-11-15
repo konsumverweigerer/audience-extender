@@ -1,0 +1,158 @@
+@(publishers: Seq[Publisher], current: Admin)
+@templates.main("Dashboard") {
+@menu.admin("Dashboard")
+@menu.logout(current)
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard.campaign").url)
+<script type="text/javascript">
+//<![CDATA[
+window.data = {};
+window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());}
+//]]>
+</script>
+}{
+<div class="header">
+	<div class="container">
+		<ul class="nav nav-tabs">
+			<li><a href="@routes.MainController.dashboardSelect("audience")">Audiences</a></li>
+			<li class="active"><a href="#">Campaigns</a></li>
+		</ul>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="row legends">
+				<div class="col-sm-4">
+					<div class="legend-revenu">
+						<span></span> $<span data-bind="text: chartdata.sumrevenue"></span> Revenue
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="legend-ad-spent">
+						<span></span> $<span data-bind="text: chartdata.sumadspend"></span> Ad spend
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="legend-profit">
+						<span></span> $<span data-bind="text: chartdata.sumprofit"></span> Profit
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<form class="form-horizontal" role="form">
+						<div class="form-group well-fix">
+							<label for="selectDate" class="col-sm-2 control-label">Dates</label>
+							<div class="col-sm-10">
+								<select class="form-control" data-bind="options: chartdaterange.availableDateRanges, value: chartdaterange.dateRange" id="selectDate">
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-sm-8">
+					<div class="well well-sm m-null input-daterange">
+						<div class="row">
+							<div class="col-sm-6">
+								<form class="form-horizontal" role="form">
+									<div class="form-group m-null">
+										<label for="selectDateFrom" class="col-sm-2 control-label">From</label>
+										<div class="col-sm-10">
+											<input class="form-control date-picker" data-bind="value: chartdaterange.formattedStartDate" id="selectDateFrom" name="start"/>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="col-sm-6">
+								<form class="form-horizontal" role="form">
+									<div class="form-group m-null">
+										<label for="selectDateTo" class="col-sm-2 control-label">To</label>
+										<div class="col-sm-10">
+											<input class="form-control date-picker" data-bind="value: chartdaterange.formattedEndDate" id="selectDateTo" name="end"/>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div id="chart" class="dashboard">
+						<svg></svg>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3" data-bind="foreach: messages">
+			<div class="panel panel-default">
+				<div class="panel-heading" data-bind="text: title, click: dismiss"></div>
+				<div class="panel-body" data-bind="text: content"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="secondary">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<div class="row">
+					<div class="col-xs-6">
+						<select class="form-control" data-bind="options: datatablesearchbar.availableCategories, value: datatablesearchbar.category">
+						</select>
+					</div>
+					<div class="col-xs-6">
+						<form role="search">
+							<div class="input-group">
+								<input type="text" data-bind="value: datatablesearchbar.query" placeholder="Search ..." class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-primary" data-bind="click: datatablesearchbar.search" type="button">Search</button>
+								</span>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="row">
+				    @elements.pagination("datatablescroller")
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered m-null data-table">
+								<thead>
+									<tr>
+										<th class="sorting">Name</th>
+										<th class="sorting">Status</th>
+										<th class="sorting">Revenue</th>
+										<th class="sorting">Cost</th>
+										<th class="sorting">Start</th>
+										<th class="sorting">End</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+				    @elements.pagination("datatablescroller")
+				</div>
+			</div>
+			<div class="col-md-3">
+				<p>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> New Campaign</button>
+				</p>
+				<p>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> Yield Maximiser</button>
+				</p>
+				<p>
+					<button type="button" class="btn btn-default btn-lg btn-block btn-plus"><span></span><span class="glyphicon glyphicon-plus-sign"></span> AD Packages</button>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+}

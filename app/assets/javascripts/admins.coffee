@@ -1,11 +1,18 @@
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!bootstrap.js", "lib/knockout-editable", "/routes.js"], (ko, mod) ->
-  models = {
-    datatablescroller: new mod.Scroller,
-    datatable: new mod.Datatable(["name","email","roles","publishers"]),
-    admins: ko.observableArray([])
-    messages: ko.observableArray([])
-  }
-  
+  class Admins
+    constructor: (d) ->
+      self = @
+
+      @datatablescroller = new mod.Scroller
+
+      @datatable = new mod.Datatable(["name","email","roles","publishers"])
+
+      @admins = ko.observableArray([])
+
+      @messages = ko.observableArray([])
+
+  models = new Admins
+    
   ko.applyBindings(models)
   
   window.models = models

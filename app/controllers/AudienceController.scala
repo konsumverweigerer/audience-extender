@@ -17,7 +17,18 @@ object AudienceController extends Controller with Secured {
       (json \ "name").as[String]))
 
     def writes(audience: Audience) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(audience.id)),
       "name" -> JsString(audience.name)))
+  }
+  
+  implicit object WebsiteFormat extends Format[Website] {
+    def reads(json: JsValue) = JsSuccess(new Website(
+      (json \ "name").as[String]))
+
+    def writes(website: Website) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(website.id)),
+      "url" -> JsString(website.url),
+      "name" -> JsString(website.name)))
   }
 
   def audiences = IsAuthenticated { adminid =>
