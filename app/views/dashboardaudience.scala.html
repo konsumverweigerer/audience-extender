@@ -2,7 +2,7 @@
 @templates.main("Dashboard") {
 @menu.admin("Dashboard")
 @menu.logout(current)
-@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard.audience").url)
+<script type="text/javascript" data-main="@routes.Assets.at("javascripts/dashboard.audience.js")" src="@routes.WebJarAssets.requirejs"></script>
 <script type="text/javascript">
 //<![CDATA[
 window.data = {};
@@ -115,7 +115,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 					</div>
 				</div>
 				<div class="row">
-					@elements.pagination("datatablescroller")
+				    @elements.pagination("datatablescroller")
 				</div>
 				<div class="row">
 					<div class="col-md-12">
@@ -138,7 +138,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 					</div>
 				</div>
 				<div class="row">
-					@elements.pagination("datatablescroller")
+				    @elements.pagination("datatablescroller")
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -155,187 +155,5 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 		</div>
 	</div>
 </div>
-
-<div class="modal fade" id="editAudience" tabindex="-1" role="dialog" aria-labelledby="editAudience" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">New/Edit Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
-			</div>
-			<div class="modal-body">
-				<h3 class="m-top-null">Select Website</h3>
-				<div class="box-strips">
-					<div class="row">
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Leads Con Web Retargeting</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
-						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Google.com</div></div>
-							<a href="#" class="thumbnail-link selected"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
-						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Leads Con Web Retargeting Leads Con Web Retargeting</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
-						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Leads Con Web RetargetingLeadsConWebRetargeting</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" class="img-responsive thumbnail-site" /></a>
-							<div class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></div>
-						</div>
-						<div class="col-md-2 text-center">
-							<div class="website-name"><div>Add New Website</div></div>
-							<a href="#" class="thumbnail-link"><img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" class="img-responsive thumbnail-add" /></a>
-						</div>
-						<div class="col-md-2 text-center">
-
-						</div>
-					</div>
-				</div>
-
-				<div class="box-1">
-					<h3>New Website</h3>
-					<form class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" id="websitename" placeholder="Website Name">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
-							<div class="col-sm-9">
-								<textarea class="form-control" rows="3" id="trackingcode">Tracking Code here...</textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
-							<div class="col-sm-9">
-								<input type="email" class="form-control" id="email" placeholder="Email">
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Send to Your Mail</button>
-								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
-								<button type="submit" class="btn btn-primary">Save Settings</button>
-							</div>
-						</div>
-					</form>
-				</div>
-
-				<div class="box-1">
-					<h3>Edit Website</h3>
-					<form class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" id="websitename" placeholder="Google.com" disabled>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
-							<div class="col-sm-9">
-								<textarea class="form-control" rows="3" id="trackingcode">Tracking Code here...</textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
-							<div class="col-sm-9">
-								<input type="email" class="form-control" id="email" placeholder="Email">
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Send to Your Mail</button>
-								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
-								<button type="submit" class="btn btn-primary">Save Settings</button>
-							</div>
-						</div>
-					</form>
-				</div>
-
-				<div class="m-top-btm">
-					<h3>Path targeting</h3>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="btn-group btn-group-first" data-toggle="buttons">
-								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option1"> On
-								</label>
-								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option2"> Off
-								</label>
-							</div>
-							All
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="btn-group btn-group-middle" data-toggle="buttons">
-								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option3"> On
-								</label>
-								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option4"> Off
-								</label>
-							</div>
-							/terms
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="btn-group btn-group-last" data-toggle="buttons">
-								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option9"> On
-								</label>
-								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option10"> Off
-								</label>
-							</div>
-							/contact
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12 m-top">
-							<form class="form-horizontal" role="form">
-								<div class="input-group">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
-									</span>
-									<input type="text" class="form-control">
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-
-				<div class="panel-group" id="accordion-example-plus">
-					<div class="panel panel-default">
-						<div class="panel-heading link">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion-example-plus" href="#collapseOne" class="collapsed">
-									3rd Party Tracking <span class="glyphicon"></span>
-								</a>
-							</h4>
-						</div>
-						<div id="collapseOne" class="panel-collapse collapse">
-							<div class="panel-body">
-								<textarea class="form-control" rows="3">Code here...</textarea>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save</button>
-			</div>
-		</div>
-	</div>
-</div>
+@parts.audienceedit(publishers)
 }

@@ -2,34 +2,32 @@
 
 alter table creative add column uuid varchar(50);
 
-create table package (
+create table campaign_package (
   id                        bigint not null,
   name                      varchar(255),
   variant                   varchar(255),
   constraint pk_package primary key (id))
 ;
 
-create sequence package_seq;
+create sequence campaign_package_seq;
 
-alter table campaign add column package_id bigint;
+alter table campaign add column campaign_package_id bigint;
 
-alter table campaign add column value decimal(6,4);
+alter table campaign add constraint fk_campaign_campaign_package_1 foreign key (campaign_package_id) references campaign_package (id) on delete restrict on update restrict;
+create index ix_campaign_campaign_package_1 on campaign (campaign_package_id);
 
-alter table campaign add constraint fk_campaign_package_1 foreign key (package_id) references package (id) on delete restrict on update restrict;
-create index ix_campaign_package_1 on cookie (package_id);
-
-create unique index uuid_id on creative (uuid);
+create unique index creative_uuid_id on creative (uuid);
 
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
 
-drop table if exists package;
+drop table if exists campaign_package;
 
 SET REFERENTIAL_INTEGRITY TRUE;
 
-drop sequence if exists package_seq;
+drop sequence if exists campaign_package_seq;
 
-alter table campaign drop column package_id;
+alter table campaign drop column campaign_package_id;
 
 alter table creative drop column uuid;

@@ -2,7 +2,7 @@
 @templates.main("Admins") {
 @menu.admin("Admins")
 @menu.logout(current)
-@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/admins").url)
+<script type="text/javascript" data-main="@routes.Assets.at("javascripts/admins.js")" src="@routes.WebJarAssets.requirejs"></script>
 <script type="text/javascript">
 //<![CDATA[
 window.data = {};

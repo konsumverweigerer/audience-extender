@@ -60,6 +60,7 @@ GET      /dashboard/:t                   controllers.MainController.dashboardSel
 GET      /require.js                     controllers.WebJarAssets.requirejs
 GET      /routes.js                      controllers.MainController.javascriptRoutes
 GET      /webjars/*file                  controllers.WebJarAssets.at(file)
+GET      /assets/javascripts-min/*file   controllers.MainController.minAssetsAt(path="/public/javascripts/", file)
 GET      /assets/*file                   controllers.Assets.at(path="/public", file)
 
 # Every other page
