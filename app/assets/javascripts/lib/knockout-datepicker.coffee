@@ -40,5 +40,19 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 						val = ''
 					$datepicker.datepicker('setDate', val, true)
 				, owner : this, disposeWhenNodeIsRemoved : element })
+		, update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
+			$element = $(element)
+			value = valueAccessor()
+			allBindings = allBindingsAccessor()
+			
+			$datepicker = $element.datepicker()
+			
+			if $datepicker.is('.input-daterange')
+				val = ko.utils.unwrapObservable(valueAccessor())
+				if val == null
+					val = '';
+				$editable.editable('setDate', val, true)
+			else
+				$datepicker = $element.datepicker()
 	}
 )

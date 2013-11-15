@@ -70,7 +70,7 @@ public class Admin extends Model {
 	public String pwdVerify;
 
 	@MaxLength(512)
-	public String admin_roles;
+	public String adminRoles;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
@@ -86,7 +86,7 @@ public class Admin extends Model {
 		this.email = email;
 		this.name = name;
 		this.password = password;
-		this.admin_roles = "";
+		this.adminRoles = "";
 	}
 
 	public String getIdString() {
@@ -249,8 +249,8 @@ public class Admin extends Model {
 
 	public List<String> getRoles() {
 		final List<String> roles = new ArrayList<String>();
-		if (this.admin_roles != null) {
-			for (final String role : this.admin_roles.split("[,]")) {
+		if (this.adminRoles != null) {
+			for (final String role : this.adminRoles.split("[,]")) {
 				roles.add(role);
 			}
 		}
