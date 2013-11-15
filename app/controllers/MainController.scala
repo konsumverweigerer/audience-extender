@@ -176,7 +176,7 @@ object MainController extends Controller with Secured {
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }
 
-  private def resourceNameAt(path: String, file: String): Option[String] = {
+  def resourceNameAt(path: String, file: String): Option[String] = {
     val decodedFile = play.utils.UriEncoding.decodePath(file, "utf-8")
     val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
     if (new java.io.File(resourceName).isDirectory || !new java.io.File(resourceName).getCanonicalPath.startsWith(new java.io.File(path).getCanonicalPath)) {
@@ -197,12 +197,17 @@ object MainController extends Controller with Secured {
       Logger.info("really get minified " + path + " / " + newfile)
       resourceNameAt(path, newfile).map(resourceName => {
         Play.resource(resourceName).map(resource => {
-          Logger.info("getting minified " + path + " / " + newfile)
+          Logger.info("getting minified " + path + " / " + newfile + " at " + resourceName)
           controllers.Assets.at(path, newfile)
+        }).getOrElse(Option())
+      }).getOrElse(resourceNameAt(path, file).map(resourceName => {
+        Play.resource(resourceName).map(resource => {
+          Logger.info("getting fallback " + path + " / " + file + " at " + resourceName)
+          controllers.Assets.at(path, file)
         }).getOrElse(
           controllers.Assets.at(path, file))
       }).getOrElse(
-        controllers.Assets.at(path, file))
+        controllers.Assets.at(path, file)))
     }
   }
 

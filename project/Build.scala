@@ -5,7 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName = "audience-extender"
-  val appVersion = "0.1"
+  val appVersion = "0.5.1"
 
   val appDependencies = Seq(
     javaCore,
@@ -34,6 +34,7 @@ object ApplicationBuild extends Build {
     "org.mockito" % "mockito-core" % "1.9.5" % "test")
 
   val main = play.Project(appName, appVersion, appDependencies).settings( // ebeanEnabled := false
+      sources in doc in Compile := List(),
       requireJs += "app.js",
       requireJs += "dashboard.campaign.js",
       requireJs += "dashboard.audiencejs",
