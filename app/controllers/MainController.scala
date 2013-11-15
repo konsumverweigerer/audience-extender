@@ -197,7 +197,15 @@ object MainController extends Controller with Secured {
       Logger.info("really get minified " + path + " / " + newfile)
       resourceNameAt(path, newfile).map(resourceName => {
         Play.resource(resourceName).map(resource => {
-          Logger.info("getting minified " + path + " / " + newfile)
+          Logger.info("getting minified " + path + " / " + newfile + " at " + resourceName)
+          controllers.Assets.at(path, newfile)
+        }).getOrElse(
+          controllers.Assets.at(path, file))
+      }).getOrElse(
+        controllers.Assets.at(path, file))
+      resourceNameAt(path, file).map(resourceName => {
+        Play.resource(resourceName).map(resource => {
+          Logger.info("getting fallback " + path + " / " + file + " at " + resourceName)
           controllers.Assets.at(path, newfile)
         }).getOrElse(
           controllers.Assets.at(path, file))

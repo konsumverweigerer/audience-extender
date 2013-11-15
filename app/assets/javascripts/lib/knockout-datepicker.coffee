@@ -6,8 +6,6 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 			allBindings = allBindingsAccessor()
 			datepickerOptions = allBindings.datepickerOptions || {}
 
-			datepickerOptions.value = ko.utils.unwrapObservable(value)
-
 			if !datepickerOptions.name
 				$.each(bindingContext.$data, (k, v) ->
 					if v == value
