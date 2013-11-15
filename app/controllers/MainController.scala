@@ -176,6 +176,16 @@ object MainController extends Controller with Secured {
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }
 
+  private def resourceNameAt(path: String, file: String): Option[String] = {
+    val decodedFile = play.utils.UriEncoding.decodePath(file, "utf-8")
+    val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
+    if (new java.io.File(resourceName).isDirectory || !new java.io.File(resourceName).getCanonicalPath.startsWith(new java.io.File(path).getCanonicalPath)) {
+      None
+    } else {
+      Some(resourceName)
+    }
+  }
+
   /** TODO: handle NotFound **/
   def minAssetsAt(path: String, file: String) = {
     import Play.current
@@ -185,12 +195,14 @@ object MainController extends Controller with Secured {
     } else {
       val newfile = file.replace(".js", ".min.js")
       Logger.info("really get minified " + path + " / " + newfile)
-      if (Play.resource(newfile).isEmpty) {
-        Logger.info("fall back to non-minified " + path + " / " + file)
-        controllers.Assets.at(path, file)
-      } else {
-        controllers.Assets.at(path, newfile)
-      }
+      resourceNameAt(path, newfile).map(resourceName => {
+        Play.resource(resourceName).map(resource => {
+          Logger.info("getting minified " + path + " / " + newfile)
+          controllers.Assets.at(path, newfile)
+        }).getOrElse(
+          controllers.Assets.at(path, file))
+      }).getOrElse(
+        controllers.Assets.at(path, file))
     }
   }
 
@@ -202,10 +214,8 @@ object MainController extends Controller with Secured {
       } catch {
         case nf: java.lang.IllegalArgumentException =>
       }
-      controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
-    } else {
-      controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
     }
+    controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
   }
 
   /** TODO: handle NotFound **/
