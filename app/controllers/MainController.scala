@@ -76,14 +76,14 @@ object MainController extends Controller with Secured {
     implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         contactForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(html.contact(formWithErrors,admin)),
+          formWithErrors => BadRequest(html.contact(formWithErrors, admin)),
           message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent"))
       }.getOrElse(
         contactForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(html.contact(formWithErrors,null)),
+          formWithErrors => BadRequest(html.contact(formWithErrors, null)),
           message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")))
   }
-  
+
   /**
    * Handle login form submission.
    */
@@ -119,9 +119,9 @@ object MainController extends Controller with Secured {
   }
 
   def base = index("")
-  
+
   def dashboardAudience = IsAuthenticated { adminid =>
-   implicit request =>
+    implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
@@ -129,7 +129,7 @@ object MainController extends Controller with Secured {
   }
 
   def dashboardCampaign = IsAuthenticated { adminid =>
-   implicit request =>
+    implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
@@ -139,12 +139,12 @@ object MainController extends Controller with Secured {
   def dashboard = dashboardAudience
 
   def dashboardSelect(t: String = "audience") = IsAuthenticated { adminid =>
-   implicit request =>
+    implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         if ("campaign".equals(t)) {
-        	Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
-        }else {
-        	Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
+          Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
+        } else {
+          Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
         }
       }.getOrElse(
         Ok(html.index(Admin.findByEmail(""))))
@@ -162,6 +162,9 @@ object MainController extends Controller with Secured {
         routes.javascript.AudienceController.audienceList,
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }
+
+  def minAssetsAt(path: String, file: String) =
+    controllers.Assets.at(path, if (file.endsWith(".min.js")) (file) else (file.replace(".js", ".min.js")))
 }
 
 /**
@@ -201,7 +204,7 @@ trait Secured {
       }
     }
   }
-    
+
   def CheckIfIsAuthenticated(f: => String => Request[AnyContent] => Result) = TryAuthenticated(adminid) { admin =>
     Action(request => f(admin)(request))
   }

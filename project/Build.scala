@@ -35,6 +35,9 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings( // ebeanEnabled := false
       requireJs += "app.js",
+      requireJs += "dashboard.campaign.js",
+      requireJs += "dashboard.audiencejs",
+      requireJs += "admins.js",
       requireJs += "dashboard.js"
   )
 }
