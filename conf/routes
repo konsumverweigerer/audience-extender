@@ -63,7 +63,7 @@ GET      /webjars/*file                  controllers.MainController.minProdWebJa
 # workaround js-min path probs
 GET      /assets/javascripts-min/*file   controllers.MainController.minAssetsAt(path="/public/javascripts/", file)
 GET      /assets/javascripts/*file       controllers.MainController.minProdAssetsAt(path="/public/javascripts/", file)
-GET      /assets/stylesheets/*file       controllers.MainController.minProdAssetsAt(path="/public/stylesheets", file)
+#GET      /assets/stylesheets/*file       controllers.MainController.minProdAssetsAt(path="/public/stylesheets", file)
 
 GET      /assets/*file                   controllers.Assets.at(path="/public", file)
 

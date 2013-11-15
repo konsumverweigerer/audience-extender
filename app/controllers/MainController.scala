@@ -203,12 +203,10 @@ object MainController extends Controller with Secured {
   def minProdAssetsAt(path: String, file: String): Action[AnyContent] = {
     if (file.endsWith(".js")) {
       if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
-
         return controllers.Assets.at(path, file.replace(".js", ".min.js"))
       }
     } else if (file.endsWith(".css")) {
       if (!file.endsWith(".min.css") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
-
         return controllers.Assets.at(path, file.replace(".css", ".min.css"))
       }
     }
