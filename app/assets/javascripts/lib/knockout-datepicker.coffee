@@ -6,13 +6,6 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 			allBindings = allBindingsAccessor()
 			datepickerOptions = allBindings.datepickerOptions || {}
 
-			if !datepickerOptions.name
-				$.each(bindingContext.$data, (k, v) ->
-					if v == value
-						datepickerOptions.name = k
-						return false
-				)
-
 			if !datepickerOptions.validate && value.isValid
 				datepickerOptions.validate = (testValue) ->
 					initalValue = valueAccessor()()
@@ -26,29 +19,29 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 			if ko.isObservable(value)
 				if $datepicker.is('.input-daterange')
 					$dp = $datepicker.data("datepicker").pickers
-					$dp[0].on('save.ko', (e, params) ->
+					$dp[0].on('changeDate.ko', (e, params) ->
 						v = valueAccessor()()
 						valueAccessor()([params.newValue,v[1]])
-					)					
-					$dp[1].on('save.ko', (e, params) ->
+					)
+					$dp[1].on('changeDate.ko', (e, params) ->
 						v = valueAccessor()()
 						valueAccessor()([v[0],params.newValue])
-					)					
+					)
 				else
-					$datepicker.on('save.ko', (e, params) ->
+					$datepicker.on('changeDate.ko', (e, params) ->
 						valueAccessor()(params.newValue)
 					)
 
-			if datepickerOptions.save
-				$datepicker.on('save', datepickerOptions.save)
+			if datepickerOptions.changeData
+				$datepicker.on('changeDate', datepickerOptions.changeDate)
 
 		, update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
 			$element = $(element)
 			value = valueAccessor()
 			allBindings = allBindingsAccessor()
-			
+
 			$datepicker = $element.datepicker()
-			
+
 			if $datepicker.is('.input-daterange')
 				val = ko.utils.unwrapObservable(valueAccessor())
 				if val == null

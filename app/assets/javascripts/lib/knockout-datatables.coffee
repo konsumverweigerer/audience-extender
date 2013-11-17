@@ -5,23 +5,16 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
 			value = valueAccessor()
 			allBindings = allBindingsAccessor()
 			datatableOptions = allBindings.datatableOptions || {}
-			
-			if !datatableOptions.name
-				$.each(bindingContext.$data, (k, v) ->
-					if v == value
-						datatableOptions.name = k
-						return false
-				)
-			
+
 			$datatable = $element.dataTable(datatableOptions)
 
 		, update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
 			$element = $(element)
 			value = valueAccessor()
 			allBindings = allBindingsAccessor()
-			
+
 			$datatable = $element.dataTable()
-			
+
 			val = ko.utils.unwrapObservable(valueAccessor())
 			if val == null
 				val = [];
