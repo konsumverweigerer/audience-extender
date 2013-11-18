@@ -1,7 +1,7 @@
 @(publishers: Seq[Publisher], current: Admin)
 @templates.main("Dashboard") {
 @menu.admin("Dashboard")
-@menu.logout(current)
+@menu.logout(current, menu.publishers(publishers))
 @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard.audience.js").url, productionFolderPrefix = "")
 <script type="text/javascript">
 //<![CDATA[
