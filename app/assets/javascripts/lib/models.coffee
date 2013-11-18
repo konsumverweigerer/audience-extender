@@ -71,6 +71,17 @@ define(["webjars!knockout.js"], (ko) ->
         owner: self
       })
       
+      @dates = ko.computed({
+      	read: () ->
+      	  [self.startDate(),self.endDate()]
+      	write: (v) ->
+      	  if v.length == 2
+      	    self.startDate(v[0])
+      	    self.endDate(v[1])
+      	owner: self,
+      	deferEvaluation: true
+      })
+      
       @dateRange = ko.computed({
       	read: () ->
       	  v = ''
@@ -80,7 +91,7 @@ define(["webjars!knockout.js"], (ko) ->
       	  ranges.map( (n,i)->
       	    t = truncateToDay(nd,n.from,n.to,n.unit)
       	    if Math.abs(t[0].getTime()-sd.getTime())<3600001 && Math.abs(t[1].getTime()-ed.getTime())<3600001
-      	      v = n.name 
+      	      v = n.name
       	  )
       	  return v
       	write: (v) ->
@@ -90,9 +101,7 @@ define(["webjars!knockout.js"], (ko) ->
               self.startDate(t[0])
               self.endDate(t[1])
               self.loadData()
-            return
           )
-          return
       	owner: self,
       	deferEvaluation: true
       })
@@ -315,6 +324,8 @@ define(["webjars!knockout.js"], (ko) ->
 
       @websites = ko.observableArray(d && d.websites)
 
+      @paths = ko.observableArray(d && d.paths)
+
   class Website
     constructor: (d) ->
       self = @
@@ -326,6 +337,18 @@ define(["webjars!knockout.js"], (ko) ->
       @active = ko.observableArray(d && d.audiences)
 
       @url = ko.observable(d && d.url)
+
+  class PathTarget
+    constructor: (d) ->
+      self = @
+
+      @id = ko.observable(d && d.id)
+
+      @variant = ko.observable(d && d.variant)
+
+      @path = ko.observable(d && d.path)
+
+      @website = ko.observable(d && d.website)
 
   class Publisher
     constructor: (d) ->
@@ -363,6 +386,7 @@ define(["webjars!knockout.js"], (ko) ->
   Audience: Audience,
   Website: Website,
   Admin: Admin,
+  PathTarget: PathTarget,
   Publisher: Publisher,
   truncateToDay: truncateToDay,
   datetostr: datetostr,
