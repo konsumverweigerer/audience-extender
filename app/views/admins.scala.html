@@ -4,17 +4,17 @@
 @menu.logout(current)
 <script type="text/javascript" data-main="@routes.Assets.at("javascripts/admins.js")" src="@routes.WebJarAssets.requirejs"></script>
 <script type="text/javascript">
-//<![CDATA[
-window.data = {};
-window.data.admins = @{import play.api.libs.json._;import controllers.AdminController.AdminFormat;Html(Json.toJson(admins).toString());}
-//]]>
+	//<![CDATA[
+	window.data = {};
+	window.data.admins = @{import play.api.libs.json._;import controllers.AdminController.AdminFormat;Html(Json.toJson(admins).toString());}
+	//]]>
 </script>
 } {
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
 			<div class="row">
-			    @elements.pagination("datatablescroller")
+				@elements.pagination("datatablescroller")
 			</div>
 			<div class="row">
 				<div class="col-md-12">
@@ -35,14 +35,14 @@ window.data.admins = @{import play.api.libs.json._;import controllers.AdminContr
 				</div>
 			</div>
 			<div class="row">
-			    @elements.pagination("datatablescroller")
+				@elements.pagination("datatablescroller")
 			</div>
 		</div>
 		<div class="col-md-3">
-			<p>
+			<p class="m-top">
 				<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-toggle="modal" data-target="#editAudience"><div></div><span class="glyphicon glyphicon-plus-sign"></span> New Admin</button>
 			</p>
 		</div>
-	</article>
+	</div>
 </div>
 }
