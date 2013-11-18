@@ -66,12 +66,12 @@ define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery
 			$element = $(element)
 			value = valueAccessor()
 			allBindings = allBindingsAccessor()
-			
+
 			$editable = $element.editable()
-			
+
 			val = ko.utils.unwrapObservable(valueAccessor())
 			if val == null
-				val = '';
+				val = ''
 			$editable.editable('setValue', val, true)
 	}
 )

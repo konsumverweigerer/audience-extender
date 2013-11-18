@@ -17,7 +17,7 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
 
 			val = ko.utils.unwrapObservable(valueAccessor())
 			if val == null
-				val = [];
+				val = []
 			$datatable.fnClearTable()
 			i = 0
 			while i++ < val.length

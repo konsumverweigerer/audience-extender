@@ -53,7 +53,7 @@ define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jque
 			else
 				val = ko.utils.unwrapObservable(valueAccessor())
 				if val == null
-					val = '';
+					val = ''
 				$datepicker.datepicker('setDate', val)
 	}
 )

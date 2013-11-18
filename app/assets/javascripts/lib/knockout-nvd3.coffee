@@ -18,11 +18,11 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!jquery.js" ], (ko) 
 
 				val = ko.utils.unwrapObservable(valueAccessor())
 				if val == null
-					val = [];
+					val = []
 				$datatable.fnClearTable()
 				i = 0
-				while i++ < val.length
-					$datatable.fnAddData(val[i])
+				while i < val.length
+					$datatable.fnAddData(val[i++])
 		}
 	)
 )
