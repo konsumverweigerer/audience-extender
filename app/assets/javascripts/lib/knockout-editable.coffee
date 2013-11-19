@@ -1,4 +1,5 @@
 define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery.js" ], (ko) ->
+  $.fn.editable.defaults.mode = 'inline'
   ko.bindingHandlers.editable = {
     init : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
       $element = $(element)

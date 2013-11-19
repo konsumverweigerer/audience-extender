@@ -1,5 +1,5 @@
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
-"ext/jquery.jcarousel", "lib/bootstrap-slider", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables",
+"ext/jquery.jcarousel", "ext/bootstrap-slider", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables",
 "/routes.js"], (ko, mod) ->
   class Dashboard
     constructor: (d) ->
@@ -21,7 +21,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @websites = ko.observableArray([])
 
-      @currentcampaign = ko.observable()
+      @currentcampaign = ko.observable(new mod.Campaign({name:''}))
 
       @messages = ko.observableArray([])
 

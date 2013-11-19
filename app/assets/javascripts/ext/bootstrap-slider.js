@@ -18,7 +18,7 @@ define(["webjars!bootstrap.js", "webjars!jquery.js"], function() {
  * limitations under the License.
  * ========================================================= */
  
-!function( $ ) {
+(function( $ ) {
 
 	var Slider = function(element, options) {
 		this.element = $(element);
@@ -386,5 +386,5 @@ define(["webjars!bootstrap.js", "webjars!jquery.js"], function() {
 
 	$.fn.slider.Constructor = Slider;
 
-}( jQuery );
+})( jQuery );
 });
