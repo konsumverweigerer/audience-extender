@@ -1,5 +1,5 @@
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", 
-"lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables", 
+"ext/jquery.jcarousel", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables", 
 "/routes.js"], (ko, mod) ->
   class AudienceDashboard
     constructor: (d) ->
