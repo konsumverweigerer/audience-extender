@@ -436,14 +436,15 @@ th {
 		text-align:center;
 	}
 }
-/*
-.selected .thumbnail-site img {
-	border:5px solid rgba(39, 89, 128, 0.5);
+.selected .thumbnail-site > span {
+	background:url("/assets/images/selected.png") no-repeat bottom right;
+	display:block;
+	height:97px;
+	position:absolute;
+	right:18px;
+	top:5px;
+	width:134px;
 }
-.active .thumbnail-site img {
-	border:5px solid rgba(150, 150, 150, 1.0);
-}
-*/
 .website-block-add .thumbnail-site img {
 	border:5px solid rgba(243, 179, 0, 0.3);
 }
@@ -457,11 +458,11 @@ th {
 .website-block-add .website-name {
 	color:@color-yellow;
 }
-.selected {
-	background:rgba(39, 89, 128, 0.15);
-}
 .active {
+	background:#f2f2ea;
+	/*
 	background:rgba(150, 150, 150, 0.2);
+	*/
 }
 
 
