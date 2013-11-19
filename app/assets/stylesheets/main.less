@@ -117,6 +117,147 @@ h3 {
 	}
 }
 
+
+
+//wizard
+.wizard {
+	background-color:#f9f9f9;
+	border:1px solid #d4d4d4;
+	overflow:hidden;
+	position:relative;
+	-webkit-border-radius:4px 4px 0 0;
+		 -moz-border-radius:4px 4px 0 0;
+					border-radius:4px 4px 0 0;
+	*zoom:1;
+	-webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.065);
+		 -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.065);
+					box-shadow:0 1px 4px rgba(0, 0, 0, 0.065);
+}
+
+.wizard:before,
+.wizard:after {
+	content:" ";
+	display:table;
+	line-height:0;
+}
+.wizard:after {
+	clear:both;
+}
+.wizard ul {
+	list-style:none outside none;
+	margin:0;
+	padding:0;
+	width:4000px;
+}
+.wizard ul.previous-disabled li.complete {
+	cursor:default;
+}
+.wizard ul.previous-disabled li.complete:hover {
+	background:#f3f4f5;
+	color:#468847;
+	cursor:default;
+}
+.wizard ul.previous-disabled li.complete:hover .chevron:before {
+	border-left-color:#f3f4f5;
+}
+.wizard ul li {
+	background:#ededed;
+	color:#999;
+	cursor:default;
+	float:left;
+	font-size:16px;
+	height:46px;
+	line-height:46px;
+	margin:0;
+	padding:0 20px 0 30px;
+	position:relative;
+}
+.wizard ul li .chevron {
+	border:24px solid transparent;
+	border-left:14px solid #d4d4d4;
+	border-right:0;
+	display:block;
+	position:absolute;
+	right:-14px;
+	top:0;
+	z-index:1;
+}
+.wizard ul li .chevron:before {
+	border:24px solid transparent;
+	border-left:14px solid #ededed;
+	border-right:0;
+	content:" ";
+	display:block;
+	position:absolute;
+	right:1px;
+	top:-24px;
+}
+
+.wizard ul li.complete {
+	background:#f3f4f5;
+	color:#468847;
+}
+.wizard ul li.complete:hover {
+	background:#e7eff8;
+	cursor:pointer;
+}
+.wizard ul li.complete:hover .chevron:before {
+	border-left:14px solid #e7eff8;
+}
+.wizard ul li.complete .chevron:before {
+	border-left:14px solid #f3f4f5;
+}
+.wizard ul li.active {
+	background:#f1f6fc;
+	color:#3a87ad;
+}
+.wizard ul li.active .chevron:before {
+	border-left:14px solid #f1f6fc;
+}
+.wizard ul li .badge {
+	margin-right:8px;
+}
+.wizard ul li:first-child {
+	border-radius:4px 0 0 0;
+	padding-left:20px;
+}
+
+.wizard .actions {
+	background-color:#e5e5e5;
+	border-left:1px solid #d4d4d4;
+	float:right;
+	line-height:46px;
+	padding-left:15px;
+	padding-right:15px;
+	position:absolute;
+	right:0;
+	vertical-align:middle;
+	z-index:1000;
+}
+.wizard .actions a {
+	font-size:12px;
+	line-height:45px;
+	margin-right:8px;
+}
+
+.step-content {
+	background:#f5f5f5;
+	border:1px solid #d4d4d4;
+	border-width:0 1px 1px;
+	padding:10px;
+}
+.step-content .step-pane {
+	display:none;
+}
+.step-content .active {
+	display:block;
+}
+.step-content .active .btn-group .active {
+	display:inline-block;
+}
+
+
+
 .website-block-wrapper {
 	background:rgba(255, 255, 255, 0.5);
 	border:1px solid #eee;
@@ -124,44 +265,46 @@ h3 {
 }
 .website-block-add-wrapper {
 	float:right;
-	width:200px;
+	width:190px;
 }
 
-.carousel-wrapper {
+.jcarousel-wrapper {
 	border-right:1px solid #eee;
-	margin-right:200px;
 	padding:0 60px;
 	position:relative;
 }
-.carousel {
+.jcarousel-wrapper.with-add-block {
+	margin-right:190px;
+}
+.jcarousel {
 	overflow:hidden;
 	position:relative;
 	width:100%;
 }
-.carousel ul {
+.jcarousel ul {
 	list-style:none outside none;
 	margin:0;
 	padding:0;
 	position:relative;
 	width:20000em;
 }
-.carousel li {
+.jcarousel li {
 	-moz-box-sizing:border-box;
 	border-right:1px solid #eee;
 	float:left;
-	width:191px;
+	width:188px;
 	&:first-child {
 		border-left:1px solid #eee;
 	}
 }
-.carousel-control-prev {
+.jcarousel-control-prev {
 	left:15px;
 }
-.carousel-control-next {
+.jcarousel-control-next {
 	right:15px;
 }
-.carousel-control-prev,
-.carousel-control-next {
+.jcarousel-control-prev,
+.jcarousel-control-next {
 	background:@color-blue;
 	border-radius:30px;
 	color:#fff;
@@ -175,7 +318,8 @@ h3 {
 	top:50%;
 	width:30px;
 	&:hover,
-	&:active	{
+	&:active,
+	&:focus {
 		background:rgba(39, 89, 128, 0.9);
 		color:#fff;
 		text-decoration:none;
@@ -307,9 +451,9 @@ th {
 	margin-bottom:20px;
 	padding-bottom:20px;
 }
-.legend-revenu,
-.legend-ad-spent,
-.legend-profit {
+div.legend-revenu,
+div.legend-ad-spent,
+div.legend-profit {
 	font-family:@font1;
 	font-size:24px;
 	font-weight:300;
@@ -391,7 +535,7 @@ th {
 .website-audience,
 .website-actions {
 	display:block;
-	max-width:190px;
+	max-width:188px;
 	text-align:center;
 }
 .website-name {
@@ -432,8 +576,6 @@ th {
 	text-decoration:none;
 	.website-actions .btn {
 		display:inline-block;
-		max-width:160px;
-		text-align:center;
 	}
 }
 .selected .thumbnail-site > span {
@@ -441,7 +583,7 @@ th {
 	display:block;
 	height:97px;
 	position:absolute;
-	right:18px;
+	right:16px;
 	top:5px;
 	width:134px;
 }
@@ -458,7 +600,7 @@ th {
 .website-block-add .website-name {
 	color:@color-yellow;
 }
-.active {
+.website-block.active {
 	background:#f2f2ea;
 	/*
 	background:rgba(150, 150, 150, 0.2);
