@@ -1,23 +1,48 @@
-require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", "lib/knockout-editable", "/routes.js"], (ko, mod) ->
-  class Dashboard
+require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", 
+"lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables", 
+"/routes.js"], (ko, mod) ->
+  class AudienceDashboard
     constructor: (d) ->
       self = @
 
-      @chartdaterange = new mod.DateRange
+      @audiencechartdaterange = new mod.DateRange
 
-      @datatablescroller = new mod.Scroller
+      @audiencetablescroller = new mod.Scroller
 
-      @datatablesearchbar = new mod.Searchbar
+      @audiencetablesearchbar = new mod.Searchbar
 
-      @chartdata = new mod.Chartdata
+      @audiencechartdata = new mod.Chartdata
 
-      @datatable = new mod.Datatable(["name","state","revenue","cost","from","to"])
+      @audiencedatatable = new mod.Datatable(["name","state","revenue","cost","from","to"])
 
       @publisher = ko.observable()
 
       @publishers = ko.observableArray([])
 
       @websites = ko.observableArray([])
+
+      @minWebsite = ko.observable(1)
+
+      @websiteCount = ko.observable(4)
+
+      @visibleWebsites = ko.computed(() ->
+        ii = Math.max(self.minWebsite(),self.websites().length+1)
+        ai = Math.min(self.minWebsite()+self.websiteCount()-1,self.websites().length+1)
+        self.websites().filter((n,i) ->
+          (i + 1) >= ii && (i + 1) <= ai
+        )
+      )
+
+      @prevWebsite = () ->
+        n = self.minWebsite()
+        if n > 2
+          self.minWebsite(n - 1)
+
+      @nextWebsite = () ->
+        n = self.minWebsite()
+        m = self.websiteCount()
+        if (n + m - 1) < self.websites().length
+          self.minWebsite(n + 1)
 
       # dummy for init
       @currentaudience = ko.observable(new mod.Audience({name:''}))
@@ -47,7 +72,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         else
           alert('persist website')
 
-  models = new Dashboard
+  models = new AudienceDashboard
     
   ko.applyBindings(models)
   
@@ -70,7 +95,11 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         et justo duo dolores et ea rebum. Stet clita kasd gubergren, 
         no sea takimata sanctus est Lorem ipsum dolor sit amet.','info'))
   models.chartdaterange.loadData()
-  
+
+
+
+
+
   require(["webjars!nv.d3.js"], () ->
     data = ->
       m = (models.chartdaterange.endDate()-models.chartdaterange.startDate())/(24*60*60*1000)
@@ -156,63 +185,17 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         $('input.date-picker[name=start]').datepicker('setDate',models.chartdaterange.startDate())
         $('input.date-picker[name=end]').datepicker('setDate',models.chartdaterange.endDate())
       )
-      $('input.date-picker').on('changeDate',(v) ->
-        if v.target.name == 'start'
-          models.chartdaterange.formattedStartDate(datetostr(v.date))
-        if v.target.name == 'end'
-          models.chartdaterange.formattedEndDate(datetostr(v.date))
-      )
       models.chartdaterange.dateRange('Last Day')
     )
-    require(["webjars!jquery.dataTables.js"], () ->
-      $.extend($.fn.dataTableExt.oSort, {
-        'currency-asc': (a,b) -> 
-          a-b
-        'currency-desc': (a,b) -> 
-          b-a
-        'currency-pre': (a) ->
-          if a=='-'
-            return 0
-          parseFloat(a.replace(/[^\d\-\.]/g,''))
-        'percent-asc': (a,b) -> 
-          a-b
-        'percent-desc': (a,b) -> 
-          b-a
-        'percent-pre': (a) ->
-          if a==''
-            return 0
-          parseFloat(a.replace(/[^\d\-\.]/g,''))
-      })
-      datatable = $('table.data-table').dataTable({
-        bLengthChange: false,
-        aoColumns: [
-          { sType: "string" },
-          { sType: "percent" },
-          { sType: "currency" },
-          { sType: "currency" },
-          { sType: "date" },
-          { sType: "date" }
-        ],
-        sDom: 'lrti',
-        fnInfoCallback: (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
-          dl = oSettings._iDisplayLength
-          models.datatablescroller.pageSize(dl)
-          models.datatablescroller.fromIndex(iStart)
-          models.datatablescroller.maxIndex(iMax)
-          return ''
-      });
-      models.datatablescroller.currentPage.subscribe((nv)->
-        datatable.fnPageChange(nv-1)
-      )
-      models.datatablesearchbar.filldata = () ->
-        datatable.fnClearTable()
-        i = 0
-        n = new Date()
-        m = 40+Math.ceil(100*Math.random())
-        while i++ < m
-          d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-          datatable.fnAddData(['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
-            '$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])])
-    )
+    models.datatablesearchbar.filldata = () ->
+      i = 0
+      n = new Date()
+      m = 40+Math.ceil(100*Math.random())
+      val = []
+      while i < m
+        d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
+        val[i++] = ['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
+          '$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])]
+      models.datatable.data(val)
   )
 )
