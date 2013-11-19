@@ -1,4 +1,6 @@
-require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js", "lib/knockout-editable", "/routes.js", "ext/roman"], (ko, mod) ->
+require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
+"ext/jquery.jcarousel", "lib/bootstrap-slider", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables",
+"/routes.js"], (ko, mod) ->
   class Dashboard
     constructor: (d) ->
       self = @
@@ -34,9 +36,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           alert('persist campaign')
 
   models = new Dashboard
-    
+
   ko.applyBindings(models)
-  
+
   window.models = models
   #init
 
@@ -50,13 +52,13 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
   	models.publisher(models.publishers()[0])
 
   models.messages.push(new mod.Message('Kampagne MegaAudiences läuft bald aus',
-        'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore 
-        magna aliquyam erat, sed diam voluptua. At vero eos et accusam 
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, 
+        'Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+        sed diam nonumy eirmod tempor invidunt ut labore et dolore
+        magna aliquyam erat, sed diam voluptua. At vero eos et accusam
+        et justo duo dolores et ea rebum. Stet clita kasd gubergren,
         no sea takimata sanctus est Lorem ipsum dolor sit amet.','info'))
   models.chartdaterange.loadData()
-  
+
   require(["webjars!nv.d3.js"], () ->
     data = ->
       m = (models.chartdaterange.endDate()-models.chartdaterange.startDate())/(24*60*60*1000)
@@ -78,7 +80,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           key: s,
           cls: t,
           values: data,
-          timeframe: tf 
+          timeframe: tf
         }
       )
 
@@ -89,10 +91,10 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       else
         i = models.chartdaterange.startDate().getTime()+(i*24*60*60*1000)
       {x: i, y: 100*Math.max(0, d)}
-         
-    stream_layers = (n, m, o) -> 
+
+    stream_layers = (n, m, o) ->
       if arguments.length < 3
-        o = 0    
+        o = 0
       bump = (a) ->
         x = 1 / (.1 + Math.random())
         y = 2 * Math.random() - .5
@@ -128,7 +130,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
               d3.time.format(models.chartdaterange.format())(new Date(d))
             );
           chart.yAxis.showMaxMin(false)
-            .tickFormat((d) -> 
+            .tickFormat((d) ->
               '$'+(d3.format('.2f'))(d)
             );
           chart.color(['#bf0c0c','#275980','#f3b300'])
@@ -152,17 +154,17 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     )
     require(["webjars!jquery.dataTables.js"], () ->
       $.extend($.fn.dataTableExt.oSort, {
-        'currency-asc': (a,b) -> 
+        'currency-asc': (a,b) ->
           a-b
-        'currency-desc': (a,b) -> 
+        'currency-desc': (a,b) ->
           b-a
         'currency-pre': (a) ->
           if a=='-'
             return 0
           parseFloat(a.replace(/[^\d\-\.]/g,''))
-        'percent-asc': (a,b) -> 
+        'percent-asc': (a,b) ->
           a-b
-        'percent-desc': (a,b) -> 
+        'percent-desc': (a,b) ->
           b-a
         'percent-pre': (a) ->
           if a==''
