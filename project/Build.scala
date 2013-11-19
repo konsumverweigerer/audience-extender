@@ -31,6 +31,7 @@ object ApplicationBuild extends Build {
     "org.webjars" % "jquery-file-upload" % "8.4.2",
     "org.webjars" % "bootstrap-datepicker" % "1.2.0",
     "org.webjars" % "x-editable-bootstrap" % "1.5.1",
+    "org.webjars" % "jqbootstrapvalidation" % "1.3.6",
     "org.mockito" % "mockito-core" % "1.9.5" % "test")
 
   val main = play.Project(appName, appVersion, appDependencies).settings( // ebeanEnabled := false
