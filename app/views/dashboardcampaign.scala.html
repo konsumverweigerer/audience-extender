@@ -100,12 +100,12 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 			<div class="col-md-9">
 				<div class="row">
 					<div class="col-xs-6">
-						<select class="form-control" data-bind="options: datatablesearchbar.availableCategories, value: datatablesearchbar.category">
+						<select class="form-control m-btm" data-bind="options: datatablesearchbar.availableCategories, value: datatablesearchbar.category">
 						</select>
 					</div>
 					<div class="col-xs-6">
 						<form role="search">
-							<div class="input-group">
+							<div class="input-group m-btm">
 								<input type="text" data-bind="value: datatablesearchbar.query" placeholder="Search ..." class="form-control">
 								<span class="input-group-btn">
 									<button class="btn btn-primary" data-bind="click: datatablesearchbar.search" type="button">Search</button>
@@ -120,7 +120,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 				<div class="row">
 					<div class="col-md-12">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered m-null data-table">
+							<table class="table table-striped table-bordered data-table">
 								<thead>
 									<tr>
 										<th class="sorting">Name</th>
