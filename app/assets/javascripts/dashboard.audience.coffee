@@ -11,9 +11,25 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @audiencetablesearchbar = new mod.Searchbar
 
-      @audiencechartdata = new mod.Chartdata
+      @audiencechart = new mod.Chartdata
 
-      @audiencedatatable = new mod.Datatable(["name","state","revenue","cost","from","to"])
+      @audiencetable = new mod.Datatable(["name","state","revenue","cost","from","to"],
+      {state: (v) ->
+        if 'paused' == v
+          '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
+        else if 'finished' == v
+          '<span class="label label-primary"><span class="glyphicon glyphicon-flag"></span> Finished</span>'
+        else if 'active' == v
+          '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
+        else if 'pending' == v
+          '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
+        else if 'cancelled' == v
+          '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
+        else if 'rejected' == v
+          '<span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span> Rejected</span>'
+        else
+          v
+      })
 
       @publisher = ko.observable()
 
@@ -24,25 +40,6 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       @minWebsite = ko.observable(1)
 
       @websiteCount = ko.observable(4)
-
-      @visibleWebsites = ko.computed(() ->
-        ii = Math.max(self.minWebsite(),self.websites().length+1)
-        ai = Math.min(self.minWebsite()+self.websiteCount()-1,self.websites().length+1)
-        self.websites().filter((n,i) ->
-          (i + 1) >= ii && (i + 1) <= ai
-        )
-      )
-
-      @prevWebsite = () ->
-        n = self.minWebsite()
-        if n > 2
-          self.minWebsite(n - 1)
-
-      @nextWebsite = () ->
-        n = self.minWebsite()
-        m = self.websiteCount()
-        if (n + m - 1) < self.websites().length
-          self.minWebsite(n + 1)
 
       # dummy for init
       @currentaudience = ko.observable(new mod.Audience({name:''}))
@@ -88,26 +85,20 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
   if !models.publisher() && models.publishers().length
   	models.publisher(models.publishers()[0])
 
-  models.messages.push(new mod.Message('Kampagne MegaAudiences läuft bald aus',
-        'Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore
-        magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren,
-        no sea takimata sanctus est Lorem ipsum dolor sit amet.','info'))
-  models.chartdaterange.loadData()
-
-
-
-
-
   require(["webjars!nv.d3.js"], () ->
     data = ->
-      m = (models.chartdaterange.endDate()-models.chartdaterange.startDate())/(24*60*60*1000)
+      m = (models.audiencechartdaterange.endDate()-models.audiencechartdaterange.startDate())/(24*60*60*1000)
+      sd = models.audiencechartdaterange.startDate().getTime()
+      idxf = (i) ->
+        if m==1
+          i = sd+(i*60*60*1000)
+        else
+          i = sd+(i*24*60*60*1000)
       tf = 'days'
       if m==1
         m = 24
         tf = 'hours'
-      return stream_layers(3,m,.1).map( (data, i) ->
+      return stream_layers(3,m,.1,idxf).map( (data, i) ->
         if i==0
           s = 'Ad Spend'
           t = 'adspend'
@@ -125,15 +116,10 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         }
       )
 
-    stream_index = (d, i) ->
-      m = (models.chartdaterange.endDate()-models.chartdaterange.startDate())/(24*60*60*1000)
-      if m==1
-        i = models.chartdaterange.startDate().getTime()+(i*60*60*1000)
-      else
-        i = models.chartdaterange.startDate().getTime()+(i*24*60*60*1000)
-      {x: i, y: 100*Math.max(0, d)}
+    stream_index = (d, i, idxf) ->
+      {x: idxf(i), y: 100*Math.max(0, d)}
 
-    stream_layers = (n, m, o) ->
+    stream_layers = (n, m, o, idxf) ->
       if arguments.length < 3
         o = 0
       bump = (a) ->
@@ -152,50 +138,23 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           i = 0
           while i++ < 5
             bump(a)
-          return a.map(stream_index)
+          return a.map((r, s) ->
+            stream_index(r, s, idxf))
       );
-    require(["webjars!bootstrap-datepicker.js"], () ->
-      $('.input-daterange').datepicker({
-        calendarWeeks: true,
-        autoclose: true,
-        todayHighlight: true
-      });
-      models.chartdaterange.dataloader = () ->
-        nv.graphs.pop()
-        nv.addGraph(() ->
-          currentdata = data()
-          models.chartdata.charts(currentdata)
-          chart = nv.models.lineChart()
-          chart.xAxis.showMaxMin(false).staggerLabels(true)
-            .tickFormat((d) ->
-              d3.time.format(models.chartdaterange.format())(new Date(d))
-            );
-          chart.yAxis.showMaxMin(false)
-            .tickFormat((d) ->
-              '$'+(d3.format('.2f'))(d)
-            );
-          chart.color(['#bf0c0c','#275980','#f3b300'])
-          d3.select('#chart svg')
-            .datum(currentdata)
-            .transition().duration(500).call(chart)
-          nv.utils.windowResize(chart.update)
-          return chart
-        )
-      models.chartdaterange.dateRange.subscribe((nv)->
-        $('input.date-picker[name=start]').datepicker('setDate',models.chartdaterange.startDate())
-        $('input.date-picker[name=end]').datepicker('setDate',models.chartdaterange.endDate())
-      )
-      models.chartdaterange.dateRange('Last Day')
-    )
-    models.datatablesearchbar.filldata = () ->
+
+    models.audiencechartdaterange.dataloader = () ->
+      models.audiencechart.charts(data())
+    models.audiencechartdaterange.dateRange('Last Day')
+
+    models.audiencetablesearchbar.filldata = () ->
       i = 0
       n = new Date()
       m = 40+Math.ceil(100*Math.random())
       val = []
       while i < m
         d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-        val[i++] = ['Name '+Math.ceil(1000*Math.random()),(100*Math.random()).toFixed(1)+'%',
+        val[i++] = ['Name '+Math.ceil(1000*Math.random()),['paused','finished','active','pending','cancelled','rejected','40%'][(Math.floor(7*Math.random()))],
           '$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])]
-      models.datatable.data(val)
+      models.audiencetable.data(val)
   )
 )

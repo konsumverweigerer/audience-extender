@@ -5,25 +5,34 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     constructor: (d) ->
       self = @
 
-      @chartdaterange = new mod.DateRange
+      @campaignchartdaterange = new mod.DateRange
 
-      @datatablescroller = new mod.Scroller
+      @campaigntablescroller = new mod.Scroller
 
-      @datatablesearchbar = new mod.Searchbar
+      @campaigntablesearchbar = new mod.Searchbar
 
-      @chartdata = new mod.Chartdata
+      @campaignchartdata = new mod.Chartdata
 
-      @datatable = new mod.Datatable(["name","state","revenue","cost","from","to"])
+      @campaigndatatable = new mod.Datatable(["name","state","revenue","cost","from","to"])
 
       @publisher = ko.observable()
 
       @publishers = ko.observableArray([])
 
-      @websites = ko.observableArray([])
+      @campaignstep = ko.observable(1)
 
       @currentcampaign = ko.observable(new mod.Campaign({name:''}))
 
       @messages = ko.observableArray([])
+
+      @resetstep = () ->
+        {}
+
+      @nextstep = () ->
+        {}
+
+      @prevstep = () ->
+        {}
 
       @newcampaign = () ->
         self.currentcampaign(new mod.Campaign({name:'New Campaign'}))

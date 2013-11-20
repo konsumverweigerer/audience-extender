@@ -3,7 +3,7 @@ define(["webjars!knockout.js"], (ko) ->
 
   ranges = [{ name: 'Last Day', from: 2, to: 1, unit: 'day' },
      { name: 'This Week', from: 1, to: 0, unit: 'week' },
-     { name: 'Last Week', from: 2, to: 1, unit: 'week' }, 
+     { name: 'Last Week', from: 2, to: 1, unit: 'week' },
      { name: 'Last 2 Weeks', from: 3, to: 1, unit: 'week' }]
 
   truncateToDay = (d,s,e,u) ->
@@ -21,7 +21,7 @@ define(["webjars!knockout.js"], (ko) ->
 
   datetostr = (v) ->
     (v.getMonth()+1)+"/"+v.getDate()+"/"+v.getFullYear()
-	
+
   strtodate = (s) ->
     v = s.split('/')
     new Date(v[2],v[0]-1,v[1])
@@ -36,19 +36,19 @@ define(["webjars!knockout.js"], (ko) ->
   class DateRange
     constructor: () ->
       self = @
-      
+
       @availableDateRanges = ko.observableArray(rangeNames())
-      
+
       @startDate = ko.observable(truncateToDay(new Date(),2,1)[0])
-      
+
       @endDate = ko.observable(truncateToDay(new Date(),2,1)[1])
-      
+
       @format = ko.computed(()->
         if self.endDate().getTime()-self.startDate().getTime() < 2*day
           return '%H:%M'
         return '%m/%d/%Y'
       )
-  
+
       @formattedStartDate = ko.computed({
         read: () ->
           datetostr(self.startDate())
@@ -70,7 +70,7 @@ define(["webjars!knockout.js"], (ko) ->
             self.loadData()
         owner: self
       })
-      
+
       @dates = ko.computed({
       	read: () ->
       	  [self.startDate(),self.endDate()]
@@ -81,7 +81,7 @@ define(["webjars!knockout.js"], (ko) ->
       	owner: self,
       	deferEvaluation: true
       })
-      
+
       @dateRange = ko.computed({
       	read: () ->
       	  v = ''
@@ -105,27 +105,27 @@ define(["webjars!knockout.js"], (ko) ->
       	owner: self,
       	deferEvaluation: true
       })
-      
+
       @lastDay = () ->
         t = truncateToDay(new Date(),2,1)
         self.startDate(t[0])
         self.endDate(t[1])
-      
+
       @lastWeek = () ->
         t = truncateToDay(new Date(),2,1,'week')
         self.startDate(t[0])
         self.endDate(t[1])
-        
+
       @loadData = () ->
         self.dataloader()
-      
+
       @dataloader = () ->
         {}
-        
+
   class Scroller
     constructor: () ->
       self = @
-      
+
       @fromIndex = ko.observable(1)
 
       @maxIndex = ko.observable(0)
@@ -204,20 +204,20 @@ define(["webjars!knockout.js"], (ko) ->
         ni = 1+((@page-1)*ps)
         if ni>0 && ni<=mp
           self.fromIndex(ni)
-  
+
   class Searchbar
     constructor: () ->
       self = @
 
       @availableCategories = ko.observableArray(['Status 1','Status 2','Status 3'])
-      
+
       @category = ko.observable('')
 
       @query = ko.observable('')
-      
+
       @search = () ->
         self.filldata()
-        
+
       @filldata = () ->
         {}
 
@@ -232,7 +232,7 @@ define(["webjars!knockout.js"], (ko) ->
 
       @sums = ko.computed(() ->
         self.charts().map((n,i) ->
-          n.values.map((p,j) -> 
+          n.values.map((p,j) ->
             p.y
           ).reduce((x,y) ->
             x+y
@@ -245,7 +245,7 @@ define(["webjars!knockout.js"], (ko) ->
         f = self.charts().filter((n,i) ->
             cls == n.cls
           ).map((n,i) ->
-            n.values.map((p,j) -> 
+            n.values.map((p,j) ->
               p.y
             ).reduce((x,y) ->
               x+y
@@ -255,7 +255,7 @@ define(["webjars!knockout.js"], (ko) ->
         if f.length == 0
           return 0
         f[0]
-      
+
       @sumadspend = ko.computed(() ->
         self.calcsum('adspend').toFixed(0)
       )
@@ -269,22 +269,28 @@ define(["webjars!knockout.js"], (ko) ->
       )
 
   class Datatable
-    constructor: (headers) ->
+    constructor: (headers, mapper) ->
       self = @
 
-      @headers = ko.observableArray(headers)
-      
+      @headers = ko.observableArray(headers || [])
+
       @data = ko.observableArray([])
+
+      @mapper = ko.observable(mapper || {})
 
       @rows = ko.computed(() ->
         h = self.headers()
+        mm = self.mapper()
         self.data().map( (n,i) ->
           h.map( (m,j) ->
-            n[m]()
-          )   
+            if mm && mm[m]
+              mm[m](n[h.indexOf(m)])
+            else
+              n[h.indexOf(m)]
+          )
         )
       )
-      
+
   class Message
     constructor: (dortitle,content,priority) ->
       if dortitle instanceof Object
@@ -377,7 +383,7 @@ define(["webjars!knockout.js"], (ko) ->
       ))
 
   { Message: Message,
-  Datatable: Datatable, 
+  Datatable: Datatable,
   Chartdata: Chartdata,
   Searchbar: Searchbar,
   Scroller: Scroller,

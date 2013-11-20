@@ -10,11 +10,12 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
       return ''
   }
   ko.bindingHandlers.datatable = {
-    init : (element, valueAccessor, allBindingsAccessor,viewModel, bindingContext) ->
+    init : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
       $element = $(element)
       value = valueAccessor()
       allBindings = allBindingsAccessor()
-      datatableScroller = allBindings.datatableScoller
+      datatableScroller = allBindings.datatableScroller || value.scroller
+
       datatableOptions = $.extend(defaultoptions, allBindings.datatableOptions || {})
       datatableOptions.fnInfoCallback =  (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
         dl = oSettings._iDisplayLength
@@ -24,23 +25,27 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
           datatableScroller.maxIndex(iMax)
         return ''
 
-      $datatable = $element.dataTable(datatableOptions)
-    , update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
-      $element = $(element)
-      value = valueAccessor()
-      allBindings = allBindingsAccessor()
-
-      $datatable = $element.dataTable()
-
       if datatableScroller
         datatableScroller.currentPage.subscribe((nv) ->
           $datatable.fnPageChange(nv - 1)
         )
+
+      $datatable = $element.dataTable(datatableOptions)
+      if value.rows && ko.isObservable(value.rows)
+        value.rows.subscribe( (nv) ->
+          ko.bindingHandlers.datatable.update(element, value.rows, allBindingsAccessor, viewModel, bindingContext)
+        )
+    , update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
+      $element = $(element)
+      allBindings = allBindingsAccessor()
+
+      $datatable = $element.dataTable()
+
       val = ko.utils.unwrapObservable(valueAccessor())
       if val == null
         val = []
       else if val.rows
-        val.rows()
+        val = val.rows()
       $datatable.fnClearTable()
       i = 0
       while i < val.length

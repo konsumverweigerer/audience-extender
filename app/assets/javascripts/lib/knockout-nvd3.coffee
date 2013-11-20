@@ -16,7 +16,7 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js" ], (ko) ->
             d3.time.format(models.chartdaterange.format())(new Date(d))
           )
         chart.yAxis.showMaxMin(false)
-          .tickFormat((d) -> 
+          .tickFormat((d) ->
             '$'+(d3.format('.2f'))(d)
           )
         if options.colors
@@ -27,19 +27,20 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js" ], (ko) ->
         nv.utils.windowResize(chart.update)
         return chart
       )
-    ko.bindingHandlers.datatable = {
+    ko.bindingHandlers.nvddd = {
       init : (element, valueAccessor, allBindingsAccessor,viewModel, bindingContext) ->
         val = valueAccessor()
         allBindings = allBindingsAccessor()
         nvdddOptions = allBindings.nvdddOptions || {}
+
         if val == null
           val = []
         rendernvddd(element,nvdddOptions,val)
       , update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
-        value = valueAccessor()
+        val = valueAccessor()
         allBindings = allBindingsAccessor()
         nvdddOptions = allBindings.nvdddOptions || {}
-        val = valueAccessor()
+
         if val == null
           val = []
         rendernvddd(element,nvdddOptions,val)
