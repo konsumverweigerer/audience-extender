@@ -39,9 +39,31 @@ define(["webjars!knockout.js"], (ko) ->
 
       @availableDateRanges = ko.observableArray(rangeNames())
 
-      @startDate = ko.observable(truncateToDay(new Date(),2,1)[0])
+      @startDateRaw = ko.observable(truncateToDay(new Date(),2,1)[0])
 
-      @endDate = ko.observable(truncateToDay(new Date(),2,1)[1])
+      @startDate = ko.computed({
+        read: () ->
+          self.startDateRaw()
+        write: (v) ->
+          old = self.startDateRaw()
+          self.startDateRaw(v)
+          if old!=self.startDateRaw()
+            self.loadData()
+        owner: self
+      })
+
+      @endDateRaw = ko.observable(truncateToDay(new Date(),2,1)[1])
+
+      @endDate = ko.computed({
+        read: () ->
+          self.endDateRaw()
+        write: (v) ->
+          old = self.endDateRaw()
+          self.endDateRaw(v)
+          if old!=self.endDateRaw()
+            self.loadData()
+        owner: self
+      })
 
       @format = ko.computed(()->
         if self.endDate().getTime()-self.startDate().getTime() < 2*day
@@ -53,10 +75,7 @@ define(["webjars!knockout.js"], (ko) ->
         read: () ->
           datetostr(self.startDate())
         write: (v) ->
-          old = self.startDate()
           self.startDate(strtodate(v))
-          if old!=self.startDate()
-            self.loadData()
         owner: self
       })
 
@@ -64,10 +83,7 @@ define(["webjars!knockout.js"], (ko) ->
         read: () ->
           datetostr(self.endDate())
         write: (v) ->
-          old = self.endDate()
           self.endDate(strtodate(v))
-          if old!=self.endDate()
-            self.loadData()
         owner: self
       })
 
@@ -100,7 +116,6 @@ define(["webjars!knockout.js"], (ko) ->
               t = truncateToDay(new Date(),n.from,n.to,n.unit)
               self.startDate(t[0])
               self.endDate(t[1])
-              self.loadData()
           )
       	owner: self,
       	deferEvaluation: true
@@ -225,13 +240,22 @@ define(["webjars!knockout.js"], (ko) ->
     constructor: () ->
       self = @
 
-      @charts = ko.observableArray([
+      @chartcontentRaw = ko.observableArray([
         {key: 'Revenue', values: [{x:0,y:5000}]},
         {key: 'Ad spend', values: [{x:0,y:4000}]},
         {key: 'Profit', values: [{x:0,y:3000}]}])
 
+      @chartcontent = ko.computed({
+        read: () ->
+          self.chartcontentRaw()
+        write: (v) ->
+          self.chartcontentRaw(v)
+        owner: self
+      })
+
       @sums = ko.computed(() ->
-        self.charts().map((n,i) ->
+        a = self.chartcontent() || []
+        a.map((n,i) ->
           n.values.map((p,j) ->
             p.y
           ).reduce((x,y) ->
@@ -242,7 +266,8 @@ define(["webjars!knockout.js"], (ko) ->
       )
 
       @calcsum = (cls) ->
-        f = self.charts().filter((n,i) ->
+        a = self.chartcontent() || []
+        f = a.filter((n,i) ->
             cls == n.cls
           ).map((n,i) ->
             n.values.map((p,j) ->
@@ -283,10 +308,17 @@ define(["webjars!knockout.js"], (ko) ->
         mm = self.mapper()
         self.data().map( (n,i) ->
           h.map( (m,j) ->
-            if mm && mm[m]
-              mm[m](n[h.indexOf(m)])
+            dat = ''
+            if n.indexOf
+              dat = n[h.indexOf(m)]
             else
-              n[h.indexOf(m)]
+              dat = n[m]
+              if dat.call
+                dat = dat()
+            if mm && mm[m]
+              mm[m](dat)
+            else
+              dat
           )
         )
       )

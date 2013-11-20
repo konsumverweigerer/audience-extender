@@ -143,7 +143,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       );
 
     models.audiencechartdaterange.dataloader = () ->
-      models.audiencechart.charts(data())
+      models.audiencechart.chartcontent(data())
     models.audiencechartdaterange.dateRange('Last Day')
 
     models.audiencetablesearchbar.filldata = () ->

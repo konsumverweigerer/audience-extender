@@ -79,7 +79,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div id="chart" class="dashboard">
+					<div class="dashboard" data-bind="nvddd: audiencechart.chartcontent">
 						<svg></svg>
 					</div>
 				</div>
