@@ -322,6 +322,9 @@ define(["webjars!knockout.js"], (ko) ->
           )
         )
       )
+      
+      @rowClick = (d) ->
+        alert(d)
 
   class Message
     constructor: (dortitle,content,priority) ->
