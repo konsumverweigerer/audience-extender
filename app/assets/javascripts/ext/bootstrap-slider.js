@@ -1,4 +1,4 @@
-define(["webjars!bootstrap.js", "webjars!jquery.js"], function() {
+define(["webjars!bootstrap.js", "jquery"], function() {
 /* =========================================================
  * bootstrap-slider.js v2.0.0
  * http://www.eyecon.ro/bootstrap-slider

@@ -35,9 +35,13 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
         value.rows.subscribe( (nv) ->
           ko.bindingHandlers.datatable.update(element, value.rows, allBindingsAccessor, viewModel, bindingContext)
         )
-      if datatableOptions.rowClick || value.rowClick
-        $datatable.on('click','tr',() =>
-          datatableOptions.rowClick || value.rowClick
+        if datatableOptions.rowClick || value.rowClick
+          $datatable.on('click.ko-datatables','tbody tr',(e) ->
+            (datatableOptions.rowClick || value.rowClick)(value.data()[$datatable.fnGetData(@).row])
+          )
+      else if datatableOptions.rowClick || value.rowClick
+        $datatable.on('click.ko-datatables','tbody tr',(e) ->
+          (datatableOptions.rowClick || value.rowClick)($datatable.fnGetData(@))
         )
     , update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
       $element = $(element)
@@ -53,5 +57,7 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
       $datatable.fnClearTable()
       i = 0
       while i < val.length
-        $datatable.fnAddData(val[i++])
+        o = $.extend({row:i},val[i])
+        $datatable.fnAddData(o)
+        i++
   })

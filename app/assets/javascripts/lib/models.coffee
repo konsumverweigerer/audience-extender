@@ -324,7 +324,7 @@ define(["webjars!knockout.js"], (ko) ->
       )
       
       @rowClick = (d) ->
-        alert(d)
+        {}
 
   class Message
     constructor: (dortitle,content,priority) ->
@@ -352,6 +352,16 @@ define(["webjars!knockout.js"], (ko) ->
       @id = ko.observable(d && d.id)
 
       @name = ko.observable(d && d.name)
+
+      @state = ko.observable(d && d.state)
+
+      @revenue = ko.observable(d && d.revenue)
+
+      @cost = ko.observable(d && d.cost)
+
+      @from = ko.observable(d && d.from)
+
+      @to = ko.observable(d && d.to)
 
   class Audience
     constructor: (d) ->
