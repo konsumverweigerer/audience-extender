@@ -5,22 +5,6 @@
 //backend
 @import url("http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,400italic,300italic,600italic");
 
-//less
-@font1:'Titillium Web',sans-serif;
-@font2:'Open Sans',sans-serif;
-@font3:'Oswald',sans-serif;
-
-@color-blue:#275980;
-@color-red:#bf0c0c;
-@color-yellow:#f3b300;
-@color-green:#81c53e;
-
-.rounded-corners (@radius:5px) {
-	border-radius:@radius;
-	-webkit-border-radius:@radius;
-	-moz-border-radius:@radius;
-}
-
 
 
 //fixed-navbar
@@ -128,6 +112,7 @@ h3 {
 .wizard {
 	background-color:#f9f9f9;
 	border:1px solid #d4d4d4;
+	border-bottom:0;
 	overflow:hidden;
 	position:relative;
 	-webkit-border-radius:4px 4px 0 0;
@@ -161,7 +146,7 @@ h3 {
 		}
 		li {
 			background:#ededed;
-			color:#999;
+			color:#333;
 			cursor:default;
 			float:left;
 			font-size:16px;
@@ -190,14 +175,25 @@ h3 {
 					top:-24px;
 				}
 			}
+			&:first-child {
+				border-radius:4px 0 0 0;
+				padding-left:20px;
+			}
+			.badge {
+				background:#333;
+				margin-right:8px;
+			}
 			&.complete {
 				background:#f3f4f5;
-				color:#468847;
+				color:#bbb;
+				.badge {
+					background:#bbb;
+				}
 				&:hover {
-					background:#e7eff8;
+					background:#ededed;
 					cursor:pointer;
 					.chevron:before {
-						border-left:14px solid #e7eff8;
+						border-left:14px solid #ededed;
 					}
 				}
 				.chevron:before {
@@ -205,18 +201,14 @@ h3 {
 				}
 			}
 			&.active {
-				background:#f1f6fc;
-				color:#3a87ad;
-				.chevron:before {
-					border-left:14px solid #f1f6fc;
+				background:#e8e8e8;
+				color:@color-blue;
+				.badge {
+					background:@color-blue;
 				}
-			}
-			.badge {
-				margin-right:8px;
-			}
-			&:first-child {
-				border-radius:4px 0 0 0;
-				padding-left:20px;
+				.chevron:before {
+					border-left:14px solid #e8e8e8;
+				}
 			}
 		}
 	}
@@ -698,9 +690,6 @@ div.legend-profit {
 }
 .website-block.active {
 	background:#f2f2ea;
-	/*
-	background:rgba(150, 150, 150, 0.2);
-	*/
 }
 
 
@@ -762,3 +751,7 @@ nav.loginbar {
 	height:300px;
 	margin-top:15px;
 }
+
+
+
+@import "bootstrap-theme";
