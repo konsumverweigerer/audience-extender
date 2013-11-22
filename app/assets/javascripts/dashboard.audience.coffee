@@ -13,20 +13,16 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @audiencechart = new mod.Chartdata
 
-      @audiencetable = new mod.Datatable(["name","state","revenue","cost","from","to"],
+      @audiencetable = new mod.Datatable(["name","state","websites","count"],
       {state: (v) ->
         if 'paused' == v
           '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
-        else if 'finished' == v
-          '<span class="label label-primary"><span class="glyphicon glyphicon-flag"></span> Finished</span>'
         else if 'active' == v
           '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
         else if 'pending' == v
           '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
         else if 'cancelled' == v
           '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
-        else if 'rejected' == v
-          '<span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span> Rejected</span>'
         else
           v
       })
@@ -36,10 +32,6 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       @publishers = ko.observableArray([])
 
       @websites = ko.observableArray([])
-
-      @minWebsite = ko.observable(1)
-
-      @websiteCount = ko.observable(4)
 
       # dummy for init
       @currentaudience = ko.observable(new mod.Audience({name:''}))
@@ -90,27 +82,19 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       m = (models.audiencechartdaterange.endDate()-models.audiencechartdaterange.startDate())/(24*60*60*1000)
       sd = models.audiencechartdaterange.startDate().getTime()
       idxf = (i) ->
-        if m==1
+        if m<2
           i = sd+(i*60*60*1000)
         else
           i = sd+(i*24*60*60*1000)
       tf = 'days'
-      if m==1
-        m = 24
+      mn = m
+      if m<2
+        mn = 24
         tf = 'hours'
-      return stream_layers(3,m,.1,idxf).map( (data, i) ->
-        if i==0
-          s = 'Ad Spend'
-          t = 'adspend'
-        if i==1
-          s = 'Revenue'
-          t = 'revenue'
-        if i==2
-          s = 'Profit'
-          t = 'profit'
+      return stream_layers(9,mn,.1,idxf).map( (data, i) ->
         return {
-          key: s,
-          cls: t,
+          key: 'Audience '+i,
+          cls: '',
           values: data,
           timeframe: tf
         }
@@ -153,8 +137,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       val = []
       while i < m
         d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-        val[i++] = ['Name '+Math.ceil(1000*Math.random()),['paused','finished','active','pending','cancelled','rejected','40%'][(Math.floor(7*Math.random()))],
-          '$'+(100*Math.random()).toFixed(2),'$'+(10*Math.random()).toFixed(2),mod.datetostr(d[0]),mod.datetostr(d[1])]
+        val[i++] = ['Audience '+Math.ceil(1000*Math.random()),['paused','finished','active','pending','cancelled','rejected','40%'][(Math.floor(7*Math.random()))],
+          (10*Math.random()).toFixed(0),(10000*Math.random()).toFixed(0)]
       models.audiencetable.data(val)
   )
 )

@@ -35,6 +35,10 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
         value.rows.subscribe( (nv) ->
           ko.bindingHandlers.datatable.update(element, value.rows, allBindingsAccessor, viewModel, bindingContext)
         )
+      if datatableOptions.rowClick || value.rowClick
+        $datatable.on('click','tr',() =>
+          datatableOptions.rowClick || value.rowClick
+        )
     , update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
       $element = $(element)
       allBindings = allBindingsAccessor()

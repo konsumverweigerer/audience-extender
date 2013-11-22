@@ -21,23 +21,6 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div class="row legends">
-				<div class="col-sm-4">
-					<div class="legend-revenu">
-						<span></span> $<span data-bind="text: audiencechart.sumrevenue"></span> Revenue
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="legend-ad-spent">
-						<span></span> $<span data-bind="text: audiencechart.sumadspend"></span> Ad spend
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="legend-profit">
-						<span></span> $<span data-bind="text: audiencechart.sumprofit"></span> Profit
-					</div>
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-sm-4">
 					<form class="form-horizontal" role="form">
@@ -79,7 +62,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="dashboard" data-bind="nvddd: audiencechart.chartcontent">
+          <div class="dashboard" data-bind="nvddd: audiencechart.chartcontent, nvdddOptions: {chartType: 'multibar', yFormat: 'integer'}">
 						<svg></svg>
 					</div>
 				</div>
@@ -120,15 +103,13 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 				<div class="row">
 					<div class="col-md-12">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered data-table" data-bind="datatable: audiencetable, datatableScroller: audiencetablescroller">
+              <table class="table table-striped table-bordered data-table" data-bind="datatable: audiencetable, datatableScroller: audiencetablescroller, datatableOptions: { aoColumns: [ { sType: 'string' }, { sType: 'percent' }, { sType: 'number' }, { sType: 'number' } ] }">
 								<thead>
 									<tr>
 										<th class="sorting">Name</th>
 										<th class="sorting">Status</th>
-										<th class="sorting">Revenue</th>
-										<th class="sorting">Cost</th>
-										<th class="sorting">Start</th>
-										<th class="sorting">End</th>
+										<th class="sorting">Websites</th>
+										<th class="sorting">Count</th>
 									</tr>
 								</thead>
 								<tbody>

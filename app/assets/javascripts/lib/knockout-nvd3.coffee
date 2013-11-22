@@ -4,6 +4,8 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], (ko) ->
       element = $(element).find('svg').first()[0]
     nv.graphs.pop()
     nv.addGraph(() ->
+      xformat = options.xFormat || 'date'
+      yformat = options.yFormat || 'number'
       if options.chartType == 'bar'
         chart = nv.models.linePlusBarChart()
       else if options.chartType == 'multibar'
@@ -14,17 +16,28 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], (ko) ->
         chart = nv.models.lineChart()
       chart.xAxis.showMaxMin(false).staggerLabels(true)
         .tickFormat((d) ->
-          d3.time.format('%m/%d/%Y')(new Date(d))
+          if xformat=='date'
+            d3.time.format('%m/%d/%Y')(new Date(d))
+          else if xformat=='time'
+            d3.time.format('%H/%M/%S')(new Date(d))
+          else
+            (d3.format('.2f'))(d)
         )
       chart.yAxis.showMaxMin(false)
         .tickFormat((d) ->
-          '$'+(d3.format('.2f'))(d)
+          if yformat=='currency'
+            '$'+(d3.format('.2f'))(d)
+          if yformat=='integer'
+            (d3.format('.0f'))(d)
+          else
+            (d3.format('.2f'))(d)
         )
       if options.colors
         chart.color(options.colors)
       d3.select(element)
         .datum(data)
         .transition().duration(500).call(chart)
+      chart.data = data
       window.chart = chart
       nv.utils.windowResize(chart.update)
     )
@@ -33,9 +46,10 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!nv.d3.js"], (ko) ->
       val = ko.unwrap(valueAccessor())
       allBindings = allBindingsAccessor()
       nvdddOptions = allBindings.nvdddOptions || {}
-      if val == null
-        val = []
-      rendernvddd(element,nvdddOptions,val)
+      if val.chartcontent && ko.isObservable(val.chartcontent)
+        val.chartcontent.subscribe( (nv) ->
+          ko.bindingHandlers.datatable.update(element, val.chartcontent, allBindingsAccessor, viewModel, bindingContext)
+        )
     , update : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
       val = ko.unwrap(valueAccessor())
       allBindings = allBindingsAccessor()
