@@ -86,7 +86,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
   window.models = models
   #init
 
-  models.publishers.map((p,i) ->
+  models.publishers().map((p,i) ->
     pm = new mod.Publisher p
     models.publishers.push pm
     if p.active == "true"

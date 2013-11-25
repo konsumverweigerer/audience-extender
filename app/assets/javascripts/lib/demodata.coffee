@@ -31,14 +31,14 @@ define(["webjars!knockout.js"], (ko) ->
           x = 1/(.1+Math.random())
           y = 2*Math.random()-.5
           z = 10/(.1+Math.random())
-          for i in [0..m]
+          for i in [0...m]
             w = (i/m-y)*z
             a[i] += x*Math.exp(-w*w)
         return d3.range(n).map( ->
           a = []
-          for i in [0..m]
+          for i in [0...m]
             a[i] = o+o*Math.random()
-          for i in [0..5]
+          for i in [0...5]
             bump(a)
           return a.map((r,s) ->
             stream_index(r,s,idxf))
@@ -55,11 +55,15 @@ define(["webjars!knockout.js"], (ko) ->
         for i in [0..m]
           d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
           val[i++] = new mod.Audience
-            name:'Audience '+Math.ceil(1000*Math.random())
+            id: i
+            name:'Audience '+Math.ceil 1000*Math.random()
             state: ['paused','active','pending','cancelled'][(Math.floor(4*Math.random()))]
             websites: [1..(Math.ceil(10*Math.random()))]
             count: Math.ceil 10000*Math.random()
+        v.refresh models.websites() for v in val
         models.audiencetable.data val
+
+      models.audiencetablesearchbar.search()
     )
     
   generatecampaign = (mod,models) ->
@@ -120,14 +124,14 @@ define(["webjars!knockout.js"], (ko) ->
           x = 1/(.1+Math.random())
           y = 2*Math.random()-.5
           z = 10/(.1+Math.random())
-          for i in [0..m]
+          for i in [0...m]
             w = (i/m-y)*z
             a[i] += x*Math.exp(-w*w)
         return d3.range(n).map( ->
           a = []
-          for i in [0..m]
+          for i in [0...m]
             a[i] = o+o*Math.random()
-          for i in [0..5]
+          for i in [0...5]
             bump(a)
           return a.map((r,s) ->
             stream_index(r,s,idxf))
@@ -139,31 +143,40 @@ define(["webjars!knockout.js"], (ko) ->
   
       models.campaigntablesearchbar.filldata = ->
         n = new Date()
-        m = 40+Math.ceil(100*Math.random())
+        m = 40+Math.ceil 100*Math.random()
         val = []
         for i in [0..m]
           d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
           val[i++] = new mod.Campaign
-            name: 'Campaign '+Math.ceil(1000*Math.random())
+            id: i
+            name: 'Campaign '+Math.ceil 1000*Math.random()
             state: ['paused','finished','active','pending','cancelled','rejected',Math.floor(100*Math.random())+'%'][(Math.floor(7*Math.random()))]
             revenue: (100*Math.random())
             cost: (10*Math.random())
             from: d[0]
             to: d[1]
         models.campaigntable.data val
+
+      models.campaigntablesearchbar.search()
     )
 
   generatewebsites = (mod,models) ->
     ws = models.websites()
-    m = 40+Math.ceil(100*Math.random())
+    m = 4+Math.ceil(10*Math.random())
     for i in [1...m]
-      ws.push(new mod.Website({id:i,name:'Website '+i,code:'<script src="http://test/my/code/'+(Math.ceil(10000*Math.random()))+'" type="text/javascript"></script>'}))
+      w = new mod.Website
+        id:i
+        name:'Website '+i
+        count: Math.ceil 100000*Math.random()
+        code:'<script src="http://test/my/code/'+(Math.ceil(10000*Math.random()))+'" type="text/javascript"></script>'
+      ws.push(w)
+    return
     
   { generate: (mod,models,page) ->
     if 'audience'==page
       generatewebsites(mod,models)
       generateaudience(mod,models)
-    else if 'audience'==page
+    else if 'campaign'==page
       generatecampaign(mod,models)
   }
 )

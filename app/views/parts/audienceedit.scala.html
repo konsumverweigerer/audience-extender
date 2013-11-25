@@ -3,16 +3,26 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clearaudience">&times;</button>
 				<h4 class="modal-title">New/Edit Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
 			</div>
-			<div class="modal-body">
+            <div class="modal-body" data-bind="visible: confirmaudiencedelete()==1">
+                <div class="m-top-btm">
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the audience</div>
+                 	<div class="m-top-btm">
+                        <button type="button" class="btn btn-default" data-bind="click: cleardeleteaudience">Cancel</button>
+				        <button type="button" class="btn btn-danger" data-bind="click: deleteaudience"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                    </div>
+                </div>
+            </div>
+            
+			<div class="modal-body" data-bind="visible: confirmaudiencedelete()==0">
 				<h3 class="m-null-top">Select Website</h3>
 				<div class="box-strips">
 					<div class="clearfix">
 						<div class="website-block-wrapper">
 							<div class="website-block-add-wrapper">
-								<a href="#" class="website-block-add">
+								<a href="javascript:void()" class="website-block-add" data-bind="click: newwebsite">
 									<span class="website-name">Add New Website</span>
 									<span class="thumbnail-site">
 										<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" />
@@ -20,96 +30,50 @@
 								</a>
 							</div>
 							<div class="jcarousel-wrapper with-add-block">
-								<div class="jcarousel">
-									<ul>
+								<div class="jcarousel" data-bind="carousel: websiteposition">
+									<ul data-bind="foreach: currentwebsites">
 										<li>
-											<a href="#" class="website-block">
-												<span class="website-name">Google.com</span>
+											<a href="javascript:void()" class="website-block" data-bind="click: $root.activatewebsite, css: {'selected': selected(), 'active': active()}">
+												<span class="website-name" data-bind="text: name"></span>
 												<span class="thumbnail-site">
 													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
 													<span></span>
 												</span>
-												<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Select</button> <button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
-											</a>
-										</li>
-										<li>
-											<a href="#" class="website-block selected">
-												<span class="website-name">Google.com selected</span>
-												<span class="thumbnail-site">
-													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-													<span></span>
-												</span>
-												<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Unselect</button> <button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
-											</a>
-										</li>
-										<li>
-											<a href="#" class="website-block selected active">
-												<span class="website-name">Google.com selected active</span>
-												<span class="thumbnail-site">
-													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-													<span></span>
-												</span>
-												<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Unselect</button> <button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
-											</a>
-										</li>
-										<li>
-											<a href="#" class="website-block">
-												<span class="website-name">Google.com</span>
-												<span class="thumbnail-site">
-													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-													<span></span>
-												</span>
-												<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Select</button> <button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
-											</a>
-										</li>
-										<li>
-											<a href="#" class="website-block">
-												<span class="website-name">Google.com</span>
-												<span class="thumbnail-site">
-													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-													<span></span>
-												</span>
-												<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Select</button> <button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
-											</a>
-										</li>
-										<li>
-											<a href="#" class="website-block">
-												<span class="website-name">Google.com</span>
-												<span class="thumbnail-site">
-													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-													<span></span>
-												</span>
-												<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs">Select</button> <button type="button" class="btn btn-primary btn-xs">Edit</button> <button type="button" class="btn btn-danger btn-xs">Delete</button></span>
+												<span class="website-audience"><span data-bind="text: count">0</span> Users <span class="glyphicon glyphicon-eye-open"></span></span>
+												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.selectwebsite, text: selected() ? 'Deselect' : 'Select' ">Select</button> <button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.editwebsite">Edit</button> <button type="button" class="btn btn-danger btn-xs" data-bind="click: $root.deletewebsite">Delete</button></span>
 											</a>
 										</li>
 									</ul>
 								</div>
-								<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-								<a href="#" class="jcarousel-control-next">&rsaquo;</a>
+								<a href="#" class="jcarousel-control-prev" data-bind="click: websiteposition.previous, visible: websiteposition.isNotFirst">&lsaquo;</a>
+								<a href="#" class="jcarousel-control-next" data-bind="click: websiteposition.next, visible: websiteposition.isNotLast">&rsaquo;</a>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="box-1">
-					<h3>New Website</h3>
-					<form class="form-horizontal" role="form">
-						<div class="form-group has-warning">
+                <div class="m-top-btm" data-bind="visible: confirmwebsitedelete()==1">
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the website: <span data-bind="text: currentwebsite().name"></span></div>
+                     <div class="m-top-btm">
+                        <button type="button" class="btn btn-default" data-bind="click: cleardeletewebsite">Cancel</button>
+				        <button type="button" class="btn btn-danger" data-bind="click: deletewebsite"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                    </div>
+                </div>
+                
+                <!-- ko if: confirmwebsitedelete()==0 -->
+				<div class="box-1" data-bind="visible: currentwebsite().editing">
+                    <h3 data-bind="text: currentwebsite().persisted() ? 'Edit Website' : 'New Website'">New Website</h3>
+					<form class="form-horizontal" role="form" data-bind="with: currentwebsite">
+						<div class="form-group">
 							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" id="websitename" placeholder="Website Name">
+								<input type="text" class="form-control" id="websitename" placeholder="Website Name" data-bind="attr: {disabled: persisted}, value: name">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
 							<div class="col-sm-9">
-								<textarea class="form-control" rows="3" id="trackingcode" readonly>Tracking Code here...</textarea>
+								<textarea class="form-control" rows="3" id="trackingcode" readonly data-bind="text: code">Tracking Code here...</textarea>
 							</div>
 						</div>
 						<div class="form-group">
@@ -117,13 +81,13 @@
 								<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Explanation about Tracking code here...</div>
 							</div>
 						</div>
-						<div class="form-group has-success">
+						<div class="form-group" data-bind="css: {'has-success': emailSent, 'has-error': emailFail}">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">
 								<div class="input-group">
-									<input type="email" class="form-control" id="email" placeholder="Email">
+									<input type="email" class="form-control" id="email" placeholder="Email" data-bind="value: email">
 									<span class="input-group-btn">
-										<button class="btn btn-default" type="button">Send to Your Mail</button>
+										<button class="btn btn-default" type="button" data-bind="click: sendemail">Send to Your Mail</button>
 									</span>
 								</div>
 							</div>
@@ -131,108 +95,68 @@
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
-								<button type="submit" class="btn btn-primary">Save Settings</button>
+								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
 							</div>
 						</div>
 					</form>
 				</div>
 
-				<div class="box-1">
-					<h3>Edit Website</h3>
-					<form class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" id="websitename" placeholder="Google.com" disabled>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
-							<div class="col-sm-9">
-								<textarea class="form-control" rows="3" id="trackingcode" readonly>Tracking Code here...</textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-3 col-sm-9">
-								<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Explanation about Tracking code here...</div>
-							</div>
-						</div>
-						<div class="form-group has-error">
-							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
-							<div class="col-sm-9">
-								<div class="input-group">
-									<input type="email" class="form-control" id="email" placeholder="Email">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button">Send to Your Mail</button>
-									</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
-								<button type="submit" class="btn btn-primary">Save Settings</button>
-							</div>
-						</div>
-					</form>
-				</div>
-
-				<div class="m-top-btm">
-					<h3>Path targeting for <span>Google.com selected</span></h3>
+    			<div class="m-top-btm" data-bind="visible: currentwebsite().inactive">
+    				<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select/Create websites above</div>
+                </div>
+                
+        		<div class="m-top-btm" data-bind="visible: currentwebsite().active() && !currentwebsite().selected()">
+        			<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select website to edit path targeting</div>
+                </div>
+                
+				<div class="m-top-btm" data-bind="visible: currentwebsite().selected() && !currentwebsite().editing(), with: currentaudience">
+					<h3>Path targeting for <span data-bind="text: $root.currentwebsite().name"></span></h3>
 					<div class="row">
-						<div class="col-md-12">
-							<div class="btn-group btn-group-first" data-toggle="buttons">
+						<div class="col-md-6">
+							<div class="btn-group" data-bind="css: {'btn-group-first': currentpaths().length > 0}" data-toggle="buttons">
 								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option1"> On
+									<input type="radio" name="target_all" value="on" data-bind="checkedChange: currentallpath"> On
 								</label>
 								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option2"> Off
+									<input type="radio" name="target_all" value="off" data-bind="checkedChange: currentallpath"> Off
 								</label>
 							</div>
 							All
 						</div>
 					</div>
+                    <!-- ko foreach: currentpaths -->
 					<div class="row">
-						<div class="col-md-12">
-							<div class="btn-group btn-group-middle" data-toggle="buttons">
+						<div class="col-md-6">
+							<div class="btn-group" data-bind="css: {'btn-group-middle': $index() < ($parent.currentpaths().length-1), 'btn-group-last': $index() == ($parent.currentpaths().length-1)}" data-toggle="buttons">
 								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option3"> On
+									<input type="radio" data-bind="attr: {name: 'target_'+id()}, checkedChange: active" value="on"> On
 								</label>
 								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option4"> Off
+									<input type="radio" data-bind="attr: {name: 'target_'+id()}, checkedChange: active" value="off"> Off
 								</label>
 							</div>
-							/terms
+							<span data-bind="text: path"></span>
 						</div>
+                        <div class="col-sm-1">
+                          <button type="button" class="btn btn-danger btn-xs" data-bind="click: $parent.removepath">Remove</button>
+                        </div>
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="btn-group btn-group-last" data-toggle="buttons">
-								<label class="btn btn-primary">
-									<input type="radio" name="options" id="option9"> On
-								</label>
-								<label class="btn btn-primary active">
-									<input type="radio" name="options" id="option10"> Off
-								</label>
-							</div>
-							/contact
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12 m-top">
-							<form class="form-horizontal" role="form">
-								<div class="input-group">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
-									</span>
-									<input type="text" class="form-control">
-								</div>
-							</form>
-						</div>
-					</div>
+                    <!-- /ko -->
+                    <div class="row">
+                        <div class="col-sm-12 m-top">
+                            <form class="form-horizontal" role="form">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button" data-bind="click: addpath"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
+                                    </span>
+                                    <input type="text" class="form-control" data-bind="value: path" placeholder="Enter path ...">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 				</div>
 
-				<div class="panel-group" id="accordion-example-plus">
+				<div class="panel-group" id="accordion-example-plus" data-bind="with: currentaudience, visible: currentaudience().nonempty() && !currentwebsite().editing()">
 					<div class="panel panel-default">
 						<div class="panel-heading link">
 							<h4 class="panel-title">
@@ -243,16 +167,17 @@
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse">
 							<div class="panel-body">
-								<textarea class="form-control" rows="3">Code here...</textarea>
+								<textarea class="form-control" rows="3" placeholder="Code here..." data-bind="value: tracking"></textarea>
 							</div>
 						</div>
 					</div>
 				</div>
+                <!-- /ko -->
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+			<div class="modal-footer" data-bind="visible: confirmaudiencedelete()==0">
+				<button type="button" class="btn btn-danger pull-left" data-bind="click: deleteaudience, visible: currentaudience().persisted"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: clearaudience">Cancel</button>
+				<button type="button" class="btn btn-primary" data-bind="click: saveaudience"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
 			</div>
 		</div>
 	</div>
