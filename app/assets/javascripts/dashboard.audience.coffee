@@ -31,6 +31,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           v
       })
 
+      @messages = ko.observableArray([])
+
       @publisher = ko.observable()
 
       @publishers = ko.observableArray([])
@@ -38,111 +40,75 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       @websites = ko.observableArray([])
 
       # dummy for init
-      @currentaudience = ko.observable(new mod.Audience({name:''}))
+      @currentaudience = ko.observable(new mod.Audience({name:'',id:-1}))
 
       # dummy for init
-      @currentwebsite = ko.observable(new mod.Website({name:''}))
+      @currentwebsite = ko.observable(new mod.Website({name:'',id:-1}))
 
-      @messages = ko.observableArray([])
-
-      @newaudience = () ->
-        self.currentaudience(new mod.Audience({name:'New Audience'}))
+      @websiteposition = new mod.Counter()
 
       @newwebsite = () ->
-        self.currentwebsite(new mod.Website({name:'New Website'}))
+        self.currentwebsite(new mod.Website({name:'New Website',id:0}))
+
+      @newaudience = () ->
+        self.currentaudience(new mod.Audience({name:'New Audience',id:0}))
+        self.currentwebsite(new mod.Website({name:'',id:-1}))
 
       @saveaudience = () ->
         a = self.currentaudience()
-        if a.id()
+        l = self.audiencetable.data()
+        if a.id() && a.id()>0
           alert('update audience')
+          l.remove((b) ->
+            a.id() == b.id()
+          )
+          l.push(a)
         else
           alert('persist audience')
+          l.push(a)
 
       @savewebsite = () ->
         a = self.currentwebsite()
-        if a.id()
+        l = self.websites()
+        if a.id() && a.id() > 0
           alert('update website')
+          l.remove((b) ->
+            a.id() == b.id()
+          )
+          l.push(a)
         else
           alert('persist website')
+          l.push(a)
+
+      @selectaudience = (c) ->
+        self.currentaudience((new mod.Audience()).copyFrom(c))
+        self.currentwebsite(new mod.Website({name:'',id:-1}))
+        $('#editAudience').modal()
+        
+      @selectwebsite = (c) ->
+        alert(c)
 
   models = new AudienceDashboard
 
   ko.applyBindings(models)
 
+  # todo: via ko
+  models.audiencetable.rowClick = (c) ->
+    models.selectaudience(c)
+
   window.models = models
   #init
 
-  window.data.publishers.map( (p,i) ->
-    pm = new mod.Publisher(p)
-    models.publishers.push(pm)
+  models.publishers.map((p,i) ->
+    pm = new mod.Publisher p
+    models.publishers.push pm
     if p.active == "true"
-      models.publisher(pm)
+      models.publisher pm
   )
   if !models.publisher() && models.publishers().length
-  	models.publisher(models.publishers()[0])
+  	models.publisher models.publishers()[0]
 
-  require(["webjars!nv.d3.js"], () ->
-    data = ->
-      m = (models.audiencechartdaterange.endDate()-models.audiencechartdaterange.startDate())/(24*60*60*1000)
-      sd = models.audiencechartdaterange.startDate().getTime()
-      idxf = (i) ->
-        if m<2
-          i = sd+(i*60*60*1000)
-        else
-          i = sd+(i*24*60*60*1000)
-      tf = 'days'
-      mn = m
-      if m<2
-        mn = 24
-        tf = 'hours'
-      return stream_layers(9,mn,.1,idxf).map( (data, i) ->
-        return {
-          key: 'Audience '+i,
-          cls: '',
-          values: data,
-          timeframe: tf
-        }
-      )
-
-    stream_index = (d, i, idxf) ->
-      {x: idxf(i), y: 100*Math.max(0, d)}
-
-    stream_layers = (n, m, o, idxf) ->
-      if arguments.length < 3
-        o = 0
-      bump = (a) ->
-        x = 1 / (.1 + Math.random())
-        y = 2 * Math.random() - .5
-        z = 10 / (.1 + Math.random())
-        i = 0
-        while i < m
-          w = (i / m - y) * z
-          a[i++] += x * Math.exp(-w * w)
-      return d3.range(n).map( () ->
-          a = []
-          i = 0
-          while i < m
-            a[i++] = o + o * Math.random()
-          i = 0
-          while i++ < 5
-            bump(a)
-          return a.map((r, s) ->
-            stream_index(r, s, idxf))
-      );
-
-    models.audiencechartdaterange.dataloader = () ->
-      models.audiencechart.chartcontent(data())
-    models.audiencechartdaterange.dateRange('Last Day')
-
-    models.audiencetablesearchbar.filldata = () ->
-      i = 0
-      n = new Date()
-      m = 40+Math.ceil(100*Math.random())
-      val = []
-      while i < m
-        d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-        val[i++] = ['Audience '+Math.ceil(1000*Math.random()),['paused','finished','active','pending','cancelled','rejected','40%'][(Math.floor(7*Math.random()))],
-          (10*Math.random()).toFixed(0),(10000*Math.random()).toFixed(0)]
-      models.audiencetable.data(val)
+  require(["lib/demodata"],(demo) ->
+    demo.generate(mod,models,'audience')
   )
 )

@@ -2,14 +2,14 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!jquery.js", "webjar
   rendernvddd = (element, options, data) ->
     if !$(element).is('svg')
       element = $(element).find('svg').first()[0]
-    nv.graphs.pop()
     nv.addGraph(() ->
+      chart = nv.graphs.pop() || window.chart
       xformat = options.xFormat || 'date'
       yformat = options.yFormat || 'number'
       if options.chartType == 'bar'
-        chart = window.chart || nv.models.linePlusBarChart()
+        chart = chart || nv.models.linePlusBarChart()
       else if options.chartType == 'multibar'
-        chart = window.chart || nv.models.multiBarChart()
+        chart = chart || nv.models.multiBarChart()
         if options.cumulateOther
           sums = data.map((n,i) ->
             [i, n.values.reduce((a,b) ->
@@ -17,7 +17,7 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!jquery.js", "webjar
             , 0)]
           )
       else if options.chartType == 'cumulativeline'
-        chart = window.chart || nv.models.mycumulativeLineChart()
+        chart = chart || nv.models.mycumulativeLineChart()
         data = data.map((n,i) ->
           l = $.extend({},n)
           sv = 0
@@ -30,7 +30,7 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!jquery.js", "webjar
           l
         )
       else
-        chart = window.chart || nv.models.lineChart()
+        chart = chart || nv.models.lineChart()
       if xformat=='date'
         minx = -1
         maxx = -1
@@ -72,8 +72,10 @@ define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!jquery.js", "webjar
       d3.select(element)
         .datum(data)
         .transition().duration(500).call(chart)
+      # todo: remove
       chart.data = data
       window.chart = chart
+      
       nv.utils.windowResize(chart.update)
     )
   ko.bindingHandlers.nvddd = {

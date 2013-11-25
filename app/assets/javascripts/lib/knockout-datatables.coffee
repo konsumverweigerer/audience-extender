@@ -1,6 +1,6 @@
 define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.js", "lib/datatables-ext" ], (ko) ->
-  defaultoptions = {
-    bLengthChange: false,
+  defaultOptions = () ->
+    { bLengthChange: false,
     sDom: 'lrti',
     fnInfoCallback: (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
       dl = oSettings._iDisplayLength
@@ -8,7 +8,7 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
       models.datatablescroller.fromIndex(iStart)
       models.datatablescroller.maxIndex(iMax)
       return ''
-  }
+    }
   ko.bindingHandlers.datatable = {
     init : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->
       $element = $(element)
@@ -16,7 +16,7 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
       allBindings = allBindingsAccessor()
       datatableScroller = allBindings.datatableScroller || value.scroller
 
-      datatableOptions = $.extend(defaultoptions, allBindings.datatableOptions || {})
+      datatableOptions = $.extend(defaultOptions(), allBindings.datatableOptions || {})
       datatableOptions.fnInfoCallback =  (oSettings, iStart, iEnd, iMax, iTotal, sPre) ->
         dl = oSettings._iDisplayLength
         if datatableScroller

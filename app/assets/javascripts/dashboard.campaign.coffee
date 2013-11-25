@@ -72,120 +72,30 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         else
           alert('persist campaign')
 
+      @selectcampaign = (c) ->
+        self.currentcampaign((new mod.Campaign()).copyFrom(c))
+        $('#editCampaign').modal()
+
   models = new CampaignDashboard
 
   ko.applyBindings(models)
 
   models.campaigntable.rowClick = (c) ->
-    models.currentcampaign(c)
-    $('#editCampaign').modal()
+    models.selectcampaign(c)
 
   window.models = models
   #init
 
-  window.data.publishers.map( (p,i) ->
-    pm = new mod.Publisher(p)
-    models.publishers.push(pm)
+  models.publishers.map((p,i) ->
+    pm = new mod.Publisher p
+    models.publishers.push pm
     if p.active == "true"
-      models.publisher(pm)
+      models.publisher pm
   )
   if !models.publisher() && models.publishers().length
-  	models.publisher(models.publishers()[0])
+      models.publisher models.publishers()[0]
 
-  data = ->
-    m = (models.campaignchartdaterange.endDate()-models.campaignchartdaterange.startDate())/(24*60*60*1000)
-    sd = models.campaignchartdaterange.startDate().getTime()
-    idxf = (i) ->
-      if m<2
-        i = sd+(i*60*60*1000)
-      else
-        i = sd+(i*24*60*60*1000)
-    tf = 'days'
-    mn = m
-    if m<2
-      mn = 24
-      tf = 'hours'
-    dat = stream_layers(2,mn,.1,idxf).map( (data, i) ->
-      if i==0
-        s = 'Revenue'
-        t = 'revenue'
-      else if i==1
-        s = 'Ad Spend'
-        t = 'adspend'
-      return {
-        key: s,
-        cls: t,
-        values: data.map((n,j) ->
-          if i==1
-            n.y = -n.y/5
-          if tf=='hours'
-            n.y = n.y/24
-          n
-        ),
-        timeframe: tf
-      }
-    )
-    dat[0].values[0].y=0;
-    dat[1].values[0].y=0;
-    dat[2] = {
-    key: 'Profit',
-    cls: 'profit',
-    values: sumdata(dat[0].values,dat[1].values)
-    timeframe: tf
-    }
-    dat
-
-  sumdata = (v, w) ->
-    if v.length==w.length
-      v.map((n,i) ->
-        {x:n.x,y:n.y+w[i].y}
-      )
-    else
-      []
-    
-  stream_index = (d, i, idxf) ->
-    {x: idxf(i), y: 100*Math.max(0, d)}
-
-  stream_layers = (n, m, o, idxf) ->
-    if arguments.length < 3
-      o = 0
-    bump = (a) ->
-      x = 1 / (.1 + Math.random())
-      y = 2 * Math.random() - .5
-      z = 10 / (.1 + Math.random())
-      i = 0
-      while i < m
-        w = (i / m - y) * z
-        a[i++] += x * Math.exp(-w * w)
-    return d3.range(n).map( () ->
-        a = []
-        i = 0
-        while i < m
-          a[i++] = o + o * Math.random()
-        i = 0
-        while i++ < 5
-          bump(a)
-        return a.map((r, s) ->
-          stream_index(r, s, idxf))
-    );
-
-  models.campaignchartdaterange.dataloader = () ->
-    models.campaignchart.chartcontent(data())
-
-  models.campaignchartdaterange.dateRange('Last Day')
-  
-  models.campaigntablesearchbar.filldata = () ->
-    i = 0
-    n = new Date()
-    m = 40+Math.ceil(100*Math.random())
-    val = []
-    while i < m
-      d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-      val[i++] = new mod.Campaign({name: 'Campaign '+Math.ceil(1000*Math.random()),
-      state: ['paused','finished','active','pending','cancelled','rejected',Math.floor(100*Math.random())+'%'][(Math.floor(7*Math.random()))],
-      revenue: (100*Math.random()),
-      cost: (10*Math.random()),
-      from: d[0],
-      to: d[1]})
-    models.campaigntable.data(val)
+  require(["lib/demodata"],(demo) ->
+    demo.generate(mod,models,'campaign')
+  )
 )
