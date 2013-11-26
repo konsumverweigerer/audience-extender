@@ -88,7 +88,7 @@ define(['require','jquery'],function (require) {
 
                         // set display of target element
                         var target = $currentStep.data().target;
-                        this.$element.next('.step-content').find('.step-pane').removeClass('active');
+                        this.$element.find('.step-content').find('.step-pane').removeClass('active');
                         $(target).addClass('active');
 
                         // reset the wizard position to the left

@@ -1,12 +1,12 @@
-require(["webjars!jquery.js", "webjars!bootstrap.js", "/routes.js"], () ->
-  scrollPos = () ->
+require(["webjars!jquery.js", "webjars!bootstrap.js", "/routes.js"], ->
+  scrollPos = ->
     $('html, body').map((i,a) -> $(a).scrollTop()).toArray().reduce((x,y) -> Math.max(x,y))
 
-  $(document).ready( () =>
+  $(document).ready( =>
     firstoffs = 100
     speed = 500
     $(".scroll").click( (event) ->
-      event.preventDefault();
+      event.preventDefault()
       dest = 0;
       winheight = $(window).height()
       docheight = $(document).height()

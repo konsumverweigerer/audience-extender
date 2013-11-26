@@ -459,9 +459,16 @@ define(["webjars!knockout.js"], (ko) ->
         {}
 
   class Campaign extends ServerModels
+    typeOf: (name) ->
+      if name=='messages'
+        return { isIgnored: true }
+      super(name)
+
     constructor: (d) ->
       super(d)
       self = @
+
+      @messages = ko.observableArray []
 
       @name = ko.observable(d && d.name)
 
@@ -471,9 +478,16 @@ define(["webjars!knockout.js"], (ko) ->
 
       @cost = ko.observable(d && d.cost)
 
+      @package = ko.observable(d && d.package)
+
+      @audiences = ko.observableArray(d && d.audiences)
+
       @from = ko.observable(d && d.from)
 
       @to = ko.observable(d && d.to)
+
+      @refresh = (audiences,packages) ->
+        return self
 
   class PathTarget extends ServerModels
     constructor: (d) ->
@@ -490,13 +504,15 @@ define(["webjars!knockout.js"], (ko) ->
     typeOf: (name) ->
       if name=='paths'
         return { isIgnored: false, isArray: true, isModel: true, model: PathTarget }
-      else if name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty'
+      else if name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty' || name=='messages' || name=='selected'
         return { isIgnored: true }
       super(name)
 
     constructor: (d) ->
       super(d)
       self = @
+
+      @messages = ko.observableArray []
 
       @name = ko.observable(d && d.name)
 
@@ -510,11 +526,15 @@ define(["webjars!knockout.js"], (ko) ->
 
       @websites = ko.observableArray(d && d.websites)
 
+      @selected = ko.observable false
+
       @nonempty = ko.computed( ->
         (self.websites() || []).length>0
       )
 
-      @websiteNames = ko.observable('')
+      @websiteNames = ko.observable ''
+
+      @websiteNamesShort = ko.observable ''
 
       @path = ko.observable()
 
@@ -558,26 +578,32 @@ define(["webjars!knockout.js"], (ko) ->
 
       @refresh = (websites) ->
         n = []
-        for wi in self.websites()
-          for web in websites
+        for web in websites
+          web.selected(false)
+          for wi in self.websites()
             if wi==web.id()
               n.push web.name()
-              break
+              web.selected(true)
         n = n.join(', ')
+        self.websiteNames(n)
         if n.length > 20
           n = n.substring(0,20)+' ...'
-        self.websiteNames(n)
+        self.websiteNamesShort(n)
         return self
 
   class Website extends ServerModels
     typeOf: (name) ->
       if name=='active' || name=='editing' || name=='selected'
         return { isIgnored: true, isArray: false, isModel: false, model: null }
+      else if name=='messages'
+        return { isIgnored: true }
       super(name)
 
     constructor: (d) ->
       super(d)
       self = @
+
+      @messages = ko.observableArray []
 
       @name = ko.observable(d && d.name)
 
@@ -613,26 +639,70 @@ define(["webjars!knockout.js"], (ko) ->
 
       @sendemail = ->
         if self.sendcodebyemail(self.id(),self.email())
-          self.emailStatus('success')
+          self.emailStatus 'success'
         else
-          self.emailStatus('fail')
+          self.emailStatus 'fail'
 
       @sendcodebyemail = (id,email)->
         Math.floor 2*Math.random()
 
-  class Publisher extends ServerModels
+  class Package extends ServerModels
+    typeOf: (name) ->
+      if name=='messages' || name=='selected'
+        return { isIgnored: true }
+      super(name)
+
     constructor: (d) ->
       super(d)
       self = @
+
+      @messages = ko.observableArray []
+
+      @name = ko.observable(d && d.name)
+
+      @selected = ko.observable false
+
+      @count = ko.observable(d && d.count)
+
+      @reach = ko.observable(d && d.reach)
+
+      @goal = ko.observable(d && d.goal)
+
+      @buyCpm = ko.observable(d && d.buyCpm)
+
+      @salesCpm = ko.observable(d && d.salesCpm)
+
+      @startDate = ko.observable(d && d.startDate)
+
+      @endDate = ko.observable(d && d.endDate)
+
+  class Publisher extends ServerModels
+    typeOf: (name) ->
+      if name=='messages'
+        return { isIgnored: true }
+      super(name)
+
+    constructor: (d) ->
+      super(d)
+      self = @
+
+      @messages = ko.observableArray []
 
       @name = ko.observable(d && d.name)
 
       @active = ko.observable(d && d.active)
 
   class Admin extends ServerModels
+    typeOf: (name) ->
+      if name=='messages'
+        return { isIgnored: true }
+      super(name)
+
     constructor: (d) ->
       super(d)
       self = @
+
+      @messages = ko.observableArray []
 
       @name = ko.observable(d && d.name)
 
@@ -655,6 +725,7 @@ define(["webjars!knockout.js"], (ko) ->
   Audience: Audience,
   Website: Website,
   Admin: Admin,
+  Package: Package,
   PathTarget: PathTarget,
   Publisher: Publisher,
   truncateToDay: truncateToDay,

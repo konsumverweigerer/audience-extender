@@ -25,7 +25,7 @@ object ApplicationBuild extends Build {
     "org.webjars" % "requirejs" % "2.1.8",
     "org.webjars" % "bootstrap" % "3.0.0",
     "org.webjars" % "knockout" % "2.3.0",
-    "org.webjars" % "d3js" % "2.10.3",
+    //"org.webjars" % "d3js" % "2.10.3",
     "org.webjars" % "nvd3" % "8415ee55d3",
     "org.webjars" % "datatables-tools" % "2.1.5",
     "org.webjars" % "jquery-file-upload" % "8.4.2",

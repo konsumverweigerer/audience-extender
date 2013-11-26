@@ -1,6 +1,5 @@
-define("jquery", [ "webjars!jquery.js" ], () ->
-  $
-)
+define("jquery", [ "webjars!jquery.js" ], -> $ )
+define("jquery.ui.widget", [ "webjars!jquery.ui.widget.js" ], -> )
 
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
 "lib/knockout-misc", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", 
@@ -9,6 +8,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     constructor: (d) ->
       self = @
 
+      byId = (id) -> ((w) -> w.id()==id)
+      
       @audiencechartdaterange = new mod.DateRange
 
       @audiencetablescroller = new mod.Scroller
@@ -17,7 +18,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @audiencechart = new mod.Chartdata
 
-      @audiencetable = new mod.Datatable(["name","state","websiteNames","count"],
+      @audiencetable = new mod.Datatable(["name","state","websiteNamesShort","count"],
         state: (v) ->
           if 'paused' == v
             '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
@@ -43,6 +44,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @websites = ko.observableArray []
 
+      @audiences = ko.observableArray []
+
       @currentwebsites = ko.observableArray []
 
       # dummy for init
@@ -54,31 +57,33 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       @websiteposition = new mod.Counter {wrap:false,minValue:0}
 
       @newwebsite = ->
+        if self.confirmwebsitedelete()>0
+          return
         self.currentwebsite(new mod.Website {name:'New Website',id:0})
         for v in self.currentwebsites()
-          v.active(false)
-          v.editing(false)
-        self.currentwebsite().active(true)
-        self.currentwebsite().editing(true)
+          v.active false
+          v.editing false
+        self.currentwebsite().active true
+        self.currentwebsite().editing true
 
       @newaudience = ->
+        self.confirmwebsitedelete 0
         self.confirmaudiencedelete 0
         self.currentaudience(new mod.Audience {name:'New Audience',id:0})
         self.currentwebsite(new mod.Website {name:'',id:-1})
         for v in self.currentwebsites()
-          v.active(false)
-          v.editing(false)
-        $('#editAudience').modal('show')
+          v.active false
+          v.editing false
+          v.selected false
+        $('#editAudience').modal 'show'
         au = self.currentaudience()
-        self.currentwebsites self.websites().map((w) ->
-          w.refresh(au)
-        )
+        self.currentwebsites (w.refresh au for w in self.websites())
         self.websiteposition.maxValue self.websites().length
         self.websiteposition.currentValue ''
 
       @clearaudience = ->
         self.currentaudience(new mod.Audience {name:'',id:-1})
-        $('#editAudience').modal('hide')
+        $('#editAudience').modal 'hide'
 
       @cleardeleteaudience = ->
         self.confirmaudiencedelete 0
@@ -88,31 +93,28 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           return self.confirmaudiencedelete 1
         alert('delete audience')
         self.currentaudience(new mod.Audience {name:'',id:-1})
-        $('#editAudience').modal('hide')
+        $('#editAudience').modal 'hide'
 
       @saveaudience = ->
         a = self.currentaudience()
+        self.currentaudience().refresh self.currentwebsites()
         l = self.audiencetable.data
         if a.id() && a.id()>0
           alert('update audience')
-          l.remove((b) ->
-            a.id() == b.id()
-          )
+          l.remove byId a.id()
           l.push a
         else
           alert('persist audience')
           l.push a
         self.currentaudience(new mod.Audience {name:'',id:-1})
-        $('#editAudience').modal('hide')
+        $('#editAudience').modal 'hide'
 
       @savewebsite = ->
         a = self.currentwebsite()
         l = self.websites
         if a.id() && a.id() > 0
           alert('update website')
-          l.remove((b) ->
-            a.id() == b.id()
-          )
+          l.remove byId a.id()
           l.push a
         else
           alert('persist website')
@@ -120,63 +122,88 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.currentwebsite(new mod.Website {name:'',id:-1})
 
       @selectaudience = (c) ->
+        self.confirmwebsitedelete 0
         self.confirmaudiencedelete 0
         self.currentaudience (new mod.Audience()).copyFrom(c)
         self.currentwebsite(new mod.Website {name:'',id:-1})
         for v in self.currentwebsites()
-          v.active(false)
-          v.editing(false)
-        $('#editAudience').modal('show')
+          v.active false
+          v.editing false
+        $('#editAudience').modal 'show'
         au = self.currentaudience()
-        self.currentwebsites self.websites().map((w) ->
-          w.refresh(au)
-        )
-        self.websiteposition.maxValue self.websites().length
+        self.currentwebsites (w.refresh au for w in self.websites())
+        self.currentaudience().refresh self.currentwebsites()
+        self.websiteposition.maxValue self.currentwebsites().length
         self.websiteposition.currentValue ''
         
       @cleardeletewebsite = ->
         self.confirmwebsitedelete 0
 
       @deletewebsite = (c) ->
+        if c.currentwebsite
+          c = c.currentwebsite()
+        if self.confirmwebsitedelete()==0 and not c.active()
+          for v in self.currentwebsites()
+            v.active false
+            v.editing false
+          c.active true
+          self.currentwebsite c
         if self.confirmwebsitedelete()==0
           return self.confirmwebsitedelete 1
-          alert('delete website')
+        if not c.active()
+          return
+        id = self.currentwebsite().id()
+        self.websites.remove byId w.id()
+        self.currentwebsites.remove byId w.id()
+        alert('delete website')
+        #todo: speed up refresh
+        #au.refresh self.currentwebsites() for au in self.audiences()
+        self.confirmwebsitedelete 0
         self.currentwebsite(new mod.Website {name:'',id:-1})
+        self.websiteposition.currentValue ''
 
       @activatewebsite = (c) ->
+        if self.confirmwebsitedelete()>0
+          return
         if not c.active()
           for v in self.currentwebsites()
-            v.active(false)
-            v.editing(false)
-          c.active(true)
+            v.active false
+            v.editing false
+          c.active true
+        else
+          self.selectwebsite c
         self.currentwebsite c
         self.currentaudience().activewebsite c.id()
 
       @selectwebsite = (c) ->
+        if self.confirmwebsitedelete()>0
+          return
         if c.selected()
-          c.selected(false)
+          c.selected false
           self.currentaudience().websites.remove c.id()
         else
-          c.selected(true)
+          c.selected true
           self.currentaudience().websites.push c.id()
 
       @editwebsite = (c) ->
+        if self.confirmwebsitedelete()>0
+          return
         if not c.active()
           for v in self.currentwebsites()
-            v.active(false)
-            v.editing(false)
-          c.active(true)
-        c.editing(true)
+            v.active false
+            v.editing false
+          c.active true
+        c.editing true
         self.currentwebsite c
         self.currentaudience().activewebsite c.id()
 
   models = new AudienceDashboard
 
-  ko.applyBindings(models)
+  ko.applyBindings models
 
   # todo: via ko
   models.audiencetable.rowClick = (c) ->
-    models.selectaudience(c)
+    models.selectaudience c
 
   window.models = models
   #init

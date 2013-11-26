@@ -1,6 +1,5 @@
-define("jquery", [ "webjars!jquery.js" ], () ->
-  $
-)
+define("jquery", [ "webjars!jquery.js" ], -> $ )
+define("jquery.ui.widget", [ "webjars!jquery.ui.widget.js" ], -> )
 
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
 "lib/knockout-misc", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", 
@@ -43,38 +42,101 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         mod.datetostr(v)
       })
 
+      @confirmcampaigndelete = ko.observable(0)
+
       @publisher = ko.observable()
 
-      @publishers = ko.observableArray([])
+      @publishers = ko.observableArray []
 
-      @campaignstep = ko.observable(1)
+      @audiences = ko.observableArray []
 
-      @currentcampaign = ko.observable(new mod.Campaign({name:''}))
+      @packages = ko.observableArray []
 
-      @messages = ko.observableArray([])
+      @campaigns = ko.observableArray []
 
-      @resetstep = () ->
-        self.campaignstep(1)
+      @currentaudiences = ko.observableArray []
 
-      @nextstep = () ->
-        self.campaignstep(self.campaignstep()+1)
+      @currentpackages = ko.observableArray []
 
-      @prevstep = () ->
-        self.campaignstep(self.campaignstep()-1)
+      @campaignstep = new mod.Counter {value:1, minValue:1, maxValue:3, wrap:false}
 
-      @newcampaign = () ->
-        self.currentcampaign(new mod.Campaign({name:'New Campaign'}))
+      @audienceposition = new mod.Counter {wrap:false,minValue:0}
 
-      @savecampaign = () ->
+      @packageposition = new mod.Counter {wrap:false,minValue:0}
+
+      @currentcampaign = ko.observable(new mod.Campaign {name:''})
+
+      @currentpackage = ko.observable(new mod.Package {name:''})
+
+      @messages = ko.observableArray []
+
+      @newcampaign = ->
+        self.confirmcampaigndelete 0
+        self.currentcampaign(new mod.Campaign {name:'New Campaign',id:0})
+        self.currentpackage(new mod.Package {name:'',id:-1})
+        v.selected false for v in self.currentaudiences()
+        v.selected false for v in self.currentpackages()
+        $('#editCampaign').modal 'show'
+        ca = self.currentcampaign()
+        self.currentaudiences (a.refresh ca for a in self.audiences())
+        self.currentpackages (p.refresh ca for p in self.packages())
+        self.campaignstep.maxValue 1
+        self.campaignstep.currentValue 1
+        self.audienceposition.maxValue self.audiences().length
+        self.audienceposition.currentValue ''
+        self.packageposition.maxValue self.packages().length
+        self.packageposition.currentValue ''
+
+      @clearcampaign = ->
+        self.currentcampaign(new mod.Campaign {name:'',id:-1})
+        $('#editCampaign').modal 'hide'
+
+      @cleardeletecampaign = ->
+        self.confirmcampaigndelete 0
+
+      @deletecampaign = ->
+        if self.confirmcampaigndelete()==0
+          return self.confirmcampaigndelete 1
+        alert('delete campaign')
+        self.currentcampaign(new mod.Campaign {name:'',id:-1})
+        $('#editCampaign').modal 'hide'
+
+      @savecampaign = ->
         a = self.currentcampaign()
-        if a.id()
+        a.refresh(self.currentwebsites(),self.currentpackages())
+        l = self.campaigntable.data
+        if a.id() && a.id()>0
           alert('update campaign')
+          l.remove byId a.id()
+          l.push a
         else
           alert('persist campaign')
+          l.push a
+        self.currentcampaign(new mod.Campaign {name:'',id:-1})
+        $('#editCampaign').modal 'hide'
 
       @selectcampaign = (c) ->
-        self.currentcampaign((new mod.Campaign()).copyFrom(c))
-        $('#editCampaign').modal()
+        self.confirmcampaigndelete 0
+        self.currentcampaign (new mod.Campaign()).copyFrom(c)
+        self.currentpackage(new mod.Package {name:'',id:-1})
+        v.selected false for v in self.currentaudiences()
+        v.selected false for v in self.currentpackages()
+        $('#editCampaign').modal 'show'
+        ca = self.currentcampaign()
+        self.currentaudiences (a.refresh ca for a in self.audiences())
+        self.currentpackages (p.refresh ca for p in self.packages())
+        self.campaignstep.maxValue 1
+        self.campaignstep.currentValue 1
+        self.audienceposition.maxValue self.audiences().length
+        self.audienceposition.currentValue ''
+        self.packageposition.maxValue self.packages().length
+        self.packageposition.currentValue ''
+        
+      @selectaudience = (c) ->
+        {}
+
+      @selectpackage = (c) ->
+        {}
 
   models = new CampaignDashboard
 

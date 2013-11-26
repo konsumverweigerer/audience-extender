@@ -1,4 +1,49 @@
 define(["webjars!knockout.js"], (ko) ->
+  generateaudiences = (mod,models) ->
+    n = new Date()
+    m = 40+Math.ceil(100*Math.random())
+    q = Math.ceil(10*Math.random())
+    val = []
+    j = 1
+    for i in [0..m]
+      d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
+      ws = [1..(Math.ceil(10*Math.random()))]
+      ps = ({ id: j++, path: '/my/'+l+'/path', active: ['on','off'][(Math.floor(2*Math.random()))], website: ws[(Math.floor(ws.length*Math.random()))]} for l in [0..q])
+      val[i++] = new mod.Audience
+        id: i
+        name:'Audience '+Math.ceil 1000*Math.random()
+        state: ['paused','active','pending','cancelled'][(Math.floor(4*Math.random()))]
+        websites: ws
+        count: Math.ceil 10000*Math.random()
+        paths: ps
+    models.audiences val
+
+  generatecampaigns = (mod,models) ->
+    n = new Date()
+    m = 40+Math.ceil 100*Math.random()
+    val = []
+    for i in [0..m]
+      d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
+      val[i++] = new mod.Campaign
+        id: i
+        name: 'Campaign '+Math.ceil 1000*Math.random()
+        state: ['paused','finished','active','pending','cancelled','rejected',Math.floor(100*Math.random())+'%'][(Math.floor(7*Math.random()))]
+        revenue: (100*Math.random())
+        cost: (10*Math.random())
+        from: d[0]
+        to: d[1]
+    models.campaigns val
+      
+  generatepackages = (mod,models) ->
+    m = 5+Math.ceil 10*Math.random()
+    val = []
+    for i in [0..m]
+      val[i++] = new mod.Package
+        id: i
+        name: 'Package '+Math.ceil 1000*Math.random()
+        count: 1000*(i+1)
+    models.packages val
+
   generateaudience = (mod,models) ->
     require(["webjars!nv.d3.js"], ->
       data = ->
@@ -48,20 +93,11 @@ define(["webjars!knockout.js"], (ko) ->
         models.audiencechart.chartcontent data()
       models.audiencechartdaterange.dateRange 'Last Day'
 
+      v.refresh models.websites() for v in models.audiences()
+
       models.audiencetablesearchbar.filldata = ->
-        n = new Date()
-        m = 40+Math.ceil(100*Math.random())
-        val = []
-        for i in [0..m]
-          d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-          val[i++] = new mod.Audience
-            id: i
-            name:'Audience '+Math.ceil 1000*Math.random()
-            state: ['paused','active','pending','cancelled'][(Math.floor(4*Math.random()))]
-            websites: [1..(Math.ceil(10*Math.random()))]
-            count: Math.ceil 10000*Math.random()
-        v.refresh models.websites() for v in val
-        models.audiencetable.data val
+        #todo: filter
+        models.audiencetable.data models.audiences()
 
       models.audiencetablesearchbar.search()
     )
@@ -142,27 +178,15 @@ define(["webjars!knockout.js"], (ko) ->
       models.campaignchartdaterange.dateRange 'Last Day'
   
       models.campaigntablesearchbar.filldata = ->
-        n = new Date()
-        m = 40+Math.ceil 100*Math.random()
-        val = []
-        for i in [0..m]
-          d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-          val[i++] = new mod.Campaign
-            id: i
-            name: 'Campaign '+Math.ceil 1000*Math.random()
-            state: ['paused','finished','active','pending','cancelled','rejected',Math.floor(100*Math.random())+'%'][(Math.floor(7*Math.random()))]
-            revenue: (100*Math.random())
-            cost: (10*Math.random())
-            from: d[0]
-            to: d[1]
-        models.campaigntable.data val
+        #todo: filter
+        models.campaigntable.data models.campaigns()
 
       models.campaigntablesearchbar.search()
     )
 
   generatewebsites = (mod,models) ->
     ws = models.websites()
-    m = 4+Math.ceil(10*Math.random())
+    m = 10+Math.ceil(10*Math.random())
     for i in [1...m]
       w = new mod.Website
         id:i
@@ -175,8 +199,12 @@ define(["webjars!knockout.js"], (ko) ->
   { generate: (mod,models,page) ->
     if 'audience'==page
       generatewebsites(mod,models)
+      generateaudiences(mod,models)
       generateaudience(mod,models)
     else if 'campaign'==page
+      generatepackages(mod,models)
+      generateaudiences(mod,models)
+      generatecampaigns(mod,models)
       generatecampaign(mod,models)
   }
 )

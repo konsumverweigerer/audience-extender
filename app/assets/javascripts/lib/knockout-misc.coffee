@@ -1,6 +1,22 @@
-define([ "webjars!knockout.js", "webjars!jquery.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
+requirejs.config
+  map:
+    '/webjars/jquery-file-upload/8.4.2/js':
+      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload': 'webjars!jquery.fileupload.js'
+      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload-process': 'webjars!jquery.fileupload-process.js'
+
+define("load-image", [ ], -> )
+define("load-image-meta", [ ], -> )
+define("load-image-exif", [ ], -> )
+define("load-image-ios", [ ], -> )
+define("canvas-to-blob", [ ], -> )
+
+define([ "webjars!knockout.js", "webjars!jquery.js", "webjars!jquery.fileupload.js", 
+"webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 
+"webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
   carouselDefaults = () ->
     {wrap:'both'}
+  wizardDefaults = () ->
+    {}
 
   ko.bindingHandlers.checkedChange = 
     after: ['value','attr']
@@ -70,22 +86,14 @@ define([ "webjars!knockout.js", "webjars!jquery.js", "ext/bootstrap-slider", "ex
       ko.dependentObservable(updateView, null, { disposeWhenNodeIsRemoved: element })
       shouldSet = true;
 
-  ko.bindingHandlers.slider =
-    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
-    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
-
   ko.bindingHandlers.carousel =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       $element = $(element)
       allBindings = allBindingsAccessor()
       carouselOptions = $.extend(carouselDefaults(), allBindings.carouselOptions || {})
-      $carousel = $element.jcarousel(carouselOptions)
+      $carousel = $element.jcarousel carouselOptions
       if carouselOptions.previousButton
-        $(carouselOptions.previousButton).on('click',(e)=>
+        $(carouselOptions.previousButton).on('click.ko',(e) =>
           val = ko.unwrap valueAccessor()
           if val.previous
             val.previous()
@@ -93,7 +101,7 @@ define([ "webjars!knockout.js", "webjars!jquery.js", "ext/bootstrap-slider", "ex
             $element.jcarousel('scroll','-=1')
         )
       if carouselOptions.nextButton
-        $(carouselOptions.nextButton).on('click',(e)=>
+        $(carouselOptions.nextButton).on('click.ko',(e) =>
           val = ko.unwrap valueAccessor()
           if val.next
             val.next()
@@ -115,11 +123,50 @@ define([ "webjars!knockout.js", "webjars!jquery.js", "ext/bootstrap-slider", "ex
 
   ko.bindingHandlers.wizard =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      $element = $(element)
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
+      wizardOptions = $.extend(wizardDefaults(), allBindings.wizardOptions || {})
+      $element.wizard wizardOptions
+      cs = $element.wizard 'selectedItem'
+      if cs
+        css = cs.step
+        while css!=val
+          if css<val
+            $element.wizard 'next'
+          else if css>val
+            $element.wizard 'previous'
+          cs = $element.wizard 'selectedItem'
+          if css==cs.step
+            break
+          css = cs.step
+      $element.on('changed.ko',(e) =>
+        cs = $element.wizard 'selectedItem'
+        if cs
+          valueAccessor() cs.step
+      )
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      $element = $(element)
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
+      $element.off 'changed.ko'
+      cs = $element.wizard 'selectedItem'
+      if cs
+        css = cs.step
+        while css!=val
+          if css<val
+            $element.wizard 'next'
+          else if css>val
+            $element.wizard 'previous'
+          cs = $element.wizard 'selectedItem'
+          if css==cs.step
+            break
+          css = cs.step
+      $element.on('changed.ko',(e) =>
+        cs = $element.wizard 'selectedItem'
+        if cs
+          valueAccessor() cs.step
+      )
 
   ko.bindingHandlers.fadeVisible =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
@@ -132,4 +179,29 @@ define([ "webjars!knockout.js", "webjars!jquery.js", "ext/bootstrap-slider", "ex
         $(element).fadeIn()
       else
         $(element).fadeOut()
+
+  ko.bindingHandlers.slider =
+    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      val = ko.unwrap valueAccessor()
+      allBindings = allBindingsAccessor()
+    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      val = ko.unwrap valueAccessor()
+      allBindings = allBindingsAccessor()
+
+  ko.bindingHandlers.fileupload =
+    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      val = ko.unwrap valueAccessor()
+      allBindings = allBindingsAccessor()
+    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      val = ko.unwrap valueAccessor()
+      allBindings = allBindingsAccessor()
+
+  ko.bindingHandlers.jqvalidation =
+    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      val = ko.unwrap valueAccessor()
+      allBindings = allBindingsAccessor()
+    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
+      val = ko.unwrap valueAccessor()
+      allBindings = allBindingsAccessor()
+
 )
