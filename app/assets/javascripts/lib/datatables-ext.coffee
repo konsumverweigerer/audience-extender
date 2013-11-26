@@ -7,7 +7,7 @@ define([ "webjars!jquery.dataTables.js", "webjars!jquery.js" ], () ->
     'number-pre': (a) ->
       if a=='-'
         return 0
-      parseFloat(a.replace(/[^\d\-\.]/g,''))
+      parseFloat((''+a).replace(/[^\d\-\.]/g,''))
     'currency-asc': (a,b) -> 
       a-b
     'currency-desc': (a,b) -> 
@@ -15,7 +15,7 @@ define([ "webjars!jquery.dataTables.js", "webjars!jquery.js" ], () ->
     'currency-pre': (a) ->
       if a=='-'
         return 0
-      parseFloat(a.replace(/[^\d\-\.]/g,''))
+      parseFloat((''+a).replace(/[^\d\-\.]/g,''))
     'percent-asc': (a,b) -> 
       a-b
     'percent-desc': (a,b) -> 
@@ -23,6 +23,6 @@ define([ "webjars!jquery.dataTables.js", "webjars!jquery.js" ], () ->
     'percent-pre': (a) ->
       if a==''
         return 0
-      parseFloat(a.replace(/[^\d\-\.]/g,''))
+      parseFloat((''+a).replace(/[^\d\-\.]/g,''))
   })
 )
