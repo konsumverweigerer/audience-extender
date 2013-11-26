@@ -8,10 +8,12 @@
 			</div>
 			<div class="modal-body" data-bind="visible: confirmaudiencedelete()==1">
 				<div class="m-top-btm">
-					<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the audience</div>
-					<div class="m-top-btm">
-						<button type="button" class="btn btn-default" data-bind="click: cleardeleteaudience">Cancel</button>
-						<button type="button" class="btn btn-danger" data-bind="click: deleteaudience"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+					<div class="alert alert-danger">
+						<span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the audience?
+						<div class="m-top">
+							<button type="button" class="btn btn-default" data-bind="click: cleardeleteaudience">Cancel</button>
+							<button type="button" class="btn btn-danger" data-bind="click: deleteaudience"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+						</div>
 					</div>
 				</div>
 			</div>
