@@ -181,7 +181,7 @@
 			<div class="modal-footer" data-bind="visible: confirmaudiencedelete()==0">
 				<button type="button" class="btn btn-danger pull-left" data-bind="click: deleteaudience, visible: currentaudience().persisted"><span class="glyphicon glyphicon-remove"></span> Delete</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: clearaudience">Cancel</button>
-				<button type="button" class="btn btn-primary" data-bind="click: saveaudience"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+				<button type="button" class="btn btn-primary" data-bind="click: saveaudience, css: { 'disabled': currentwebsite().transientnew }"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
 			</div>
 		</div>
 	</div>
