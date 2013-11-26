@@ -45,8 +45,8 @@
 										</li>
 									</ul>
 								</div>
-								<a href="#" class="jcarousel-control-prev" data-bind="click: websiteposition.previous, visible: websiteposition.isNotFirst">&lsaquo;</a>
-								<a href="#" class="jcarousel-control-next" data-bind="click: websiteposition.next, visible: websiteposition.isNotLast">&rsaquo;</a>
+								<a href="#" class="jcarousel-control-prev" data-bind="click: websiteposition.previous, css: { 'inactive': websiteposition.isFirst }">&lsaquo;</a>
+								<a href="#" class="jcarousel-control-next" data-bind="click: websiteposition.next, css: { 'inactive': websiteposition.isLast }">&rsaquo;</a>
 							</div>
 						</div>
 					</div>
@@ -70,18 +70,18 @@
 								<input type="text" class="form-control" id="websitename" placeholder="Website Name" data-bind="attr: {disabled: persisted}, value: name">
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group" data-bind="visible: persisted">
 							<label for="trackingcode" class="col-sm-3 control-label">Tracking Code</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" rows="3" id="trackingcode" readonly data-bind="text: code">Tracking Code here...</textarea>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group" data-bind="visible: persisted">
 							<div class="col-sm-offset-3 col-sm-9">
 								<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Explanation about Tracking code here...</div>
 							</div>
 						</div>
-						<div class="form-group" data-bind="css: {'has-success': emailSent, 'has-error': emailFail}">
+						<div class="form-group" data-bind="css: {'has-success': emailSent, 'has-error': emailFail}, visible: persisted">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">
 								<div class="input-group">
@@ -94,11 +94,11 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary">Copy Tracking Code</button>
-								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
+								<button type="submit" class="btn btn-primary" data-bind="visible: persisted">Copy Tracking Code</button>
+								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite, visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
 							</div>
 						</div>
-					</form>
+        			</form>
 				</div>
 
 				<div class="m-top-btm" data-bind="visible: currentwebsite().inactive">

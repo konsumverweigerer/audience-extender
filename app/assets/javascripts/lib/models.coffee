@@ -366,7 +366,7 @@ define(["webjars!knockout.js"], (ko) ->
 
   class ServerModels
     typeOf: (name) ->
-      if name=='real' || name=='persisted'
+      if name=='real' || name=='persisted' || name=='transientnew'
         return { isIgnored: true }
       { isIgnored: false, isArray: false, isModel: false, model: null }
 
@@ -431,6 +431,11 @@ define(["webjars!knockout.js"], (ko) ->
       @persisted = ko.computed( ->
           id = self.id()
           id? && id>0
+      )
+
+      @transientnew = ko.computed( ->
+          id = self.id()
+          id? && id==0
       )
 
   class Message extends ServerModels
