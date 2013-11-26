@@ -344,6 +344,9 @@ h3 {
 	background:rgba(255, 255, 255, 0.5);
 	border:1px solid #eee;
 	margin:10px;
+	&.simple {
+		margin:10px 20px;
+	}
 }
 .website-block-add-wrapper {
 	float:right;
@@ -396,7 +399,6 @@ h3 {
 	position:absolute;
 	text-align:center;
 	text-decoration:none;
-	text-shadow:0 0 1px #000;
 	top:50%;
 	width:30px;
 	&:hover,
@@ -405,6 +407,10 @@ h3 {
 		background:rgba(39, 89, 128, 0.9);
 		color:#fff;
 		text-decoration:none;
+	}
+	&.inactive {
+		background:@btn-default-bg;
+		cursor:default;
 	}
 }
 
