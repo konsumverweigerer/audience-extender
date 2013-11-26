@@ -62,6 +62,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.currentwebsite().editing(true)
 
       @newaudience = ->
+        self.confirmaudiencedelete 0
         self.currentaudience(new mod.Audience {name:'New Audience',id:0})
         self.currentwebsite(new mod.Website {name:'',id:-1})
         for v in self.currentwebsites()
@@ -119,6 +120,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.currentwebsite(new mod.Website {name:'',id:-1})
 
       @selectaudience = (c) ->
+        self.confirmaudiencedelete 0
         self.currentaudience (new mod.Audience()).copyFrom(c)
         self.currentwebsite(new mod.Website {name:'',id:-1})
         for v in self.currentwebsites()
