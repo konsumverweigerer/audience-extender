@@ -89,21 +89,21 @@
 			    								<div class="col-xs-6">
 													<div class="form-group">
 														<label for="buycpm">Buy CPM</label>
-														<input type="text" class="form-control" id="buycpm" placeholder="">
+														<input type="text" class="form-control" id="buycpm" placeholder="" data-bind="value: buyCpm">
 													</div>
 													<div class="form-group">
 														<label for="salescpm">Sales CPM</label>
-														<input type="text" class="form-control" id="salescpm" placeholder="">
+														<input type="text" class="form-control" id="salescpm" placeholder="" data-bind="value: salesCpm">
 													</div>
     											</div>
 	    										<div class="col-xs-6">
 													<div class="form-group">
 														<label for="startdate">Start Date</label>
-														<input type="text" class="form-control" id="startdate" placeholder="">
+														<input type="text" class="form-control" id="startdate" placeholder="" data-bind="value: startDate">
 													</div>
 													<div class="form-group">
 														<label for="enddate">End Date</label>
-														<input type="text" class="form-control" id="enddate" placeholder="">
+														<input type="text" class="form-control" id="enddate" placeholder="" data-bind="value: endDate">
 													</div>
 			    								</div>
 		    								</div>
@@ -112,12 +112,12 @@
 											<div class="form-group">
 												<label for="audiencereach">Audience Reach</label>
 												<div class="slider">
-													<input id="audiencereach" type="text" class="form-control" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="vertical" data-slider-selection="after"data-slider-tooltip="hide" />
+													<input id="audiencereach" type="text" class="form-control" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="vertical" data-slider-selection="after" data-slider-tooltip="hide" data-bind="value: reach"/>
 												</div>
 											</div>
 											<div class="form-group">
 												<label for="adimpressiongoal">AD Impression Goal</label>
-												<input type="text" class="form-control" id="adimpressiongoal" placeholder="">
+												<input type="text" class="form-control" id="adimpressiongoal" placeholder="" data-bind="value: count">
 											</div>
 									    </div>
 								    </div>
@@ -130,7 +130,7 @@
     							</form>
 							</div>
 						</div>
-						<h3 class="clearfix" data-bind="visible: currentcampaign().package">Expected Campaign Results: <span class="pull-right"><span class="legend-revenu">$5000 Revenue</span> - <span class="legend-ad-spent">$1700 AD Spent</span> = <span class="legend-profit">$3300 Profit</span></span></h3>
+						<h3 class="clearfix" data-bind="visible: currentcampaign().package">Expected Campaign Results: <span class="pull-right"><span class="legend-revenu">$<!-- ko text: results().revenue --><!-- /ko --> Revenue</span> - <span class="legend-ad-spent">$<!-- ko text: results().adspend --><!-- /ko --> AD Spent</span> = <span class="legend-profit">$<!-- ko text: results().profit --><!-- /ko --> Profit</span></span></h3>
 					</div>
                     
 					<div id="step2" class="step-pane">

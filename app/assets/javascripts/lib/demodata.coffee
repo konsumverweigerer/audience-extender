@@ -45,6 +45,9 @@ define(["webjars!knockout.js"], (ko) ->
         id: i
         name: 'Package '+rnd(1,1000)
         count: 1000*(i+1)
+        salesCpm: 20+10*Math.random()
+        buyCpm: 10+10*Math.random()
+        reach: rnd(1000,20000)
     models.packages val
 
   generateaudience = (mod,models) ->

@@ -72,6 +72,23 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @messages = ko.observableArray []
 
+      @results = ->
+        ca = self.currentcampaign()
+        pa = self.currentpackage()
+        [r,s] = [0,0]
+        if pa.id()<0 || ca.package()!=pa.id()
+          id = ca.package()
+          pa = p for p in self.packages() when id==p.id()
+        if ca? && pa?
+          #todo: model for audience
+          c = pa.count()
+          [r,s] = [(c*pa.salesCpm()/1000) || 0,(c*pa.buyCpm()/1000) || 0]
+        {
+          revenue: (0+r).toFixed(2)
+          adspend: (0+s).toFixed(2)
+          profit: (0+r-s).toFixed(2)
+        }
+
       @pausecampaign = ->
         self.currentcampaign().state('paused')
 
@@ -80,7 +97,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @newpackage = ->
         ca = self.currentcampaign()
-        self.currentpackage(new mod.Package {name:'New Package',id:0,campaign:ca.id()})
+        self.currentpackage(new mod.Package {name:'Custom Package',id:0,campaign:ca.id()})
 
       @clearpackage = ->
         self.currentpackage(new mod.Package {name:'',id:-1})
@@ -174,7 +191,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           c.active true
         else if c.selected()
           c.selected false
-          self.currentcampaign().audiences.remove byId c.id()
+          self.currentcampaign().audiences.remove c.id()
         else
           c.selected true
           self.currentcampaign().audiences.push c.id()
@@ -187,7 +204,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         else if not c.selected()
           v.selected false for v in self.currentpackages()
           c.selected true
-          self.currentcampaign().package c
+          self.currentcampaign().package c.id()
         self.checkmaxstep()
 
   models = new CampaignDashboard
