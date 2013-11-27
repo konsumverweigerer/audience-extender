@@ -10,9 +10,10 @@ define("load-image-exif", [ ], -> )
 define("load-image-ios", [ ], -> )
 define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
-define([ "webjars!knockout.js", "webjars!jquery.js", "webjars!jquery.fileupload.js", 
-"webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 
-"webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
+define([ "webjars!jquery.js" ] -> 
+ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js", 
+ "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 
+ "webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
   carouselDefaults = ->
     {wrap:'both'}
   wizardDefaults = ->
@@ -203,5 +204,5 @@ define([ "webjars!knockout.js", "webjars!jquery.js", "webjars!jquery.fileupload.
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
-
+ )
 )
