@@ -3,7 +3,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="close" aria-hidden="true" data-bind="click: clearcampaign">&times;</button>
 				<h4 class="modal-title">New/Edit Campaign</h4>
 			</div>
 			<div class="modal-body" data-bind="wizard: campaignstep.currentValue">
@@ -14,7 +14,7 @@
 						<li data-target="#step2"><span class="badge">2</span>Step 2 <span data-bind="text: campaignstep.maxValue() > 2 ? '(completed)' : ''"></span><span class="chevron"></span></li>
 						<li data-target="#step3"><span class="badge">3</span>Step 3<span class="chevron"></span></li>
 					</ul>
-        		</div>
+                </div>
 				<div class="step-content">
 					<div id="step1" class="step-pane active">
 						<h3>Select Audience</h3>
@@ -22,72 +22,22 @@
 							<div class="clearfix">
 								<div class="website-block-wrapper">
 									<div class="jcarousel-wrapper">
-										<div class="jcarousel">
-											<ul>
+                                        <div class="jcarousel" data-bind="carousel: audienceposition">
+									        <ul data-bind="foreach: currentaudiences">
 												<li>
-													<a href="#" class="website-block active">
-														<span class="website-name">Audience 1 active</span>
+													<a href="javascript:void()" class="website-block" data-bind="click: $root.selectaudience, css: {'selected': selected(), 'active': active()}">
+														<span class="website-name" data-bind="text: name"></span>
 														<span class="thumbnail-site">
 															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
 															<span></span>
 														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block">
-														<span class="website-name">Audience 2</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block selected">
-														<span class="website-name">Audience 3 selected</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block selected">
-														<span class="website-name">Audience 4 selected</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block selected">
-														<span class="website-name">Audience 5 selected</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block">
-														<span class="website-name">Audience 6</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
+														<span class="website-audience"><span data-bind="text: count">0</span> Users <span class="glyphicon glyphicon-eye-open"></span></span>
 													</a>
 												</li>
 											</ul>
 										</div>
-										<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-										<a href="#" class="jcarousel-control-next">&rsaquo;</a>
+                                        <a href="#" class="jcarousel-control-prev" data-bind="click: audienceposition.previous, css: { 'inactive': audienceposition.isFirst }">&lsaquo;</a>
+                                        <a href="#" class="jcarousel-control-next" data-bind="click: audienceposition.next, css: { 'inactive': audienceposition.isLast }">&rsaquo;</a>
 									</div>
 								</div>
 							</div>
@@ -98,7 +48,7 @@
 							<div class="clearfix">
 								<div class="website-block-wrapper">
 									<div class="website-block-add-wrapper">
-										<a href="#" class="website-block-add">
+										<a href="javascript:void()" class="website-block-add" data-bind="click: newpackage">
 											<span class="website-name">Add New Package</span>
 											<span class="thumbnail-site">
 												<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" />
@@ -106,78 +56,28 @@
 										</a>
 									</div>
 									<div class="jcarousel-wrapper with-add-block">
-										<div class="jcarousel">
-											<ul>
+                                        <div class="jcarousel" data-bind="carousel: packageposition">
+    								        <ul data-bind="foreach: currentpackages">
 												<li>
-													<a href="#" class="website-block selected">
-														<span class="website-name">Package 1 selected</span>
+													<a href="javascript:void()" class="website-block" data-bind="click: $root.selectpackage, css: {'selected': selected(), 'active': active()}">
+														<span class="website-name" data-bind="text: name"></span>
 														<span class="thumbnail-site">
 															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
 															<span></span>
 														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block active">
-														<span class="website-name">Package 2 active</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block">
-														<span class="website-name">Package 3</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block">
-														<span class="website-name">Package 4</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block">
-														<span class="website-name">Package 5</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
-													</a>
-												</li>
-												<li>
-													<a href="#" class="website-block">
-														<span class="website-name">Package 6</span>
-														<span class="thumbnail-site">
-															<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
-															<span></span>
-														</span>
-														<span class="website-audience">20.000 Users <span class="glyphicon glyphicon-eye-open"></span></span>
+														<span class="website-audience"><span data-bind="text: count">0</span> Ad Impressions <span class="glyphicon glyphicon-eye-open"></span></span>
 													</a>
 												</li>
 											</ul>
 										</div>
-										<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-										<a href="#" class="jcarousel-control-next">&rsaquo;</a>
+                                        <a href="#" class="jcarousel-control-prev" data-bind="click: packageposition.previous, css: { 'inactive': packageposition.isFirst }">&lsaquo;</a>
+                                        <a href="#" class="jcarousel-control-next" data-bind="click: packageposition.next, css: { 'inactive': packageposition.isLast }">&rsaquo;</a>
 									</div>
 								</div>
 							</div>
 						</div>
 
-						<div class="panel panel-default m-top">
+						<div class="panel panel-default m-top" data-bind="visible: currentpackage().real">
 							<div class="panel-heading">
 								<h4 class="panel-title">Create Custom AD Package</h4>
 							</div>
@@ -228,10 +128,9 @@
 								</div>
 							</div>
 						</div>
-
 						<h3 class="clearfix">Expected Campaign Results: <span class="pull-right"><span class="legend-revenu">$5000 Revenue</span> - <span class="legend-ad-spent">$1700 AD Spent</span> = <span class="legend-profit">$3300 Profit</span></span></h3>
-
 					</div>
+                    
 					<div id="step2" class="step-pane">
 						<div class="box-drag-and-drop-banner text-center">
 							<h3>Drag and Drop Banner Here</h3>
@@ -239,42 +138,13 @@
 							<p>You can drag multiple images here. We don't accept folders or compressed (zip) items.</p>
 						</div>
 						<div class="actions text-center m-top">
-							<button class="btn btn-primary" type="button">...or choose files</button>
+							<input class="btn btn-primary" type="file">...or choose files</button>
 						</div>
-
-					</div>
-					<div id="step3" class="step-pane">
 						<h3>Your Uploads</h3>
 						<div class="row">
 							<div class="col-md-12">
 								<table class="table table-striped table-bordered table-vertical">
-									<tbody>
-										<tr>
-											<td class="col-sm-2 col-xs-4"><img src="@routes.Assets.at("images/tmp-banner-your-uploads.png")" alt="" /></td>
-											<td class="col-sm-10 col-xs-8">
-												<div class="row">
-													<div class="col-xs-12 col-sm-9">
-														/myimages/banner_1.gif
-													</div>
-													<div class="col-xs-12 col-sm-3 text-right">
-														<button class="btn btn-danger btn-xs" type="button"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td class="col-sm-2 col-xs-4"><img src="@routes.Assets.at("images/tmp-banner-your-uploads.png")" alt="" /></td>
-											<td class="col-sm-10 col-xs-8">
-												<div class="row">
-													<div class="col-xs-12 col-sm-9">
-														/myimages/banner_1.gif
-													</div>
-													<div class="col-xs-12 col-sm-3 text-right">
-														<button class="btn btn-danger btn-xs" type="button"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-													</div>
-												</div>
-											</td>
-										</tr>
+									<tbody data-bind="foreach: currentcampaign().creatives">
 										<tr>
 											<td class="col-sm-2 col-xs-4"><img src="@routes.Assets.at("images/tmp-banner-your-uploads.png")" alt="" /></td>
 											<td class="col-sm-10 col-xs-8">
@@ -292,7 +162,9 @@
 								</table>
 							</div>
 						</div>
-
+    				</div>
+                    
+					<div id="step3" class="step-pane">
 						<h3>Schedule Campaign</h3>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam accumsan placerat augue vel semper. Donec eu tortor sit amet lectus malesuada mattis eu at leo. Curabitur aliquam eros nisi, non sollicitudin diam convallis vitae. Sed laoreet felis ac sem rutrum dapibus. Integer mollis placerat diam, eu lacinia nisi sagittis in. Phasellus nibh ipsum, accumsan eu magna ut, pretium pellentesque quam. Cras accumsan eget dui a blandit. Donec eget urna mattis, interdum leo sit amet, facilisis tortor. Ut varius cursus euismod. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi interdum mollis dui et tempor.</p>
 					</div>
@@ -303,9 +175,10 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-pause"></span> Pause</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+				<button type="button" class="btn btn-danger pull-left" data-bind="visible: currentcampaign().state()=='active', click: pausecampaign"><span class="glyphicon glyphicon-pause"></span> Pause</button>
+    			<button type="button" class="btn btn-danger pull-left" data-bind="visible: currentcampaign().state()=='paused', click: activatecampaign"><span class="glyphicon glyphicon-play"></span> Activate</button>
+				<button type="button" class="btn btn-default" data-bind="click: clearcampaign">Cancel</button>
+				<button type="button" class="btn btn-primary" data-bind="click: savecampaign"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
 			</div>
 		</div>
 	</div>

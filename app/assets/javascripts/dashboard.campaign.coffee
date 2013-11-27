@@ -70,16 +70,38 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @messages = ko.observableArray []
 
+      @pausecampaign = ->
+        self.currentcampaign().state('paused')
+
+      @activatecampaign = ->
+        self.currentcampaign().state('active')
+
+      @newpackage = ->
+        ca = self.currentcampaign()
+        self.currentpackage(new mod.Package {name:'New Package',id:0,campaign:ca.id()})
+
+      @clearpackage = ->
+        self.currentpackage(new mod.Package {name:'',id:-1})
+
+      @savepackage = ->
+        a = self.currentpackage()
+        ca = self.currentcampaign()
+        alert('persist package')
+        a.id Math.ceil 1000+1000*Math.random()
+        ca.package a.id()
+        self.packages.push a
+        self.currentpackages.push a
+
       @newcampaign = ->
         self.confirmcampaigndelete 0
-        self.currentcampaign(new mod.Campaign {name:'New Campaign',id:0})
+        self.currentcampaign(new mod.Campaign {name:'New Campaign',id:0,state:'pending'})
         self.currentpackage(new mod.Package {name:'',id:-1})
-        v.selected false for v in self.currentaudiences()
-        v.selected false for v in self.currentpackages()
+        (v.selected false; v.active false) for v in self.currentaudiences()
+        (v.selected false; v.active false) false for v in self.currentpackages()
         $('#editCampaign').modal 'show'
         ca = self.currentcampaign()
         self.currentaudiences (a.refresh ca for a in self.audiences())
-        self.currentpackages (p.refresh ca for p in self.packages())
+        self.currentpackages (p.refresh ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
         self.campaignstep.maxValue 1
         self.campaignstep.currentValue 1
         self.audienceposition.maxValue self.audiences().length
@@ -111,6 +133,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           l.push a
         else
           alert('persist campaign')
+          a.id Math.ceil 1000+1000*Math.random()
           l.push a
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
         $('#editCampaign').modal 'hide'
@@ -119,12 +142,12 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.confirmcampaigndelete 0
         self.currentcampaign (new mod.Campaign()).copyFrom(c)
         self.currentpackage(new mod.Package {name:'',id:-1})
-        v.selected false for v in self.currentaudiences()
-        v.selected false for v in self.currentpackages()
+        (v.selected false; v.active false) for v in self.currentaudiences()
+        (v.selected false; v.active false) false for v in self.currentpackages()
         $('#editCampaign').modal 'show'
         ca = self.currentcampaign()
         self.currentaudiences (a.refresh ca for a in self.audiences())
-        self.currentpackages (p.refresh ca for p in self.packages())
+        self.currentpackages (p.refresh ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
         self.campaignstep.maxValue 1
         self.campaignstep.currentValue 1
         self.audienceposition.maxValue self.audiences().length
@@ -133,10 +156,24 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.packageposition.currentValue ''
         
       @selectaudience = (c) ->
-        {}
+        if not c.active()
+          v.active false for v in self.currentaudiences()
+          c.active()
+        else if c.selected()
+          c.selected false
+          self.currentcampaign().audiences.remove byId c.id()
+        else
+          c.selected true
+          self.currentcampaign().audiences.push c.id()
 
       @selectpackage = (c) ->
-        {}
+        if not c.active()
+          v.active false for v in self.currentpackages()
+          c.active()
+        else if not c.selected()
+          v.selected false for v in self.currentpackages()
+          c.selected true
+          self.currentcampaign().package(c)
 
   models = new CampaignDashboard
 

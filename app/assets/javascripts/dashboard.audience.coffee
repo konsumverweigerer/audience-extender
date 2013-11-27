@@ -71,10 +71,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.confirmaudiencedelete 0
         self.currentaudience(new mod.Audience {name:'New Audience',id:0})
         self.currentwebsite(new mod.Website {name:'',id:-1})
-        for v in self.currentwebsites()
-          v.active false
-          v.editing false
-          v.selected false
+        (v.active false; v.editing false; v.selected false) for v in self.currentwebsites()
         $('#editAudience').modal 'show'
         au = self.currentaudience()
         self.currentwebsites (w.refresh au for w in self.websites())
@@ -126,9 +123,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.confirmaudiencedelete 0
         self.currentaudience (new mod.Audience()).copyFrom(c)
         self.currentwebsite(new mod.Website {name:'',id:-1})
-        for v in self.currentwebsites()
-          v.active false
-          v.editing false
+        (v.active false; v.editing false) for v in self.currentwebsites()
         $('#editAudience').modal 'show'
         au = self.currentaudience()
         self.currentwebsites (w.refresh au for w in self.websites())
@@ -143,9 +138,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         if c.currentwebsite
           c = c.currentwebsite()
         if self.confirmwebsitedelete()==0 and not c.active()
-          for v in self.currentwebsites()
-            v.active false
-            v.editing false
+          (v.active false; v.editing false) for v in self.currentwebsites()
           c.active true
           self.currentwebsite c
         if self.confirmwebsitedelete()==0
@@ -166,9 +159,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         if self.confirmwebsitedelete()>0
           return
         if not c.active()
-          for v in self.currentwebsites()
-            v.active false
-            v.editing false
+          (v.active false; v.editing false) for v in self.currentwebsites()
           c.active true
         else
           self.selectwebsite c
@@ -189,9 +180,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         if self.confirmwebsitedelete()>0
           return
         if not c.active()
-          for v in self.currentwebsites()
-            v.active false
-            v.editing false
+          (v.active false; v.editing false) for v in self.currentwebsites()
           c.active true
         c.editing true
         self.currentwebsite c

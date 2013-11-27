@@ -482,11 +482,23 @@ define(["webjars!knockout.js"], (ko) ->
 
       @audiences = ko.observableArray(d && d.audiences)
 
+      @creatives = ko.observableArray(d && d.creatives)
+
       @from = ko.observable(d && d.from)
 
       @to = ko.observable(d && d.to)
 
       @refresh = (audiences,packages) ->
+        for au in audiences
+          au.selected(false)
+          for a in self.audiences()
+            if a==au.id()
+              au.selected(true)
+        pak = self.package()
+        for pa in packages
+          pa.selected(false)
+          if pak && pak.id()==pa.id()
+            pa.selected(true)
         return self
 
   class PathTarget extends ServerModels
@@ -504,7 +516,7 @@ define(["webjars!knockout.js"], (ko) ->
     typeOf: (name) ->
       if name=='paths'
         return { isIgnored: false, isArray: true, isModel: true, model: PathTarget }
-      else if name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty' || name=='messages' || name=='selected'
+      else if name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty' || name=='messages' || name=='selected' || name=='active'
         return { isIgnored: true }
       super(name)
 
@@ -527,6 +539,8 @@ define(["webjars!knockout.js"], (ko) ->
       @websites = ko.observableArray(d && d.websites)
 
       @selected = ko.observable false
+
+      @active = ko.observable false
 
       @nonempty = ko.computed( ->
         (self.websites() || []).length>0
@@ -648,7 +662,7 @@ define(["webjars!knockout.js"], (ko) ->
 
   class Package extends ServerModels
     typeOf: (name) ->
-      if name=='messages' || name=='selected'
+      if name=='messages' || name=='selected' || name=='active'
         return { isIgnored: true }
       super(name)
 
@@ -661,6 +675,10 @@ define(["webjars!knockout.js"], (ko) ->
       @name = ko.observable(d && d.name)
 
       @selected = ko.observable false
+
+      @active = ko.observable false
+
+      @campaign = ko.observable(d && d.campaign)
 
       @count = ko.observable(d && d.count)
 
@@ -675,6 +693,19 @@ define(["webjars!knockout.js"], (ko) ->
       @startDate = ko.observable(d && d.startDate)
 
       @endDate = ko.observable(d && d.endDate)
+
+  class Creative extends ServerModels
+    constructor: (d) ->
+      super(d)
+      self = @
+
+      @name = ko.observable(d && d.name)
+
+      @url = ko.observable(d && d.url)
+
+      @previewUrl = ko.observable(d && d.previewUrl)
+
+      @data = ko.observable(d && d.data)
 
   class Publisher extends ServerModels
     typeOf: (name) ->
@@ -726,6 +757,7 @@ define(["webjars!knockout.js"], (ko) ->
   Website: Website,
   Admin: Admin,
   Package: Package,
+  Creative: Creative,
   PathTarget: PathTarget,
   Publisher: Publisher,
   truncateToDay: truncateToDay,
