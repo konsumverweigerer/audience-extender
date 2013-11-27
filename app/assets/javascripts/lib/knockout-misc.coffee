@@ -13,9 +13,9 @@ define("canvas-to-blob", [ ], -> )
 define([ "webjars!knockout.js", "webjars!jquery.js", "webjars!jquery.fileupload.js", 
 "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 
 "webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
-  carouselDefaults = () ->
+  carouselDefaults = ->
     {wrap:'both'}
-  wizardDefaults = () ->
+  wizardDefaults = ->
     {}
 
   ko.bindingHandlers.checkedChange = 
