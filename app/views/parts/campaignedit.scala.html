@@ -77,16 +77,16 @@
 							</div>
 						</div>
 
-						<div class="panel panel-default m-top" data-bind="visible: currentpackage().real">
+						<div class="panel panel-default m-top" data-bind="visible: currentpackage().transientnew">
 							<div class="panel-heading">
 								<h4 class="panel-title">Create Custom AD Package</h4>
 							</div>
 							<div class="panel-body">
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="row">
-											<div class="col-xs-6">
-												<form class="form" role="form">
+    							<form class="form" role="form" data-bind="with: currentpackage">
+    								<div class="row">
+	    								<div class="col-sm-6">
+		    								<div class="row">
+			    								<div class="col-xs-6">
 													<div class="form-group">
 														<label for="buycpm">Buy CPM</label>
 														<input type="text" class="form-control" id="buycpm" placeholder="">
@@ -95,10 +95,8 @@
 														<label for="salescpm">Sales CPM</label>
 														<input type="text" class="form-control" id="salescpm" placeholder="">
 													</div>
-												</form>
-											</div>
-											<div class="col-xs-6">
-												<form class="form" role="form">
+    											</div>
+	    										<div class="col-xs-6">
 													<div class="form-group">
 														<label for="startdate">Start Date</label>
 														<input type="text" class="form-control" id="startdate" placeholder="">
@@ -107,12 +105,10 @@
 														<label for="enddate">End Date</label>
 														<input type="text" class="form-control" id="enddate" placeholder="">
 													</div>
-												</form>
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<form class="form" role="form">
+			    								</div>
+		    								</div>
+	    								</div>
+    									<div class="col-sm-6">
 											<div class="form-group">
 												<label for="audiencereach">Audience Reach</label>
 												<div class="slider">
@@ -123,12 +119,18 @@
 												<label for="adimpressiongoal">AD Impression Goal</label>
 												<input type="text" class="form-control" id="adimpressiongoal" placeholder="">
 											</div>
-										</form>
-									</div>
-								</div>
+									    </div>
+								    </div>
+            					    <div class="form-group">
+		        					    <div class="col-sm-offset-3 col-sm-9">
+				        				    <button type="submit" class="btn btn-default" data-bind="click: $root.clearpackge">Cancel</button>
+						        		    <button type="submit" class="btn btn-primary" data-bind="click: $root.savepackage"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
+							            </div>
+						            </div>
+    							</form>
 							</div>
 						</div>
-						<h3 class="clearfix">Expected Campaign Results: <span class="pull-right"><span class="legend-revenu">$5000 Revenue</span> - <span class="legend-ad-spent">$1700 AD Spent</span> = <span class="legend-profit">$3300 Profit</span></span></h3>
+						<h3 class="clearfix" data-bind="visible: currentcampaign().package">Expected Campaign Results: <span class="pull-right"><span class="legend-revenu">$5000 Revenue</span> - <span class="legend-ad-spent">$1700 AD Spent</span> = <span class="legend-profit">$3300 Profit</span></span></h3>
 					</div>
                     
 					<div id="step2" class="step-pane">
@@ -171,7 +173,7 @@
 				</div>
 				<div class="actions text-right m-top">
 					<button class="btn btn-prev" type="button"><span class="glyphicon glyphicon-arrow-left"></span> Prev</button>
-					<button class="btn btn-next" type="button" data-last="Finish">Next <span class="glyphicon glyphicon-arrow-right"></span></button>
+					<button class="btn btn-next" type="button" data-last="Finish" data-bind="css: {'disabled': campaignstep.isLast }">Next <span class="glyphicon glyphicon-arrow-right"></span></button>
 				</div>
 			</div>
 			<div class="modal-footer">

@@ -60,9 +60,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         if self.confirmwebsitedelete()>0
           return
         self.currentwebsite(new mod.Website {name:'New Website',id:0})
-        for v in self.currentwebsites()
-          v.active false
-          v.editing false
+        (v.active false; v.editing false) for v in self.currentwebsites()
         self.currentwebsite().active true
         self.currentwebsite().editing true
 
@@ -71,10 +69,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.confirmaudiencedelete 0
         self.currentaudience(new mod.Audience {name:'New Audience',id:0})
         self.currentwebsite(new mod.Website {name:'',id:-1})
-        (v.active false; v.editing false; v.selected false) for v in self.currentwebsites()
         $('#editAudience').modal 'show'
         au = self.currentaudience()
-        self.currentwebsites (w.refresh au for w in self.websites())
+        self.currentwebsites (w.refreshSelf(au).active(false).editing(false) for w in self.websites())
         self.websiteposition.maxValue self.websites().length
         self.websiteposition.currentValue ''
 
@@ -123,10 +120,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.confirmaudiencedelete 0
         self.currentaudience (new mod.Audience()).copyFrom(c)
         self.currentwebsite(new mod.Website {name:'',id:-1})
-        (v.active false; v.editing false) for v in self.currentwebsites()
         $('#editAudience').modal 'show'
         au = self.currentaudience()
-        self.currentwebsites (w.refresh au for w in self.websites())
+        self.currentwebsites (w.refreshSelf(au).active(false).editing(false) for w in self.websites())
         self.currentaudience().refresh self.currentwebsites()
         self.websiteposition.maxValue self.currentwebsites().length
         self.websiteposition.currentValue ''
@@ -139,8 +135,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           c = c.currentwebsite()
         if self.confirmwebsitedelete()==0 and not c.active()
           (v.active false; v.editing false) for v in self.currentwebsites()
-          c.active true
-          self.currentwebsite c
+          self.currentwebsite c.active true
         if self.confirmwebsitedelete()==0
           return self.confirmwebsitedelete 1
         if not c.active()

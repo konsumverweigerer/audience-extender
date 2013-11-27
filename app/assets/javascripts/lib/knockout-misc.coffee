@@ -4,11 +4,11 @@ requirejs.config
       '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload': 'webjars!jquery.fileupload.js'
       '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload-process': 'webjars!jquery.fileupload-process.js'
 
-define("load-image", [ ], -> )
+define("load-image", [ "ext/load-image" ], -> )
 define("load-image-meta", [ ], -> )
 define("load-image-exif", [ ], -> )
 define("load-image-ios", [ ], -> )
-define("canvas-to-blob", [ ], -> )
+define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
 define([ "webjars!knockout.js", "webjars!jquery.js", "webjars!jquery.fileupload.js", 
 "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 

@@ -542,9 +542,7 @@ define(["webjars!knockout.js"], (ko) ->
 
       @active = ko.observable false
 
-      @nonempty = ko.computed( ->
-        (self.websites() || []).length>0
-      )
+      @nonempty = ko.computed( -> (self.websites() || []).length>0)
 
       @websiteNames = ko.observable ''
 
@@ -552,9 +550,7 @@ define(["webjars!knockout.js"], (ko) ->
 
       @path = ko.observable()
 
-      @paths = ko.observableArray(((d && d.paths) || []).map((v) ->
-        new PathTarget v
-      ))
+      @paths = ko.observableArray(((d && d.paths) || []).map((v) -> new PathTarget v))
       
       @allpaths = ko.observable((d && d.allpaths) || {})
       
@@ -589,6 +585,12 @@ define(["webjars!knockout.js"], (ko) ->
         self.paths.remove((v) ->
           v.website()==path.website() && v.path()==path.path()
         )
+
+      @refreshSelf = (campaign) ->
+        id = self.id()
+        if not (self.selected true for au in campaign.audiences() when au==id).length
+          self.selected false
+        return self
 
       @refresh = (websites) ->
         n = []
@@ -637,8 +639,10 @@ define(["webjars!knockout.js"], (ko) ->
 
       @selected = ko.observable false
 
-      @refresh = (audience) ->
-        self.selected(wi==self.id()) for wi in audience.websites()
+      @refreshSelf = (audience) ->
+        id = self.id()
+        if not (self.selected true for wi in audience.websites() when wi==id).length
+          self.selected false
         return self
 
       @emailStatus = ko.observable ''
@@ -679,6 +683,10 @@ define(["webjars!knockout.js"], (ko) ->
       @active = ko.observable false
 
       @campaign = ko.observable(d && d.campaign)
+
+      @refreshSelf = (campaign) ->
+        self.selected campaign.package()==self.id()
+        return self
 
       @count = ko.observable(d && d.count)
 

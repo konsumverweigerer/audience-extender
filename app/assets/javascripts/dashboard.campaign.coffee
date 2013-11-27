@@ -8,6 +8,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     constructor: (d) ->
       self = @
 
+      byId = (id) -> ((w) -> w.id()==id)
+      
       @campaignchartdaterange = new mod.DateRange
 
       @campaigntablescroller = new mod.Scroller
@@ -58,7 +60,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       @currentpackages = ko.observableArray []
 
-      @campaignstep = new mod.Counter {value:1, minValue:1, maxValue:3, wrap:false}
+      @campaignstep = new mod.Counter {value:1, minValue:1, maxValue:1, wrap:false}
 
       @audienceposition = new mod.Counter {wrap:false,minValue:0}
 
@@ -83,6 +85,15 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       @clearpackage = ->
         self.currentpackage(new mod.Package {name:'',id:-1})
 
+      @checkmaxstep = ->
+        ca = self.currentcampaign()
+        m = 1
+        if ca.package()? && ca.audiences().length>0
+          m = 2
+          if ca.creatives().length>0
+            m = 3
+        self.campaignstep.maxValue m
+
       @savepackage = ->
         a = self.currentpackage()
         ca = self.currentcampaign()
@@ -97,17 +108,18 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.currentcampaign(new mod.Campaign {name:'New Campaign',id:0,state:'pending'})
         self.currentpackage(new mod.Package {name:'',id:-1})
         (v.selected false; v.active false) for v in self.currentaudiences()
-        (v.selected false; v.active false) false for v in self.currentpackages()
+        (v.selected false; v.active false) for v in self.currentpackages()
         $('#editCampaign').modal 'show'
         ca = self.currentcampaign()
-        self.currentaudiences (a.refresh ca for a in self.audiences())
-        self.currentpackages (p.refresh ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
+        self.currentaudiences (a.refreshSelf ca for a in self.audiences())
+        self.currentpackages (p.refreshSelf ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
         self.campaignstep.maxValue 1
         self.campaignstep.currentValue 1
         self.audienceposition.maxValue self.audiences().length
         self.audienceposition.currentValue ''
         self.packageposition.maxValue self.packages().length
         self.packageposition.currentValue ''
+        self.checkmaxstep()
 
       @clearcampaign = ->
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
@@ -143,44 +155,47 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.currentcampaign (new mod.Campaign()).copyFrom(c)
         self.currentpackage(new mod.Package {name:'',id:-1})
         (v.selected false; v.active false) for v in self.currentaudiences()
-        (v.selected false; v.active false) false for v in self.currentpackages()
+        (v.selected false; v.active false) for v in self.currentpackages()
         $('#editCampaign').modal 'show'
         ca = self.currentcampaign()
-        self.currentaudiences (a.refresh ca for a in self.audiences())
-        self.currentpackages (p.refresh ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
+        self.currentaudiences (a.refreshSelf ca for a in self.audiences())
+        self.currentpackages (p.refreshSelf ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
         self.campaignstep.maxValue 1
         self.campaignstep.currentValue 1
         self.audienceposition.maxValue self.audiences().length
         self.audienceposition.currentValue ''
         self.packageposition.maxValue self.packages().length
         self.packageposition.currentValue ''
+        self.checkmaxstep()
         
       @selectaudience = (c) ->
         if not c.active()
           v.active false for v in self.currentaudiences()
-          c.active()
+          c.active true
         else if c.selected()
           c.selected false
           self.currentcampaign().audiences.remove byId c.id()
         else
           c.selected true
           self.currentcampaign().audiences.push c.id()
+        self.checkmaxstep()
 
       @selectpackage = (c) ->
         if not c.active()
           v.active false for v in self.currentpackages()
-          c.active()
+          c.active true
         else if not c.selected()
           v.selected false for v in self.currentpackages()
           c.selected true
-          self.currentcampaign().package(c)
+          self.currentcampaign().package c
+        self.checkmaxstep()
 
   models = new CampaignDashboard
 
   ko.applyBindings(models)
 
   models.campaigntable.rowClick = (c) ->
-    models.selectcampaign(c)
+    models.selectcampaign c
 
   window.models = models
   #init

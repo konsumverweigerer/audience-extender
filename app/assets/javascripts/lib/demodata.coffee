@@ -1,18 +1,18 @@
 define(["webjars!knockout.js"], (ko) ->
+  rnd = (f,t) -> f+Math.ceil((t-f)*Math.random())
+
   generateaudiences = (mod,models) ->
     n = new Date()
-    m = 40+Math.ceil(100*Math.random())
-    q = Math.ceil(10*Math.random())
     val = []
     j = 1
-    for i in [0..m]
-      d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
-      ws = [1..(Math.ceil(10*Math.random()))]
-      ps = ({ id: j++, path: '/my/'+l+'/path', active: ['on','off'][(Math.floor(2*Math.random()))], website: ws[(Math.floor(ws.length*Math.random()))]} for l in [0..q])
+    for i in [0..(rnd(40,140))]
+      d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
+      ws = [1..(rnd(1,10))]
+      ps = ({id: j++, path: '/my/'+l+'/path',active: ['on','off'][rnd(0,1)],website: ws[rnd(1,ws.length)-1]} for l in [0..(rnd(1,10))])
       val[i++] = new mod.Audience
         id: i
-        name:'Audience '+Math.ceil 1000*Math.random()
-        state: ['paused','active','pending','cancelled'][(Math.floor(4*Math.random()))]
+        name:'Audience '+rnd(1,1000)
+        state: ['paused','active','pending','cancelled'][rnd(0,3)]
         websites: ws
         count: Math.ceil 10000*Math.random()
         paths: ps
@@ -20,27 +20,30 @@ define(["webjars!knockout.js"], (ko) ->
 
   generatecampaigns = (mod,models) ->
     n = new Date()
-    m = 40+Math.ceil 100*Math.random()
     val = []
-    for i in [0..m]
-      d = mod.truncateToDay(n,Math.ceil(10*Math.random()),-Math.ceil(10*Math.random()))
+    for i in [0..(rnd(40,140))]
+      d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
+      au = [1...(rnd(1,3))]
+      cr = ((new mod.Creative {id:j,name:'Creative '+rnd(1,1000),url: '/assets/images/thumbnail-site.gif'}) for j in [1...(rnd(1,3))])
       val[i++] = new mod.Campaign
         id: i
-        name: 'Campaign '+Math.ceil 1000*Math.random()
-        state: ['paused','finished','active','pending','cancelled','rejected',Math.floor(100*Math.random())+'%'][(Math.floor(7*Math.random()))]
-        revenue: (100*Math.random())
-        cost: (10*Math.random())
+        name: 'Campaign '+rnd(1,1000)
+        state: ['paused','finished','active','pending','cancelled','rejected',rnd(0,99)+'%'][rnd(0,6)]
+        revenue: 100*Math.random()
+        cost: 10*Math.random()
         from: d[0]
         to: d[1]
+        audiences: au
+        creatives: cr
+        package: rnd(0,5) || undefined
     models.campaigns val
-      
+
   generatepackages = (mod,models) ->
-    m = 5+Math.ceil 10*Math.random()
     val = []
-    for i in [0..m]
+    for i in [0..(rnd(5,15))]
       val[i++] = new mod.Package
         id: i
-        name: 'Package '+Math.ceil 1000*Math.random()
+        name: 'Package '+rnd(1,1000)
         count: 1000*(i+1)
     models.packages val
 
@@ -67,7 +70,7 @@ define(["webjars!knockout.js"], (ko) ->
         )
 
       stream_index = (d,i,idxf) ->
-        {x: idxf(i), y: 100*Math.max(0, d)}
+        {x: idxf(i),y: 100*Math.max(0,d)}
 
       stream_layers = (n,m,o,idxf) ->
         if arguments.length<3
@@ -83,10 +86,8 @@ define(["webjars!knockout.js"], (ko) ->
           a = []
           for i in [0...m]
             a[i] = o+o*Math.random()
-          for i in [0...5]
-            bump(a)
-          return a.map((r,s) ->
-            stream_index(r,s,idxf))
+          bump a for i in [0...5]
+          return a.map((r,s) -> stream_index(r,s,idxf))
         )
 
       models.audiencechartdaterange.dataloader = ->
@@ -133,8 +134,8 @@ define(["webjars!knockout.js"], (ko) ->
             timeframe: tf
           }
         )
-        dat[0].values[0].y=0;
-        dat[1].values[0].y=0;
+        dat[0].values[0].y = 0
+        dat[1].values[0].y = 0
         dat[2] = 
           key: 'Profit'
           cls: 'profit'
@@ -144,14 +145,12 @@ define(["webjars!knockout.js"], (ko) ->
 
       sumdata = (v, w) ->
         if v.length==w.length
-          v.map((n,i) ->
-            {x:n.x,y:n.y+w[i].y}
-          )
+          v.map((n,i) -> {x:n.x,y:n.y+w[i].y})
         else
           []
     
       stream_index = (d, i, idxf) ->
-        {x: idxf(i), y: 100*Math.max(0, d)}
+        {x: idxf(i),y: 100*Math.max(0, d)}
 
       stream_layers = (n, m, o, idxf) ->
         if arguments.length < 3
@@ -165,12 +164,9 @@ define(["webjars!knockout.js"], (ko) ->
             a[i] += x*Math.exp(-w*w)
         return d3.range(n).map( ->
           a = []
-          for i in [0...m]
-            a[i] = o+o*Math.random()
-          for i in [0...5]
-            bump(a)
-          return a.map((r,s) ->
-            stream_index(r,s,idxf))
+          a[i] = o+o*Math.random() for i in [0...m]
+          bump a for i in [0...5]
+          return a.map((r,s) -> stream_index(r,s,idxf))
         )
 
       models.campaignchartdaterange.dataloader = ->
