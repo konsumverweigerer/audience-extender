@@ -130,7 +130,7 @@
 					</div>
 					<!-- ko foreach: currentpaths -->
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-xs-8">
 							<div class="btn-group" data-bind="css: {'btn-group-middle': $index() < ($parent.currentpaths().length-1), 'btn-group-last': $index() == ($parent.currentpaths().length-1)}" data-toggle="buttons">
 								<label class="btn btn-primary">
 									<input type="radio" data-bind="attr: {name: 'target_'+id()}, checkedChange: active" value="on"> On
@@ -141,8 +141,8 @@
 							</div>
 							<span data-bind="text: path"></span>
 						</div>
-						<div class="col-sm-1">
-							<button type="button" class="btn btn-danger btn-xs" data-bind="click: $parent.removepath">Remove</button>
+						<div class="col-xs-4 text-right">
+							<button type="button" class="btn btn-danger btn-sm" data-bind="click: $parent.removepath"><span class="glyphicon glyphicon-remove"></span> Remove</button>
 						</div>
 					</div>
 					<!-- /ko -->
