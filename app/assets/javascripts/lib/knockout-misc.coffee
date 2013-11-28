@@ -16,15 +16,14 @@ define("load-image-ios", [ ], -> )
 define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 define("jquery.ui.widget", [ "webjars!jquery.ui.widget.js" ], -> )
 
-define([ "webjars!knockout.js", "webjars!jquery.fileupload.js", 
- "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 
+define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
+ "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js",
  "webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
-  carouselDefaults = ->
-    {wrap:'both'}
-  wizardDefaults = ->
-    {}
+  carouselDefaults = -> {wrap:'both'}
+  wizardDefaults = -> {}
+  sliderDefaults = -> {}
 
-  ko.bindingHandlers.checkedChange = 
+  ko.bindingHandlers.checkedChange =
     after: ['value','attr']
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       allBindings = allBindingsAccessor()
@@ -32,7 +31,7 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
         if allBindings.checkedValue
           ko.utils.unwrap allBindings.checkedValue
         else
-          element.value;
+          element.value
 
       updateModel = ->
         isChecked = element.checked
@@ -54,7 +53,7 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
           else
             ko.utils.addOrRemoveItem(modelValue,elemValue,isChecked)
         else
-          valueAccessor()(elemValue)
+          valueAccessor() elemValue
 
       updateView = ->
         $element = $(element)
@@ -90,13 +89,13 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
       $element.on("click.ko", updateModel)
       $element.on("change.ko", updateModel)
       ko.dependentObservable(updateView, null, { disposeWhenNodeIsRemoved: element })
-      shouldSet = true;
+      shouldSet = true
 
   ko.bindingHandlers.carousel =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       $element = $(element)
       allBindings = allBindingsAccessor()
-      carouselOptions = $.extend(carouselDefaults(), allBindings.carouselOptions || {})
+      carouselOptions = $.extend(carouselDefaults(),allBindings.carouselOptions || {})
       $element.jcarousel carouselOptions
       if carouselOptions.previousButton
         $(carouselOptions.previousButton).on('click.ko',(e) =>
@@ -201,11 +200,29 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
 
   ko.bindingHandlers.slider =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
+      $element = $(element)
+      value = valueAccessor()
       allBindings = allBindingsAccessor()
+      sliderOptions = $.extend(sliderDefaults(),allBindings.sliderOptions || {})
+
+      $slider = $element.slider sliderOptions
+      if ko.isObservable value
+        $datepicker.on('slide.ko', (e) ->
+          valueAccessor() e.value
+        )
+
+      if sliderOptions.slide
+        $slider.on('slide',sliderOptions.slide)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
+      $element = $(element)
+      value = valueAccessor()
       allBindings = allBindingsAccessor()
+
+      $slider = $element.slider()
+      val = ko.utils.unwrapObservable value
+      if not val?
+        val = 0
+      $slider.slider('setValue',val)
 
   ko.bindingHandlers.fileupload =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
