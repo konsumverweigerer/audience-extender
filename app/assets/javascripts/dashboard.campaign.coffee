@@ -224,9 +224,13 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       models.publisher pm
   )
   if !models.publisher() && models.publishers().length
-      models.publisher models.publishers()[0]
+    models.publisher models.publishers()[0]
 
   require(["lib/demodata"],(demo) ->
     demo.generate(mod,models,'campaign')
+    models.campaignchartdaterange.dateRange 'Last Day'
+    models.campaigntablesearchbar.filldata = ->
+      models.campaigntable.data models.campaigntablesearchbar.filter models.campaigns()
+#    models.audiencetablesearchbar.search()
   )
 )

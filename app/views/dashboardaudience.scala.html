@@ -82,20 +82,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-xs-6">
-						<select class="form-control m-btm" data-bind="options: audiencetablesearchbar.availableCategories, value: audiencetablesearchbar.category">
-						</select>
-					</div>
-					<div class="col-xs-6">
-						<form role="search">
-							<div class="input-group m-btm">
-								<input type="text" data-bind="value: audiencetablesearchbar.query" placeholder="Search ..." class="form-control">
-								<span class="input-group-btn">
-									<button class="btn btn-primary" data-bind="click: audiencetablesearchbar.search" type="button">Search</button>
-								</span>
-							</div>
-						</form>
-					</div>
+    				@elements.searchbar("audiencetablesearchbar")
 				</div>
 				<div class="row">
 					@elements.pagination("audiencetablescroller")
@@ -137,4 +124,5 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 	</div>
 </div>
 @parts.audienceedit(publishers)
+@elements.modalalert("alert")
 }

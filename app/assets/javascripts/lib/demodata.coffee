@@ -1,5 +1,5 @@
 define(["webjars!knockout.js"], (ko) ->
-  rnd = (f,t) -> f+Math.ceil((t-f)*Math.random())
+  rnd = (f,t) -> f+Math.floor((1+t-f)*Math.random())
 
   generateaudiences = (mod,models) ->
     n = new Date()
@@ -51,6 +51,11 @@ define(["webjars!knockout.js"], (ko) ->
     models.packages val
 
   generateaudience = (mod,models) ->
+    data = -> []
+    models.audiencechartdaterange.dataloader = ->
+      models.audiencechart.chartcontent data()
+    v.refresh models.websites() for v in models.audiences()
+    
     require(["webjars!nv.d3.js"], ->
       data = ->
         m = (models.audiencechartdaterange.endDate()-models.audiencechartdaterange.startDate())/(24*60*60*1000)
@@ -92,21 +97,13 @@ define(["webjars!knockout.js"], (ko) ->
           bump a for i in [0...5]
           return a.map((r,s) -> stream_index(r,s,idxf))
         )
-
-      models.audiencechartdaterange.dataloader = ->
-        models.audiencechart.chartcontent data()
-      models.audiencechartdaterange.dateRange 'Last Day'
-
-      v.refresh models.websites() for v in models.audiences()
-
-      models.audiencetablesearchbar.filldata = ->
-        #todo: filter
-        models.audiencetable.data models.audiences()
-
-      models.audiencetablesearchbar.search()
     )
     
   generatecampaign = (mod,models) ->
+    data = -> []
+    models.campaignchartdaterange.dataloader = ->
+      models.campaignchart.chartcontent data()
+
     require(["webjars!nv.d3.js"], ->
       data = ->
         m = (models.campaignchartdaterange.endDate()-models.campaignchartdaterange.startDate())/(24*60*60*1000)
@@ -171,16 +168,6 @@ define(["webjars!knockout.js"], (ko) ->
           bump a for i in [0...5]
           return a.map((r,s) -> stream_index(r,s,idxf))
         )
-
-      models.campaignchartdaterange.dataloader = ->
-        models.campaignchart.chartcontent data()
-      models.campaignchartdaterange.dateRange 'Last Day'
-  
-      models.campaigntablesearchbar.filldata = ->
-        #todo: filter
-        models.campaigntable.data models.campaigns()
-
-      models.campaigntablesearchbar.search()
     )
 
   generatewebsites = (mod,models) ->

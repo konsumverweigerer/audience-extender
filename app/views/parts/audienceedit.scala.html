@@ -4,7 +4,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clearaudience">&times;</button>
-				<h4 class="modal-title">New/Edit Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
+				<h4 class="modal-title"><span data-bind="text: currentaudience().persisted ? 'Edit' : 'New'">New/Edit</span> Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
 			</div>
 			<div class="modal-body" data-bind="visible: confirmaudiencedelete()==1">
 				<div class="m-top-btm">
@@ -42,7 +42,7 @@
 													<span></span>
 												</span>
 												<span class="website-audience"><span data-bind="text: count">0</span> Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.selectwebsite, text: selected() ? 'Deselect' : 'Select' ">Select</button> <button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.editwebsite">Edit</button> <button type="button" class="btn btn-danger btn-xs" data-bind="click: $root.deletewebsite">Delete</button></span>
+												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.selectwebsite, text: selected() ? 'Deselect' : 'Select' ">Select</button> <button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.editwebsite">Edit</button> <button type="button" class="btn btn-danger btn-xs" data-bind="visible: $root.currentaudience().persisted, click: $root.deletewebsite">Delete</button></span>
 											</a>
 										</li>
 									</ul>

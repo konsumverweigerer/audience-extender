@@ -1,0 +1,17 @@
+@(model: String)
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-bind="attr: { 'id': @{model}.name }">
+    <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: @{model}.dismiss">&times;</button>
+				<h4 class="modal-title" data-bind="text: @{model}.title"></h4>
+			</div>
+			<div class="alert" data-bind="css: { 'alert-danger': @{model}.isError, 'alert-warning': @{model}.isWarning }">
+				<span class="glyphicon" data-bind="visible: @{model}.isWarning() || @{model}.isError(), css: { 'glyphicon-warning-sign': @{model}.isWarning() || @{model}.isError() }"></span><span data-bind="text: @{model}.content"></span>
+				<div class="m-top">
+					<button type="button" class="btn btn-default" data-bind="click: @{model}.dismiss">Ok</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

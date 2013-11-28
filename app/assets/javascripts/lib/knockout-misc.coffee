@@ -10,8 +10,7 @@ define("load-image-exif", [ ], -> )
 define("load-image-ios", [ ], -> )
 define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
-define([ "webjars!jquery.js" ], -> 
- require([ "webjars!knockout.js", "webjars!jquery.fileupload.js", 
+define([ "webjars!knockout.js", "webjars!jquery.fileupload.js", 
  "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js", 
  "webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
   carouselDefaults = ->
@@ -92,7 +91,7 @@ define([ "webjars!jquery.js" ], ->
       $element = $(element)
       allBindings = allBindingsAccessor()
       carouselOptions = $.extend(carouselDefaults(), allBindings.carouselOptions || {})
-      $carousel = $element.jcarousel carouselOptions
+      $element.jcarousel carouselOptions
       if carouselOptions.previousButton
         $(carouselOptions.previousButton).on('click.ko',(e) =>
           val = ko.unwrap valueAccessor()
@@ -112,14 +111,27 @@ define([ "webjars!jquery.js" ], ->
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       $element = $(element)
       val = ko.unwrap valueAccessor()
+      fval = val
       if val.currentValue
+        val = val.currentValue()
+      if val=='' || val=='last'
+        allBindings = allBindingsAccessor()
+        carouselOptions = $.extend(carouselDefaults(), allBindings.carouselOptions || {})
+        $carousel = $element.jcarousel 'destroy'
+        $carousel = $element.jcarousel carouselOptions
         ai = $element.jcarousel('items').length
         fi = $element.jcarousel('fullyvisible').length
-        val.maxValue ai-fi
-        val = val.currentValue()
-      if val==''
-        $carousel = $element.jcarousel 'reload'
-        val = 0
+        if val=='last'
+          val = ai-fi
+        else
+          val = 0
+        if fval.currentValue
+          fval.maxValue ai-fi
+          fval.currentValue val
+      else if fval.currentValue
+        ai = $element.jcarousel('items').length
+        fi = $element.jcarousel('fullyvisible').length
+        fval.maxValue ai-fi
       $carousel = $element.jcarousel('scroll',val || 0)
 
   ko.bindingHandlers.wizard =
@@ -204,5 +216,4 @@ define([ "webjars!jquery.js" ], ->
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
- )
 )

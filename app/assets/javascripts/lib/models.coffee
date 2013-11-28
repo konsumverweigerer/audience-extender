@@ -12,22 +12,21 @@ define(["webjars!knockout.js"], (ko) ->
       dw = base.getDay()
       s = (7-dw)-(7*s)
       e = (7-dw)-(7*e)
-      from = new Date(base.getTime()+(s*day))
-      to = new Date(base.getTime()+(e*day))
+      from = new Date base.getTime()+(s*day)
+      to = new Date base.getTime()+(e*day)
     else
-      from = new Date(base.getTime()+((1-s)*day))
-      to = new Date(base.getTime()+((1-e)*day))
+      from = new Date base.getTime()+((1-s)*day)
+      to = new Date base.getTime()+((1-e)*day)
     [from,to]
 
   datetostr = (v) ->
     (v.getMonth()+1)+"/"+v.getDate()+"/"+v.getFullYear()
 
   strtodate = (s) ->
-    v = s.split('/')
+    v = s.split '/'
     new Date(v[2],v[0]-1,v[1])
 
-  rangeNames = ->
-    n.name for n in ranges
+  rangeNames = -> n.name for n in ranges
 
   class DateRange
     constructor: ->
@@ -59,11 +58,10 @@ define(["webjars!knockout.js"], (ko) ->
             self.loadData()
         owner: self
 
-      @format = ko.computed( ->
+      @format = ko.computed ->
         if self.endDate().getTime()-self.startDate().getTime() < 2*day
           return '%H:%M'
         return '%m/%d/%Y'
-      )
 
       @formattedStartDate = ko.computed
         read: ->
@@ -84,8 +82,8 @@ define(["webjars!knockout.js"], (ko) ->
       	  [self.startDate(),self.endDate()]
       	write: (v) ->
       	  if v.length == 2
-      	    self.startDate(v[0])
-      	    self.endDate(v[1])
+      	    self.startDate v[0]
+      	    self.endDate v[1]
       	owner: self
       	deferEvaluation: true
 
@@ -99,12 +97,11 @@ define(["webjars!knockout.js"], (ko) ->
       	  nrs = (n.name for n in ranges when self.sameRange(cr,truncateToDay(nd,n.from,n.to,n.unit)))
       	  return nrs[0] || ''
       	write: (v) ->
-          ranges.map((n,i)->
+          ranges.map (n,i)->
             if v == n.name
               t = truncateToDay(new Date(),n.from,n.to,n.unit)
-              self.startDate(t[0])
-              self.endDate(t[1])
-          )
+              self.startDate t[0]
+              self.endDate t[1]
       	owner: self
       	deferEvaluation: true
 
@@ -118,8 +115,7 @@ define(["webjars!knockout.js"], (ko) ->
         self.startDate t[0]
         self.endDate t[1] 
 
-      @loadData = ->
-        self.dataloader()
+      @loadData = -> self.dataloader()
 
       @dataloader = ->
         {}
@@ -136,43 +132,29 @@ define(["webjars!knockout.js"], (ko) ->
 
       @pageSize = ko.observable 10
 
-      @currentPage = ko.computed( ->
-        Math.ceil(self.fromIndex() / self.pageSize())
-      )
+      @currentPage = ko.computed -> Math.ceil(self.fromIndex() / self.pageSize())
 
-      @toIndex = ko.computed( ->
-        Math.min(self.maxIndex(),self.fromIndex()+self.pageSize()-1)
-      )
+      @toIndex = ko.computed -> Math.min(self.maxIndex(),self.fromIndex()+self.pageSize()-1)
 
-      @maxPage = ko.computed( ->
-        Math.ceil(self.maxIndex() / self.pageSize())
-      )
+      @maxPage = ko.computed -> Math.ceil(self.maxIndex() / self.pageSize())
 
-      @hasData = ko.computed( ->
-        self.maxIndex() > 0
-      )
+      @hasData = ko.computed -> self.maxIndex() > 0
 
-      @hasNoPrev = ko.computed( ->
-        self.currentPage() < 2
-      )
+      @hasNoPrev = ko.computed -> self.currentPage() < 2
 
-      @hasNoNext = ko.computed( ->
-        self.currentPage() >= self.maxPage()
-      )
+      @hasNoNext = ko.computed -> self.currentPage() >= self.maxPage()
 
-      @availablePages = ko.computed( ->
-        [0...self.maxPage()]
-      )
+      @availablePages = ko.computed -> [0...self.maxPage()]
 
-      @visiblePages = ko.computed( ->
+      @updating = ko.observable false
+
+      @visiblePages = ko.computed ->
         i = 1
         mp = self.maxPage()
         sp = self.shownPages()
         cp = self.currentPage()
-        while (i+(sp/2)-1)<cp && (i+sp-1)<mp
-          i++
+        i++ while (i+(sp/2)-1)<cp && (i+sp-1)<mp
         {page:i+j,active:(i+j)==cp} for j in [0...sp] when i+j<=mp
-      )
 
       @previous = ->
         c = self.fromIndex()
@@ -195,17 +177,43 @@ define(["webjars!knockout.js"], (ko) ->
           self.fromIndex ni
 
   class Searchbar
-    constructor: ->
+    constructor: (options)->
       self = @
 
-      @availableCategories = ko.observableArray ['Status 1','Status 2','Status 3']
+      @availableCategories = ko.observableArray(options?.availableCategories || ['Status 1','Status 2','Status 3'])
 
-      @category = ko.observable ''
+      @categories = ko.observable(options?.categoryTags || {})
+
+      @category = ko.observable options?.category
+
+      @searchFilter = ko.observable options?.searchFilter
+
+      @categoryFilter = ko.observable options?.categoryFilter
+
+      @categoryTag = ko.computed ->
+        (return tag) for tag,name of self.categories() when name==self.category()
+        return
 
       @query = ko.observable ''
 
-      @search = ->
-        self.filldata()
+      @search = -> self.filldata()
+
+      @filter = (d)->
+        st = self.query()?.replace(/[^\w]/,'').split /\s+/
+        sf = self.searchFilter()
+        if st.length>0 && st[0]!='' && sf
+          nd = []
+          for r in d
+            p = ko.unwrap r[sf]
+            for s in st when 0<=p.indexOf s
+              nd.push r
+              break
+          d = nd
+        ct = self.categoryTag()
+        cf = self.categoryFilter()
+        if ct && cf
+          d = (r for r in d when (ko.unwrap r[cf])==ct)
+        return d
 
       @filldata = ->
         {}
@@ -214,56 +222,36 @@ define(["webjars!knockout.js"], (ko) ->
     constructor: ->
       self = @
 
-      @chartcontentRaw = ko.observableArray [
-        {key: 'Revenue', values: [{x:0,y:5000}]},
-        {key: 'Ad spend', values: [{x:0,y:4000}]},
-        {key: 'Profit', values: [{x:0,y:3000}]}]
+      @chartcontentRaw = ko.observableArray []
 
-      @chartcontent = ko.computed(
+      @chartcontent = ko.computed
         read: ->
           self.chartcontentRaw()
         write: (v) ->
           self.chartcontentRaw v
         owner: self
-      )
 
-      @sums = ko.computed( ->
+      @sums = ko.computed ->
         a = self.chartcontent() || []
-        a.map((n,i) ->
-          n.values.map((p,j) ->
-            p.y
-          ).reduce((x,y) ->
+        a.map (n,i) ->
+          n.values.map((p,j) -> p.y).reduce (x,y) ->
             x+y
           , 0
-          )
-        )
-      )
 
       @calcsum = (cls) ->
         a = self.chartcontent() || []
-        f = a.filter((n,i) ->
-            cls == n.cls
-          ).map((n,i) ->
-            n.values.map((p,j) ->
-              p.y
-            ).reduce((x,y) ->
+        f = for n in a when cls==n.cls
+            n.values.map((p) -> p.y).reduce((x,y) ->
               x+y
             , 0
             )
-          )
         f[0] || 0
 
-      @sumadspend = ko.computed( ->
-        -self.calcsum('adspend').toFixed(0)
-      )
+      @sumadspend = ko.computed -> -(self.calcsum 'adspend').toFixed(0)
 
-      @sumrevenue = ko.computed( ->
-        self.calcsum('revenue').toFixed(0)
-      )
+      @sumrevenue = ko.computed -> (self.calcsum 'revenue').toFixed(0)
 
-      @sumprofit = ko.computed( ->
-        self.calcsum('profit').toFixed(0)
-      )
+      @sumprofit = ko.computed -> (self.calcsum 'profit').toFixed(0)
 
   class Datatable
     constructor: (headers, mapper) ->
@@ -280,27 +268,24 @@ define(["webjars!knockout.js"], (ko) ->
           self.resolve(base(),attr)
         else if attr
           if attr.split
-            v = attr.split('.')
-            r = v.splice(1)
-            self.resolve(base[v[0]],r.join('.'))
+            v = attr.split '.'
+            r = v.splice 1
+            self.resolve(base[v[0]],r.join '.')
           else
             base[attr]
         else
           base
 
-      @rows = ko.computed( ->
+      @rows = ko.computed ->
         h = self.headers()
         mm = self.mapper()
-        self.data().map( (n,i) ->
-          h.map( (m,j) ->
-            dat = self.resolve(n,(n.indexOf && h.indexOf(m)) || m)
-            if mm && mm[m]
-              mm[m](dat)
+        self.data().map (n,i) ->
+          h.map (m,j) ->
+            dat = self.resolve(n,(n.indexOf? && h.indexOf m) || m)
+            if mm?[m]
+              mm[m] dat
             else
               dat
-          )
-        )
-      )
 
       @rowClick = (d) ->
         {}
@@ -318,51 +303,31 @@ define(["webjars!knockout.js"], (ko) ->
 
       @wrap = ko.observable(options.wrap || false)
 
-      @isFirst = ko.computed( ->
-        v = self.currentValue()
-        if v==''
-          v=0
-        v<=self.minValue()
-      )
+      @isFirst = ko.computed -> self.currentValue()<=self.minValue()
 
-      @isLast = ko.computed( ->
-        v = self.currentValue()
-        if v==''
-          v=0
-        v>=self.maxValue()
-      )
+      @isLast = ko.computed -> self.currentValue()>=self.maxValue()
 
-      @isNotFirst = ko.computed( ->
-        v = self.currentValue()
-        if v==''
-          v=0
-        v>self.minValue()
-      )
+      @isNotFirst = ko.computed -> self.currentValue()>self.minValue()
 
-      @isNotLast = ko.computed( ->
-        v = self.currentValue()
-        if v==''
-          v=0
-        v<self.maxValue()
-      )
+      @isNotLast = ko.computed -> self.currentValue()<self.maxValue()
 
       @previous = ->
         v = self.currentValue()
         if v==''
           v=0
         if v>self.minValue()
-          self.currentValue(v-1)
+          self.currentValue v-1
         else if self.wrap()
-          self.currentValue(self.maxValue())
+          self.currentValue self.maxValue()
 
       @next = ->
         v = self.currentValue()
         if v==''
           v=0
         if v<self.maxValue()
-          self.currentValue(v+1)
+          self.currentValue v+1
         else if self.wrap()
-          self.currentValue(self.minValue())
+          self.currentValue self.minValue()
 
   class ServerModels
     typeOf: (name) ->
@@ -373,18 +338,18 @@ define(["webjars!knockout.js"], (ko) ->
     constructor: (d) ->
       self = @
 
-      @id = ko.observable(d && d.id)
+      @id = ko.observable d?.id
 
       @toJson = ->
         ko.toJSON(self)
 
       @copyFrom = (c) ->
-        self.fromJson(c.toMap())
+        self.fromJson c.toMap()
 
       @toMap = ->
         m = {}
         for name, value of self
-          v = self.toObject(value)
+          v = self.toObject value
           if v?
             m[name] = v
         return m
@@ -393,15 +358,15 @@ define(["webjars!knockout.js"], (ko) ->
         if value?.toMap
           value.toMap()
         else if ko.isObservable value
-          self.toObject(value())
+          self.toObject value()
         else if value instanceof Array and value?.indexOf
-          self.toObject(v) for v in value
+          self.toObject v for v in value
         else if value? and not value.call
           value
         else
           undefined
 
-      @assign = (name, value) ->
+      @assign = (name,value) ->
         t = self.typeOf(name)
         if t.isIgnored
           return
@@ -409,13 +374,13 @@ define(["webjars!knockout.js"], (ko) ->
           value = value()
         if t.isModel
           if t.isArray
-            value = (new t.model(v) for v in value)
+            value = (new t.model v for v in value)
           else
-            value = new t.model(value)
+            value = new t.model value
         # todo: handle models
         if self[name]
           if ko.isObservable self[name]
-            self[name] value 
+            self[name] value
           else
             self[name] = value
 
@@ -423,22 +388,18 @@ define(["webjars!knockout.js"], (ko) ->
         self.assign(n,v) for n, v of json
         return self
 
-      @real = ko.computed( ->
-          id = self.id()
-          id? && id>=0
-      )
+      @real = ko.computed -> (self.id() ? -1)>=0
 
-      @persisted = ko.computed( ->
-          id = self.id()
-          id? && id>0
-      )
+      @persisted = ko.computed -> (self.id() ? -1)>0
 
-      @transientnew = ko.computed( ->
-          id = self.id()
-          id? && id==0
-      )
+      @transientnew = ko.computed -> (self.id() ? -1)==0
 
   class Message extends ServerModels
+    typeOf: (name) ->
+      if name=='name'
+        return { isIgnored: true }
+      super(name)
+
     constructor: (dortitle,content,priority) ->
       super()
       if dortitle instanceof Object
@@ -449,14 +410,32 @@ define(["webjars!knockout.js"], (ko) ->
         title = dortitle
       self = @
 
-      @title = ko.observable(title)
+      @name = ko.observable 'alert'
 
-      @content = ko.observable(content)
+      @title = ko.observable title
 
-      @priority = ko.observable(priority)
+      @content = ko.observable content
 
-      @dismiss = () ->
-        {}
+      @priority = ko.observable(priority || 'info')
+
+      @isInfo = ko.computed -> self.priority()=='info'
+
+      @isWarning = ko.computed -> self.priority()=='warning'
+
+      @isError = ko.computed -> self.priority()=='error'
+
+      @show = (title,content,priority) ->
+        if title?
+          self.title title
+        if content?
+          self.content content
+        if priority?
+          self.priority priority
+        $('#'+self.name()).modal('show')
+
+      @hide = -> $('#'+self.name()).modal('hide')
+
+      @dismiss = -> self.hide()
 
   class Campaign extends ServerModels
     typeOf: (name) ->
@@ -470,35 +449,35 @@ define(["webjars!knockout.js"], (ko) ->
 
       @messages = ko.observableArray []
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
-      @state = ko.observable(d && d.state)
+      @state = ko.observable d?.state
 
-      @revenue = ko.observable(d && d.revenue)
+      @revenue = ko.observable d?.revenue
 
-      @cost = ko.observable(d && d.cost)
+      @cost = ko.observable d?.cost
 
-      @package = ko.observable(d && d.package)
+      @package = ko.observable d?.package
 
-      @audiences = ko.observableArray(d && d.audiences)
+      @audiences = ko.observableArray d?.audiences
 
-      @creatives = ko.observableArray(d && d.creatives)
+      @creatives = ko.observableArray d?.creatives
 
-      @from = ko.observable(d && d.from)
+      @from = ko.observable d?.from
 
-      @to = ko.observable(d && d.to)
+      @to = ko.observable d?.to
 
       @refresh = (audiences,packages) ->
         for au in audiences
-          au.selected(false)
+          au.selected false
           for a in self.audiences()
             if a==au.id()
-              au.selected(true)
+              au.selected true
         pak = self.package()
         for pa in packages
-          pa.selected(false)
+          pa.selected false
           if pak && pak.id()==pa.id()
-            pa.selected(true)
+            pa.selected true
         return self
 
   class PathTarget extends ServerModels
@@ -506,11 +485,11 @@ define(["webjars!knockout.js"], (ko) ->
       super(d)
       self = @
 
-      @path = ko.observable(d && d.path)
+      @path = ko.observable d?.path
 
-      @website = ko.observable(d && d.website)
+      @website = ko.observable d?.website
 
-      @active = ko.observable(d && d.active)
+      @active = ko.observable d?.active
 
   class Audience extends ServerModels
     typeOf: (name) ->
@@ -526,23 +505,23 @@ define(["webjars!knockout.js"], (ko) ->
 
       @messages = ko.observableArray []
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
-      @state = ko.observable(d && d.state)
+      @state = ko.observable d?.state
 
-      @tracking = ko.observable(d && d.tracking)
+      @tracking = ko.observable d?.tracking
 
-      @count = ko.observable(d && d.count)
+      @count = ko.observable d?.count
 
-      @activewebsite = ko.observable(d && d.activewebsite)
+      @activewebsite = ko.observable d?.activewebsite
 
-      @websites = ko.observableArray(d && d.websites)
+      @websites = ko.observableArray(d?.websites || [])
 
       @selected = ko.observable false
 
       @active = ko.observable false
 
-      @nonempty = ko.computed( -> (self.websites() || []).length>0)
+      @nonempty = ko.computed -> (self.websites() || []).length>0
 
       @websiteNames = ko.observable ''
 
@@ -550,9 +529,9 @@ define(["webjars!knockout.js"], (ko) ->
 
       @path = ko.observable()
 
-      @paths = ko.observableArray(((d && d.paths) || []).map((v) -> new PathTarget v))
+      @paths = ko.observableArray (d?.paths || []).map (v) -> new PathTarget v
       
-      @allpaths = ko.observable((d && d.allpaths) || {})
+      @allpaths = ko.observable(d?.allpaths || {})
       
       @currentallpath = ko.computed
         read: ->
@@ -566,25 +545,21 @@ define(["webjars!knockout.js"], (ko) ->
             self.allpaths w
         owner: self.allpaths
 
-      @currentpaths = ko.computed( ->
-        self.paths().filter((n,i) ->
+      @currentpaths = ko.computed ->
+        self.paths().filter (n,i) ->
           w = n.website()
           aw = self.activewebsite()
           w && aw && w==aw
-        )
-      )
 
       @addpath = ->
-        self.paths.push(new PathTarget
+        self.paths.push new PathTarget
           path: self.path()
           website: self.activewebsite()
           active: not self.currentallpath()
-        )
 
       @removepath = (path) ->
-        self.paths.remove((v) ->
+        self.paths.remove (v) ->
           v.website()==path.website() && v.path()==path.path()
-        )
 
       @refreshSelf = (campaign) ->
         id = self.id()
@@ -595,16 +570,16 @@ define(["webjars!knockout.js"], (ko) ->
       @refresh = (websites) ->
         n = []
         for web in websites
-          web.selected(false)
+          web.selected false
           for wi in self.websites()
             if wi==web.id()
               n.push web.name()
-              web.selected(true)
+              web.selected true
         n = n.join(', ')
-        self.websiteNames(n)
+        self.websiteNames n
         if n.length > 20
           n = n.substring(0,20)+' ...'
-        self.websiteNamesShort(n)
+        self.websiteNamesShort n
         return self
 
   class Website extends ServerModels
@@ -621,19 +596,17 @@ define(["webjars!knockout.js"], (ko) ->
 
       @messages = ko.observableArray []
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
-      @code = ko.observable(d && d.code)
+      @code = ko.observable d?.code
 
-      @count = ko.observable(d && d.count)
+      @count = ko.observable d?.count
 
-      @email = ko.observable(d && d.email)
+      @email = ko.observable d?.email
 
       @active = ko.observable false
 
-      @inactive = ko.computed( ->
-        not self.active()
-      )
+      @inactive = ko.computed -> not self.active() 
 
       @editing = ko.observable false
 
@@ -647,13 +620,9 @@ define(["webjars!knockout.js"], (ko) ->
 
       @emailStatus = ko.observable ''
 
-      @emailSent = ko.computed( ->
-        self.emailStatus()=='success'
-      )
+      @emailSent = ko.computed -> self.emailStatus()=='success'
 
-      @emailFail = ko.computed( ->
-        self.emailStatus()=='fail'
-      )
+      @emailFail = ko.computed -> self.emailStatus()=='fail'
 
       @sendemail = ->
         if self.sendcodebyemail(self.id(),self.email())
@@ -676,44 +645,44 @@ define(["webjars!knockout.js"], (ko) ->
 
       @messages = ko.observableArray []
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
       @selected = ko.observable false
 
       @active = ko.observable false
 
-      @campaign = ko.observable(d && d.campaign)
+      @campaign = ko.observable d?.campaign
 
       @refreshSelf = (campaign) ->
         self.selected campaign.package()==self.id()
         return self
 
-      @count = ko.observable(d && d.count)
+      @count = ko.observable d?.count
 
-      @reach = ko.observable(d && d.reach)
+      @reach = ko.observable d?.reach
 
-      @goal = ko.observable(d && d.goal)
+      @goal = ko.observable d?.goal
 
-      @buyCpm = ko.observable(d && d.buyCpm)
+      @buyCpm = ko.observable d?.buyCpm
 
-      @salesCpm = ko.observable(d && d.salesCpm)
+      @salesCpm = ko.observable d?.salesCpm
 
-      @startDate = ko.observable(d && d.startDate)
+      @startDate = ko.observable d?.startDate
 
-      @endDate = ko.observable(d && d.endDate)
+      @endDate = ko.observable d?.endDate
 
   class Creative extends ServerModels
     constructor: (d) ->
       super(d)
       self = @
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
-      @url = ko.observable(d && d.url)
+      @url = ko.observable d?.url
 
-      @previewUrl = ko.observable(d && d.previewUrl)
+      @previewUrl = ko.observable d?.previewUrl
 
-      @data = ko.observable(d && d.data)
+      @data = ko.observable d?.data
 
   class Publisher extends ServerModels
     typeOf: (name) ->
@@ -727,9 +696,9 @@ define(["webjars!knockout.js"], (ko) ->
 
       @messages = ko.observableArray []
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
-      @active = ko.observable(d && d.active)
+      @active = ko.observable d?.active
 
   class Admin extends ServerModels
     typeOf: (name) ->
@@ -743,15 +712,13 @@ define(["webjars!knockout.js"], (ko) ->
 
       @messages = ko.observableArray []
 
-      @name = ko.observable(d && d.name)
+      @name = ko.observable d?.name
 
-      @email = ko.observable(d && d.email)
+      @email = ko.observable d?.email
 
-      @roles = ko.observableArray(d && d.roles)
+      @roles = ko.observableArray d?.roles
 
-      @publishers = ko.observableArray(((d && d.publishers) || []).map((v) ->
-        new Publisher v
-      ))
+      @publishers = ko.observableArray (d?.publishers || []).map (v) -> new Publisher v
 
   { Message: Message,
   Datatable: Datatable,
