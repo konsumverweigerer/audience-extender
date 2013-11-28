@@ -1,5 +1,4 @@
 define("jquery", [ "webjars!jquery.js" ], -> $ )
-define("jquery.ui.widget", [ "webjars!jquery.ui.widget.js" ], -> )
 
 require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
 "lib/knockout-misc", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", 
