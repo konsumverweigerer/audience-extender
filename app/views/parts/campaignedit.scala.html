@@ -10,11 +10,11 @@
 				<h3 class="m-null-top m-btm">Campaign Name: <a href="#" id="campaignename" data-bind="editable: currentcampaign().name" data-type="text" data-pk="1" data-title="Enter Campaign Name">New Campaign</a></h3>
 				<div class="wizard">
 					<ul class="steps">
-                        <li data-target="#step1"><span class="badge badge-info">1</span>Step 1 <span data-bind="text: campaignstep.maxValue() > 1 ? '(completed)' : ''"></span><span class="chevron"></span></li>
+						<li data-target="#step1"><span class="badge badge-info">1</span>Step 1 <span data-bind="text: campaignstep.maxValue() > 1 ? '(completed)' : ''"></span><span class="chevron"></span></li>
 						<li data-target="#step2"><span class="badge">2</span>Step 2 <span data-bind="text: campaignstep.maxValue() > 2 ? '(completed)' : ''"></span><span class="chevron"></span></li>
 						<li data-target="#step3"><span class="badge">3</span>Step 3<span class="chevron"></span></li>
 					</ul>
-                </div>
+				</div>
 				<div class="step-content">
 					<div id="step1" class="step-pane active">
 						<h3>Select Audience</h3>
@@ -22,8 +22,8 @@
 							<div class="clearfix">
 								<div class="website-block-wrapper">
 									<div class="jcarousel-wrapper">
-                                        <div class="jcarousel" data-bind="carousel: audienceposition">
-									        <ul data-bind="foreach: currentaudiences">
+										<div class="jcarousel" data-bind="carousel: audienceposition">
+											<ul data-bind="foreach: currentaudiences">
 												<li>
 													<a href="javascript:void()" class="website-block" data-bind="click: $root.selectaudience, css: {'selected': selected(), 'active': active()}">
 														<span class="website-name" data-bind="text: name"></span>
@@ -36,8 +36,8 @@
 												</li>
 											</ul>
 										</div>
-                                        <a href="#" class="jcarousel-control-prev" data-bind="click: audienceposition.previous, css: { 'inactive': audienceposition.isFirst }">&lsaquo;</a>
-                                        <a href="#" class="jcarousel-control-next" data-bind="click: audienceposition.next, css: { 'inactive': audienceposition.isLast }">&rsaquo;</a>
+										<a href="#" class="jcarousel-control-prev" data-bind="click: audienceposition.previous, css: { 'inactive': audienceposition.isFirst }">&lsaquo;</a>
+										<a href="#" class="jcarousel-control-next" data-bind="click: audienceposition.next, css: { 'inactive': audienceposition.isLast }">&rsaquo;</a>
 									</div>
 								</div>
 							</div>
@@ -56,8 +56,8 @@
 										</a>
 									</div>
 									<div class="jcarousel-wrapper with-add-block">
-                                        <div class="jcarousel" data-bind="carousel: packageposition">
-    								        <ul data-bind="foreach: currentpackages">
+										<div class="jcarousel" data-bind="carousel: packageposition">
+											<ul data-bind="foreach: currentpackages">
 												<li>
 													<a href="javascript:void()" class="website-block" data-bind="click: $root.selectpackage, css: {'selected': selected(), 'active': active()}">
 														<span class="website-name" data-bind="text: name"></span>
@@ -70,8 +70,8 @@
 												</li>
 											</ul>
 										</div>
-                                        <a href="#" class="jcarousel-control-prev" data-bind="click: packageposition.previous, css: { 'inactive': packageposition.isFirst }">&lsaquo;</a>
-                                        <a href="#" class="jcarousel-control-next" data-bind="click: packageposition.next, css: { 'inactive': packageposition.isLast }">&rsaquo;</a>
+										<a href="#" class="jcarousel-control-prev" data-bind="click: packageposition.previous, css: { 'inactive': packageposition.isFirst }">&lsaquo;</a>
+										<a href="#" class="jcarousel-control-next" data-bind="click: packageposition.next, css: { 'inactive': packageposition.isLast }">&rsaquo;</a>
 									</div>
 								</div>
 							</div>
@@ -82,11 +82,11 @@
 								<h4 class="panel-title">Create Custom AD Package</h4>
 							</div>
 							<div class="panel-body">
-    							<form class="form" role="form" data-bind="with: currentpackage">
-    								<div class="row">
-	    								<div class="col-sm-6">
-		    								<div class="row">
-			    								<div class="col-xs-6">
+								<form class="form" role="form" data-bind="with: currentpackage">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="col-xs-6">
 													<div class="form-group">
 														<label for="buycpm">Buy CPM</label>
 														<input type="text" class="form-control" id="buycpm" placeholder="" data-bind="value: buyCpm">
@@ -95,8 +95,8 @@
 														<label for="salescpm">Sales CPM</label>
 														<input type="text" class="form-control" id="salescpm" placeholder="" data-bind="value: salesCpm">
 													</div>
-    											</div>
-	    										<div class="col-xs-6">
+												</div>
+												<div class="col-xs-6">
 													<div class="form-group">
 														<label for="startdate">Start Date</label>
 														<input type="text" class="form-control" id="startdate" placeholder="" data-bind="value: startDate">
@@ -105,10 +105,10 @@
 														<label for="enddate">End Date</label>
 														<input type="text" class="form-control" id="enddate" placeholder="" data-bind="value: endDate">
 													</div>
-			    								</div>
-		    								</div>
-	    								</div>
-    									<div class="col-sm-6">
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6">
 											<div class="form-group">
 												<label for="audiencereach">Audience Reach</label>
 												<div class="slider">
@@ -119,20 +119,20 @@
 												<label for="adimpressiongoal">AD Impression Goal</label>
 												<input type="text" class="form-control" id="adimpressiongoal" placeholder="" data-bind="value: count">
 											</div>
-									    </div>
-								    </div>
-            					    <div class="form-group">
-		        					    <div class="col-sm-offset-3 col-sm-9">
-				        				    <button type="submit" class="btn btn-default" data-bind="click: $root.clearpackge">Cancel</button>
-						        		    <button type="submit" class="btn btn-primary" data-bind="click: $root.savepackage"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
-							            </div>
-						            </div>
-    							</form>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<button type="submit" class="btn btn-default" data-bind="click: $root.clearpackge">Cancel</button>
+											<button type="submit" class="btn btn-primary" data-bind="click: $root.savepackage"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
 						<h3 class="clearfix" data-bind="visible: currentcampaign().package">Expected Campaign Results: <span class="pull-right"><span class="legend-revenu">$<!-- ko text: results().revenue --><!-- /ko --> Revenue</span> - <span class="legend-ad-spent">$<!-- ko text: results().adspend --><!-- /ko --> AD Spent</span> = <span class="legend-profit">$<!-- ko text: results().profit --><!-- /ko --> Profit</span></span></h3>
 					</div>
-                    
+
 					<div id="step2" class="step-pane">
 						<div class="box-drag-and-drop-banner text-center">
 							<h3>Drag and Drop Banner Here</h3>
@@ -164,8 +164,8 @@
 								</table>
 							</div>
 						</div>
-    				</div>
-                    
+					</div>
+
 					<div id="step3" class="step-pane">
 						<h3>Schedule Campaign</h3>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam accumsan placerat augue vel semper. Donec eu tortor sit amet lectus malesuada mattis eu at leo. Curabitur aliquam eros nisi, non sollicitudin diam convallis vitae. Sed laoreet felis ac sem rutrum dapibus. Integer mollis placerat diam, eu lacinia nisi sagittis in. Phasellus nibh ipsum, accumsan eu magna ut, pretium pellentesque quam. Cras accumsan eget dui a blandit. Donec eget urna mattis, interdum leo sit amet, facilisis tortor. Ut varius cursus euismod. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi interdum mollis dui et tempor.</p>
@@ -178,7 +178,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger pull-left" data-bind="visible: currentcampaign().state()=='active', click: pausecampaign"><span class="glyphicon glyphicon-pause"></span> Pause</button>
-    			<button type="button" class="btn btn-danger pull-left" data-bind="visible: currentcampaign().state()=='paused', click: activatecampaign"><span class="glyphicon glyphicon-play"></span> Activate</button>
+				<button type="button" class="btn btn-danger pull-left" data-bind="visible: currentcampaign().state()=='paused', click: activatecampaign"><span class="glyphicon glyphicon-play"></span> Activate</button>
 				<button type="button" class="btn btn-default" data-bind="click: clearcampaign">Cancel</button>
 				<button type="button" class="btn btn-primary" data-bind="click: savecampaign"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
 			</div>
