@@ -702,9 +702,9 @@ define(["webjars!knockout.js"], (ko) ->
 
       @goal = ko.observable d?.goal
 
-      @buyCpm = ko.observable(d?.buyCpm).extend { currency: 'us' }
+      @buyCpm = ko.observable(d?.buyCpm)
 
-      @salesCpm = ko.observable(d?.salesCpm).extend { currency: 'us' }
+      @salesCpm = ko.observable(d?.salesCpm)
 
   class Creative extends ServerModels
     constructor: (d) ->
