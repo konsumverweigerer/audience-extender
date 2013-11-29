@@ -23,7 +23,8 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!boot
   #init
 
   if window.data && window.data.publishers
-    window.data.publishers.map (p,i) ->
-      pm = new mod.Publishers p
-      models.publishers.push pm
+    for p in window.data.publishers
+      pu = new mod.Publisher p
+      models.publishers.push pu
+  models.datatable.data models.publishers()
 )

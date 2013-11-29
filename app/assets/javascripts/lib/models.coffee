@@ -735,6 +735,8 @@ define(["webjars!knockout.js"], (ko) ->
 
       @active = ko.observable d?.active
 
+      @admins = ko.observableArray (d?.admins || []).map (v) -> new Admin v
+
   class Admin extends ServerModels
     typeOf: (name) ->
       if name=='messages'
