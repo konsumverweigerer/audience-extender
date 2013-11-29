@@ -1,10 +1,10 @@
 @(model: String)
 <div class="col-xs-6">
-	<select class="form-control m-btm" data-bind="options: @{model}.availableCategories, value: @{model}.category, event: { change: @{model}.search }">
+	<select class="form-control m-btm" data-bind="fadeVisible: @{model}.hasData, options: @{model}.availableCategories, value: @{model}.category, event: { change: @{model}.search }" style="display:none;">
 	</select>
 </div>
 <div class="col-xs-6">
-	<form role="search">
+	<form role="search" data-bind="fadeVisible: @{model}.hasData" style="display:none;">
 		<div class="input-group m-btm">
 			<input type="text" data-bind="value: @{model}.query" placeholder="Search ..." class="form-control">
 			<span class="input-group-btn">

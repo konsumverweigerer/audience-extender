@@ -40,6 +40,9 @@ object ApplicationBuild extends Build {
       requireJs += "dashboard.campaign.js",
       requireJs += "dashboard.audiencejs",
       requireJs += "admins.js",
-      requireJs += "dashboard.js"
+      requireJs += "dashboard.js",
+      
+      requireJsShim += "dashboard.campaign.js",
+      requireJsShim += "dashboard.audiencejs"
   )
 }

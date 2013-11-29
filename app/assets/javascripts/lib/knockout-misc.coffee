@@ -22,6 +22,7 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
   carouselDefaults = -> {wrap:'both'}
   wizardDefaults = -> {}
   sliderDefaults = -> {}
+  fileuploadDefaults = -> {}
 
   ko.extenders.numeric = (target,precision) ->
     result = ko.computed(
@@ -33,6 +34,25 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
         if isNaN newValueAsNum
           newValueAsNum = 0
         valueToWrite = Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier
+        if valueToWrite!=current
+          target valueToWrite
+        else
+          if newValue!=current
+            target.notifySubscribers valueToWrite
+    ).extend { notify: 'always' }
+ 
+    result target()
+    return result
+
+  ko.extenders.integers = (target,base) ->
+    result = ko.computed(
+      read: target
+      write: (newValue) ->
+        current = target()
+        newValueAsNum = parseFloat +newValue
+        if isNaN newValueAsNum
+          newValueAsNum = 0
+        valueToWrite = Math.abs Math.round newValueAsNum
         if valueToWrite!=current
           target valueToWrite
         else
@@ -271,8 +291,12 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
 
   ko.bindingHandlers.fileupload =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
+      $element = $(element)
+      value = valueAccessor()
       allBindings = allBindingsAccessor()
+      fileuploadOptions = $.extend(fileuploadDefaults(),allBindings.fileuploadOptions || {})
+
+      $fileupload = $element.fileupload()
 
   ko.bindingHandlers.jqvalidation =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->

@@ -1,6 +1,11 @@
+requirejs.config
+  shim:
+    'webjars!nv.d3.js':
+      deps: [ 'webjars!d3.v2.js' ]
+
 define("jquery", [ "webjars!jquery.js" ], -> $ )
 
-require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
+require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!bootstrap.js",
 "lib/knockout-misc", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", 
 "lib/knockout-datatables", "/routes.js"], (ko, mod) ->
   class AudienceDashboard
@@ -9,6 +14,10 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       byId = (id) -> ((w) -> w.id()==id)
       
+      @loader = new mod.Counter {wrap:false,minValue:0}
+      @alert = new mod.Message()
+      @messages = ko.observableArray []
+
       @audiencechartdaterange = new mod.DateRange
       @audiencechart = new mod.Chartdata
 
@@ -36,10 +45,6 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           else
             v
       )
-
-      @loader = new mod.Counter {wrap:false,minValue:0}
-      @alert = new mod.Message()
-      @messages = ko.observableArray []
 
       @confirmaudiencedelete = ko.observable(0)
       @confirmwebsitedelete = ko.observable(0)
@@ -233,6 +238,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     models.audiencechartdaterange.dateRange 'Last Day'
     models.audiencetablesearchbar.filldata = ->
       models.audiencetable.data models.audiencetablesearchbar.filter models.audiences()
+    models.audiencetablesearchbar.datatable models.audiencetable
     models.audiencetablesearchbar.search()
   )
 )

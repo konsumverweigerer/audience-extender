@@ -151,6 +151,8 @@ define(["webjars!knockout.js"], (ko) ->
 
       @hasData = ko.computed(-> self.maxIndex() > 0).extend({ throttle: 200 })
 
+      @hasPages = ko.computed(-> self.maxPage() > 1).extend({ throttle: 200 })
+
       @hasNoPrev = ko.computed -> self.currentPage() < 2
 
       @hasNoNext = ko.computed -> self.currentPage() >= self.maxPage()
@@ -208,6 +210,14 @@ define(["webjars!knockout.js"], (ko) ->
       @searchFilter = ko.observable options?.searchFilter
 
       @categoryFilter = ko.observable options?.categoryFilter
+
+      @datatable = ko.observable()
+
+      @hasData = ko.computed(->
+        if self.datatable()?
+          return self.datatable().data()?.length>0
+        return true
+      )
 
       @categoryTag = ko.computed ->
         (return tag) for tag,name of self.categories() when name==self.category()
@@ -686,7 +696,7 @@ define(["webjars!knockout.js"], (ko) ->
             self.startDate v[0]
             self.endDate v[1]
 
-      @count = ko.observable(d?.count).extend { numeric: 0 }
+      @count = ko.observable(d?.count).extend { integers: 10 }
 
       @reach = ko.observable d?.reach
 

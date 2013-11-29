@@ -2,16 +2,45 @@
 @templates.main("Publishers") {
 @menu.admin("Publishers")
 @menu.logout(current)
+<script type="text/javascript" data-main="@routes.Assets.at("javascripts/publishers.js")" src="@routes.WebJarAssets.requirejs"></script>
+<script type="text/javascript">
+    //<![CDATA[
+    window.data = {};
+	window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());}
+	//]]>
+</script>
 } {
-<div class="container">
-	<article class="publishers">
-		@publishers.map {
-			case publisher => {
-				<div class="publisher">
-					<h2>@publisher.name</h2>
+<div class="container m-top">
+	<div class="row">
+		<div class="col-md-9">
+			<div class="row">
+				@elements.pagination("datatablescroller")
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered data-table" data-bind="datatable: datatable, datatableScroller: datatablescroller, datatableOptions: { aoColumns: [ { sType: 'string' }, { sType: 'string' } ] }">
+							<thead>
+								<tr>
+									<th class="sorting">Name</th>
+									<th class="sorting">Admins</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
 				</div>
-			}
-		}
-	</article>
+			</div>
+			<div class="row">
+				@elements.pagination("datatablescroller")
+			</div>
+		</div>
+		<div class="col-md-3">
+			<p>
+				<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-toggle="modal" data-target="#editPublisher"><div></div><span class="glyphicon glyphicon-plus-sign"></span> New Publisher</button>
+			</p>
+		</div>
+	</div>
 </div>
 }

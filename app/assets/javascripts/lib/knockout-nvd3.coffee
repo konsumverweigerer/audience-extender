@@ -1,4 +1,4 @@
-define([ "webjars!knockout.js", "webjars!d3.v2.js", "webjars!jquery.js", "webjars!nv.d3.js", "ext/nvmodels"], (ko) ->
+define([ "webjars!knockout.js", "webjars!jquery.js", "webjars!nv.d3.js", "ext/nvmodels" ], (ko) ->
   rendernvddd = (element,options,data) ->
     if !$(element).is 'svg'
       element = $(element).find('svg').first()[0]

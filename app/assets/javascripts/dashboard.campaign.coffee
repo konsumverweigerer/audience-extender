@@ -1,6 +1,11 @@
+requirejs.config
+  shim:
+    'webjars!nv.d3.js':
+      deps: [ 'webjars!d3.v2.js' ]
+
 define("jquery", [ "webjars!jquery.js" ], -> $ )
 
-require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v2.js", "webjars!bootstrap.js",
+require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!bootstrap.js",
 "lib/knockout-misc", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", 
 "lib/knockout-datatables", "/routes.js"], (ko, mod) ->
   class CampaignDashboard
@@ -9,6 +14,10 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
 
       byId = (id) -> ((w) -> w.id()==id)
       
+      @loader = new mod.Counter {wrap:false,minValue:0}
+      @alert = new mod.Message()
+      @messages = ko.observableArray []
+
       @campaignchartdaterange = new mod.DateRange
       @campaignchart = new mod.Chartdata
 
@@ -26,34 +35,26 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         searchFilter: 'name'
       }
       @campaigntable = new mod.Datatable(["name","state","revenue","cost","from","to"],
-      {state: (v) ->
-        if 'paused' == v
-          '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
-        else if 'finished' == v
-          '<span class="label label-primary"><span class="glyphicon glyphicon-flag"></span> Finished</span>'
-        else if 'active' == v
-          '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
-        else if 'pending' == v
-          '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
-        else if 'cancelled' == v
-          '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
-        else if 'rejected' == v
-          '<span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span> Rejected</span>'
-        else
-          v
-      , revenue: (v) ->
-        '$'+v.toFixed(2)
-      , cost: (v) ->
-        '$'+v.toFixed(2)
-      , from: (v) ->
-        mod.datetostr(v)
-      , to: (v) ->
-        mod.datetostr(v)
-      })
-
-      @loader = new mod.Counter {wrap:false,minValue:0}
-      @alert = new mod.Message()
-      @messages = ko.observableArray []
+        state: (v) ->
+          if 'paused' == v
+            '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
+          else if 'finished' == v
+            '<span class="label label-primary"><span class="glyphicon glyphicon-flag"></span> Finished</span>'
+          else if 'active' == v
+            '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
+          else if 'pending' == v
+            '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
+          else if 'cancelled' == v
+            '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
+          else if 'rejected' == v
+            '<span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span> Rejected</span>'
+          else
+            v
+        revenue: (v) -> '$'+v.toFixed(2)
+        cost: (v) -> '$'+v.toFixed(2)
+        from: (v) -> mod.datetostr(v)
+        to: (v) -> mod.datetostr(v)
+      )
 
       @confirmcampaigndelete = ko.observable(0)
 
@@ -209,6 +210,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           self.currentcampaign().package c.id()
         self.checkmaxstep()
 
+      @addcreative = (c) ->
+        alert('uploaded creative')
+
   models = new CampaignDashboard
 
   ko.applyBindings(models)
@@ -233,6 +237,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     models.campaignchartdaterange.dateRange 'Last Day'
     models.campaigntablesearchbar.filldata = ->
       models.campaigntable.data models.campaigntablesearchbar.filter models.campaigns()
+    models.campaigntablesearchbar.datatable models.campaigntable
     models.campaigntablesearchbar.search()
   )
 )
