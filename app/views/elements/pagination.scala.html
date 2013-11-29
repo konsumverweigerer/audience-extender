@@ -1,14 +1,14 @@
 @(model: String)
-<div class="col-xs-6" data-bind="if: @{model}.hasData">
-	<p class="pagination-fix">
+<div class="col-xs-6">
+	<p class="pagination-fix" data-bind="fadeVisible: @{model}.hasData" style="display:none;">
 		<strong class="pagination-text">Displaying: <span
 			data-bind="text: @{model}.fromIndex"></span> - <span
 			data-bind="text: @{model}.toIndex"></span> of <span
 			data-bind="text: @{model}.maxIndex"></span></strong>
 	</p>
 </div>
-<div class="col-xs-6" data-bind="if: @{model}.hasData">
-	<ul class="pagination pagination-sm pull-right m-null-top">
+<div class="col-xs-6">
+	<ul class="pagination pagination-sm pull-right m-null-top" data-bind="fadeVisible: @{model}.hasData" style="display:none;">
 		<li><a href="javascript:void(0)"
 			data-bind="click: @{model}.previous">&laquo;</a></li>
 		<!-- ko foreach: @{model}.visiblePages -->

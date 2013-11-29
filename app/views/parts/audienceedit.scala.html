@@ -6,7 +6,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clearaudience">&times;</button>
 				<h4 class="modal-title"><span data-bind="text: currentaudience().persisted ? 'Edit' : 'New'">New/Edit</span> Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
 			</div>
-			<div class="modal-body" data-bind="visible: confirmaudiencedelete()==1">
+			<div class="modal-body" data-bind="fadeVisible: confirmaudiencedelete()==1">
 				<div class="m-top-btm">
 					<div class="alert alert-danger">
 						<span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the audience?
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 
-			<div class="modal-body" data-bind="visible: confirmaudiencedelete()==0">
+			<div class="modal-body" data-bind="fadeVisible: confirmaudiencedelete()==0">
 				<h3 class="m-null-top">Select Website</h3>
 				<div class="box-strips">
 					<div class="clearfix">
@@ -54,18 +54,18 @@
 					</div>
 				</div>
 
-				<div class="m-top-btm" data-bind="visible: confirmwebsitedelete()==1">
+				<div class="m-top-btm" data-bind="fadeVisible: confirmwebsitedelete()==1">
 					<div class="alert alert-danger">
-						<span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the website <strong><span data-bind="text: currentwebsite().name"></span></strong>?
+						<span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the website <strong><span data-bind="text: websitetodelete() && websitetodelete().name()"></span></strong>?
 						<div class="m-top">
 							<button type="button" class="btn btn-default" data-bind="click: cleardeletewebsite">Cancel</button>
-							<button type="button" class="btn btn-danger" data-bind="click: deletewebsite"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+							<button type="button" class="btn btn-danger" data-bind="click: confirmdeletewebsite"><span class="glyphicon glyphicon-remove"></span> Delete</button>
 						</div>
 					</div>
 				</div>
 
 				<!-- ko if: confirmwebsitedelete()==0 -->
-				<div class="box-1" data-bind="visible: currentwebsite().editing">
+				<div class="box-1" data-bind="fadeVisible: currentwebsite().editing">
 					<h3 data-bind="text: currentwebsite().persisted() ? 'Edit Website' : 'New Website'">New Website</h3>
 					<form class="form-horizontal" role="form" data-bind="with: currentwebsite">
 						<div class="form-group">
@@ -99,21 +99,22 @@
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<button type="submit" class="btn btn-primary" data-bind="visible: persisted">Copy Tracking Code</button>
+        						<button type="submit" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
 								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite, visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
 							</div>
 						</div>
 					</form>
 				</div>
 
-				<div class="m-top-btm" data-bind="visible: currentwebsite().inactive">
+				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().inactive">
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select/Create websites above</div>
 				</div>
 
-				<div class="m-top-btm" data-bind="visible: currentwebsite().active() && !currentwebsite().selected()">
+				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().active() && !currentwebsite().selected()">
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select website to edit path targeting</div>
 				</div>
 
-				<div class="m-top-btm" data-bind="visible: currentwebsite().selected() && !currentwebsite().editing(), with: currentaudience">
+				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().selected() && !currentwebsite().editing(), with: currentaudience">
 					<h3>Path targeting for <span data-bind="text: $root.currentwebsite().name"></span></h3>
 					<div class="row">
 						<div class="col-md-6">
@@ -161,7 +162,7 @@
 					</div>
 				</div>
 
-				<div class="panel-group" id="accordion-example-plus" data-bind="with: currentaudience, visible: currentaudience().nonempty() && !currentwebsite().editing()">
+				<div class="panel-group" id="accordion-example-plus" data-bind="with: currentaudience, fadeVisible: currentaudience().nonempty() && !currentwebsite().editing()">
 					<div class="panel panel-default">
 						<div class="panel-heading link">
 							<h4 class="panel-title">
@@ -180,7 +181,7 @@
 				<!-- /ko -->
 
 			</div>
-			<div class="modal-footer" data-bind="visible: confirmaudiencedelete()==0">
+			<div class="modal-footer" data-bind="fadeVisible: confirmaudiencedelete()==0">
 				<button type="button" class="btn btn-danger pull-left" data-bind="click: deleteaudience, visible: currentaudience().persisted"><span class="glyphicon glyphicon-remove"></span> Delete</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: clearaudience">Cancel</button>
 				<button type="button" class="btn btn-primary" data-bind="click: saveaudience, css: { 'disabled': currentwebsite().transientnew }"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>

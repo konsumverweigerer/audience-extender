@@ -10,13 +10,21 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       byId = (id) -> ((w) -> w.id()==id)
       
       @campaignchartdaterange = new mod.DateRange
-
-      @campaigntablescroller = new mod.Scroller
-
-      @campaigntablesearchbar = new mod.Searchbar
-
       @campaignchart = new mod.Chartdata
 
+      @campaigntablescroller = new mod.Scroller
+      @campaigntablesearchbar = new mod.Searchbar {
+        availableCategories: ['Any','Paused','Finished','Active','Pending','Cancelled','Rejected']
+        categoryTags:
+          paused: 'Paused'
+          finished: 'Finished'
+          active: 'Active'
+          pending: 'Pending'
+          cancelled: 'Cancelled'
+          rejected: 'Rejected'
+        categoryFilter: 'state'
+        searchFilter: 'name'
+      }
       @campaigntable = new mod.Datatable(["name","state","revenue","cost","from","to"],
       {state: (v) ->
         if 'paused' == v
@@ -43,33 +51,28 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         mod.datetostr(v)
       })
 
+      @loader = new mod.Counter {wrap:false,minValue:0}
+      @alert = new mod.Message()
+      @messages = ko.observableArray []
+
       @confirmcampaigndelete = ko.observable(0)
 
       @publisher = ko.observable()
-
       @publishers = ko.observableArray []
 
       @audiences = ko.observableArray []
-
       @packages = ko.observableArray []
-
       @campaigns = ko.observableArray []
 
       @currentaudiences = ko.observableArray []
-
-      @currentpackages = ko.observableArray []
-
-      @campaignstep = new mod.Counter {value:1, minValue:1, maxValue:1, wrap:false}
-
       @audienceposition = new mod.Counter {wrap:false,minValue:0}
-
+      @currentpackages = ko.observableArray []
       @packageposition = new mod.Counter {wrap:false,minValue:0}
 
       @currentcampaign = ko.observable(new mod.Campaign {name:''})
+      @campaignstep = new mod.Counter {value:1, minValue:1, maxValue:1, wrap:false}
 
       @currentpackage = ko.observable(new mod.Package {name:''})
-
-      @messages = ko.observableArray []
 
       @results = ->
         ca = self.currentcampaign()

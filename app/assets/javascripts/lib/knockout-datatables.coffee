@@ -20,9 +20,7 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
       datatableOptions.fnInfoCallback = (oSettings,iStart,iEnd,iMax,iTotal,sPre) ->
         dl = oSettings._iDisplayLength
         if datatableScroller && not datatableScroller.updating()
-          datatableScroller.pageSize dl
-          datatableScroller.fromIndex iStart
-          datatableScroller.maxIndex iMax
+          datatableScroller.params(iStart,iMax,dl)
         return ''
 
       if datatableScroller
@@ -53,14 +51,12 @@ define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.
         val = []
       else if val.rows
         val = val.rows()
-      $datatable.fnClearTable()
-      i = 0
       if datatableScroller
         datatableScroller.updating true
-      while i < val.length
-        o = $.extend({row:i},val[i])
-        $datatable.fnAddData o
-        i++
+      $datatable.fnClearTable()
+      dat = ($.extend({row:i},d) for d,i in val)        
+      $datatable.fnAddData dat
       if datatableScroller
         datatableScroller.updating false
+        datatableScroller.params(1,dat.length)
 )

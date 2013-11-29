@@ -138,7 +138,7 @@ define(["webjars!knockout.js"], (ko) ->
 
       @maxPage = ko.computed -> Math.ceil(self.maxIndex() / self.pageSize())
 
-      @hasData = ko.computed -> self.maxIndex() > 0
+      @hasData = ko.computed(-> self.maxIndex() > 0).extend({ throttle: 200 })
 
       @hasNoPrev = ko.computed -> self.currentPage() < 2
 
@@ -155,6 +155,14 @@ define(["webjars!knockout.js"], (ko) ->
         cp = self.currentPage()
         i++ while (i+(sp/2)-1)<cp && (i+sp-1)<mp
         {page:i+j,active:(i+j)==cp} for j in [0...sp] when i+j<=mp
+
+      @params = (fromIndex,maxIndex,pageSize)->
+        if fromIndex?
+          self.fromIndex fromIndex
+        if maxIndex?
+          self.maxIndex maxIndex
+        if pageSize?
+          self.pageSize pageSize
 
       @previous = ->
         c = self.fromIndex()
@@ -584,9 +592,7 @@ define(["webjars!knockout.js"], (ko) ->
 
   class Website extends ServerModels
     typeOf: (name) ->
-      if name=='active' || name=='editing' || name=='selected'
-        return { isIgnored: true, isArray: false, isModel: false, model: null }
-      else if name=='messages'
+      if name=='active' || name=='inactive' || name=='editing' || name=='selected' || name=='emailSent' || name=='emailFail' || name=='emailStatus' || name=='messages'
         return { isIgnored: true }
       super(name)
 

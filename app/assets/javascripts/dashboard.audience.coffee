@@ -10,9 +10,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       byId = (id) -> ((w) -> w.id()==id)
       
       @audiencechartdaterange = new mod.DateRange
+      @audiencechart = new mod.Chartdata
 
       @audiencetablescroller = new mod.Scroller
-
       @audiencetablesearchbar = new mod.Searchbar {
         availableCategories: ['Any','Paused','Active','Pending','Cancelled']
         categoryTags:
@@ -23,9 +23,6 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         categoryFilter: 'state'
         searchFilter: 'name'
       }
-
-      @audiencechart = new mod.Chartdata
-
       @audiencetable = new mod.Datatable(["name","state","websiteNamesShort","count"],
         state: (v) ->
           if 'paused' == v
@@ -40,30 +37,24 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
             v
       )
 
+      @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
-
       @messages = ko.observableArray []
 
       @confirmaudiencedelete = ko.observable(0)
-
       @confirmwebsitedelete = ko.observable(0)
 
       @publisher = ko.observable()
-
       @publishers = ko.observableArray []
 
       @websites = ko.observableArray []
-
       @audiences = ko.observableArray []
 
-      @currentwebsites = ko.observableArray []
-
-      # dummy for init
       @currentaudience = ko.observable(new mod.Audience {name:'',id:-1})
-
-      # dummy for init
       @currentwebsite = ko.observable(new mod.Website {name:'',id:-1})
+      @websitetodelete = ko.observable()
 
+      @currentwebsites = ko.observableArray []
       @websiteposition = new mod.Counter {wrap:false,minValue:0}
 
       @newwebsite = ->
@@ -88,6 +79,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
       @clearaudience = ->
         self.currentaudience(new mod.Audience {name:'',id:-1})
         $('#editAudience').modal 'hide'
+
+      @clearwebsite = ->
+        self.currentwebsite(new mod.Website {name:'',id:-1})
 
       @cleardeleteaudience = ->
         self.confirmaudiencedelete 0
@@ -153,24 +147,30 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
         self.confirmwebsitedelete 0
 
       @deletewebsite = (c) ->
-        if c.currentwebsite
-          c = c.currentwebsite()
-        if self.confirmwebsitedelete()==0 and not c.active()
-          (v.active false; v.editing false) for v in self.currentwebsites()
-          self.currentwebsite c.active true
+        if c.websitetodelete
+          c = c.websitetodelete()
+        if self.confirmwebsitedelete()==1 or not c?
+          return
+        (v.active false; v.editing false) for v in self.currentwebsites()
+        self.currentwebsite(new mod.Website {name:'',id:-1})
+        self.websitetodelete c
+        self.confirmwebsitedelete 1
+
+      @confirmdeletewebsite = ->
+        c = self.websitetodelete()
+        if not c?
+          return
         if self.confirmwebsitedelete()==0
-          return self.confirmwebsitedelete 1
-        if not c.active()
           return
         #check for usage
-        id = self.currentwebsite().id()
+        id = self.websitetodelete().id()
         self.websites.remove byId id
         self.currentwebsites.remove byId id
         alert('delete website')
         #todo: speed up refresh
         #au.refresh self.currentwebsites() for au in self.audiences()
         self.confirmwebsitedelete 0
-        self.currentwebsite(new mod.Website {name:'',id:-1})
+        self.websitetodelete undefined
         self.websiteposition.currentValue ''
 
       @activatewebsite = (c,e) ->
@@ -181,7 +181,7 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           c.active true
         else
           self.selectwebsite c
-        self.currentwebsite c
+        self.currentwebsite (new mod.Website()).copyFrom(c)
         self.currentaudience().activewebsite c.id()
 
       @selectwebsite = (c,e) ->
@@ -203,7 +203,9 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
           (v.active false; v.editing false) for v in self.currentwebsites()
           c.active true
         c.editing true
-        self.currentwebsite c
+        self.currentwebsite (new mod.Website()).copyFrom(c)
+        self.currentwebsite().active true
+        self.currentwebsite().editing true
         self.currentaudience().activewebsite c.id()
 
   models = new AudienceDashboard
@@ -231,6 +233,6 @@ require(["webjars!knockout.js", "lib/models", "webjars!jquery.js", "webjars!d3.v
     models.audiencechartdaterange.dateRange 'Last Day'
     models.audiencetablesearchbar.filldata = ->
       models.audiencetable.data models.audiencetablesearchbar.filter models.audiences()
-#    models.audiencetablesearchbar.search()
+    models.audiencetablesearchbar.search()
   )
 )

@@ -194,9 +194,9 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       value = valueAccessor()
       if ko.unwrap value
-        $(element).fadeIn()
+        $(element).fadeIn(200)
       else
-        $(element).fadeOut()
+        $(element).fadeOut(200)
 
   ko.bindingHandlers.slider =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
