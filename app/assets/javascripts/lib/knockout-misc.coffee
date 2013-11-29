@@ -23,6 +23,51 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
   wizardDefaults = -> {}
   sliderDefaults = -> {}
 
+  ko.extenders.numeric = (target,precision) ->
+    result = ko.computed(
+      read: target
+      write: (newValue) ->
+        current = target()
+        roundingMultiplier = Math.pow(10,precision)
+        newValueAsNum = parseFloat +newValue
+        if isNaN newValueAsNum
+          newValueAsNum = 0
+        valueToWrite = Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier
+        if valueToWrite!=current
+          target valueToWrite
+        else
+          if newValue!=current
+            target.notifySubscribers valueToWrite
+    ).extend { notify: 'always' }
+ 
+    result target()
+    return result
+
+  ko.extenders.currency = (target,lang) ->
+    result = ko.computed(
+      read: target
+      write: (newValue) ->
+        current = target()
+        roundingMultiplier = 1
+        symbolPre = ''
+        symbolPost = ''
+        if lang=='us'
+            roundingMultiplier = 100
+            symbolPre = '$'
+        newValueAsNum = parseFloat +((''+newValue).replace(/[^0-9,.-]/,''))
+        if isNaN newValueAsNum
+          newValueAsNum = 0
+        valueToWrite = symbolPre+(Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier)+symbolPost
+        if valueToWrite!=current
+          target valueToWrite
+        else
+          if newValue!=current
+            target.notifySubscribers valueToWrite
+    ).extend { notify: 'always' }
+ 
+    result target()
+    return result
+
   ko.bindingHandlers.checkedChange =
     after: ['value','attr']
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
@@ -207,7 +252,7 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
 
       $slider = $element.slider sliderOptions
       if ko.isObservable value
-        $datepicker.on('slide.ko', (e) ->
+        $slider.on('slide.ko', (e) ->
           valueAccessor() e.value
         )
 
@@ -228,15 +273,9 @@ define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
-    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
 
   ko.bindingHandlers.jqvalidation =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
-    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
 )

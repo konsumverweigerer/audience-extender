@@ -26,12 +26,18 @@ define(["webjars!knockout.js"], (ko) ->
     v = s.split '/'
     new Date(v[2],v[0]-1,v[1])
 
-  rangeNames = -> n.name for n in ranges
+  rangeNames = ->
+    a = ['']
+    for n in ranges
+      a.push n.name 
+    a
 
   class DateRange
     constructor: ->
       self = @
 
+      @updating = false
+      
       @availableDateRanges = ko.observableArray rangeNames()
 
       @startDateRaw = ko.observable truncateToDay(new Date(),2,1)[0]
@@ -40,10 +46,12 @@ define(["webjars!knockout.js"], (ko) ->
         read: ->
           self.startDateRaw()
         write: (v) ->
+          self.updating = true
           old = self.startDateRaw()
           self.startDateRaw v
           if old!=self.startDateRaw()
             self.loadData()
+          self.updating = false
         owner: self
 
       @endDateRaw = ko.observable truncateToDay(new Date(),2,1)[1]
@@ -52,10 +60,12 @@ define(["webjars!knockout.js"], (ko) ->
         read: ->
           self.endDateRaw()
         write: (v) ->
+          self.updating = true
           old = self.endDateRaw()
           self.endDateRaw v
           if old!=self.endDateRaw()
             self.loadData()
+          self.updating = false
         owner: self
 
       @format = ko.computed ->
@@ -93,17 +103,18 @@ define(["webjars!knockout.js"], (ko) ->
       @dateRange = ko.computed
       	read: ->
       	  nd = new Date()
-      	  cr = [ self.startDate(), self.endDate() ]
+      	  cr = [self.startDate(),self.endDate()]
       	  nrs = (n.name for n in ranges when self.sameRange(cr,truncateToDay(nd,n.from,n.to,n.unit)))
       	  return nrs[0] || ''
       	write: (v) ->
-          ranges.map (n,i)->
-            if v == n.name
-              t = truncateToDay(new Date(),n.from,n.to,n.unit)
-              self.startDate t[0]
-              self.endDate t[1]
-      	owner: self
-      	deferEvaluation: true
+          if not self.updating
+            ranges.map (n,i)->
+              if v == n.name
+                t = truncateToDay(new Date(),n.from,n.to,n.unit)
+                self.startDate t[0]
+                self.endDate t[1]
+#      	owner: self
+#      	deferEvaluation: true
 
       @lastDay = ->
         t = truncateToDay(new Date(),2,1)
@@ -663,19 +674,27 @@ define(["webjars!knockout.js"], (ko) ->
         self.selected campaign.package()==self.id()
         return self
 
-      @count = ko.observable d?.count
+      @startDate = ko.observable(d?.startDate ? new Date())
+
+      @endDate = ko.observable(d?.endDate ? new Date())
+
+      @dates = ko.computed
+        read: ->
+          [self.startDate(),self.endDate()]
+        write: (v) ->
+          if v.length == 2
+            self.startDate v[0]
+            self.endDate v[1]
+
+      @count = ko.observable(d?.count).extend { numeric: 0 }
 
       @reach = ko.observable d?.reach
 
       @goal = ko.observable d?.goal
 
-      @buyCpm = ko.observable d?.buyCpm
+      @buyCpm = ko.observable(d?.buyCpm).extend { currency: 'us' }
 
-      @salesCpm = ko.observable d?.salesCpm
-
-      @startDate = ko.observable d?.startDate
-
-      @endDate = ko.observable d?.endDate
+      @salesCpm = ko.observable(d?.salesCpm).extend { currency: 'us' }
 
   class Creative extends ServerModels
     constructor: (d) ->

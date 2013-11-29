@@ -169,6 +169,7 @@ define(["webjars!knockout.js"], (ko) ->
           bump a for i in [0...5]
           return a.map((r,s) -> stream_index(r,s,idxf))
         )
+      models.campaignchart.chartcontent data()
     )
 
   generatewebsites = (mod,models) ->
