@@ -1,9 +1,4 @@
-requirejs.config
-  shim:
-    'webjars!bootstrap-datepicker.js':
-      deps: [ 'webjars!jquery.js', 'webjars!bootstrap.js' ]
-
-define([ "webjars!knockout.js", "webjars!bootstrap-datepicker.js", "webjars!jquery.js" ], (ko) ->
+define([ "knockout", "bootstrap-datepicker", "jquery" ], (ko) ->
   ko.bindingHandlers.datepicker =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       $element = $(element)

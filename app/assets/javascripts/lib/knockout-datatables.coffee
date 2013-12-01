@@ -1,4 +1,4 @@
-define([ "webjars!knockout.js", "webjars!jquery.dataTables.js", "webjars!jquery.js", "lib/datatables-ext" ], (ko) ->
+define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko) ->
   defaultOptions = -> {
     bLengthChange: false
     sDom: 'lrti'

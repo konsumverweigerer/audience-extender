@@ -1,24 +1,6 @@
-requirejs.config
-  map:
-    '/webjars/jquery-file-upload/8.4.2/js':
-      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload': 'webjars!jquery.fileupload.js'
-      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload-process': 'webjars!jquery.fileupload-process.js'
-  shim:
-    'webjars!jquery.ui.widget.js':
-      deps: [ 'webjars!jquery.js' ]
-    'webjars!jqBootstrapValidation.js':
-      deps: [ 'webjars!jquery.js' ]
-
-define("load-image", [ "ext/load-image" ], -> )
-define("load-image-meta", [ ], -> )
-define("load-image-exif", [ ], -> )
-define("load-image-ios", [ ], -> )
-define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
-define("jquery.ui.widget", [ "webjars!jquery.ui.widget.js" ], -> )
-
-define([ "webjars!knockout.js", "webjars!jquery.fileupload.js",
- "webjars!jquery.iframe-transport.js", "webjars!jquery.fileupload-image.js", "webjars!jquery.fileupload-validate.js",
- "webjars!jqBootstrapValidation.js", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
+define([ "knockout", "jquery.fileupload",
+ "jquery.iframe-transport", "jquery.fileupload-image", "jquery.fileupload-validate",
+ "jqBootstrapValidation", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
   carouselDefaults = -> {wrap:'both'}
   wizardDefaults = -> {}
   sliderDefaults = -> {}

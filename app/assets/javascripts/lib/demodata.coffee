@@ -1,4 +1,4 @@
-define(["webjars!knockout.js"], (ko) ->
+define(["knockout"], (ko) ->
   rnd = (f,t) -> f+Math.floor((1+t-f)*Math.random())
 
   generateaudiences = (mod,models) ->

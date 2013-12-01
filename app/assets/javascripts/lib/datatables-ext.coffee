@@ -1,4 +1,4 @@
-define([ "webjars!jquery.dataTables.js" ], ->
+define([ "jquery.dataTables" ], ->
   $.extend($.fn.dataTableExt.oSort, {
     'number-asc': (a,b) -> 
       a-b

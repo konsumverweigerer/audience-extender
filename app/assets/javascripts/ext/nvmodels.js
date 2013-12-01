@@ -1,4 +1,4 @@
-define(['webjars!nv.d3.js'], function() {
+define(['nv.d3'], function() {
 nv.models.mycumulativeLineChart = function() {
 
   var lines = nv.models.line()

@@ -1,9 +1,4 @@
-requirejs.config
-  shim:
-    'webjars!bootstrap-editable.js':
-      deps: [ 'webjars!jquery.js', 'webjars!bootstrap.js' ]
-
-define([ "webjars!knockout.js", "webjars!bootstrap-editable.js", "webjars!jquery.js" ], (ko) ->
+define([ "knockout", "bootstrap-editable", "jquery" ], (ko) ->
   $.fn.editable.defaults.mode = 'inline'
   ko.bindingHandlers.editable = {
     init : (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) ->

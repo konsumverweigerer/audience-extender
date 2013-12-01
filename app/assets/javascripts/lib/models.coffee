@@ -1,4 +1,4 @@
-define(["webjars!knockout.js"], (ko) ->
+define(["knockout"], (ko) ->
   day = 24*60*60*1000
 
   ranges = [ { name: 'Last Day', from: 2, to: 1, unit: 'day' },

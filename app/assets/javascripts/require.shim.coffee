@@ -1,8 +1,8 @@
 requirejs.config
   map:
     '/webjars/jquery-file-upload/8.4.2/js':
-      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload': 'webjars!jquery.fileupload.js'
-      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload-process': 'webjars!jquery.fileupload-process.js'
+      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload': 'jquery.fileupload'
+      '/webjars/jquery-file-upload/8.4.2/js/./jquery.fileupload-process': 'jquery.fileupload-process'
   shim:
     'jquery':
       deps: []
@@ -28,6 +28,23 @@ requirejs.config
     'jsRoutes':
       deps: []
       exports: 'jsRoutes'
+  paths:
+    'jquery': 'empty:'
+    'bootstrap': 'empty:'
+    'knockout': 'empty:'
+    'jquery.dataTables': 'empty:'
+    'bootstrap-datepicker': 'empty:'
+    'bootstrap-editable': 'empty:'
+    'jquery.ui.widget': 'empty:'
+    'jquery.fileupload': 'empty:'
+    'jquery.iframe-transport': 'empty:'
+    'jquery.fileupload-image': 'empty:'
+    'jquery.fileupload-process': 'empty:'
+    'jquery.fileupload-validate': 'empty:'
+    'jqBootstrapValidation': 'empty:'
+    'd3.v2': 'empty:'
+    'nv.d3': 'empty:'
+    'jsRoutes': 'empty:'
 
 define("jquery", [ "webjars!jquery.js" ], -> $)
 define("bootstrap", [ "webjars!bootstrap.js" ], -> )
@@ -52,5 +69,3 @@ define("load-image-ios", [ ], -> )
 define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
 define("jsRoutes", ["/jsroutes.js"], -> )
-
-require(["pages/dashboard.campaign"], -> )
