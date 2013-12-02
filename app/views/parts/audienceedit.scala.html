@@ -106,11 +106,11 @@
 					</form>
 				</div>
 
-				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().inactive">
+				<div class="m-top-btm" data-bind="visible: currentwebsite().inactive">
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select/Create websites above</div>
 				</div>
 
-				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().active() && !currentwebsite().selected()">
+				<div class="m-top-btm" data-bind="visible: currentwebsite().active() && !currentwebsite().selected()">
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select website to edit path targeting</div>
 				</div>
 

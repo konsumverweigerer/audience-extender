@@ -1,4 +1,4 @@
-define(["knockout"], (ko) ->
+define([ "knockout", "jsRoutes" ], (ko) ->
   day = 24*60*60*1000
 
   ranges = [ { name: 'Last Day', from: 2, to: 1, unit: 'day' },
@@ -233,8 +233,8 @@ define(["knockout"], (ko) ->
         if st.length>0 && st[0]!='' && sf
           nd = []
           for r in d
-            p = ko.unwrap r[sf]
-            for s in st when 0<=p.indexOf s
+            p = ko.unwrap(r[sf]).toLowerCase()
+            for s in st when 0<=p.indexOf s.toLowerCase()
               nd.push r
               break
           d = nd
@@ -423,6 +423,14 @@ define(["knockout"], (ko) ->
 
       @transientnew = ko.computed -> (self.id() ? -1)==0
 
+      @save = (page) ->
+
+      @remove = (page) ->
+
+      @saveRoute = ->
+
+      @removeRoute = ->
+
   class Message extends ServerModels
     typeOf: (name) ->
       if name=='name'
@@ -559,9 +567,9 @@ define(["knockout"], (ko) ->
       @path = ko.observable()
 
       @paths = ko.observableArray (d?.paths || []).map (v) -> new PathTarget v
-      
+
       @allpaths = ko.observable(d?.allpaths || {})
-      
+
       @currentallpath = ko.computed
         read: ->
           aw = self.activewebsite()

@@ -12,7 +12,7 @@ define(["knockout"], (ko) ->
       val[i++] = new mod.Audience
         id: i
         name:'Audience '+rnd(1,1000)
-        state: ['paused','active','pending','cancelled'][rnd(0,3)]
+        state: ['active','pending','cancelled'][rnd(0,2)]
         websites: ws
         count: Math.ceil 10000*Math.random()
         paths: ps

@@ -5,6 +5,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
 "lib/knockout-slider", 
 "lib/knockout-wizard", 
 "lib/knockout-editable", 
+"lib/knockout-jqbootstrapvalidation", 
 "lib/knockout-datepicker", 
 "lib/knockout-nvd3", 
 "lib/knockout-datatables", 
@@ -14,7 +15,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
       self = @
 
       byId = (id) -> ((w) -> w.id()==id)
-      
+
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []

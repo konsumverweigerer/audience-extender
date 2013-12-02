@@ -2,6 +2,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
 "lib/knockout-misc", 
 "lib/knockout-carousel", 
 "lib/knockout-editable", 
+"lib/knockout-jqbootstrapvalidation", 
 "lib/knockout-datepicker", 
 "lib/knockout-nvd3", 
 "lib/knockout-datatables", 
@@ -11,7 +12,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
       self = @
 
       byId = (id) -> ((w) -> w.id()==id)
-      
+
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
@@ -21,20 +22,17 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
 
       @audiencetablescroller = new mod.Scroller
       @audiencetablesearchbar = new mod.Searchbar {
-        availableCategories: ['Any','Paused','Active','Pending','Cancelled']
+        availableCategories: ['Any','Active','Not yet active','Deleted']
         categoryTags:
-          paused: 'Paused'
           active: 'Active'
-          pending: 'Pending'
-          cancelled: 'Cancelled'
+          pending: 'Not yet active'
+          cancelled: 'Deleted'
         categoryFilter: 'state'
         searchFilter: 'name'
       }
       @audiencetable = new mod.Datatable(["name","state","websiteNamesShort","count"],
         state: (v) ->
-          if 'paused' == v
-            '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
-          else if 'active' == v
+          if 'active' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
           else if 'pending' == v
             '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
@@ -184,8 +182,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
           c.active true
         else
           self.selectwebsite c
-        self.currentwebsite (new mod.Website()).copyFrom(c)
         self.currentaudience().activewebsite c.id()
+        self.currentwebsite(c)
 
       @selectwebsite = (c,e) ->
         e?.stopPropagation()
