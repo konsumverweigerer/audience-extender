@@ -216,12 +216,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
   window.models = models
   #init
 
-  models.publishers().map((p,i) ->
+  models.publishers().map (p,i) ->
     pm = new mod.Publisher p
     models.publishers.push pm
     if p.active == "true"
       models.publisher pm
-  )
   if !models.publisher() && models.publishers().length
     models.publisher models.publishers()[0]
 

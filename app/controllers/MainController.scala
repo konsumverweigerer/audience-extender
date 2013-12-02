@@ -1,26 +1,17 @@
 package controllers
 
 import scala.collection.JavaConverters.asScalaBufferConverter
-import models.Admin
-import models.Publisher
-import play.api.Mode
-import play.api.Play
-import play.api.Routes
+
+import models._
+import services._
+
+import play.api._
 import play.api.data.Form
-import play.api.data.Forms.nonEmptyText
-import play.api.data.Forms.text
-import play.api.data.Forms.tuple
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.Controller
-import play.api.mvc.EssentialAction
-import play.api.mvc.Request
-import play.api.mvc.RequestHeader
-import play.api.mvc.Result
-import play.api.mvc.Results
-import play.api.mvc.Security
-import services.SendMail
+import play.api.data.Forms._
+import play.api.mvc._
+
 import views.html
+
 import play.Logger
 
 object MainController extends Controller with Secured {
