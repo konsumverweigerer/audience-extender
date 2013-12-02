@@ -96,18 +96,18 @@
 														<input type="text" class="form-control" id="salescpm" placeholder="" data-bind="value: salesCpm.extend({ currency: 'us' })">
 													</div>
 												</div>
-                                                <div class="col-xs-6 input-daterange" data-bind="datepicker: dates, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }">
+												<div class="col-xs-6 input-daterange" data-bind="datepicker: dates, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }">
 													<div class="form-group">
 														<label for="startdate">Start Date</label>
-                                                        <div class="input-group date">
-                                                            <input type="text" class="form-control span2 date-picker" id="startdate" placeholder="Enter start date ..."><span class="input-group-addon btn"><i class="glyphicon glyphicon-th"></i></span>
-                                                        </div>
+														<div class="input-group date">
+															<input type="text" class="form-control span2 date-picker" id="startdate" placeholder="Enter start date ..."><span class="input-group-addon btn"><i class="glyphicon glyphicon-th"></i></span>
+														</div>
 													</div>
 													<div class="form-group">
 														<label for="enddate">End Date</label>
-                                                        <div class="input-group date">
-                                                            <input type="text" class="form-control span2 date-picker" id="enddate" placeholder="Enter end date ..."><span class="input-group-addon btn"><i class="glyphicon glyphicon-th"></i></span>
-                                                        </div>
+														<div class="input-group date">
+															<input type="text" class="form-control span2 date-picker" id="enddate" placeholder="Enter end date ..."><span class="input-group-addon btn"><i class="glyphicon glyphicon-th"></i></span>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -116,7 +116,7 @@
 											<div class="form-group">
 												<label for="audiencereach">Audience Reach</label>
 												<div class="slider">
-                                                    <input id="audiencereach" type="text" class="form-control" value="" data-bind="slider: reach, sliderOptions: { min: 0, max: 100, step: 1, value: 50, orientation: 'horizontal', selection: 'after', tooltip: 'hide' }"/>
+													<input id="audiencereach" type="text" class="form-control" value="" data-bind="slider: reach, sliderOptions: { min: 0, max: 100, step: 1, value: 50, orientation: 'horizontal', selection: 'after', tooltip: 'hide' }"/>
 												</div>
 											</div>
 											<div class="form-group">
@@ -144,11 +144,11 @@
 							<p>You can drag multiple images here. We don't accept folders or compressed (zip) items.</p>
 						</div>
 						<div class="actions text-center m-top">
-                            <span class="btn btn-success fileinput-button">
-                                <i class="glyphicon glyphicon-plus"></i>
-                                <span>...or choose files</span>
-                                <input type="file" multiple="" data-bind="fileupload: addcreative, fileuploadOptions: {}">
-                            </span>
+							<span class="btn btn-success fileinput-button">
+								<i class="glyphicon glyphicon-plus"></i>
+								<span>...or choose files</span>
+								<input type="file" multiple="" data-bind="fileupload: addcreative, fileuploadOptions: {}">
+							</span>
 						</div>
 						<h3>Your Uploads</h3>
 						<div class="row">
