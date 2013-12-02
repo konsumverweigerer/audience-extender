@@ -22,6 +22,8 @@ GET      /tos                            controllers.MainController.tos
 GET      /admin                          controllers.AdminController.current
 PUT      /admin                          controllers.AdminController.saveCurrent
 
+PUT      /changePublisher                controllers.AdminController.changePublisher(publisherid)
+
 GET      /admins                         controllers.AdminController.admins
 GET      /json/admins                    controllers.AdminController.adminList(page: Int ?= 0, perPage: Int ?= 1000)
 POST     /admins                         controllers.AdminController.addAdmin
@@ -52,7 +54,7 @@ GET      /json/campaigns/:state/:query   controllers.CampaignController.campaign
 # Publishers
 GET      /publishers                     controllers.PublisherController.publishers
 GET      /json/publishers                controllers.PublisherController.publisherList(page: Int ?= 0, perPage: Int ?= 1000)
-POST     /uploadcreative/:pid            controllers.PublisherController.uploadcreative(pid: String)
+POST     /uploadcreative/:pid            controllers.PublisherController.uploadCreative(pid: String)
 
 # Audiences
 GET      /audiences                      controllers.AudienceController.audiences

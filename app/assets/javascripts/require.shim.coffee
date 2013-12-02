@@ -68,4 +68,4 @@ define("load-image-exif", [ ], -> )
 define("load-image-ios", [ ], -> )
 define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
-define("jsRoutes", ["/jsroutes.js"], -> )
+define("jsRoutes", ["/routes.js"], -> )

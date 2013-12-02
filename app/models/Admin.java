@@ -112,6 +112,20 @@ public class Admin extends Model {
 		return null;
 	}
 
+	public static Option<Publisher> changePublisher(String publisherid,
+			Admin admin) {
+		final Long id = publisherid != null ? Long.parseLong(publisherid) : 0L;
+		for (final Publisher publisher : Publisher.findByAdmin(admin)) {
+			if (id.equals(publisher.id)) {
+				admin.publisher = publisher;
+				admin.save();
+				publisher.active = true;
+				return new Some<Publisher>(publisher);
+			}
+		}
+		return Option.empty();
+	}
+
 	public static Finder<Long, Admin> find = new Finder<Long, Admin>(
 			Long.class, Admin.class);
 

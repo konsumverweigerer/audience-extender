@@ -1,5 +1,10 @@
 require([ "knockout", "lib/models", "jquery", "bootstrap"
-"lib/knockout-misc", "lib/knockout-editable", "lib/knockout-datepicker", "lib/knockout-nvd3", "lib/knockout-datatables", 
+"lib/knockout-misc", 
+"lib/knockout-carousel", 
+"lib/knockout-editable", 
+"lib/knockout-datepicker", 
+"lib/knockout-nvd3", 
+"lib/knockout-datatables", 
 "jsRoutes" ], (ko, mod) ->
   class AudienceDashboard
     constructor: (d) ->
@@ -217,13 +222,29 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
   window.models = models
   #init
 
-  models.publishers().map (p,i) ->
-    pm = new mod.Publisher p
-    models.publishers.push pm
-    if p.active == "true"
-      models.publisher pm
-  if !models.publisher() && models.publishers().length
-  	models.publisher models.publishers()[0]
+  $(document).ready ->
+    data.publishers.map (p,i) ->
+      pm = new mod.Publisher p
+      models.publishers.push pm
+      if p.active == 'true'
+        models.publisher pm
+    if !models.publisher() && models.publishers().length
+      p = models.publishers()[0]
+      p.active 'true'
+      models.publisher p
+
+  models.publisher.subscribe (nv) ->
+    a = routes.controllers.AdminController.changePublisher nv.id()
+    a.ajax {
+      success: (nv) ->
+        for p in models.publishers()
+          if nv.id==p.id()
+            p.active 'true'
+          else
+            p.active 'false'
+      error: ->
+        models.alert.show('Warning','Could not change publisher','error')
+    }
 
   require(["lib/demodata"],(demo) ->
     demo.generate(mod,models,'audience')

@@ -24,6 +24,19 @@ object PublisherController extends Controller with Secured {
       "url" -> JsString(publisher.url)))
   }
 
+  implicit object CreativeFormat extends Format[Creative] {
+    def reads(json: JsValue) = JsSuccess(new Creative(
+      (json \ "name").as[String],
+      (json \ "url").as[Option[String]]))
+
+    def writes(creative: Creative) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(creative.id)),
+      "name" -> JsString(creative.name),
+      "preview" -> JsString(creative.getPreview()),
+      "uuid" -> JsString(creative.uuid),
+      "url" -> JsString(creative.url)))
+  }
+
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {
     def reads(json: JsValue) = JsSuccess(null)
 
@@ -41,15 +54,16 @@ object PublisherController extends Controller with Secured {
       "name" -> JsString(dataset.getName())))
   }
 
-  def uploadcreative = (publisherid: String) => IsAuthenticated { adminid =>
+  def uploadCreative = (publisherid: String) => IsAuthenticated { adminid =>
     request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Publisher.findById(publisherid, admin).map { publisher =>
           request.body.asMultipartFormData.map { body =>
             body.file("creative").map { file =>
-              val id = Creative.addUpload(publisher, file.contentType.getOrElse("application/octet-steam"),
-                file.filename, file.ref.file);
-              Ok(Json.toJson(""))
+              Creative.addUpload(publisher, file.contentType.getOrElse("application/octet-steam"),
+                file.filename, file.ref.file).map { creative =>
+                  Ok(Json.toJson(creative))
+                }.getOrElse(NotFound)
             }.getOrElse(NotFound)
           }.getOrElse(NotFound)
         }.getOrElse(Forbidden)

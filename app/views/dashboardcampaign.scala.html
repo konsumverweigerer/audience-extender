@@ -99,20 +99,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-xs-6">
-						<select class="form-control m-btm" data-bind="options: campaigntablesearchbar.availableCategories, value: campaigntablesearchbar.category">
-						</select>
-					</div>
-					<div class="col-xs-6">
-						<form role="search">
-							<div class="input-group m-btm">
-								<input type="text" data-bind="value: campaigntablesearchbar.query" placeholder="Search ..." class="form-control">
-								<span class="input-group-btn">
-									<button class="btn btn-primary" data-bind="click: campaigntablesearchbar.search" type="button">Search</button>
-								</span>
-							</div>
-						</form>
-					</div>
+        			@elements.searchbar("campaigntablesearchbar")
 				</div>
 				<div class="row">
 					@elements.pagination("campaigntablescroller")

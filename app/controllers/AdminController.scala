@@ -33,7 +33,7 @@ object AdminController extends Controller with Secured {
         (name: String, email: String) => new Admin(email, name, null))(
           (admin: Admin) => Some(admin.name, admin.email)))
 
-  def adminJson(admin: Admin) : JsValue =
+  def adminJson(admin: Admin): JsValue =
     Json.toJson(Admin.findByAdmin(admin).asScala)
 
   def deleteAdmin(adminid: Long) = HasRole("sysadmin") { admin =>
@@ -69,7 +69,7 @@ object AdminController extends Controller with Secured {
   }
 
   def addAdmin = IsAuthenticated { adminid =>
-    _ =>
+    request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         val newAdmin = Admin.newAdmin(admin)
         if (newAdmin != null) {
@@ -82,8 +82,18 @@ object AdminController extends Controller with Secured {
       }.getOrElse(Forbidden)
   }
 
+  def changePublisher(publisherid: String) = IsAuthenticated { adminid =>
+    request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Admin.changePublisher(publisherid, admin).map { publisher =>
+          Ok(
+            Json.toJson(publisher))
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   def current = IsAuthenticated { adminid =>
-    _ =>
+    request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Ok(
           html.current(

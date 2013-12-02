@@ -172,9 +172,11 @@ object MainController extends Controller with Secured {
         routes.javascript.PublisherController.publisherList,
         routes.javascript.PublisherController.dashboard,
         routes.javascript.PublisherController.stats,
+        routes.javascript.PublisherController.uploadCreative,
         routes.javascript.CampaignController.campaignList,
         routes.javascript.CampaignController.dashboard,
         routes.javascript.AudienceController.audienceList,
+        routes.javascript.AdminController.changePublisher,
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }
 

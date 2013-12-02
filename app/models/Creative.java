@@ -8,6 +8,7 @@ import javax.persistence.Id;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import scala.Option;
 
 @Entity
 public class Creative extends Model {
@@ -25,15 +26,16 @@ public class Creative extends Model {
 
 	public String uuid;
 
-	public Creative(String name) {
+	public Creative(String name, Option<String> url) {
 		this.name = name;
+		this.url = url.isDefined() ? url.get() : null;
 	}
 
 	public static Finder<String, Creative> find = new Finder<String, Creative>(
 			String.class, Creative.class);
 
-	public static String addUpload(Publisher publisher, String contentType,
-			String filename, File file) {
+	public static Option<Creative> addUpload(Publisher publisher,
+			String contentType, String filename, File file) {
 		return null;
 	}
 
@@ -42,6 +44,10 @@ public class Creative extends Model {
 	 */
 	public static List<Creative> findAll() {
 		return find.all();
+	}
+
+	public String getPreview() {
+		return this.url;
 	}
 
 	public String toString() {

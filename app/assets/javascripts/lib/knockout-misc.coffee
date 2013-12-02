@@ -1,11 +1,4 @@
-define([ "knockout", "jquery.fileupload",
- "jquery.iframe-transport", "jquery.fileupload-image", "jquery.fileupload-validate",
- "jqBootstrapValidation", "ext/bootstrap-slider", "ext/jquery.jcarousel", "ext/wizard" ], (ko) ->
-  carouselDefaults = -> {wrap:'both'}
-  wizardDefaults = -> {}
-  sliderDefaults = -> {}
-  fileuploadDefaults = -> {}
-
+define([ "knockout" ], (ko) ->
   ko.extenders.numeric = (target,precision) ->
     result = ko.computed(
       read: target
@@ -138,101 +131,6 @@ define([ "knockout", "jquery.fileupload",
       ko.dependentObservable(updateView, null, { disposeWhenNodeIsRemoved: element })
       shouldSet = true
 
-  ko.bindingHandlers.carousel =
-    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      allBindings = allBindingsAccessor()
-      carouselOptions = $.extend(carouselDefaults(),allBindings.carouselOptions || {})
-      $element.jcarousel carouselOptions
-      if carouselOptions.previousButton
-        $(carouselOptions.previousButton).on('click.ko',(e) =>
-          val = ko.unwrap valueAccessor()
-          if val.previous
-            val.previous()
-          else
-            $element.jcarousel('scroll','-=1')
-        )
-      if carouselOptions.nextButton
-        $(carouselOptions.nextButton).on('click.ko',(e) =>
-          val = ko.unwrap valueAccessor()
-          if val.next
-            val.next()
-          else
-            $element.jcarousel('scroll','+=1')
-        )
-    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      val = ko.unwrap valueAccessor()
-      fval = val
-      if val.currentValue
-        val = val.currentValue()
-      if val=='' || val=='last'
-        allBindings = allBindingsAccessor()
-        carouselOptions = $.extend(carouselDefaults(), allBindings.carouselOptions || {})
-        $carousel = $element.jcarousel 'destroy'
-        $carousel = $element.jcarousel carouselOptions
-        ai = $element.jcarousel('items').length
-        fi = $element.jcarousel('fullyvisible').length
-        if val=='last'
-          val = ai-fi
-        else
-          val = 0
-        if fval.currentValue
-          fval.maxValue ai-fi
-          fval.currentValue val
-      else if fval.currentValue
-        ai = $element.jcarousel('items').length
-        fi = $element.jcarousel('fullyvisible').length
-        fval.maxValue ai-fi
-      $carousel = $element.jcarousel('scroll',val || 0)
-
-  ko.bindingHandlers.wizard =
-    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
-      wizardOptions = $.extend(wizardDefaults(), allBindings.wizardOptions || {})
-      $element.wizard wizardOptions
-      cs = $element.wizard 'selectedItem'
-      if cs
-        css = cs.step
-        while css!=val
-          if css<val
-            $element.wizard 'next'
-          else if css>val
-            $element.wizard 'previous'
-          cs = $element.wizard 'selectedItem'
-          if css==cs.step
-            break
-          css = cs.step
-      $element.on('changed.ko',(e) =>
-        cs = $element.wizard 'selectedItem'
-        if cs
-          valueAccessor() cs.step
-      )
-    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
-      $element.off 'changed.ko'
-      cs = $element.wizard 'selectedItem'
-      if cs
-        css = cs.step
-        while css!=val
-          if css<val
-            $element.wizard 'next'
-          else if css>val
-            $element.wizard 'previous'
-          cs = $element.wizard 'selectedItem'
-          if css==cs.step
-            break
-          css = cs.step
-      $element.on('changed.ko',(e) =>
-        cs = $element.wizard 'selectedItem'
-        if cs
-          valueAccessor() cs.step
-      )
-
   ko.bindingHandlers.fadeVisible =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       $element = $(element)
@@ -244,44 +142,4 @@ define([ "knockout", "jquery.fileupload",
         $(element).fadeIn(200)
       else
         $(element).fadeOut(200)
-
-  ko.bindingHandlers.slider =
-    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      value = valueAccessor()
-      allBindings = allBindingsAccessor()
-      sliderOptions = $.extend(sliderDefaults(),allBindings.sliderOptions || {})
-
-      $slider = $element.slider sliderOptions
-      if ko.isObservable value
-        $slider.on('slide.ko', (e) ->
-          valueAccessor() e.value
-        )
-
-      if sliderOptions.slide
-        $slider.on('slide',sliderOptions.slide)
-    update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      value = valueAccessor()
-      allBindings = allBindingsAccessor()
-
-      $slider = $element.slider()
-      val = ko.utils.unwrapObservable value
-      if not val?
-        val = 0
-      $slider.slider('setValue',val)
-
-  ko.bindingHandlers.fileupload =
-    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
-      value = valueAccessor()
-      allBindings = allBindingsAccessor()
-      fileuploadOptions = $.extend(fileuploadDefaults(),allBindings.fileuploadOptions || {})
-
-      $fileupload = $element.fileupload()
-
-  ko.bindingHandlers.jqvalidation =
-    init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap valueAccessor()
-      allBindings = allBindingsAccessor()
 )
