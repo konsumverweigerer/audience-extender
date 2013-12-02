@@ -211,6 +211,23 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
         self.currentwebsite().active true
         self.currentaudience().activewebsite c.id()
 
+      @currentaudiencemessages = ko.computed
+        read: ->
+          self.currentaudience().messages()
+        owner: self.currentaudience().messages
+
+      @currentwebsitemessages = ko.computed
+        read: ->
+          self.currentwebsite().messages()
+        owner: self.currentwebsite().messages
+
+      @currentmessages = ko.computed
+        read: ->
+          a = []
+          a = a.concat self.currentaudiencemessages()
+          a = a.concat self.currentwebsitemessages()
+          return a
+
   models = new AudienceDashboard
 
   ko.applyBindings models

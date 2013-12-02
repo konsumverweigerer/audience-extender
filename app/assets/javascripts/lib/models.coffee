@@ -433,7 +433,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class Message extends ServerModels
     typeOf: (name) ->
-      if name=='name'
+      if name=='name' || name=='dismissed'
         return { isIgnored: true }
       super(name)
 
@@ -453,6 +453,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @content = ko.observable content
 
+      @dismissed = ko.observable 0
+
       @priority = ko.observable(priority || 'info')
 
       @isInfo = ko.computed -> self.priority()=='info'
@@ -469,10 +471,17 @@ define([ "knockout", "jsRoutes" ], (ko) ->
         if priority?
           self.priority priority
         $('#'+self.name()).modal('show')
+        self.dismissed -1
 
-      @hide = -> $('#'+self.name()).modal('hide')
+      @hide = ->
+        $('#'+self.name()).modal('hide')
+        self.dismissed 0
 
-      @dismiss = -> self.hide()
+      @dismiss = ->
+        if self.dismissed()==-1
+          self.hide()
+        else
+          self.dismissed 1
 
   class Campaign extends ServerModels
     typeOf: (name) ->
@@ -590,7 +599,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @addpath = ->
         if self.path()? && self.path()!=''
-          for p in self.paths()
+          for p in self.currentpaths()
             if p.path()==self.path()
               self.messages.push new Message
                 title: 'Duplicate path'
