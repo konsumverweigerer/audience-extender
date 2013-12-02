@@ -81,11 +81,17 @@ object MainController extends Controller with Secured {
       Option[Admin](Admin.findById(adminid)).map { admin =>
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, admin)),
-          message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent"))
+          message => {
+            SendMail.sendContactMessage(message._1, message._2, message._3)
+            Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
+          })
       }.getOrElse(
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, null)),
-          message => Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")))
+          message => {
+            SendMail.sendContactMessage(message._1, message._2, message._3)
+            Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
+          }))
   }
 
   /**
@@ -94,14 +100,19 @@ object MainController extends Controller with Secured {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.MainController.dashboard).withSession(
-        Security.username -> Admin.findByEmail(user._1).getIdString))
+      user => {
+        Logger.info("logging in: " + user._1)
+        Redirect(routes.MainController.dashboard).withSession(
+          Security.username -> Admin.findByEmail(user._1).getIdString)
+      })
   }
 
   def forgotPassword = Action { implicit request =>
     forgotPasswordForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
-      user => Redirect(routes.MainController.login).flashing("success" -> "Password reset e-mail sent"))
+      user => {
+        Redirect(routes.MainController.login).flashing("success" -> "Password reset e-mail sent")
+      })
   }
 
   /**

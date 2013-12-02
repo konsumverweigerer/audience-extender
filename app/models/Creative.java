@@ -1,5 +1,6 @@
 package models;
 
+import java.io.File;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -18,14 +19,23 @@ public class Creative extends Model {
 	@Required
 	public String name;
 
+	public String url;
+
+	public byte[] data;
+
 	public String uuid;
-	
+
 	public Creative(String name) {
 		this.name = name;
 	}
 
 	public static Finder<String, Creative> find = new Finder<String, Creative>(
 			String.class, Creative.class);
+
+	public static String addUpload(Publisher publisher, String contentType,
+			String filename, File file) {
+		return null;
+	}
 
 	/**
 	 * Retrieve all creatives.

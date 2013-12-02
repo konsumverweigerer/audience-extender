@@ -6,11 +6,13 @@ import com.typesafe.plugin.MailerPlugin;
 public class SendMail {
 	public static Boolean sendContactMessage(String email, String name,
 			String message) {
-		return null;
+		return sendMail("Audience extender: Contact form",
+				"info@audienceextender.com", "From: " + name + "\nMessage:\n\n"
+						+ message, null, null, "peter@audienceextender.com");
 	}
 
-	private static boolean sendHtmlMail(String subject, String from,
-			String text, String html, String[] ccs, String... recipients) {
+	private static boolean sendMail(String subject, String from, String text,
+			String html, String[] ccs, String... recipients) {
 		final MailerPlugin mailer = play.Play.application().plugin(
 				MailerPlugin.class);
 		try {

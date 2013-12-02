@@ -31,7 +31,7 @@ requirejs.config
 
 define("jquery", [ "webjars!jquery.js" ], -> $)
 define("bootstrap", [ "webjars!bootstrap.js" ], -> )
-define("knockout", [ "webjars!knockout.js" ], -> )
+define("knockout", [ "webjars!knockout.js" ], (ko) -> ko )
 define("jquery.dataTables", [ "webjars!jquery.dataTables.js" ], -> )
 define("bootstrap-datepicker", [ "webjars!bootstrap-datepicker.js" ], -> )
 define("bootstrap-editable", [ "webjars!bootstrap-editable.js" ], -> )
@@ -53,4 +53,4 @@ define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
 define("jsRoutes", ["/jsroutes.js"], -> )
 
-require(["pages/dashboard.campaign", "knockout", "jquery", "boostrap", "jsRoutes"], -> )
+require(["pages/dashboard.campaign", "knockout", "jquery", "bootstrap", "jsRoutes"], -> )

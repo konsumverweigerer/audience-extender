@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
+import scala.Some;
 
 @Entity
 public class Publisher extends Model {
@@ -66,6 +67,20 @@ public class Publisher extends Model {
 	public static List<Dataset> statsByAdmin(Admin admin) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
 		return stats;
+	}
+
+	public static Option<Publisher> findById(String id, Admin admin) {
+		List<Publisher> ret = null;
+		if (admin.isSysAdmin()) {
+			ret = find.where().eq("id", id).findList();
+		} else {
+			ret = find.where().eq("owners.id", admin.id).eq("id", id)
+					.findList();
+		}
+		if (!ret.isEmpty()) {
+			return new Some<Publisher>(ret.get(0));
+		}
+		return Option.empty();
 	}
 
 	public static List<Publisher> findByAdmin(Admin admin) {

@@ -41,6 +41,21 @@ object PublisherController extends Controller with Secured {
       "name" -> JsString(dataset.getName())))
   }
 
+  def uploadcreative = (publisherid: String) => IsAuthenticated { adminid =>
+    request =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Publisher.findById(publisherid, admin).map { publisher =>
+          request.body.asMultipartFormData.map { body =>
+            body.file("creative").map { file =>
+              val id = Creative.addUpload(publisher, file.contentType.getOrElse("application/octet-steam"),
+                file.filename, file.ref.file);
+              Ok(Json.toJson(""))
+            }.getOrElse(NotFound)
+          }.getOrElse(NotFound)
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   def publishers = IsAuthenticated { adminid =>
     _ =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
@@ -51,7 +66,7 @@ object PublisherController extends Controller with Secured {
       }.getOrElse(Forbidden)
   }
 
-  def publisherJson(admin: Admin) : JsValue =
+  def publisherJson(admin: Admin): JsValue =
     Json.toJson(Publisher.findByAdmin(admin).asScala)
 
   /** Action to get the publishers */
@@ -70,11 +85,11 @@ object PublisherController extends Controller with Secured {
   }
 
   def dashboard = IsAuthenticated { adminid =>
-    _ => 
+    _ =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
-      Ok(Json.toJson(
-        Publisher.statsByAdmin(admin).asScala))
-    }.getOrElse(Forbidden)
+        Ok(Json.toJson(
+          Publisher.statsByAdmin(admin).asScala))
+      }.getOrElse(Forbidden)
   }
 
   def stats(publisherid: Long) = Action(parse.json) { implicit req =>

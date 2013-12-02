@@ -52,6 +52,7 @@ GET      /json/campaigns/:state/:query   controllers.CampaignController.campaign
 # Publishers
 GET      /publishers                     controllers.PublisherController.publishers
 GET      /json/publishers                controllers.PublisherController.publisherList(page: Int ?= 0, perPage: Int ?= 1000)
+POST     /uploadcreative/:pid            controllers.PublisherController.uploadcreative(pid: String)
 
 # Audiences
 GET      /audiences                      controllers.AudienceController.audiences
