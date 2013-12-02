@@ -13,6 +13,9 @@ object ApplicationBuild extends Build {
     javaJdbc,
     javaEbean,
 
+//    "com.typesafe.play" % "sbt-plugin" % "2.2.1",
+//    "com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.1.1",
+
     "org.springframework" % "spring-context" % "3.2.2.RELEASE",
     "javax.inject" % "javax.inject" % "1",
 
@@ -23,7 +26,7 @@ object ApplicationBuild extends Build {
     "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
 
-    "org.webjars" %% "webjars-play" % "2.2.1",
+    "org.webjars" %% "webjars-play" % "2.2.1" exclude("org.scala-lang", "scala-library"),
     "org.webjars" % "requirejs" % "2.1.8",
     "org.webjars" % "bootstrap" % "3.0.0" exclude("org.webjars", "jquery"),
     "org.webjars" % "knockout" % "2.3.0",

@@ -53,4 +53,4 @@ define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
 define("jsRoutes", ["/jsroutes.js"], -> )
 
-require(["pages/dashboard.campaign"], -> )
+require(["pages/dashboard.campaign", "knockout", "jquery", "boostrap", "jsRoutes"], -> )
