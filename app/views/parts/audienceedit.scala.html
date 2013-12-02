@@ -9,7 +9,7 @@
 			<div class="modal-body" data-bind="fadeVisible: confirmaudiencedelete()==1">
 				<div class="m-top-btm">
 					<div class="alert alert-danger">
-						<span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the audience?
+						<span class="glyph-h3 glyphicon glyphicon-warning-sign"></span> Are you sure to delete the audience?
 						<div class="m-top">
 							<button type="button" class="btn btn-default" data-bind="click: cleardeleteaudience">Cancel</button>
 							<button type="button" class="btn btn-danger" data-bind="click: deleteaudience"><span class="glyphicon glyphicon-remove"></span> Delete</button>
@@ -24,7 +24,7 @@
 					<div class="clearfix">
 						<div class="website-block-wrapper simple">
 							<div class="website-block-add-wrapper">
-								<a href="javascript:void()" class="website-block-add" data-bind="click: newwebsite">
+								<a href="javascript:void(0)" class="website-block-add" data-bind="click: newwebsite">
 									<span class="website-name">Add New Website</span>
 									<span class="thumbnail-site">
 										<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" />
@@ -35,7 +35,7 @@
 								<div class="jcarousel" data-bind="carousel: websiteposition">
 									<ul data-bind="foreach: currentwebsites">
 										<li>
-											<a href="javascript:void()" class="website-block" data-bind="click: $root.activatewebsite, css: {'selected': selected(), 'active': active()}">
+											<a href="javascript:void(0)" class="website-block" data-bind="click: $root.activatewebsite, css: {'selected': selected(), 'active': active()}">
 												<span class="website-name" data-bind="text: name"></span>
 												<span class="thumbnail-site">
 													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
@@ -56,7 +56,7 @@
 
 				<div class="m-top-btm" data-bind="fadeVisible: confirmwebsitedelete()==1">
 					<div class="alert alert-danger">
-						<span class="glyphicon glyphicon-warning-sign"></span> Are you sure to delete the website <strong><span data-bind="text: websitetodelete() && websitetodelete().name()"></span></strong>?
+						<span class="glyph-h3 glyphicon glyphicon-warning-sign"></span> Are you sure to delete the website <strong><span data-bind="text: websitetodelete() && websitetodelete().name()"></span></strong>?
 						<div class="m-top">
 							<button type="button" class="btn btn-default" data-bind="click: cleardeletewebsite">Cancel</button>
 							<button type="button" class="btn btn-danger" data-bind="click: confirmdeletewebsite"><span class="glyphicon glyphicon-remove"></span> Delete</button>
@@ -67,7 +67,7 @@
 				<!-- ko if: confirmwebsitedelete()==0 -->
 				<div class="box-1" data-bind="fadeVisible: currentwebsite().editing">
 					<h3 data-bind="text: currentwebsite().persisted() ? 'Edit Website' : 'New Website'">New Website</h3>
-					<form class="form-horizontal" role="form" data-bind="with: currentwebsite">
+					<form class="form-horizontal" role="form" data-bind="with: currentwebsite, jqvalidation: {}">
 						<div class="form-group">
 							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
 							<div class="col-sm-9">
@@ -85,7 +85,7 @@
 								<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Explanation about Tracking code here...</div>
 							</div>
 						</div>
-						<div class="form-group" data-bind="css: {'has-success': emailSent, 'has-error': emailFail}, visible: persisted">
+						<div class="form-group control-group" data-bind="css: {'has-success': emailSent, 'has-error': emailFail}, visible: persisted">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">
 								<div class="input-group">
@@ -110,7 +110,7 @@
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select/Create websites above</div>
 				</div>
 
-				<div class="m-top-btm" data-bind="visible: currentwebsite().active() && !currentwebsite().selected()">
+				<div class="m-top-btm" data-bind="visible: currentwebsite().active() && !currentwebsite().selected() && !currentwebsite().editing()">
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select website to edit path targeting</div>
 				</div>
 
@@ -150,12 +150,15 @@
 
 					<div class="row">
 						<div class="col-sm-12 m-top">
-							<form class="form-horizontal" role="form">
-								<div class="input-group">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button" data-bind="click: addpath"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
-									</span>
-									<input type="text" class="form-control" data-bind="value: path" placeholder="Enter path ...">
+							<form class="form-horizontal" role="form" novalidate="true" action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: addpath }">
+								<div class="control-group">
+									<div class="input-group">
+										<span class="input-group-btn">
+											<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
+										</span>
+										<input type="text" required="true" data-validation-required-message="Enter valid path segment ..." data-validation-regex-regex="^[A-Za-z0-9_/?=&-]+$" data-validation-regex-message="Enter valid path segment ..." class="form-control" data-bind="value: path" placeholder="Enter path ...">
+									</div>
+									<p class="help-block"></p>
 								</div>
 							</form>
 						</div>

@@ -7,8 +7,8 @@
 				<h4 class="modal-title" data-bind="text: @{model}.title"></h4>
 			</div>
 			<div class="alert" data-bind="css: { 'alert-danger': @{model}.isError, 'alert-warning': @{model}.isWarning }">
-				<span class="glyphicon" data-bind="visible: @{model}.isWarning() || @{model}.isError(), css: { 'glyphicon-warning-sign': @{model}.isWarning() || @{model}.isError() }"></span><span data-bind="text: @{model}.content"></span>
-				<div class="m-top">
+				<span class="glyph-h2 glyphicon pull-left" data-bind="visible: @{model}.isWarning() || @{model}.isError(), css: { 'glyphicon-warning-sign': @{model}.isWarning() || @{model}.isError() }"></span><span data-bind="text: @{model}.content"></span>
+				<div class="m-top text-right">
 					<button type="button" class="btn btn-default" data-bind="click: @{model}.dismiss">Ok</button>
 				</div>
 			</div>

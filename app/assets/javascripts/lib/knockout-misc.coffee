@@ -139,7 +139,9 @@ define([ "knockout" ], (ko) ->
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       value = valueAccessor()
       if ko.unwrap value
-        $(element).fadeIn(200)
+        setTimeout( -> 
+          $(element).fadeIn(400)
+        ,105)
       else
-        $(element).fadeOut(200)
+        $(element).fadeOut(100)
 )

@@ -9,5 +9,5 @@ define([ "knockout", "jquery.fileupload",
       allBindings = allBindingsAccessor()
       fileuploadOptions = $.extend(fileuploadDefaults(),allBindings.fileuploadOptions || {})
 
-      $fileupload = $element.fileupload()
+      $fileupload = $element.fileupload(fileuploadOptions)
 )

@@ -589,10 +589,18 @@ define([ "knockout", "jsRoutes" ], (ko) ->
           w && aw && w==aw
 
       @addpath = ->
-        self.paths.push new PathTarget
-          path: self.path()
-          website: self.activewebsite()
-          active: not self.currentallpath()
+        if self.path()? && self.path()!=''
+          for p in self.paths()
+            if p.path()==self.path()
+              self.messages.push new Message
+                title: 'Duplicate path'
+                content: 'Path already present in Website'
+                priority: 'warning'
+              return
+          self.paths.push new PathTarget
+            path: self.path()
+            website: self.activewebsite()
+            active: not self.currentallpath()
 
       @removepath = (path) ->
         self.paths.remove (v) ->

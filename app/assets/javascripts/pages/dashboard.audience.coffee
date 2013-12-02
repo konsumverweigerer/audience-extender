@@ -35,7 +35,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
           if 'active' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
           else if 'pending' == v
-            '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
+            '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Not yet active</span>'
           else if 'cancelled' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
@@ -200,13 +200,15 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
         e?.stopPropagation()
         if self.confirmwebsitedelete()>0
           return
+        nw = (new mod.Website()).copyFrom(c)
+        nw.editing true
+        nw.active true
+        self.currentwebsite nw
         if not c.active()
           (v.active false; v.editing false) for v in self.currentwebsites()
           c.active true
         c.editing true
-        self.currentwebsite (new mod.Website()).copyFrom(c)
         self.currentwebsite().active true
-        self.currentwebsite().editing true
         self.currentaudience().activewebsite c.id()
 
   models = new AudienceDashboard
