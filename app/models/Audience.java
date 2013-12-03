@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import scala.Option;
+import scala.Some;
 
 @Entity
 public class Audience extends Model {
@@ -42,6 +44,21 @@ public class Audience extends Model {
 			return find.findList();
 		}
 		return find.where().eq("publisher.owners.id", admin.id).findList();
+	}
+
+	public static Option<Audience> findById(String audienceid, Admin admin) {
+		List<Audience> ret = null;
+		final Long id = audienceid != null ? Long.valueOf(audienceid) : 0L;
+		if (admin.isSysAdmin()) {
+			ret = find.where().eq("id", id).findList();
+		} else {
+			ret = find.where().eq("owners.id", admin.id).eq("id", id)
+					.findList();
+		}
+		if (!ret.isEmpty()) {
+			return new Some<Audience>(ret.get(0));
+		}
+		return Option.empty();
 	}
 
 	public String toString() {

@@ -8,9 +8,9 @@ import java.util.Set;
 
 public class Message extends AbstractMap<String, Object> implements
 		Map<String, Object> {
-	private String title;
-	private String content;
-	private String priority = "info";
+	public String title;
+	public String content;
+	public String priority = "info";
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
@@ -34,6 +34,12 @@ public class Message extends AbstractMap<String, Object> implements
 			});
 		}
 		return entries;
+	}
+
+	public Message(String title, String content, String priority) {
+		this.title = title;
+		this.content = content;
+		this.priority = priority;
 	}
 
 	public String getTitle() {

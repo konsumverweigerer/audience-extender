@@ -8,6 +8,15 @@ define([ "knockout", "jqBootstrapValidation" ], (ko) ->
       allBindings = allBindingsAccessor()
       jqvalidationOptions = $.extend(validationDefaults(),ko.unwrap(value) || {})
 
+      if jqvalidationOptions.callbacks?
+        for name,cb of jqvalidationOptions.callbacks
+          window[name] = (el,val,c) ->
+            v = cb(val)
+            r =
+              value: val
+              valid: v[0]
+              message: v[1]
+            c(r)
       if jqvalidationOptions.targets?
         $targets = $element.find(jqvalidationOptions.targets)
       else

@@ -69,8 +69,9 @@ public class Publisher extends Model {
 		return stats;
 	}
 
-	public static Option<Publisher> findById(String id, Admin admin) {
+	public static Option<Publisher> findById(String publisherid, Admin admin) {
 		List<Publisher> ret = null;
+		final Long id = publisherid != null ? Long.valueOf(publisherid) : 0L;
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {

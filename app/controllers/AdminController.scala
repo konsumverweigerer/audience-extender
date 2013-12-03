@@ -37,13 +37,13 @@ object AdminController extends Controller with Secured {
     Json.toJson(Admin.findByAdmin(admin).asScala)
 
   def deleteAdmin(adminid: Long) = HasRole("sysadmin") { admin =>
-    _ =>
+    request =>
       Admin.delete(adminid)
       Ok
   }
 
   def admins = IsAuthenticated { adminid =>
-    _ =>
+    request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Ok(
           html.admins(
@@ -54,7 +54,7 @@ object AdminController extends Controller with Secured {
 
   /** Action to get the publishers */
   def adminList(page: Int, perPage: Int) = IsAuthenticated { adminid =>
-    _ => Option[Admin](Admin.findById(adminid)).map { admin =>
+    request => Option[Admin](Admin.findById(adminid)).map { admin =>
       Ok(adminJson(admin))
     }.getOrElse(Forbidden)
   }

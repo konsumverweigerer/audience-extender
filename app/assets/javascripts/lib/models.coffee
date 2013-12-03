@@ -396,10 +396,10 @@ define([ "knockout", "jsRoutes" ], (ko) ->
           undefined
 
       @assign = (name,value) ->
-        t = self.typeOf(name)
+        t = self.typeOf name
         if t.isIgnored
           return
-        if ko.isObservable value 
+        if ko.isObservable value
           value = value()
         if t.isModel
           if t.isArray
@@ -423,13 +423,65 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @transientnew = ko.computed -> (self.id() ? -1)==0
 
-      @save = (page) ->
+      @saveApply = (r) ->
+        if r.messages? && r.messages.length!=0
+          for v in r.messages
+            self.messages.push new Message v
+        self.fromJson r.data
+
+      @saveApply = (r) ->
+        if r.messages? && r.messages.length!=0
+          for v in r.messages
+            self.messages.push new Message v
+        self.fromJson r.data
+
+      @save = (page, success) ->
+        route = saveRoute()
+        if route?
+          if page.loader?
+            page.loader.next()
+          result = route.ajax
+            data: self.toMap
+            success: (r) ->
+              if page.loader?
+                page.loader.previous()
+              saveApply r
+              if success? && r.messages? && r.messages.length==0
+                success r
+            fail: (r) ->
+              if page.loader?
+                page.loader.previous()
+              if page.alert?
+                page.alert.show
+                  title: 'Server not available'
+                  content: 'Action could not be performed'
+                  priority: 'error'
 
       @remove = (page) ->
+        route = removeRoute()
+        if route?
+          if page.loader?
+            page.loader.next()
+          result = route.ajax
+            data: self.toMap
+            success: (r) ->
+              if page.loader?
+                page.loader.previous()
+              removeApply r
+              if success? && r.messages? && r.messages.length==0
+                success r
+            fail: (r) ->
+              if page.loader?
+                page.loader.previous()
+              if page.alert?
+                page.alert.show
+                  title: 'Server not available'
+                  content: 'Action could not be performed'
+                  priority: 'error'
 
-      @saveRoute = ->
+      @saveRoute = (page) ->
 
-      @removeRoute = ->
+      @removeRoute = (page) ->
 
   class Message extends ServerModels
     typeOf: (name) ->
@@ -603,13 +655,21 @@ define([ "knockout", "jsRoutes" ], (ko) ->
             if p.path()==self.path()
               self.messages.push new Message
                 title: 'Duplicate path'
-                content: 'Path already present in Website'
+                content: 'Path already present in website'
                 priority: 'warning'
               return
           self.paths.push new PathTarget
             path: self.path()
             website: self.activewebsite()
             active: not self.currentallpath()
+          self.path ''
+
+      @checkpath = (v)->
+        if v? && v!=''
+          for p in self.currentpaths()
+            if p.path()==v
+              return [false,'Path already present in website']
+        return [true]
 
       @removepath = (path) ->
         self.paths.remove (v) ->

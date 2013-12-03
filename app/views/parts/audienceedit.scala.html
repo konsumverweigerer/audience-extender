@@ -99,7 +99,7 @@
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<button type="submit" class="btn btn-primary" data-bind="visible: persisted">Copy Tracking Code</button>
-        						<button type="submit" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
+								<button type="submit" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
 								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite, visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
 							</div>
 						</div>
@@ -150,13 +150,13 @@
 
 					<div class="row">
 						<div class="col-sm-12 m-top">
-							<form class="form-horizontal" role="form" novalidate="true" action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: addpath }">
+							<form class="form-horizontal" role="form" novalidate="true" action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: addpath, callbacks: { checkpath: checkpath } }">
 								<div class="control-group">
 									<div class="input-group">
 										<span class="input-group-btn">
 											<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
 										</span>
-										<input type="text" required="true" data-validation-required-message="Enter valid path segment ..." data-validation-regex-regex="^[A-Za-z0-9_/?=&-]+$" data-validation-regex-message="Enter valid path segment ..." class="form-control" data-bind="value: path" placeholder="Enter path ...">
+										<input type="text" required="true" data-validation-callback-callback="checkpath" data-validation-required-message="Enter valid path segment ..." data-validation-regex-regex="^[A-Za-z0-9_/?=&-]+$" data-validation-regex-message="Enter valid path segment ..." class="form-control" data-bind="value: path" placeholder="Enter path ...">
 									</div>
 									<p class="help-block"></p>
 								</div>

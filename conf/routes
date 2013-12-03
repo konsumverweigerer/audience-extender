@@ -58,7 +58,12 @@ POST     /uploadcreative/:pid            controllers.PublisherController.uploadC
 
 # Audiences
 GET      /audiences                      controllers.AudienceController.audiences
-GET      /json/audiences                 controllers.AudienceController.audienceList(page: Int ?= 0, perPage: Int ?= 10)
+GET      /json/audiences/list/:pid       controllers.AudienceController.audienceList(pid: String)
+GET      /json/websites/list/:pid        controllers.AudienceController.websiteList(pid: String)
+POST     /json/audiences/save/:pid       controllers.AudienceController.audienceSave(pid: String)
+POST     /json/websites/save/:pid        controllers.AudienceController.websiteSave(pid: String)
+DELETE   /json/audiences/remove/:pid     controllers.AudienceController.audienceRemove(pid: String, aid: String)
+DELETE   /json/websites/remove/:pid      controllers.AudienceController.websiteRemove(pid: String, wid: String)
 
 # Dashboard
 GET      /dashboard                      controllers.MainController.dashboard

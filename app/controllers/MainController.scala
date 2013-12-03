@@ -2,6 +2,8 @@ package controllers
 
 import scala.collection.JavaConverters.asScalaBufferConverter
 
+import play.api.libs.json._
+
 import models._
 import services._
 
@@ -15,7 +17,19 @@ import views.html
 import play.Logger
 
 object MainController extends Controller with Secured {
-  // -- Authentication
+  implicit object MessageFormat extends Format[Message] {
+    def reads(json: JsValue) = JsSuccess(new Message(
+      (json \ "title").as[String],
+      (json \ "content").as[String],
+      (json \ "priority").as[String]
+    ))
+
+    def writes(message: Message) = JsObject(Seq(
+      "title" -> JsString(message.title),
+      "content" -> JsString(message.content),
+      "priority" -> JsString(message.priority)
+    ))
+  }
 
   val loginForm = Form(
     tuple(
