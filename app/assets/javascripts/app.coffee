@@ -8,4 +8,6 @@ requirejs.config
 define("jquery", [ "webjars!jquery.js" ], -> $ )
 define("bootstrap", [ "webjars!bootstrap.js" ], -> )
 
-require(["pages/app", "jquery", "bootstrap"], -> )
+require(["jquery", "bootstrap", 
+"pages/app"], -> 
+)

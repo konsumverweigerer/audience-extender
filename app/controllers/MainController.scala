@@ -21,14 +21,12 @@ object MainController extends Controller with Secured {
     def reads(json: JsValue) = JsSuccess(new Message(
       (json \ "title").as[String],
       (json \ "content").as[String],
-      (json \ "priority").as[String]
-    ))
+      (json \ "priority").as[String]))
 
     def writes(message: Message) = JsObject(Seq(
       "title" -> JsString(message.title),
       "content" -> JsString(message.content),
-      "priority" -> JsString(message.priority)
-    ))
+      "priority" -> JsString(message.priority)))
   }
 
   val loginForm = Form(
@@ -190,6 +188,11 @@ object MainController extends Controller with Secured {
         routes.javascript.CampaignController.campaignList,
         routes.javascript.CampaignController.dashboard,
         routes.javascript.AudienceController.audienceList,
+        routes.javascript.AudienceController.audienceSave,
+        routes.javascript.AudienceController.audienceRemove,
+        routes.javascript.AudienceController.websiteList,
+        routes.javascript.AudienceController.websiteSave,
+        routes.javascript.AudienceController.websiteRemove,
         routes.javascript.AdminController.changePublisher,
         routes.javascript.AdminController.adminList)).as("text/javascript")
   }

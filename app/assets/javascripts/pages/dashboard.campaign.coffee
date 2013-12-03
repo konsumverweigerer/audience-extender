@@ -1,4 +1,4 @@
-require([ "knockout", "lib/models", "jquery", "bootstrap"
+require([ "knockout", "lib/models", "jquery", "bootstrap",
 "lib/knockout-misc", 
 "lib/knockout-carousel", 
 "lib/knockout-fileupload", 
@@ -249,6 +249,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap"
         models.alert.show('Warning','Could not change publisher','error')
     }
 
+  require(["lib/data"],(demo) ->
+    demo.generate(mod,models,'campaign')
+  )
+  
   require(["lib/demodata"],(demo) ->
     demo.generate(mod,models,'campaign')
     models.campaignchartdaterange.dateRange 'Last Day'

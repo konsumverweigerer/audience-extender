@@ -37,7 +37,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       self = @
 
       @updating = false
-      
+
       @availableDateRanges = ko.observableArray rangeNames()
 
       @startDateRaw = ko.observable truncateToDay(new Date(),2,1)[0]
