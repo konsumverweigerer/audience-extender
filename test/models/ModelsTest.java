@@ -23,6 +23,7 @@ public class ModelsTest extends WithApplication {
 				.findUnique();
 		assertNotNull(bob);
 		assertEquals("Bob", bob.name);
+		bob.delete();
 	}
 
 	@Test
@@ -37,7 +38,7 @@ public class ModelsTest extends WithApplication {
 		Admin sysadmin = Admin.find.where()
 				.eq("email", "sysadmin@audience-extender.com").findUnique();
 		Publisher publisher = Publisher.find.where()
-				.eq("owners.id", sysadmin.getIdString()).findUnique();
+				.eq("owners.id", sysadmin.id).findUnique();
 		assertNotNull(sysadmin);
 		assertNotNull(publisher);
 	}
