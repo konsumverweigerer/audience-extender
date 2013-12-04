@@ -10,6 +10,8 @@ import play.api.db._
 
 object StatsHandler {
   import play.api.Play.current
+  import scala.language.postfixOps
+  
   val df = new SimpleDateFormat("yyyyMMddHHmmss")
 
   def countcookie(cookieid: Long, sub: String, prec: Integer = 10) = {
