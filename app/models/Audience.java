@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +30,12 @@ public class Audience extends Model {
 		this.name = name;
 	}
 
+	public static Audience fromMap(Map<String, String> data) {
+		final Audience audience = new Audience("New Audience");
+		audience.updateFromMap(data);
+		return audience;
+	}
+
 	public static Finder<String, Audience> find = new Finder<String, Audience>(
 			String.class, Audience.class);
 
@@ -37,6 +44,13 @@ public class Audience extends Model {
 	 */
 	public static List<Audience> findAll() {
 		return find.all();
+	}
+
+	public void remove() {
+
+	}
+
+	public void updateFromMap(Map<String, String> data) {
 	}
 
 	public static List<Audience> findByAdmin(Admin admin) {

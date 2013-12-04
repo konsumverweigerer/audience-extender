@@ -1,34 +1,41 @@
 package controllers
 
+import scala.collection.JavaConversions.mapAsJavaMap
 import scala.collection.JavaConverters.asScalaBufferConverter
 
-import play.api.libs.json._
-
-import models._
-import services._
-
-import play.api._
+import models.Admin
+import models.Audience
+import models.Message
+import models.Publisher
+import models.Website
+import play.Logger
+import play.api.Mode
+import play.api.Play
+import play.api.Play.current
+import play.api.Routes
 import play.api.data.Form
-import play.api.data.Forms._
-import play.api.mvc._
-
+import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.text
+import play.api.data.Forms.tuple
+import play.api.libs.json.Format
+import play.api.libs.json.JsNumber
+import play.api.libs.json.JsObject
+import play.api.libs.json.JsString
+import play.api.libs.json.JsSuccess
+import play.api.libs.json.JsValue
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.Controller
+import play.api.mvc.EssentialAction
+import play.api.mvc.Request
+import play.api.mvc.RequestHeader
+import play.api.mvc.Result
+import play.api.mvc.Results
+import play.api.mvc.Security
+import services.SendMail
 import views.html
 
-import play.Logger
-
-object MainController extends Controller with Secured {
-  implicit object MessageFormat extends Format[Message] {
-    def reads(json: JsValue) = JsSuccess(new Message(
-      (json \ "title").as[String],
-      (json \ "content").as[String],
-      (json \ "priority").as[String]))
-
-    def writes(message: Message) = JsObject(Seq(
-      "title" -> JsString(message.title),
-      "content" -> JsString(message.content),
-      "priority" -> JsString(message.priority)))
-  }
-
+object MainController extends Controller with Secured with Formats {
   val loginForm = Form(
     tuple(
       "email" -> nonEmptyText,
@@ -260,6 +267,47 @@ object MainController extends Controller with Secured {
   }
 }
 
+trait Formats {
+  implicit object MessageFormat extends Format[Message] {
+    def reads(json: JsValue) = JsSuccess(new Message(
+      (json \ "title").as[String],
+      (json \ "content").as[String],
+      (json \ "priority").as[String]))
+
+    def writes(message: Message) = JsObject(Seq(
+      "title" -> JsString(message.title),
+      "content" -> JsString(message.content),
+      "priority" -> JsString(message.priority)))
+  }
+
+  implicit object AudienceFormat extends Format[Audience] {
+    def reads(json: JsValue) = JsSuccess(new Audience(
+      (json \ "name").as[String]))
+
+    def writes(audience: Audience) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(audience.id)),
+      "name" -> JsString(audience.name)))
+  }
+
+  implicit object WebsiteFormat extends Format[Website] {
+    def reads(json: JsValue) = JsSuccess(new Website(
+      (json \ "name").as[String]))
+
+    def writes(website: Website) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(website.id)),
+      "url" -> JsString(website.url),
+      "name" -> JsString(website.name)))
+  }
+
+}
+
+trait Utils {
+  def mapToMap(m: Map[String, Seq[String]]): java.util.Map[String, String] = {
+    m.map { v =>
+      v._1 -> v._2(0)
+    }
+  }
+}
 /**
  * Provide security features
  */

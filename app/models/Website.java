@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,6 +37,12 @@ public class Website extends Model {
 		this.name = name;
 	}
 
+	public static Website fromMap(Map<String, String> data) {
+		final Website website = new Website("New Website");
+		website.updateFromMap(data);
+		return website;
+	}
+
 	public static Finder<String, Website> find = new Finder<String, Website>(
 			String.class, Website.class);
 
@@ -51,6 +58,13 @@ public class Website extends Model {
 			return find.findList();
 		}
 		return find.where().eq("publisher.owners.id", admin.id).findList();
+	}
+
+	public void remove() {
+	}
+
+	public void updateFromMap(Map<String, String> data) {
+		
 	}
 
 	public static Option<Website> findById(String websiteid, Admin admin) {
