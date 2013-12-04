@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
 import services.UnixMD5Crypt;
+import services.UuidHelper;
 
 @Entity
 public class Admin extends Model {
@@ -89,8 +91,10 @@ public class Admin extends Model {
 		this.adminRoles = "";
 	}
 
-	public String getIdString() {
-		return this.id != null ? Long.toString(this.id) : "";
+	public static Admin fromMap(Map<String, String> data) {
+		final Admin admin = new Admin("New Admin", "");
+		admin.updateFromMap(data);
+		return admin;
 	}
 
 	public static Admin authenticate(String email, String password) {
@@ -176,18 +180,31 @@ public class Admin extends Model {
 	}
 
 	public static boolean hasRole(String adminid, String role) {
-		final Admin admin = findById(adminid);
+		final Admin admin = findById(adminid).get();
 		if (admin != null) {
 			return admin.getRoles().contains(role);
 		}
 		return false;
 	}
 
-	public static Admin findById(String id) {
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
+
+	public List<Message> write() {
+		save();
+		return Collections.emptyList();
+	}
+
+	public void updateFromMap(Map<String, String> data) {
+
+	}
+
+	public static Option<Admin> findById(String id) {
 		if (id != null && !id.isEmpty()) {
-			return find.byId(Long.parseLong(id));
+			return new Some<Admin>(find.byId(Long.parseLong(id)));
 		}
-		return null;
+		return Option.empty();
 	}
 
 	public static Admin findByToken(String id) {

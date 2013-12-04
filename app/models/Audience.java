@@ -84,7 +84,7 @@ public class Audience extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("owners.id", admin.id).eq("id", id)
+			ret = find.where().eq("publisher.owners.id", admin.id).eq("id", id)
 					.findList();
 		}
 		if (!ret.isEmpty()) {

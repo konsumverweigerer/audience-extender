@@ -19,23 +19,28 @@ import play.Logger
 object AdminController extends Controller with Secured with Formats with Utils {
   val basicAdminForm: Form[Admin] = Form(
     mapping(
+      "id" -> number,
       "name" -> text,
       "email" -> text)(
-        (name: String, email: String) => new Admin(email, name, null))(
-          (admin: Admin) => Some(admin.name, admin.email)))
+        (id: Int, name: String, email: String) => new Admin(email, name, null))(
+          (admin: Admin) => Some(admin.id.toInt, admin.name, admin.email)))
 
   def adminJson(admin: Admin): JsValue =
     Json.toJson(Admin.findByAdmin(admin).asScala)
 
-  def deleteAdmin(adminid: Long) = HasRole("sysadmin") { admin =>
-    request =>
-      Admin.delete(adminid)
-      Ok
+  def deleteAdmin(adminid: String) = HasRole("sysadmin") { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        Admin.findById(adminid).map { admin =>
+          admin.delete()
+          Ok(html.admins(Admin.findByAdmin(current), current))
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
   }
 
-  def admins = IsAuthenticated { adminid =>
+  def admins = HasRole("sysadmin") { adminid =>
     request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         Ok(
           html.admins(
             Admin.findByAdmin(admin).asScala,
@@ -44,38 +49,78 @@ object AdminController extends Controller with Secured with Formats with Utils {
   }
 
   /** Action to get the publishers */
-  def adminList(page: Int, perPage: Int) = IsAuthenticated { adminid =>
-    request => Option[Admin](Admin.findById(adminid)).map { admin =>
+  def adminList = HasRole("sysadmin") { adminid =>
+    request => 
+      Admin.findById(adminid).map { admin =>
       Ok(adminJson(admin))
     }.getOrElse(Forbidden)
   }
 
+  def adminSave = IsAuthenticated { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        request.body.asFormUrlEncoded.map { data =>
+          data.get("id").map { ids =>
+            Admin.findById(ids(0)).map { admin =>
+              admin.updateFromMap(mapToMap(data))
+              val msgs = admin.write()
+              Ok(JsObject(Seq(
+                "data" -> Json.toJson(admin),
+                "messages" -> Json.toJson(msgs.asScala))))
+            }.getOrElse(NotFound)
+          }.getOrElse {
+            val admin = Admin.fromMap(mapToMap(data))
+            val msgs = admin.write()
+            Ok(JsObject(Seq(
+              "data" -> Json.toJson(admin),
+              "messages" -> Json.toJson(msgs.asScala))))
+          }
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   /** Action to save a admin */
-  def saveAdmin(adminid: Long) = Action(parse.json) { implicit req =>
-    Ok(Json.toJson(""))
+  def saveAdmin(adminid: String) = HasRole("sysadmin") { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        Admin.findById(adminid).map { admin =>
+          basicAdminForm.bindFromRequest.fold(
+            (messages) => {
+              //TODO: copy changes
+              Ok(html.admin(admin, current))
+            },
+            (admindata) => {
+              //TODO: copy changes
+              admin.save()
+              Ok(html.admin(admin, current))
+            })
+        }.getOrElse(NotFound)
+      }.getOrElse(Forbidden)
   }
 
-  def admin(adminid: Long) = Action(parse.json) { implicit req =>
-    Ok(Json.toJson(""))
+  def admin(adminid: String) = HasRole("sysadmin") { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        Admin.findById(adminid).map { admin =>
+          basicAdminForm.fill(admin)
+          Ok(html.admin(admin, current))
+        }.getOrElse(NotFound)
+      }.getOrElse(Forbidden)
   }
 
-  def addAdmin = IsAuthenticated { adminid =>
-    request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
-        val newAdmin = Admin.newAdmin(admin)
-        if (newAdmin != null) {
-          Ok(
-            html.admin(newAdmin,
-              admin))
-        } else {
-          Forbidden
-        }
+  def addAdmin = HasRole("sysadmin") { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        Option(Admin.newAdmin(current)).map { admin =>
+          basicAdminForm.fill(admin)
+          Ok(html.admin(admin, current))
+        }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
   }
 
   def changePublisher(publisherid: String) = IsAuthenticated { adminid =>
-    request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
           Ok(
             Json.toJson(publisher))
@@ -83,16 +128,27 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
-  def current = IsAuthenticated { adminid =>
-    request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
-        Ok(
-          html.current(
-            admin))
+  def current = IsAuthenticated { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        basicAdminForm.fill(current)
+        Ok(html.admin(current, current))
       }.getOrElse(Forbidden)
   }
 
-  def saveCurrent = Action(parse.json) { implicit req =>
-    Ok(Json.toJson(""))
+  def saveCurrent = IsAuthenticated { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        basicAdminForm.bindFromRequest.fold(
+          (messages) => {
+            //TODO: copy changes
+            Ok(html.admin(current, current))
+          },
+          (admindata) => {
+            //TODO: copy changes
+            current.save()
+            Ok(html.admin(current, current))
+          })
+      }.getOrElse(NotFound)
   }
 }

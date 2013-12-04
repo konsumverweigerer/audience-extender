@@ -1,8 +1,10 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
+import services.UuidHelper;
 
 @Entity
 public class Publisher extends Model {
@@ -54,6 +57,12 @@ public class Publisher extends Model {
 		this.url = url.isDefined() ? url.get() : null;
 	}
 
+	public static Publisher fromMap(Map<String, String> data) {
+		final Publisher publisher = new Publisher("New Publisher");
+		publisher.updateFromMap(data);
+		return publisher;
+	}
+
 	public static Finder<Long, Publisher> find = new Finder<Long, Publisher>(
 			Long.class, Publisher.class);
 
@@ -69,6 +78,18 @@ public class Publisher extends Model {
 		return stats;
 	}
 
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
+
+	public List<Message> write() {
+		save();
+		return Collections.emptyList();
+	}
+
+	public void updateFromMap(Map<String, String> data) {
+
+	}
 	public static Option<Publisher> findById(String publisherid, Admin admin) {
 		List<Publisher> ret = null;
 		final Long id = publisherid != null ? Long.valueOf(publisherid) : 0L;
@@ -101,7 +122,7 @@ public class Publisher extends Model {
 	}
 
 	public static boolean isAdmin(Long publisher_id, String admin_id) {
-		final Admin admin = Admin.findById(admin_id);
+		final Admin admin = Admin.findById(admin_id).get();
 		if (admin != null) {
 			final List<String> roles = admin.getRoles();
 			if (roles.contains("superadmin")) {
@@ -126,5 +147,4 @@ public class Publisher extends Model {
 	public String toString() {
 		return "Publisher(" + name + ")";
 	}
-
 }

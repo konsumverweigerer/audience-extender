@@ -52,7 +52,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   def policy = CheckIfIsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         Ok(html.policy(admin))
       }.getOrElse(
         Ok(html.policy(null)))
@@ -60,7 +60,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   def tos = CheckIfIsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         Ok(html.tos(admin))
       }.getOrElse(
         Ok(html.tos(null)))
@@ -71,7 +71,7 @@ object MainController extends Controller with Secured with Formats with Utils {
    */
   def contact = CheckIfIsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         Ok(html.contact(contactForm, admin))
       }.getOrElse(
         Ok(html.contact(contactForm, null)))
@@ -79,7 +79,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   def sendMessage = IsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, admin)),
           message => {
@@ -104,7 +104,7 @@ object MainController extends Controller with Secured with Formats with Utils {
       user => {
         Logger.info("logging in: " + user._1)
         Redirect(routes.MainController.dashboard).withSession(
-          Security.username -> Admin.findByEmail(user._1).getIdString)
+          Security.username -> Admin.findByEmail(user._1).id.toString())
       })
   }
 
@@ -129,7 +129,7 @@ object MainController extends Controller with Secured with Formats with Utils {
    */
   def index(path: String) = Action { implicit request =>
     request.session.get(Security.username).map {
-      id => Ok(html.index(Admin.findById(id)))
+      id => Ok(html.index(Admin.findById(id).get))
     }.getOrElse(
       Ok(html.index(Admin.findByEmail(""))))
   }
@@ -138,7 +138,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   def dashboardAudience = IsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
         Ok(html.index(Admin.findByEmail(""))))
@@ -146,7 +146,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   def dashboardCampaign = IsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
         Ok(html.index(Admin.findByEmail(""))))
@@ -156,7 +156,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   def dashboardSelect(t: String = "audience") = IsAuthenticated { adminid =>
     implicit request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+      Admin.findById(adminid).map { admin =>
         if ("campaign".equals(t)) {
           Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
         } else {
@@ -173,9 +173,15 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.PublisherController.publisherList,
         routes.javascript.PublisherController.dashboard,
         routes.javascript.PublisherController.stats,
+        routes.javascript.CampaignController.dashboard,
+        routes.javascript.AudienceController.dashboard,
         routes.javascript.PublisherController.uploadCreative,
         routes.javascript.CampaignController.campaignList,
-        routes.javascript.CampaignController.dashboard,
+        routes.javascript.CampaignController.campaignSave,
+        routes.javascript.CampaignController.campaignRemove,
+        routes.javascript.CampaignController.packageList,
+        routes.javascript.CampaignController.packageSave,
+        routes.javascript.CampaignController.packageRemove,
         routes.javascript.AudienceController.audienceList,
         routes.javascript.AudienceController.audienceSave,
         routes.javascript.AudienceController.audienceRemove,
@@ -183,7 +189,8 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AudienceController.websiteSave,
         routes.javascript.AudienceController.websiteRemove,
         routes.javascript.AdminController.changePublisher,
-        routes.javascript.AdminController.adminList)).as("text/javascript")
+        routes.javascript.AdminController.adminList,
+        routes.javascript.AdminController.adminSave)).as("text/javascript")
   }
 
   def resourceNameAt(path: String, file: String): Option[String] = {
@@ -287,6 +294,14 @@ trait Formats {
 
     def writes(campaign: Campaign) = JsObject(Seq(
       "name" -> JsString(campaign.name)))
+  }
+
+  implicit object CampaignPackageFormat extends Format[CampaignPackage] {
+    def reads(json: JsValue) = JsSuccess(new CampaignPackage(
+      (json \ "name").as[String]))
+
+    def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
+      "name" -> JsString(campaignPackage.name)))
   }
 
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {

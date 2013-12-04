@@ -18,8 +18,8 @@ import play.Logger
 
 object PublisherController extends Controller with Secured with Formats with Utils {
   def uploadCreative = (publisherid: String) => IsAuthenticated { adminid =>
-    request =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
         Publisher.findById(publisherid, admin).map { publisher =>
           request.body.asMultipartFormData.map { body =>
             body.file("creative").map { file =>
@@ -34,11 +34,11 @@ object PublisherController extends Controller with Secured with Formats with Uti
   }
 
   def publishers = IsAuthenticated { adminid =>
-    _ =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
         Ok(
           html.publishers(
-            Publisher.findByAdmin(admin).asScala,
+            Publisher.findByAdmin(admin),
             admin))
       }.getOrElse(Forbidden)
   }
@@ -47,29 +47,53 @@ object PublisherController extends Controller with Secured with Formats with Uti
     Json.toJson(Publisher.findByAdmin(admin).asScala)
 
   /** Action to get the publishers */
-  def publisherList(page: Int, perPage: Int) = IsAuthenticated { adminid =>
-    _ =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+  def publisherList = IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
         Ok(publisherJson(admin))
       }.getOrElse(Forbidden)
   }
 
+  def publisherSave = IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        request.body.asFormUrlEncoded.map { data =>
+          data.get("id").map { ids =>
+            Publisher.findById(ids(0), admin).map { publisher =>
+              publisher.updateFromMap(mapToMap(data))
+              val msgs = publisher.write().asScala
+              Ok(JsObject(Seq(
+                "data" -> Json.toJson(publisher),
+                "messages" -> Json.toJson(msgs))))
+            }.getOrElse(NotFound)
+          }.getOrElse {
+            val publisher = Publisher.fromMap(mapToMap(data))
+            val msgs = publisher.write().asScala
+            Ok(JsObject(Seq(
+              "data" -> Json.toJson(publisher),
+              "messages" -> Json.toJson(msgs))))
+          }
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   def message = IsAuthenticated { adminid =>
-    _ =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
         Ok(publisherJson(admin))
       }.getOrElse(Forbidden)
   }
 
   def dashboard = IsAuthenticated { adminid =>
-    _ =>
-      Option[Admin](Admin.findById(adminid)).map { admin =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
         Ok(Json.toJson(
           Publisher.statsByAdmin(admin).asScala))
       }.getOrElse(Forbidden)
   }
 
-  def stats(publisherid: Long) = Action(parse.json) { implicit req =>
-    Ok(Json.toJson(""))
+  def stats(publisherid: Long) = Action(parse.json) {
+    implicit req =>
+      Ok(Json.toJson(""))
   }
 }
