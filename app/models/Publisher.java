@@ -17,7 +17,6 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
-import services.UuidHelper;
 
 @Entity
 public class Publisher extends Model {
@@ -90,6 +89,7 @@ public class Publisher extends Model {
 	public void updateFromMap(Map<String, String> data) {
 
 	}
+
 	public static Option<Publisher> findById(String publisherid, Admin admin) {
 		List<Publisher> ret = null;
 		final Long id = publisherid != null ? Long.valueOf(publisherid) : 0L;

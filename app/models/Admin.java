@@ -23,7 +23,6 @@ import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
 import services.UnixMD5Crypt;
-import services.UuidHelper;
 
 @Entity
 public class Admin extends Model {
