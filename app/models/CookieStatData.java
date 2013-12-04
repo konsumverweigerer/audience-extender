@@ -20,6 +20,8 @@ public class CookieStatData extends Model {
 	@Required
 	public String timestep;
 
+	public String sub;
+
 	@Required
 	public long views = 0;
 

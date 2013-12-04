@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,16 @@ public class Audience extends Model {
 	public static Finder<String, Audience> find = new Finder<String, Audience>(
 			String.class, Audience.class);
 
+	public static List<Dataset> statsByAdmin(Admin admin) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
+	public static List<Dataset> statsByAdmin(Admin admin, String from, String to) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
 	/**
 	 * Retrieve all users.
 	 */
@@ -46,8 +58,14 @@ public class Audience extends Model {
 		return find.all();
 	}
 
-	public void remove() {
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
 
+	public List<Message> write() {
+		// TODO: check website/paths if new cookies are needed
+		save();
+		return Collections.emptyList();
 	}
 
 	public void updateFromMap(Map<String, String> data) {

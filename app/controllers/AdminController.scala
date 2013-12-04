@@ -1,31 +1,22 @@
 package controllers
 
-import play.api.libs.json._
-import play.api.mvc.Action
-import play.api.mvc.Controller
-import play.api.data._
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
+import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import PublisherController.PublisherFormat
 
 import models._
 import views._
 
-object AdminController extends Controller with Secured {
-  implicit object AdminFormat extends Format[Admin] {
-    def reads(json: JsValue) = JsSuccess(new Admin(
-      (json \ "name").as[String],
-      (json \ "email").as[String]))
+import play.api._
+import play.api.Play._
+import play.api.data._
+import play.api.data.Forms._
 
-    def writes(admin: Admin) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(admin.id)),
-      "name" -> JsString(admin.name),
-      "roles" -> Json.toJson(admin.getRoles().asScala),
-      "publishers" -> Json.toJson(admin.publishers.asScala),
-      "email" -> JsString(admin.email)))
-  }
+import play.api.libs.json._
+import play.api.mvc._
 
+import play.Logger
+
+object AdminController extends Controller with Secured with Formats with Utils {
   val basicAdminForm: Form[Admin] = Form(
     mapping(
       "name" -> text,

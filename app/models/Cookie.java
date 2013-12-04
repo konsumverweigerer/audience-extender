@@ -24,6 +24,9 @@ public class Cookie extends Model {
 	public String variant;
 
 	public String uuid;
+
+	public Integer pathhash;
+
 	public String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)

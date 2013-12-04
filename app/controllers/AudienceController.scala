@@ -1,17 +1,20 @@
 package controllers
 
-import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
-import models.Admin
-import models.Audience
-import models.Message
-import models.Publisher
-import models.Website
-import play.api.libs.json.JsObject
-import play.api.libs.json.JsValue
-import play.api.libs.json.Json
-import play.api.mvc.Controller
-import views.html
+import models._
+import views._
+
+import play.api._
+import play.api.Play._
+import play.api.data._
+import play.api.data.Forms._
+
+import play.api.libs.json._
+import play.api.mvc._
+
+import play.Logger
 
 object AudienceController extends Controller with Secured with Formats with Utils {
   def audiences = IsAuthenticated { adminid =>
@@ -45,19 +48,19 @@ object AudienceController extends Controller with Secured with Formats with Util
           data.get("id").map { ids =>
             Audience.findById(ids(0), admin).map { audience =>
               audience.updateFromMap(mapToMap(data))
-              audience.save()
+              val msgs = audience.write()
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(audience),
-                "messages" -> Json.toJson(Seq[Message]()))))
+                "messages" -> Json.toJson(msgs.asScala))))
             }.getOrElse(NotFound)
           }.getOrElse {
             val audience = Audience.fromMap(mapToMap(data))
             val publisher = Publisher.findById(publisherid, admin)
             audience.publisher = publisher.get
-            audience.save()
+            val msgs = audience.write()
             Ok(JsObject(Seq(
               "data" -> Json.toJson(audience),
-              "messages" -> Json.toJson(Seq[Message]()))))
+              "messages" -> Json.toJson(msgs.asScala))))
           }
         }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
@@ -67,11 +70,13 @@ object AudienceController extends Controller with Secured with Formats with Util
     implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Audience.findById(audienceid, admin).map { audience =>
-          audience.remove()
-          audience.save()
+          val msgs = audience.remove()
+          if (msgs.isEmpty()) {
+            audience.save()
+          }
           Ok(JsObject(Seq(
             "data" -> Json.toJson(audience),
-            "messages" -> Json.toJson(Seq[Message]()))))
+            "messages" -> Json.toJson(msgs.asScala))))
         }.getOrElse(NotFound)
       }.getOrElse(Forbidden)
   }
@@ -90,19 +95,19 @@ object AudienceController extends Controller with Secured with Formats with Util
           data.get("id").map { ids =>
             Website.findById(ids(0), admin).map { website =>
               website.updateFromMap(mapToMap(data))
-              website.save()
+              val msgs = website.write()
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(website),
-                "messages" -> Json.toJson(Seq[Message]()))))
+                "messages" -> Json.toJson(msgs.asScala))))
             }.getOrElse(NotFound)
           }.getOrElse {
             val website = Website.fromMap(mapToMap(data))
             val publisher = Publisher.findById(publisherid, admin)
             website.publisher = publisher.get
-            website.save()
+            val msgs = website.write()
             Ok(JsObject(Seq(
               "data" -> Json.toJson(website),
-              "messages" -> Json.toJson(Seq[Message]()))))
+              "messages" -> Json.toJson(msgs.asScala))))
           }
         }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
@@ -112,12 +117,26 @@ object AudienceController extends Controller with Secured with Formats with Util
     implicit request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>
         Website.findById(websiteid, admin).map { website =>
-          website.remove()
-          website.save()
+          val msgs = website.remove()
+          if (msgs.isEmpty()) {
+            website.save()
+          }
           Ok(JsObject(Seq(
             "data" -> Json.toJson(website),
-            "messages" -> Json.toJson(Seq[Message]()))))
+            "messages" -> Json.toJson(msgs.asScala))))
         }.getOrElse(NotFound)
       }.getOrElse(Forbidden)
+  }
+
+  def dashboard(from: String, to: String) = IsAuthenticated { adminid =>
+    _ =>
+      Option[Admin](Admin.findById(adminid)).map { admin =>
+        Ok(Json.toJson(
+          Audience.statsByAdmin(admin, from, to).asScala))
+      }.getOrElse(Forbidden)
+  }
+
+  def stats(audienceid: Long) = Action(parse.json) { implicit req =>
+    Ok(Json.toJson(""))
   }
 }

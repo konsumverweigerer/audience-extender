@@ -1,41 +1,23 @@
 package controllers
 
-import scala.collection.JavaConversions.mapAsJavaMap
-import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
-import models.Admin
-import models.Audience
-import models.Message
-import models.Publisher
-import models.Website
+import views._
+import models._
+import services._
+
+import play.api._
+import play.api.Play._
+import play.api.data._
+import play.api.data.Forms._
+
+import play.api.libs.json._
+import play.api.mvc._
+
 import play.Logger
-import play.api.Mode
-import play.api.Play
-import play.api.Play.current
-import play.api.Routes
-import play.api.data.Form
-import play.api.data.Forms.nonEmptyText
-import play.api.data.Forms.text
-import play.api.data.Forms.tuple
-import play.api.libs.json.Format
-import play.api.libs.json.JsNumber
-import play.api.libs.json.JsObject
-import play.api.libs.json.JsString
-import play.api.libs.json.JsSuccess
-import play.api.libs.json.JsValue
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.Controller
-import play.api.mvc.EssentialAction
-import play.api.mvc.Request
-import play.api.mvc.RequestHeader
-import play.api.mvc.Result
-import play.api.mvc.Results
-import play.api.mvc.Security
-import services.SendMail
-import views.html
 
-object MainController extends Controller with Secured with Formats {
+object MainController extends Controller with Secured with Formats with Utils {
   val loginForm = Form(
     tuple(
       "email" -> nonEmptyText,
@@ -299,6 +281,68 @@ trait Formats {
       "name" -> JsString(website.name)))
   }
 
+  implicit object CampaignFormat extends Format[Campaign] {
+    def reads(json: JsValue) = JsSuccess(new Campaign(
+      (json \ "name").as[String]))
+
+    def writes(campaign: Campaign) = JsObject(Seq(
+      "name" -> JsString(campaign.name)))
+  }
+
+  implicit object StringMapFormat extends Format[java.util.Map[String, String]] {
+    def reads(json: JsValue) = JsSuccess(null)
+
+    def writes(map: java.util.Map[String, String]) = JsObject(
+      map.entrySet().asScala.toSeq.map(e =>
+        e.getKey() -> JsString(e.getValue())))
+  }
+
+  implicit object DatasetFormat extends Format[Dataset] {
+    def reads(json: JsValue) = JsSuccess(null)
+
+    def writes(dataset: Dataset) = JsObject(Seq(
+      "values" -> Json.toJson(dataset.getValues().asScala.toSeq),
+      "type" -> JsString(dataset.getType()),
+      "name" -> JsString(dataset.getName())))
+  }
+
+  implicit object PublisherFormat extends Format[Publisher] {
+    def reads(json: JsValue) = JsSuccess(new Publisher(
+      (json \ "name").as[String],
+      (json \ "url").as[Option[String]]))
+
+    def writes(publisher: Publisher) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(publisher.id)),
+      "name" -> JsString(publisher.name),
+      "active" -> JsString(if (publisher.active) "true" else "false"),
+      "url" -> JsString(publisher.url)))
+  }
+
+  implicit object CreativeFormat extends Format[Creative] {
+    def reads(json: JsValue) = JsSuccess(new Creative(
+      (json \ "name").as[String],
+      (json \ "url").as[Option[String]]))
+
+    def writes(creative: Creative) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(creative.id)),
+      "name" -> JsString(creative.name),
+      "preview" -> JsString(creative.getPreview()),
+      "uuid" -> JsString(creative.uuid),
+      "url" -> JsString(creative.url)))
+  }
+
+  implicit object AdminFormat extends Format[Admin] {
+    def reads(json: JsValue) = JsSuccess(new Admin(
+      (json \ "name").as[String],
+      (json \ "email").as[String]))
+
+    def writes(admin: Admin) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(admin.id)),
+      "name" -> JsString(admin.name),
+      "roles" -> Json.toJson(admin.getRoles().asScala),
+      "publishers" -> Json.toJson(admin.publishers.asScala),
+      "email" -> JsString(admin.email)))
+  }
 }
 
 trait Utils {

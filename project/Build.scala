@@ -12,6 +12,7 @@ object ApplicationBuild extends Build {
     javaJpa,
     javaJdbc,
     javaEbean,
+    anorm,
 
 //    "com.typesafe.play" % "sbt-plugin" % "2.2.1",
 //    "com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.1.1",

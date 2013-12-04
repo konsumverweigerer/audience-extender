@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
+import services.UuidHelper;
 
 @Entity
 public class Website extends Model {
@@ -25,6 +27,7 @@ public class Website extends Model {
 	@Required
 	public String name;
 
+	public String uuid;
 	public String url;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -60,11 +63,21 @@ public class Website extends Model {
 		return find.where().eq("publisher.owners.id", admin.id).findList();
 	}
 
-	public void remove() {
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
+
+	public List<Message> write() {
+		if (this.uuid == null || this.uuid.isEmpty()) {
+			this.uuid = UuidHelper
+					.randomUUIDString("com.audienceextender.website");
+		}
+		save();
+		return Collections.emptyList();
 	}
 
 	public void updateFromMap(Map<String, String> data) {
-		
+
 	}
 
 	public static Option<Website> findById(String websiteid, Admin admin) {

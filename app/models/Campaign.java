@@ -45,7 +45,7 @@ public class Campaign extends Model {
 	}
 
 	public static List<Dataset> statsByAdmin(Admin admin, String from,
-			String to, String state, String query) {
+			String to) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
 		return stats;
 	}

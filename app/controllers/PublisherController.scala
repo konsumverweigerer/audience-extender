@@ -1,59 +1,22 @@
 package controllers
 
-import play.api.libs.json._
-import play.api.mvc.Action
-import play.api.mvc.Controller
-import play.api.data._
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
+import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 import models._
 import views._
 
-object PublisherController extends Controller with Secured {
-  implicit object PublisherFormat extends Format[Publisher] {
-    def reads(json: JsValue) = JsSuccess(new Publisher(
-      (json \ "name").as[String],
-      (json \ "url").as[Option[String]]))
+import play.api._
+import play.api.Play._
+import play.api.data._
+import play.api.data.Forms._
 
-    def writes(publisher: Publisher) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(publisher.id)),
-      "name" -> JsString(publisher.name),
-      "active" -> JsString(if (publisher.active) "true" else "false"),
-      "url" -> JsString(publisher.url)))
-  }
+import play.api.libs.json._
+import play.api.mvc._
 
-  implicit object CreativeFormat extends Format[Creative] {
-    def reads(json: JsValue) = JsSuccess(new Creative(
-      (json \ "name").as[String],
-      (json \ "url").as[Option[String]]))
+import play.Logger
 
-    def writes(creative: Creative) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(creative.id)),
-      "name" -> JsString(creative.name),
-      "preview" -> JsString(creative.getPreview()),
-      "uuid" -> JsString(creative.uuid),
-      "url" -> JsString(creative.url)))
-  }
-
-  implicit object StringMapFormat extends Format[java.util.Map[String, String]] {
-    def reads(json: JsValue) = JsSuccess(null)
-
-    def writes(map: java.util.Map[String, String]) = JsObject(
-      map.entrySet().asScala.toSeq.map(e =>
-        e.getKey() -> JsString(e.getValue())))
-  }
-
-  implicit object DatasetFormat extends Format[Dataset] {
-    def reads(json: JsValue) = JsSuccess(null)
-
-    def writes(dataset: Dataset) = JsObject(Seq(
-      "values" -> Json.toJson(dataset.getValues().asScala.toSeq),
-      "type" -> JsString(dataset.getType()),
-      "name" -> JsString(dataset.getName())))
-  }
-
+object PublisherController extends Controller with Secured with Formats with Utils {
   def uploadCreative = (publisherid: String) => IsAuthenticated { adminid =>
     request =>
       Option[Admin](Admin.findById(adminid)).map { admin =>

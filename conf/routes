@@ -3,39 +3,40 @@
 # ~~~~
 
 # The home page
-GET      /                               controllers.MainController.base
+GET      /                             controllers.MainController.base
 
 # Authentication
-GET      /login                          controllers.MainController.login
-GET      /forgotpassword                 controllers.MainController.forgotPassword
-POST     /login                          controllers.MainController.authenticate
-GET      /logout                         controllers.MainController.logout
+GET      /login                        controllers.MainController.login
+GET      /forgotpassword               controllers.MainController.forgotPassword
+POST     /login                        controllers.MainController.authenticate
+GET      /logout                       controllers.MainController.logout
 
 # Misc
 
-GET      /contact                        controllers.MainController.contact
-POST     /contact                        controllers.MainController.sendMessage
-GET      /policy                         controllers.MainController.policy
-GET      /tos                            controllers.MainController.tos
+GET      /contact                      controllers.MainController.contact
+POST     /contact                      controllers.MainController.sendMessage
+GET      /policy                       controllers.MainController.policy
+GET      /tos                          controllers.MainController.tos
 
 # Admins
-GET      /admin                          controllers.AdminController.current
-PUT      /admin                          controllers.AdminController.saveCurrent
+GET      /admin                        controllers.AdminController.current
+PUT      /admin                        controllers.AdminController.saveCurrent
 
-PUT      /changePublisher                controllers.AdminController.changePublisher(publisherid)
+PUT      /changePublisher              controllers.AdminController.changePublisher(publisherid)
 
-GET      /admins                         controllers.AdminController.admins
-GET      /json/admins                    controllers.AdminController.adminList(page: Int ?= 0, perPage: Int ?= 1000)
-POST     /admins                         controllers.AdminController.addAdmin
-DELETE   /admins/:admin                  controllers.AdminController.deleteAdmin(admin: Long)
+GET      /admins                       controllers.AdminController.admins
+GET      /json/admins                  controllers.AdminController.adminList(page: Int ?= 0, perPage: Int ?= 1000)
+POST     /admins                       controllers.AdminController.addAdmin
+DELETE   /admins/:admin                controllers.AdminController.deleteAdmin(admin: Long)
 
-GET      /admins/:admin                  controllers.AdminController.admin(admin: Long)
-PUT      /admins/:admin                  controllers.AdminController.saveAdmin(admin: Long)
+GET      /admins/:admin                controllers.AdminController.admin(admin: Long)
+PUT      /admins/:admin                controllers.AdminController.saveAdmin(admin: Long)
 
-GET      /data/dashboard                 controllers.PublisherController.dashboard
-GET      /data/stats/:publisher          controllers.PublisherController.stats(publisher: Long)
+GET      /data/dashboard               controllers.PublisherController.dashboard
+GET      /data/stats/:publisher        controllers.PublisherController.stats(publisher: Long)
 
-GET      /data/graph/:from/:to           controllers.CampaignController.dashboard(from: String, to: String, state: String ?= "", query: String ?= "")
+GET      /data/graph/a/:from/:to       controllers.CampaignController.dashboard(from: String, to: String)
+GET      /data/graph/c/:from/:to       controllers.AudienceController.dashboard(from: String, to: String)
 
 #POST     /admins/publishers   controllers.AdminController.addPublisher()
 #DELETE   /admins/publishers   controllers.AdminController.removePublisher(group: Long)
@@ -44,40 +45,40 @@ GET      /data/graph/:from/:to           controllers.CampaignController.dashboar
 #PUT      /admins/:admin       controllers.AdminController.rename(project: Long)                      
 
 # Content
-GET      /code/:c/:s                     controllers.ContentController.cookie(c: String,s: String)
-GET      /obj/:c                         controllers.ContentController.creative(c: String)
+GET      /code/:c/:s                   controllers.ContentController.cookie(c: String,s: String)
+GET      /obj/:c                       controllers.ContentController.creative(c: String)
 
 # Publishers
-GET      /campaigns                      controllers.CampaignController.campaigns
-GET      /json/campaigns/:state/:query   controllers.CampaignController.campaignList(state: String, query: String, page: Int ?= 0, perPage: Int ?= 1000)
+GET      /publishers                   controllers.PublisherController.publishers
+GET      /json/publishers              controllers.PublisherController.publisherList(page: Int ?= 0, perPage: Int ?= 1000)
+POST     /uploadcreative/:pid          controllers.PublisherController.uploadCreative(pid: String)
 
-# Publishers
-GET      /publishers                     controllers.PublisherController.publishers
-GET      /json/publishers                controllers.PublisherController.publisherList(page: Int ?= 0, perPage: Int ?= 1000)
-POST     /uploadcreative/:pid            controllers.PublisherController.uploadCreative(pid: String)
+# Campaigns
+GET      /campaigns                    controllers.CampaignController.campaigns
+GET      /json/campaigns/list/:pid     controllers.CampaignController.campaignList(pid: String)
 
 # Audiences
-GET      /audiences                      controllers.AudienceController.audiences
-GET      /json/audiences/list/:pid       controllers.AudienceController.audienceList(pid: String)
-GET      /json/websites/list/:pid        controllers.AudienceController.websiteList(pid: String)
-POST     /json/audiences/save/:pid       controllers.AudienceController.audienceSave(pid: String)
-POST     /json/websites/save/:pid        controllers.AudienceController.websiteSave(pid: String)
-DELETE   /json/audiences/remove/:pid     controllers.AudienceController.audienceRemove(pid: String, aid: String)
-DELETE   /json/websites/remove/:pid      controllers.AudienceController.websiteRemove(pid: String, wid: String)
+GET      /audiences                    controllers.AudienceController.audiences
+GET      /json/audiences/list/:pid     controllers.AudienceController.audienceList(pid: String)
+GET      /json/websites/list/:pid      controllers.AudienceController.websiteList(pid: String)
+POST     /json/audiences/save/:pid     controllers.AudienceController.audienceSave(pid: String)
+POST     /json/websites/save/:pid      controllers.AudienceController.websiteSave(pid: String)
+DELETE   /json/audiences/remove/:pid   controllers.AudienceController.audienceRemove(pid: String, aid: String)
+DELETE   /json/websites/remove/:pid    controllers.AudienceController.websiteRemove(pid: String, wid: String)
 
 # Dashboard
-GET      /dashboard                      controllers.MainController.dashboard
-GET      /dashboard/:t                   controllers.MainController.dashboardSelect(t: String)
+GET      /dashboard                    controllers.MainController.dashboard
+GET      /dashboard/:t                 controllers.MainController.dashboardSelect(t: String)
 
-GET      /require.js                     controllers.WebJarAssets.requirejs
-GET      /routes.js                      controllers.MainController.javascriptRoutes
-GET      /webjars/*file                  controllers.MainController.minProdWebJarAssetsAt(file)
+GET      /require.js                   controllers.WebJarAssets.requirejs
+GET      /routes.js                    controllers.MainController.javascriptRoutes
+GET      /webjars/*file                controllers.MainController.minProdWebJarAssetsAt(file)
 ## workaround js-min path probs
 #GET      /assets/javascripts-min/*file   controllers.MainController.minAssetsAt(path="/public/javascripts/", file)
 #GET      /assets/javascripts/*file       controllers.MainController.minProdAssetsAt(path="/public/javascripts/", file)
 #GET      /assets/stylesheets/*file       controllers.MainController.minProdAssetsAt(path="/public/stylesheets", file)
 
-GET      /assets/*file                   controllers.Assets.at(path="/public", file)
+GET      /assets/*file                 controllers.Assets.at(path="/public", file)
 
 # Every other page
-GET      /*path                          controllers.MainController.index(path)
+GET      /*path                        controllers.MainController.index(path)
