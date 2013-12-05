@@ -3,6 +3,7 @@ package models;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -33,8 +38,19 @@ public class Campaign extends Model {
 	@Column(precision = 6, scale = 4)
 	public BigDecimal value;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date startDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date endDate;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public CampaignPackage campaignPackage;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	public List<Audience> audiences;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "campaign")
+	public List<Creative> creatives;
 
 	public Campaign(String name) {
 		this.name = name;
@@ -54,8 +70,7 @@ public class Campaign extends Model {
 		return stats;
 	}
 
-	public static List<Dataset> statsByAdmin(Admin admin, String from,
-			String to) {
+	public static List<Dataset> statsByAdmin(Admin admin, String from, String to) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
 		return stats;
 	}
@@ -66,7 +81,7 @@ public class Campaign extends Model {
 	public static List<Campaign> findAll() {
 		return find.all();
 	}
-	
+
 	public static List<Campaign> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {
 			return find.findList();

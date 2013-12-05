@@ -1,6 +1,5 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import play.data.validation.Constraints.Required;
@@ -29,12 +27,10 @@ public class Website extends Model {
 
 	public String uuid;
 	public String url;
+	public String email;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	public List<Audience> audience = new ArrayList<Audience>();
 
 	public Website(String name) {
 		this.name = name;

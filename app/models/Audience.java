@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -25,8 +27,16 @@ public class Audience extends Model {
 	@Required
 	public String name;
 
+	public String state;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	public List<Website> websites = new ArrayList<Website>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "audience")
+	public List<PathTarget> pathTargets = new ArrayList<PathTarget>();
 
 	public Audience(String name) {
 		this.name = name;

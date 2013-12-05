@@ -29,7 +29,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
   rangeNames = ->
     a = ['']
     for n in ranges
-      a.push n.name 
+      a.push n.name
     a
 
   class DateRange
@@ -82,7 +82,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @formattedEndDate = ko.computed
         read: ->
-          datetostr self.endDate() 
+          datetostr self.endDate()
         write: (v) ->
           self.endDate strtodate v
         owner: self
@@ -124,7 +124,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @lastWeek = ->
         t = truncateToDay(new Date(),2,1,'week')
         self.startDate t[0]
-        self.endDate t[1] 
+        self.endDate t[1]
 
       @loadData = -> self.dataloader()
 
@@ -135,9 +135,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
     constructor: ->
       self = @
 
-      @fromIndex = ko.observable 1 
+      @fromIndex = ko.observable 1
 
-      @maxIndex = ko.observable 0 
+      @maxIndex = ko.observable 0
 
       @shownPages = ko.observable 5
 
@@ -561,9 +561,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @creatives = ko.observableArray d?.creatives
 
-      @from = ko.observable d?.from
+      @startDate = ko.observable d?.startDate
 
-      @to = ko.observable d?.to
+      @endDate = ko.observable d?.endDate
 
       @refresh = (audiences,packages) ->
         for au in audiences
@@ -718,7 +718,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @active = ko.observable false
 
-      @inactive = ko.computed -> not self.active() 
+      @inactive = ko.computed -> not self.active()
 
       @editing = ko.observable false
 
@@ -820,6 +820,20 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @active = ko.observable d?.active
 
+      @url = ko.observable d?.url
+
+      @streetaddress1 = ko.observable d?.streetaddress1
+
+      @streetaddress2 = ko.observable d?.streetaddress2
+
+      @streetaddress3 = ko.observable d?.streetaddress3
+
+      @state = ko.observable d?.state
+
+      @country = ko.observable d?.country
+
+      @telephone = ko.observable d?.telephone
+
       @admins = ko.observableArray (d?.admins || []).map (v) -> new Admin v
 
   class Admin extends ServerModels
@@ -837,6 +851,24 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @name = ko.observable d?.name
 
       @email = ko.observable d?.email
+
+      @password = ko.observable ''
+
+      @verify = ko.observable ''
+
+      @url = ko.observable d?.url
+
+      @streetaddress1 = ko.observable d?.streetaddress1
+
+      @streetaddress2 = ko.observable d?.streetaddress2
+
+      @streetaddress3 = ko.observable d?.streetaddress3
+
+      @state = ko.observable d?.state
+
+      @country = ko.observable d?.country
+
+      @telephone = ko.observable d?.telephone
 
       @roles = ko.observableArray d?.roles
 

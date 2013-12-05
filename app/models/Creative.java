@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -25,6 +27,9 @@ public class Creative extends Model {
 	public byte[] data;
 
 	public String uuid;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Campaign campaign;
 
 	public Creative(String name, Option<String> url) {
 		this.name = name;
