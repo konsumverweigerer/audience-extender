@@ -79,8 +79,8 @@ public class CampaignPackage extends Model {
 		return Collections.emptyList();
 	}
 
-	public void updateFromMap(Map<String, String> data) {
-
+	public CampaignPackage updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	public static Option<CampaignPackage> findById(String packageid, Admin admin) {
@@ -105,6 +105,7 @@ public class CampaignPackage extends Model {
 		return find.all();
 	}
 
+	@Override
 	public String toString() {
 		return "CampaignPackage(" + name + ")";
 	}

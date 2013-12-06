@@ -42,6 +42,7 @@ public class CookieStatData extends Model {
 		return find.all();
 	}
 
+	@Override
 	public String toString() {
 		return "Cookie(" + timestep + ":" + views + ")";
 	}

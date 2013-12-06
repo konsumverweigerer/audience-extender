@@ -2,6 +2,7 @@ package models;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,7 +34,14 @@ public class Creative extends Model {
 
 	public Creative(String name, Option<String> url) {
 		this.name = name;
-		this.url = url.isDefined() ? url.get() : null;
+		this.url = url.orNull(null);
+	}
+
+	public static Creative fromMap(Map<String, String> data) {
+		final Creative creative = new Creative("New Creative",
+				Option.<String> empty());
+		creative.updateFromMap(data);
+		return creative;
 	}
 
 	public static Finder<String, Creative> find = new Finder<String, Creative>(
@@ -42,6 +50,10 @@ public class Creative extends Model {
 	public static Option<Creative> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {
 		return null;
+	}
+
+	public Creative updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	/**
@@ -55,6 +67,7 @@ public class Creative extends Model {
 		return this.url;
 	}
 
+	@Override
 	public String toString() {
 		return "Creative(" + name + ")";
 	}

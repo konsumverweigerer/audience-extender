@@ -129,7 +129,7 @@ object MainController extends Controller with Secured with Formats with Utils {
    */
   def index(path: String) = Action { implicit request =>
     request.session.get(Security.username).map {
-      id => Ok(html.index(Admin.findById(id).get))
+      id => Ok(html.index(Admin.findById(id).orNull))
     }.getOrElse(
       Ok(html.index(Admin.findByEmail(""))))
   }
@@ -269,18 +269,41 @@ trait Formats {
       "priority" -> JsString(message.priority)))
   }
 
+  implicit object PathTargetFormat extends Format[PathTarget] {
+    def reads(json: JsValue) = JsSuccess(new PathTarget(
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String],
+      "websiteId" -> (json \ "website").as[String],
+      "urlPath" -> (json \ "url").as[String]
+      ).asJava))
+
+    def writes(pathTarget: PathTarget) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(pathTarget.id)),
+      "website" -> JsString(pathTarget.website.id),
+      "url" -> JsString(pathTarget.urlPath),
+      "variant" -> JsString(pathTarget.variant)))
+  }
+
   implicit object AudienceFormat extends Format[Audience] {
     def reads(json: JsValue) = JsSuccess(new Audience(
-      (json \ "name").as[String]))
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String],
+      "state" -> (json \ "state").as[String]
+      ).asJava))
 
     def writes(audience: Audience) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(audience.id)),
-      "name" -> JsString(audience.name)))
+      "name" -> JsString(audience.name),
+      "paths" -> Json.toJson(audience.pathTargets.asScala),
+      "websites" -> Json.toJson(audience.websites.asScala),
+      "state" -> JsString(audience.state)))
   }
 
   implicit object WebsiteFormat extends Format[Website] {
     def reads(json: JsValue) = JsSuccess(new Website(
-      (json \ "name").as[String]))
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String]
+      ).asJava))
 
     def writes(website: Website) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(website.id)),
@@ -290,7 +313,9 @@ trait Formats {
 
   implicit object CampaignFormat extends Format[Campaign] {
     def reads(json: JsValue) = JsSuccess(new Campaign(
-      (json \ "name").as[String]))
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String]
+      ).asJava))
 
     def writes(campaign: Campaign) = JsObject(Seq(
       "name" -> JsString(campaign.name)))
@@ -298,7 +323,8 @@ trait Formats {
 
   implicit object CampaignPackageFormat extends Format[CampaignPackage] {
     def reads(json: JsValue) = JsSuccess(new CampaignPackage(
-      (json \ "name").as[String]))
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String]).asJava))
 
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
       "name" -> JsString(campaignPackage.name)))
@@ -324,7 +350,8 @@ trait Formats {
   implicit object PublisherFormat extends Format[Publisher] {
     def reads(json: JsValue) = JsSuccess(new Publisher(
       (json \ "name").as[String],
-      (json \ "url").as[Option[String]]))
+      (json \ "url").as[Option[String]]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String]).asJava))
 
     def writes(publisher: Publisher) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(publisher.id)),
@@ -336,7 +363,8 @@ trait Formats {
   implicit object CreativeFormat extends Format[Creative] {
     def reads(json: JsValue) = JsSuccess(new Creative(
       (json \ "name").as[String],
-      (json \ "url").as[Option[String]]))
+      (json \ "url").as[Option[String]]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String]).asJava))
 
     def writes(creative: Creative) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(creative.id)),
@@ -349,7 +377,8 @@ trait Formats {
   implicit object AdminFormat extends Format[Admin] {
     def reads(json: JsValue) = JsSuccess(new Admin(
       (json \ "name").as[String],
-      (json \ "email").as[String]))
+      (json \ "email").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String]).asJava))
 
     def writes(admin: Admin) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(admin.id)),

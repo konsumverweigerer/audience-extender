@@ -72,8 +72,8 @@ public class Website extends Model {
 		return Collections.emptyList();
 	}
 
-	public void updateFromMap(Map<String, String> data) {
-
+	public Website updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	public static Option<Website> findById(String websiteid, Admin admin) {
@@ -91,6 +91,7 @@ public class Website extends Model {
 		return Option.empty();
 	}
 
+	@Override
 	public String toString() {
 		return "Website(" + name + ")";
 	}

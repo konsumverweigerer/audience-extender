@@ -40,6 +40,7 @@ public class CreativeStatData extends Model {
 		return find.all();
 	}
 
+	@Override
 	public String toString() {
 		return "Creative(" + timestep + ":" + views + ")";
 	}

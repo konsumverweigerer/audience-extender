@@ -52,6 +52,7 @@ public class Cookie extends Model {
 		return find.where().eq("uuid", uuid).findList();
 	}
 
+	@Override
 	public String toString() {
 		return "Cookie(" + name + ")";
 	}

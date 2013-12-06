@@ -98,8 +98,8 @@ public class Campaign extends Model {
 		return Collections.emptyList();
 	}
 
-	public void updateFromMap(Map<String, String> data) {
-
+	public Campaign updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	public static Option<Campaign> findById(String campaignid, Admin admin) {
@@ -117,6 +117,7 @@ public class Campaign extends Model {
 		return Option.empty();
 	}
 
+	@Override
 	public String toString() {
 		return "Campaign(" + name + ")";
 	}

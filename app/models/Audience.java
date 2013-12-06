@@ -78,7 +78,8 @@ public class Audience extends Model {
 		return Collections.emptyList();
 	}
 
-	public void updateFromMap(Map<String, String> data) {
+	public Audience updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	public static List<Audience> findByAdmin(Admin admin) {
@@ -103,6 +104,7 @@ public class Audience extends Model {
 		return Option.empty();
 	}
 
+	@Override
 	public String toString() {
 		return "Audience(" + name + ")";
 	}

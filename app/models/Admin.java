@@ -179,7 +179,7 @@ public class Admin extends Model {
 	}
 
 	public static boolean hasRole(String adminid, String role) {
-		final Admin admin = findById(adminid).get();
+		final Admin admin = findById(adminid).orNull(null);
 		if (admin != null) {
 			return admin.getRoles().contains(role);
 		}
@@ -195,8 +195,8 @@ public class Admin extends Model {
 		return Collections.emptyList();
 	}
 
-	public void updateFromMap(Map<String, String> data) {
-
+	public Admin updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	public static Option<Admin> findById(String id) {

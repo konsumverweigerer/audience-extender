@@ -53,7 +53,7 @@ public class Publisher extends Model {
 
 	public Publisher(String name, Option<String> url) {
 		this.name = name;
-		this.url = url.isDefined() ? url.get() : null;
+		this.url = url.orNull(null);
 	}
 
 	public static Publisher fromMap(Map<String, String> data) {
@@ -86,8 +86,8 @@ public class Publisher extends Model {
 		return Collections.emptyList();
 	}
 
-	public void updateFromMap(Map<String, String> data) {
-
+	public Publisher updateFromMap(Map<String, String> data) {
+		return this;
 	}
 
 	public static Option<Publisher> findById(String publisherid, Admin admin) {
@@ -122,7 +122,7 @@ public class Publisher extends Model {
 	}
 
 	public static boolean isAdmin(Long publisher_id, String admin_id) {
-		final Admin admin = Admin.findById(admin_id).get();
+		final Admin admin = Admin.findById(admin_id).orNull(null);
 		if (admin != null) {
 			final List<String> roles = admin.getRoles();
 			if (roles.contains("superadmin")) {
@@ -144,6 +144,7 @@ public class Publisher extends Model {
 		return find.all();
 	}
 
+	@Override
 	public String toString() {
 		return "Publisher(" + name + ")";
 	}

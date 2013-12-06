@@ -522,11 +522,11 @@ define([ "knockout", "jsRoutes" ], (ko) ->
           self.content content
         if priority?
           self.priority priority
-        $('#'+self.name()).modal('show')
+        $('#'+self.name()).modal 'show'
         self.dismissed -1
 
       @hide = ->
-        $('#'+self.name()).modal('hide')
+        $('#'+self.name()).modal 'hide'
         self.dismissed 0
 
       @dismiss = ->
