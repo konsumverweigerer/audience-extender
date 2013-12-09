@@ -26,7 +26,7 @@ public class PathTarget extends Model {
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Audience audience;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Website website;
 
 	public PathTarget(String urlPath) {

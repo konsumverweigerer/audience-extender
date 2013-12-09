@@ -76,6 +76,14 @@ public class Website extends Model {
 		return this;
 	}
 
+	public String code() {
+		return String
+				.format("<script type=\"text/javascript\" "
+						+ "src=\"http://app.audienceextender.com/%s\">\n</script>\n",
+						controllers.routes.ContentController.cookie(this.uuid,
+								"<sub>"));
+	}
+
 	public static Option<Website> findById(String websiteid, Admin admin) {
 		List<Website> ret = null;
 		final Long id = websiteid != null ? Long.valueOf(websiteid) : 0L;

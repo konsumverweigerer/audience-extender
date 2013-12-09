@@ -279,15 +279,34 @@ trait Formats {
 
     def writes(pathTarget: PathTarget) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(pathTarget.id)),
-      "website" -> JsString(pathTarget.website.id),
+      "website" -> JsNumber(BigDecimal(pathTarget.website.id)),
       "url" -> JsString(pathTarget.urlPath),
       "variant" -> JsString(pathTarget.variant)))
+  }
+
+  implicit object WebsiteFormat extends Format[Website] {
+    def reads(json: JsValue) = JsSuccess(new Website(
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String],
+      "url" -> (json \ "url").as[String],
+      "email" -> (json \ "email").as[String]
+      ).asJava))
+
+    def writes(website: Website) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(website.id)),
+      "url" -> JsString(website.url),
+      "email" -> JsString(website.email),
+      "uuid" -> JsString(website.uuid),
+      "code" -> JsString(website.code()),
+      "name" -> JsString(website.name)))
   }
 
   implicit object AudienceFormat extends Format[Audience] {
     def reads(json: JsValue) = JsSuccess(new Audience(
       (json \ "name").as[String]).updateFromMap(Map(
       "id" -> (json \ "id").as[String],
+      "paths" -> (json \ "paths").as[Seq[PathTarget]],
+      "websites" -> (json \ "websites").as[Seq[String]],
       "state" -> (json \ "state").as[String]
       ).asJava))
 
@@ -296,38 +315,60 @@ trait Formats {
       "name" -> JsString(audience.name),
       "paths" -> Json.toJson(audience.pathTargets.asScala),
       "websites" -> Json.toJson(audience.websites.asScala),
-      "state" -> JsString(audience.state)))
-  }
-
-  implicit object WebsiteFormat extends Format[Website] {
-    def reads(json: JsValue) = JsSuccess(new Website(
-      (json \ "name").as[String]).updateFromMap(Map(
-      "id" -> (json \ "id").as[String]
-      ).asJava))
-
-    def writes(website: Website) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(website.id)),
-      "url" -> JsString(website.url),
-      "name" -> JsString(website.name)))
-  }
-
-  implicit object CampaignFormat extends Format[Campaign] {
-    def reads(json: JsValue) = JsSuccess(new Campaign(
-      (json \ "name").as[String]).updateFromMap(Map(
-      "id" -> (json \ "id").as[String]
-      ).asJava))
-
-    def writes(campaign: Campaign) = JsObject(Seq(
-      "name" -> JsString(campaign.name)))
+      "state" -> JsString(audience.state))
+    )
   }
 
   implicit object CampaignPackageFormat extends Format[CampaignPackage] {
     def reads(json: JsValue) = JsSuccess(new CampaignPackage(
       (json \ "name").as[String]).updateFromMap(Map(
-      "id" -> (json \ "id").as[String]).asJava))
+      "id" -> (json \ "id").as[String],
+      "variant" -> (json \ "variant").as[String]),
+      "startDate" -> (json \ "startDate").as[String],
+      "endDate" -> (json \ "endDate").as[String],
+      "count" -> (json \ "count").as[String],
+      "reach" -> (json \ "reach").as[String],
+      "goal" -> (json \ "goal").as[String],
+      "buyCpm" -> (json \ "buyCpm").as[String],
+      "salesCpm" -> (json \ "salesCpm").as[String]
+      ).asJava))
 
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
-      "name" -> JsString(campaignPackage.name)))
+      "id" -> JsNumber(BigDecimal(campaignPackage.id)),
+      "variant" -> JsString(campaignPackage.variant),
+      "startDate" -> Json.toJson(campaignPackage.startDate),
+      "endDate" -> Json.toJson(campaignPackage.endDate),
+      "count" -> JsNumber(BigDecimal(campaignPackage.count)),
+      "reach" -> JsNumber(BigDecimal(campaignPackage.reach)),
+      "goal" -> JsNumber(BigDecimal(campaignPackage.goal)),
+      "buyCpm" -> JsNumber(BigDecimal(campaignPackage.buyCpm)),
+      "salesCpm" -> JsNumber(BigDecimal(campaignPackage.salesCpm)),
+      "name" -> JsString(campaignPackage.name))
+      )
+  }
+
+  implicit object CampaignFormat extends Format[Campaign] {
+    def reads(json: JsValue) = JsSuccess(new Campaign(
+      (json \ "name").as[String]).updateFromMap(Map(
+      "id" -> (json \ "id").as[String],
+      "package" -> (json \ "package").as[CampaignPackage],
+      "audiences" -> (json \ "audiences").as[Seq[String]],
+      "creatives" -> (json \ "creatives").as[Seq[String]],
+      "startDate" -> (json \ "startDate").as[String],
+      "endDate" -> (json \ "endDate").as[String],
+      "value" -> (json \ "value").as[String]
+      ).asJava))
+
+    def writes(campaign: Campaign) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(campaign.id)),
+      "value" -> JsNumber(BigDecimal(campaign.value)),
+      "startDate" -> Json.toJson(campaign.startDate),
+      "endDate" -> Json.toJson(campaign.endDate),
+      "packages" -> Json.toJson(campaign.campaignPackage.asScala),
+      "audiences" -> Json.toJson(campaign.audiences.asScala),
+      "creatives" -> Json.toJson(campaign.creatves.asScala),
+      "name" -> JsString(campaign.name))
+    )
   }
 
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {

@@ -32,10 +32,10 @@ public class Audience extends Model {
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	public List<Website> websites = new ArrayList<Website>();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "audience")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "audience")
 	public List<PathTarget> pathTargets = new ArrayList<PathTarget>();
 
 	public Audience(String name) {

@@ -43,13 +43,13 @@ public class Campaign extends Model {
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date endDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public CampaignPackage campaignPackage;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	public List<Audience> audiences;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "campaign")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "campaign")
 	public List<Creative> creatives;
 
 	public Campaign(String name) {
