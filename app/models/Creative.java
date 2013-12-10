@@ -37,7 +37,7 @@ public class Creative extends Model {
 		this.url = url.orNull(null);
 	}
 
-	public static Creative fromMap(Map<String, String> data) {
+	public static Creative fromMap(Map<String, Object> data) {
 		final Creative creative = new Creative("New Creative",
 				Option.<String> empty());
 		creative.updateFromMap(data);
@@ -52,7 +52,7 @@ public class Creative extends Model {
 		return null;
 	}
 
-	public Creative updateFromMap(Map<String, String> data) {
+	public Creative updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

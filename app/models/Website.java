@@ -36,7 +36,7 @@ public class Website extends Model {
 		this.name = name;
 	}
 
-	public static Website fromMap(Map<String, String> data) {
+	public static Website fromMap(Map<String, Object> data) {
 		final Website website = new Website("New Website");
 		website.updateFromMap(data);
 		return website;
@@ -72,7 +72,7 @@ public class Website extends Model {
 		return Collections.emptyList();
 	}
 
-	public Website updateFromMap(Map<String, String> data) {
+	public Website updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

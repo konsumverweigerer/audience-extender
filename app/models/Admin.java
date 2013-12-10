@@ -90,7 +90,7 @@ public class Admin extends Model {
 		this.adminRoles = "";
 	}
 
-	public static Admin fromMap(Map<String, String> data) {
+	public static Admin fromMap(Map<String, Object> data) {
 		final Admin admin = new Admin("New Admin", "");
 		admin.updateFromMap(data);
 		return admin;
@@ -195,7 +195,7 @@ public class Admin extends Model {
 		return Collections.emptyList();
 	}
 
-	public Admin updateFromMap(Map<String, String> data) {
+	public Admin updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

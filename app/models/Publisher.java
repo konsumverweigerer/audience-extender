@@ -56,7 +56,7 @@ public class Publisher extends Model {
 		this.url = url.orNull(null);
 	}
 
-	public static Publisher fromMap(Map<String, String> data) {
+	public static Publisher fromMap(Map<String, Object> data) {
 		final Publisher publisher = new Publisher("New Publisher");
 		publisher.updateFromMap(data);
 		return publisher;
@@ -86,7 +86,7 @@ public class Publisher extends Model {
 		return Collections.emptyList();
 	}
 
-	public Publisher updateFromMap(Map<String, String> data) {
+	public Publisher updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

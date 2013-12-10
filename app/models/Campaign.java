@@ -56,7 +56,7 @@ public class Campaign extends Model {
 		this.name = name;
 	}
 
-	public static Campaign fromMap(Map<String, String> data) {
+	public static Campaign fromMap(Map<String, Object> data) {
 		final Campaign campaign = new Campaign("New Website");
 		campaign.updateFromMap(data);
 		return campaign;
@@ -98,7 +98,7 @@ public class Campaign extends Model {
 		return Collections.emptyList();
 	}
 
-	public Campaign updateFromMap(Map<String, String> data) {
+	public Campaign updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

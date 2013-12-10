@@ -28,6 +28,7 @@ public class Audience extends Model {
 	public String name;
 
 	public String state;
+	public String tracking;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
@@ -42,7 +43,7 @@ public class Audience extends Model {
 		this.name = name;
 	}
 
-	public static Audience fromMap(Map<String, String> data) {
+	public static Audience fromMap(Map<String, Object> data) {
 		final Audience audience = new Audience("New Audience");
 		audience.updateFromMap(data);
 		return audience;
@@ -78,7 +79,7 @@ public class Audience extends Model {
 		return Collections.emptyList();
 	}
 
-	public Audience updateFromMap(Map<String, String> data) {
+	public Audience updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

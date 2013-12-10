@@ -52,7 +52,7 @@ public class CampaignPackage extends Model {
 		this.name = name;
 	}
 
-	public static CampaignPackage fromMap(Map<String, String> data) {
+	public static CampaignPackage fromMap(Map<String, Object> data) {
 		final CampaignPackage campaignPackage = new CampaignPackage(
 				"New Package");
 		campaignPackage.updateFromMap(data);
@@ -79,7 +79,7 @@ public class CampaignPackage extends Model {
 		return Collections.emptyList();
 	}
 
-	public CampaignPackage updateFromMap(Map<String, String> data) {
+	public CampaignPackage updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 

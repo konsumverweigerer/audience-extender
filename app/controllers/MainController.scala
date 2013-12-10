@@ -4,15 +4,16 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 import models._
+import services._
+import views._
+
 import play.Logger
 import play.api._
-import play.api.Play._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.json._
 import play.api.mvc._
-import services._
-import views._
+import play.api.Play._
 
 object MainController extends Controller with Secured with Formats with Utils {
   val loginForm = Form(
@@ -189,29 +190,51 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AdminController.adminList,
         routes.javascript.AdminController.adminSave)).as("text/javascript")
   }
-
 }
 
 trait Formats {
   val websiteForm = Form(
     tuple(
-      "id" -> number,
-      "name" -> text))
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "url" -> text,
+      "email" -> email))
 
   val audienceForm = Form(
     tuple(
-      "id" -> number,
-      "name" -> text))
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "tracking" -> text,
+      "paths" -> list(
+        tuple(
+          "id" -> longNumber,
+          "website" -> longNumber,
+          "urlPath" -> nonEmptyText)),
+      "websites" -> list(tuple(
+        "website" -> longNumber,
+        "allPath" -> boolean))))
 
   val packageForm = Form(
     tuple(
-      "id" -> number,
-      "name" -> text))
+      "id" -> longNumber,
+      "name" -> text,
+      "startDate" -> date,
+      "endDate" -> date,
+      "count" -> number,
+      "reach" -> number,
+      "goal" -> number,
+      "buyCpm" -> bigDecimal,
+      "salesCpm" -> bigDecimal))
 
   val campaignForm = Form(
     tuple(
-      "id" -> number,
-      "name" -> text))
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "package" -> longNumber,
+      "audiences" -> list(
+        longNumber),
+      "creatives" -> list(
+        longNumber)))
 
   implicit object MessageFormat extends Format[Message] {
     def reads(json: JsValue) = JsSuccess(new Message(
@@ -227,7 +250,7 @@ trait Formats {
 
   implicit object PathTargetFormat extends Format[PathTarget] {
     def reads(json: JsValue) = JsSuccess(new PathTarget(
-      (json \ "name").as[String]).updateFromMap(Map(
+      (json \ "name").as[String]).updateFromMap(Map[String,Object](
       "id" -> (json \ "id").as[String],
       "websiteId" -> (json \ "website").as[String],
       "urlPath" -> (json \ "url").as[String]).asJava))
@@ -241,7 +264,7 @@ trait Formats {
 
   implicit object WebsiteFormat extends Format[Website] {
     def reads(json: JsValue) = JsSuccess(new Website(
-      (json \ "name").as[String]).updateFromMap(Map(
+      (json \ "name").as[String]).updateFromMap(Map[String,Object](
       "id" -> (json \ "id").as[String],
       "url" -> (json \ "url").as[String],
       "email" -> (json \ "email").as[String]).asJava))
@@ -266,6 +289,7 @@ trait Formats {
     def writes(audience: Audience) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(audience.id)),
       "name" -> JsString(audience.name),
+      "tracking" -> JsString(audience.tracking),
       "paths" -> Json.toJson(audience.pathTargets.asScala),
       "websites" -> Json.toJson(audience.websites.asScala),
       "state" -> JsString(audience.state)))
@@ -273,7 +297,7 @@ trait Formats {
 
   implicit object CampaignPackageFormat extends Format[CampaignPackage] {
     def reads(json: JsValue) = JsSuccess(new CampaignPackage(
-      (json \ "name").as[String]).updateFromMap(Map(
+      (json \ "name").as[String]).updateFromMap(Map[String,Object](
       "id" -> (json \ "id").as[String],
       "variant" -> (json \ "variant").as[String],
       "startDate" -> (json \ "startDate").as[String],
@@ -297,9 +321,23 @@ trait Formats {
       "name" -> JsString(campaignPackage.name)))
   }
 
+  implicit object CreativeFormat extends Format[Creative] {
+    def reads(json: JsValue) = JsSuccess(new Creative(
+      (json \ "name").as[String],
+      (json \ "url").as[Option[String]]).updateFromMap(Map[String,Object](
+      "id" -> (json \ "id").as[String]).asJava))
+
+    def writes(creative: Creative) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(creative.id)),
+      "name" -> JsString(creative.name),
+      "preview" -> JsString(creative.getPreview()),
+      "uuid" -> JsString(creative.uuid),
+      "url" -> JsString(creative.url)))
+  }
+
   implicit object CampaignFormat extends Format[Campaign] {
     def reads(json: JsValue) = JsSuccess(new Campaign(
-      (json \ "name").as[String]).updateFromMap(Map(
+      (json \ "name").as[String]).updateFromMap(Map[String,Object](
       "id" -> (json \ "id").as[String],
       "package" -> (json \ "package").as[CampaignPackage],
       "audiences" -> (json \ "audiences").as[Seq[String]],
@@ -313,9 +351,9 @@ trait Formats {
       "value" -> JsNumber(BigDecimal(campaign.value)),
       "startDate" -> Json.toJson(campaign.startDate),
       "endDate" -> Json.toJson(campaign.endDate),
-      "packages" -> Json.toJson(campaign.campaignPackage.asScala),
+      "packages" -> Json.toJson(campaign.campaignPackage),
       "audiences" -> Json.toJson(campaign.audiences.asScala),
-      "creatives" -> Json.toJson(campaign.creatves.asScala),
+      "creatives" -> Json.toJson(campaign.creatives.asScala),
       "name" -> JsString(campaign.name)))
   }
 
@@ -339,7 +377,7 @@ trait Formats {
   implicit object PublisherFormat extends Format[Publisher] {
     def reads(json: JsValue) = JsSuccess(new Publisher(
       (json \ "name").as[String],
-      (json \ "url").as[Option[String]]).updateFromMap(Map(
+      (json \ "url").as[Option[String]]).updateFromMap(Map[String,Object](
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(publisher: Publisher) = JsObject(Seq(
@@ -349,24 +387,10 @@ trait Formats {
       "url" -> JsString(publisher.url)))
   }
 
-  implicit object CreativeFormat extends Format[Creative] {
-    def reads(json: JsValue) = JsSuccess(new Creative(
-      (json \ "name").as[String],
-      (json \ "url").as[Option[String]]).updateFromMap(Map(
-      "id" -> (json \ "id").as[String]).asJava))
-
-    def writes(creative: Creative) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(creative.id)),
-      "name" -> JsString(creative.name),
-      "preview" -> JsString(creative.getPreview()),
-      "uuid" -> JsString(creative.uuid),
-      "url" -> JsString(creative.url)))
-  }
-
   implicit object AdminFormat extends Format[Admin] {
     def reads(json: JsValue) = JsSuccess(new Admin(
       (json \ "name").as[String],
-      (json \ "email").as[String]).updateFromMap(Map(
+      (json \ "email").as[String]).updateFromMap(Map[String,Object](
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(admin: Admin) = JsObject(Seq(

@@ -33,7 +33,7 @@ public class PathTarget extends Model {
 		this.urlPath = urlPath;
 	}
 
-	public static PathTarget fromMap(Map<String, String> data) {
+	public static PathTarget fromMap(Map<String, Object> data) {
 		final PathTarget pathTarget = new PathTarget("/");
 		pathTarget.updateFromMap(data);
 		return pathTarget;
@@ -42,7 +42,7 @@ public class PathTarget extends Model {
 	public static Finder<String, PathTarget> find = new Finder<String, PathTarget>(
 			String.class, PathTarget.class);
 
-	public PathTarget updateFromMap(Map<String, String> data) {
+	public PathTarget updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 
