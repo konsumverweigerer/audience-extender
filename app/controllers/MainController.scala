@@ -3,19 +3,16 @@ package controllers
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
-import views._
 import models._
-import services._
-
+import play.Logger
 import play.api._
 import play.api.Play._
 import play.api.data._
 import play.api.data.Forms._
-
 import play.api.libs.json._
 import play.api.mvc._
-
-import play.Logger
+import services._
+import views._
 
 object MainController extends Controller with Secured with Formats with Utils {
   val loginForm = Form(
@@ -197,24 +194,24 @@ object MainController extends Controller with Secured with Formats with Utils {
 
 trait Formats {
   val websiteForm = Form(
-      tuple(
-          "id"-> number
-      ))
+    tuple(
+      "id" -> number,
+      "name" -> text))
 
   val audienceForm = Form(
-      tuple(
-          "id"-> number
-      ))
+    tuple(
+      "id" -> number,
+      "name" -> text))
 
   val packageForm = Form(
-      tuple(
-          "id"-> number
-      ))
+    tuple(
+      "id" -> number,
+      "name" -> text))
 
   val campaignForm = Form(
-      tuple(
-          "id"-> number
-      ))
+    tuple(
+      "id" -> number,
+      "name" -> text))
 
   implicit object MessageFormat extends Format[Message] {
     def reads(json: JsValue) = JsSuccess(new Message(
@@ -233,8 +230,7 @@ trait Formats {
       (json \ "name").as[String]).updateFromMap(Map(
       "id" -> (json \ "id").as[String],
       "websiteId" -> (json \ "website").as[String],
-      "urlPath" -> (json \ "url").as[String]
-      ).asJava))
+      "urlPath" -> (json \ "url").as[String]).asJava))
 
     def writes(pathTarget: PathTarget) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(pathTarget.id)),
@@ -248,8 +244,7 @@ trait Formats {
       (json \ "name").as[String]).updateFromMap(Map(
       "id" -> (json \ "id").as[String],
       "url" -> (json \ "url").as[String],
-      "email" -> (json \ "email").as[String]
-      ).asJava))
+      "email" -> (json \ "email").as[String]).asJava))
 
     def writes(website: Website) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(website.id)),
@@ -266,16 +261,14 @@ trait Formats {
       "id" -> (json \ "id").as[String],
       "paths" -> (json \ "paths").as[Seq[PathTarget]],
       "websites" -> (json \ "websites").as[Seq[String]],
-      "state" -> (json \ "state").as[String]
-      ).asJava))
+      "state" -> (json \ "state").as[String]).asJava))
 
     def writes(audience: Audience) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(audience.id)),
       "name" -> JsString(audience.name),
       "paths" -> Json.toJson(audience.pathTargets.asScala),
       "websites" -> Json.toJson(audience.websites.asScala),
-      "state" -> JsString(audience.state))
-    )
+      "state" -> JsString(audience.state)))
   }
 
   implicit object CampaignPackageFormat extends Format[CampaignPackage] {
@@ -289,8 +282,7 @@ trait Formats {
       "reach" -> (json \ "reach").as[String],
       "goal" -> (json \ "goal").as[String],
       "buyCpm" -> (json \ "buyCpm").as[String],
-      "salesCpm" -> (json \ "salesCpm").as[String]
-      ).asJava))
+      "salesCpm" -> (json \ "salesCpm").as[String]).asJava))
 
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaignPackage.id)),
@@ -302,8 +294,7 @@ trait Formats {
       "goal" -> JsNumber(BigDecimal(campaignPackage.goal)),
       "buyCpm" -> JsNumber(BigDecimal(campaignPackage.buyCpm)),
       "salesCpm" -> JsNumber(BigDecimal(campaignPackage.salesCpm)),
-      "name" -> JsString(campaignPackage.name))
-      )
+      "name" -> JsString(campaignPackage.name)))
   }
 
   implicit object CampaignFormat extends Format[Campaign] {
@@ -315,8 +306,7 @@ trait Formats {
       "creatives" -> (json \ "creatives").as[Seq[String]],
       "startDate" -> (json \ "startDate").as[String],
       "endDate" -> (json \ "endDate").as[String],
-      "value" -> (json \ "value").as[String]
-      ).asJava))
+      "value" -> (json \ "value").as[String]).asJava))
 
     def writes(campaign: Campaign) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaign.id)),
@@ -326,8 +316,7 @@ trait Formats {
       "packages" -> Json.toJson(campaign.campaignPackage.asScala),
       "audiences" -> Json.toJson(campaign.audiences.asScala),
       "creatives" -> Json.toJson(campaign.creatves.asScala),
-      "name" -> JsString(campaign.name))
-    )
+      "name" -> JsString(campaign.name)))
   }
 
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {
