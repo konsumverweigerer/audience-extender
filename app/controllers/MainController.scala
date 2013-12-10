@@ -193,70 +193,29 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AdminController.adminSave)).as("text/javascript")
   }
 
-  def resourceNameAt(path: String, file: String): Option[String] = {
-    val decodedFile = play.utils.UriEncoding.decodePath(file, "utf-8")
-    val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
-    if (new java.io.File(resourceName).isDirectory || !new java.io.File(resourceName).getCanonicalPath.startsWith(new java.io.File(path).getCanonicalPath)) {
-      None
-    } else {
-      Some(resourceName)
-    }
-  }
-
-  /** TODO: handle NotFound **/
-  def minAssetsAt(path: String, file: String) = {
-    import Play.current
-    Logger.info("get minified " + path + " / " + file)
-    if (file.endsWith(".min.js")) {
-      controllers.Assets.at(path, file)
-    } else {
-      val newfile = file.replace(".js", ".min.js")
-      Logger.info("really get minified " + path + " / " + newfile)
-      resourceNameAt(path, newfile).map(resourceName => {
-        Play.resource(resourceName).map(resource => {
-          Logger.info("getting minified " + path + " / " + newfile + " at " + resourceName)
-          controllers.Assets.at(path, newfile)
-        }).getOrElse(Option())
-      }).getOrElse(resourceNameAt(path, file).map(resourceName => {
-        Play.resource(resourceName).map(resource => {
-          Logger.info("getting fallback " + path + " / " + file + " at " + resourceName)
-          controllers.Assets.at(path, file)
-        }).getOrElse(
-          controllers.Assets.at(path, file))
-      }).getOrElse(
-        controllers.Assets.at(path, file)))
-    }
-  }
-
-  def minProdWebJarAssetsAt(file: String): Action[AnyContent] = {
-    if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
-      try {
-        val newpath = controllers.WebJarAssets.locate(file.replace(".js", ".min.js"))
-        return controllers.WebJarAssets.at(newpath)
-      } catch {
-        case nf: java.lang.IllegalArgumentException =>
-      }
-    }
-    controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
-  }
-
-  /** TODO: handle NotFound **/
-  def minProdAssetsAt(path: String, file: String): Action[AnyContent] = {
-    Logger.info("get prod minified " + path + " / " + file)
-    if (file.endsWith(".js")) {
-      if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
-        return controllers.Assets.at(path, file.replace(".js", ".min.js"))
-      }
-    } else if (file.endsWith(".css")) {
-      if (!file.endsWith(".min.css") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
-        return controllers.Assets.at(path, file.replace(".css", ".min.css"))
-      }
-    }
-    controllers.Assets.at(path, file)
-  }
 }
 
 trait Formats {
+  val websiteForm = Form(
+      tuple(
+          "id"-> number
+      ))
+
+  val audienceForm = Form(
+      tuple(
+          "id"-> number
+      ))
+
+  val packageForm = Form(
+      tuple(
+          "id"-> number
+      ))
+
+  val campaignForm = Form(
+      tuple(
+          "id"-> number
+      ))
+
   implicit object MessageFormat extends Format[Message] {
     def reads(json: JsValue) = JsSuccess(new Message(
       (json \ "title").as[String],
@@ -323,7 +282,7 @@ trait Formats {
     def reads(json: JsValue) = JsSuccess(new CampaignPackage(
       (json \ "name").as[String]).updateFromMap(Map(
       "id" -> (json \ "id").as[String],
-      "variant" -> (json \ "variant").as[String]),
+      "variant" -> (json \ "variant").as[String],
       "startDate" -> (json \ "startDate").as[String],
       "endDate" -> (json \ "endDate").as[String],
       "count" -> (json \ "count").as[String],
