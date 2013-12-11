@@ -85,8 +85,12 @@ public class Website extends Model {
 	}
 
 	public static Option<Website> findById(String websiteid, Admin admin) {
-		List<Website> ret = null;
 		final Long id = websiteid != null ? Long.valueOf(websiteid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static Option<Website> findById(Long id, Admin admin) {
+		List<Website> ret = null;
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {

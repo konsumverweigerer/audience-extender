@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
+import scala.Some;
 
 @Entity
 public class Creative extends Model {
@@ -47,6 +48,14 @@ public class Creative extends Model {
 	public static Finder<String, Creative> find = new Finder<String, Creative>(
 			String.class, Creative.class);
 
+	public static List<Creative> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("campaign.publisher.owners.id", admin.id)
+				.findList();
+	}
+
 	public static Option<Creative> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {
 		return null;
@@ -61,6 +70,25 @@ public class Creative extends Model {
 	 */
 	public static List<Creative> findAll() {
 		return find.all();
+	}
+
+	public static Option<Creative> findById(String creativeid, Admin admin) {
+		final Long id = creativeid != null ? Long.valueOf(creativeid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static Option<Creative> findById(Long id, Admin admin) {
+		List<Creative> ret = null;
+		if (admin.isSysAdmin()) {
+			ret = find.where().eq("id", id).findList();
+		} else {
+			ret = find.where().eq("campaign.publisher.owners.id", admin.id)
+					.eq("id", id).findList();
+		}
+		if (!ret.isEmpty()) {
+			return new Some<Creative>(ret.get(0));
+		}
+		return Option.empty();
 	}
 
 	public String getPreview() {

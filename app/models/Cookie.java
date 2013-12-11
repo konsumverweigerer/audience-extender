@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import scala.Option;
+import scala.Some;
 import services.UuidHelper;
 
 @Entity
@@ -58,6 +60,33 @@ public class Cookie extends Model {
 	 */
 	public static List<Cookie> findAll() {
 		return find.all();
+	}
+
+	public static List<Cookie> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("audience.publisher.owners.id", admin.id)
+				.findList();
+	}
+
+	public static Option<Cookie> findById(String cookieid, Admin admin) {
+		final Long id = cookieid != null ? Long.valueOf(cookieid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static Option<Cookie> findById(Long id, Admin admin) {
+		List<Cookie> ret = null;
+		if (admin.isSysAdmin()) {
+			ret = find.where().eq("id", id).findList();
+		} else {
+			ret = find.where().eq("audience.publisher.owners.id", admin.id)
+					.eq("id", id).findList();
+		}
+		if (!ret.isEmpty()) {
+			return new Some<Cookie>(ret.get(0));
+		}
+		return Option.empty();
 	}
 
 	public static List<Cookie> findByUuid(String uuid) {

@@ -48,7 +48,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
-  def admins = HasRole("sysadmin") { adminid =>
+  def creatives = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
         Ok(
@@ -58,12 +58,12 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
-  def admins = HasRole("sysadmin") { adminid =>
+  def cookies = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
         Ok(
           html.cookies(
-            Cookie.findByAdmin(admin).asScala,
+            models.Cookie.findByAdmin(admin).asScala,
             admin))
       }.getOrElse(Forbidden)
   }

@@ -33,6 +33,9 @@ POST     /admins                       controllers.AdminController.addAdmin
 GET      /json/admins/list             controllers.AdminController.adminList
 POST     /json/admins/save             controllers.AdminController.adminSave
 
+GET      /cookies                      controllers.AdminController.cookies
+GET      /creatives                    controllers.AdminController.creatives
+
 GET      /data/dashboard               controllers.PublisherController.dashboard
 GET      /data/stats/:publisher        controllers.PublisherController.stats(publisher: Long)
 
@@ -43,7 +46,7 @@ GET      /data/graph/c/:from/:to       controllers.AudienceController.dashboard(
 #DELETE   /admins/publishers   controllers.AdminController.removePublisher(group: Long)
 
 #DELETE   /admins/:admin       controllers.AdminController.delete(project: Long)
-#PUT      /admins/:admin       controllers.AdminController.rename(project: Long)                      
+#PUT      /admins/:admin       controllers.AdminController.rename(project: Long)
 
 # Content
 GET      /code/:c/:s                   controllers.ContentController.cookie(c: String,s: String)

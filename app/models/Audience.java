@@ -90,6 +90,11 @@ public class Audience extends Model {
 		return find.where().eq("publisher.owners.id", admin.id).findList();
 	}
 
+	public static Option<Audience> findById(String audienceid, Admin admin) {
+		final Long id = audienceid != null ? Long.valueOf(audienceid) : 0L;
+		return findById(id, admin);
+	}
+
 	public static Option<Audience> findById(Long id, Admin admin) {
 		List<Audience> ret = null;
 		if (admin.isSysAdmin()) {
@@ -102,11 +107,6 @@ public class Audience extends Model {
 			return new Some<Audience>(ret.get(0));
 		}
 		return Option.empty();
-	}
-
-	public static Option<Audience> findById(String audienceid, Admin admin) {
-		final Long id = audienceid != null ? Long.valueOf(audienceid) : 0L;
-		return findById(id, admin);
 	}
 
 	@Override
