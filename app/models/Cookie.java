@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +23,7 @@ public class Cookie extends Model {
 	public String name;
 
 	public String variant;
+	public String state;
 
 	public String uuid;
 	public Integer pathhash;
@@ -38,8 +40,18 @@ public class Cookie extends Model {
 		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");
 	}
 
+	public static Cookie fromMap(Map<String, Object> data) {
+		final Cookie website = new Cookie("New Cookie");
+		website.updateFromMap(data);
+		return website;
+	}
+
 	public static Finder<String, Cookie> find = new Finder<String, Cookie>(
 			String.class, Cookie.class);
+
+	public Cookie updateFromMap(Map<String, Object> data) {
+		return this;
+	}
 
 	/**
 	 * Retrieve all cookies.

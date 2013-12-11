@@ -62,7 +62,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="dashboard" data-bind="nvddd: audiencechart.chartcontent, nvdddOptions: {chartType: 'multibar', yFormat: 'integer'}">
+					<div class="dashboard" data-bind="nvddd: audiencechart.chartcontent, nvdddOptions: {chartType: 'multibar', yFormat: 'integer', cumulateOther: 7}">
 						<svg></svg>
 					</div>
 				</div>

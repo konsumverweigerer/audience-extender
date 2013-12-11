@@ -248,6 +248,46 @@ trait Formats {
       "creatives" -> list(
         longNumber)))
 
+  val adminForm = Form(
+    tuple(
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "package" -> longNumber,
+      "audiences" -> list(
+        longNumber),
+      "creatives" -> list(
+        longNumber)))
+
+  val publisherForm = Form(
+    tuple(
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "package" -> longNumber,
+      "audiences" -> list(
+        longNumber),
+      "creatives" -> list(
+        longNumber)))
+
+  val cookieForm = Form(
+    tuple(
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "package" -> longNumber,
+      "audiences" -> list(
+        longNumber),
+      "creatives" -> list(
+        longNumber)))
+
+  val creativeForm = Form(
+    tuple(
+      "id" -> longNumber,
+      "name" -> nonEmptyText,
+      "package" -> longNumber,
+      "audiences" -> list(
+        longNumber),
+      "creatives" -> list(
+        longNumber)))
+
   implicit object MessageFormat extends Format[Message] {
     def reads(json: JsValue) = JsSuccess(new Message(
       (json \ "title").as[String],
@@ -331,6 +371,22 @@ trait Formats {
       "buyCpm" -> JsNumber(BigDecimal(campaignPackage.buyCpm)),
       "salesCpm" -> JsNumber(BigDecimal(campaignPackage.salesCpm)),
       "name" -> JsString(campaignPackage.name)))
+  }
+
+  implicit object CookieFormat extends Format[models.Cookie] {
+    def reads(json: JsValue) = JsSuccess(new models.Cookie(
+      (json \ "name").as[String]).updateFromMap(Map[String, Object](
+      "id" -> (json \ "id").as[String]).asJava))
+
+    def writes(cookie: models.Cookie) = JsObject(Seq(
+      "id" -> JsNumber(BigDecimal(cookie.id)),
+      "name" -> JsString(cookie.name),
+      "content" -> JsString(cookie.content),
+      "state" -> JsString(cookie.state),
+      "uuid" -> JsString(cookie.uuid),
+      "variant" -> JsString(cookie.variant),
+      "audience" -> Json.toJson(cookie.audience),
+      "website" -> Json.toJson(cookie.website)))
   }
 
   implicit object CreativeFormat extends Format[Creative] {

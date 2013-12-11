@@ -48,9 +48,29 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
+  def admins = HasRole("sysadmin") { adminid =>
+    request =>
+      Admin.findById(adminid).map { admin =>
+        Ok(
+          html.creatives(
+            Creative.findByAdmin(admin).asScala,
+            admin))
+      }.getOrElse(Forbidden)
+  }
+
+  def admins = HasRole("sysadmin") { adminid =>
+    request =>
+      Admin.findById(adminid).map { admin =>
+        Ok(
+          html.cookies(
+            Cookie.findByAdmin(admin).asScala,
+            admin))
+      }.getOrElse(Forbidden)
+  }
+
   /** Action to get the publishers */
   def adminList = HasRole("sysadmin") { adminid =>
-    request => 
+    request =>
       Admin.findById(adminid).map { admin =>
       Ok(adminJson(admin))
     }.getOrElse(Forbidden)

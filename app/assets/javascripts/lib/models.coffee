@@ -542,7 +542,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       super(name)
 
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @messages = ko.observableArray []
@@ -583,7 +583,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class PathTarget extends ServerModels
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @path = ko.observable d?.path
@@ -601,7 +601,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       super(name)
 
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @messages = ko.observableArray []
@@ -709,7 +709,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       super(name)
 
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @messages = ko.observableArray []
@@ -761,7 +761,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       super(name)
 
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @messages = ko.observableArray []
@@ -803,16 +803,37 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @saveRoute = (page) ->
         routes.controllers.CampaignController.packageSave(page.publisher().id())
 
+  class Cookie extends ServerModels
+    constructor: (d) ->
+      super d
+      self = @
+
+      @name = ko.observable d?.name
+
+      @content = ko.observable d?.content
+
+      @state = ko.observable d?.state
+
+      @variant = ko.observable d?.variant
+
+      @uuid = ko.observable d?.uuid
+
+      @data = ko.observable d?.data
+
   class Creative extends ServerModels
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @name = ko.observable d?.name
 
       @url = ko.observable d?.url
 
+      @state = ko.observable d?.state
+
       @previewUrl = ko.observable d?.previewUrl
+
+      @uuid = ko.observable d?.uuid
 
       @data = ko.observable d?.data
 
@@ -823,7 +844,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       super(name)
 
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @messages = ko.observableArray []
@@ -855,7 +876,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       super(name)
 
     constructor: (d) ->
-      super(d)
+      super d
       self = @
 
       @messages = ko.observableArray []

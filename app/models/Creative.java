@@ -24,10 +24,10 @@ public class Creative extends Model {
 	public String name;
 
 	public String url;
+	public String uuid;
+	public String state;
 
 	public byte[] data;
-
-	public String uuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Campaign campaign;
