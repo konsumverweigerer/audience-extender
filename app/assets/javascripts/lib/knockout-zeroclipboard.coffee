@@ -27,12 +27,19 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
         if v?
           $clipboard.setText v
         $element.addClass 'clipboard-requested'
+        if ko.isObservable zeroclipboardOptions.copied
+          zeroclipboardOptions.copied v
       )
       $clipboard.off 'complete'
       $clipboard.on('complete', (e)->
         $element.addClass 'clipboard-copied'
-        if zeroclipboardOptions.oncomplete
-          zeroclipboardOptions.oncomplete e
+        if ko.isObservable zeroclipboardOptions.copied
+          zeroclipboardOptions.copied v
+        if zeroclipboardOptions.oncomplete?
+          if typeof zeroclipboardOptions.oncomplete == 'string'
+            $element[zeroclipboardOptions.oncomplete]('show')
+          else
+            zeroclipboardOptions.oncomplete($element,e)
       )
       v = (ko.unwrap value)?.replace(/\n/g, '\r\n')
       $clipboard.setText v
@@ -53,11 +60,18 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
           if v?
             $clipboard.setText v
           $element.addClass 'clipboard-requested'
+          if ko.isObservable zeroclipboardOptions.copied
+            zeroclipboardOptions.copied v
         )
         $clipboard.off 'complete'
         $clipboard.on('complete', (e)->
           $element.addClass 'clipboard-copied'
-          if zeroclipboardOptions.oncomplete
-            zeroclipboardOptions.oncomplete e
+          if ko.isObservable zeroclipboardOptions.copied
+            zeroclipboardOptions.copied v
+          if zeroclipboardOptions.oncomplete?
+            if typeof zeroclipboardOptions.oncomplete == 'string'
+              $element[zeroclipboardOptions.oncomplete]('show')
+            else
+              zeroclipboardOptions.oncomplete($element,e)
         )
 )

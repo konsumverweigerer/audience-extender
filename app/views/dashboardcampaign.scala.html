@@ -86,7 +86,7 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 			</div>
 		</div>
 		<div class="col-md-3" data-bind="foreach: messages">
-			<div class="panel panel-default">
+			<div class="panel panel-default" style="display:none;" data-bind="visible: !dismissed()">
 				<div class="panel-heading" data-bind="text: title, click: dismiss"></div>
 				<div class="panel-body" data-bind="text: content"></div>
 			</div>
@@ -143,4 +143,5 @@ window.data.publishers = @{import play.api.libs.json._;import controllers.Publis
 	</div>
 </div>
 @parts.campaignedit(publishers)
+@elements.modalalert("alert")
 }

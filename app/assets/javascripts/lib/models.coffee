@@ -436,7 +436,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
         self.fromJson r.data
 
       @save = (page, success) ->
-        route = saveRoute()
+        route = self.saveRoute(page)
         if route?
           if page.loader?
             page.loader.next()
@@ -458,7 +458,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
                   priority: 'error'
 
       @remove = (page) ->
-        route = removeRoute()
+        route = self.removeRoute(page)
         if route?
           if page.loader?
             page.loader.next()
@@ -704,7 +704,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class Website extends ServerModels
     typeOf: (name) ->
-      if name=='active' || name=='inactive' || name=='editing' || name=='selected' || name=='emailSent' || name=='emailFail' || name=='emailStatus' || name=='messages'
+      if name=='active' || name=='inactive' || name=='editing' || name=='selected' || name=='emailSent' || name=='emailFail' || name=='emailStatus' || name=='messages' || name=='codeCopied'
         return { isIgnored: true }
       super(name)
 
@@ -716,7 +716,11 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @name = ko.observable d?.name
 
+      @url = ko.observable d?.url
+
       @code = ko.observable d?.code
+
+      @codeCopied = ko.observable()
 
       @count = ko.observable d?.count
 

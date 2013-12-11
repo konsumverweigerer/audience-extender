@@ -42,7 +42,7 @@
 													<span></span>
 												</span>
 												<span class="website-audience"><span data-bind="text: count">0</span> Users <span class="glyphicon glyphicon-eye-open"></span></span>
-												<span class="website-actions"><button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.selectwebsite, text: selected() ? 'Deselect' : 'Select' ">Select</button> <button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.editwebsite">Edit</button> <button type="button" class="btn btn-danger btn-xs" data-bind="visible: $root.currentaudience().persisted, click: $root.deletewebsite">Delete</button></span>
+												<span class="website-actions" data-bind="visible: !$root.currentwebsite().editing()"><button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.selectwebsite, text: selected() ? 'Deselect' : 'Select' ">Select</button> <button type="button" class="btn btn-primary btn-xs" data-bind="click: $root.editwebsite">Edit</button> <button type="button" class="btn btn-danger btn-xs" data-bind="visible: $root.currentaudience().persisted, click: $root.deletewebsite">Delete</button></span>
 											</a>
 										</li>
 									</ul>
@@ -65,13 +65,27 @@
 				</div>
 
 				<!-- ko if: confirmwebsitedelete()==0 -->
-				<div class="box-1" data-bind="fadeVisible: currentwebsite().editing">
-					<h3 data-bind="text: currentwebsite().persisted() ? 'Edit Website' : 'New Website'">New Website</h3>
-					<form class="form-horizontal" role="form" data-bind="with: currentwebsite, jqvalidation: {}">
-						<div class="form-group">
+				<div class="box-1" data-bind="fadeVisible: currentwebsite().editing, with: currentwebsite">
+					<h3 data-bind="text: persisted() ? 'Edit Website' : 'New Website'">New Website</h3>
+					<form class="form-horizontal" role="form" novalidate="true" action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: $root.savewebsite }">
+						<div class="form-group control-group">
 							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" id="websitename" placeholder="Website Name" data-bind="attr: {disabled: persisted}, value: name">
+								<input type="text" required="true" data-validation-required-message="Enter a website name" class="form-control" id="websitename" placeholder="Website Name" data-bind="attr: {disabled: persisted}, value: name">
+							</div>
+							<div class="controls popover left">
+								<div class="arrow"></div>
+								<div class="popover-title"><span class="glyphicon glyphicon-exclamation-sign"></span><span> </span><span class="help-block"></span></div>
+							</div>
+						</div>
+						<div class="form-group control-group">
+							<div class="controls popover left">
+								<div class="arrow"></div>
+								<div class="popover-title"><span class="glyphicon glyphicon-exclamation-sign"></span><span> </span><span class="help-block"></span></div>
+							</div>
+							<label for="websiteurl" class="col-sm-3 control-label">Website Url</label>
+							<div class="col-sm-9">
+								<input type="text" required="true" data-validation-required-message="Enter a website URL" data-validation-regex-regex="^http\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,5}(/\S*)?$" data-validation-regex-message="Enter valid URL" class="form-control" id="websiteurl" placeholder="Website Url" data-bind="attr: {disabled: persisted}, value: url">
 							</div>
 						</div>
 						<div class="form-group" data-bind="visible: persisted">
@@ -98,9 +112,11 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="button" class="btn btn-primary" data-bind="visible: persisted, zeroclipboard: code, zeroclipboardOptions: {}">Copy Tracking Code</button>
-								<button type="submit" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
-								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite, visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
+								<button type="button" class="btn btn-primary" data-bind="visible: persisted, zeroclipboard: code, zeroclipboardOptions: {copied: codeCopied, oncomplete: 'popover'}, attr: {'data-content': codeCopied}" data-placement="left" data-original-title="Copied code" title="">Copy Tracking Code</button>
+								<button type="button" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
+								<button type="submit" class="btn btn-primary" data-bind="visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
+							</div>
+							<div>
 							</div>
 						</div>
 					</form>
@@ -158,7 +174,7 @@
 										</span>
 										<input type="text" required="true" data-validation-callback-callback="checkpath" data-validation-required-message="Enter valid path segment ..." data-validation-regex-regex="^[A-Za-z0-9_/?=&-]+$" data-validation-regex-message="Enter valid path segment ..." class="form-control" data-bind="value: path" placeholder="Enter path ...">
 									</div>
-									<p class="help-block"></p>
+									<div class="help-block"></div>
 								</div>
 							</form>
 						</div>

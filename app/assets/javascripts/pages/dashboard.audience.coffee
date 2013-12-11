@@ -41,6 +41,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
             v
+        count: (v) ->
+          '<span class="badge">'+v+'</span>'
       )
 
       @confirmaudiencedelete = ko.observable(0)
@@ -176,6 +178,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.websiteposition.currentValue ''
 
       @activatewebsite = (c,e) ->
+        if self.currentwebsite().editing()
+          return
         if self.confirmwebsitedelete()>0
           return
         if not c.active()
