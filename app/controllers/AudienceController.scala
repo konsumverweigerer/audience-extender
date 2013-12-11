@@ -4,17 +4,13 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 import models._
-import views._
-
 import play.api._
 import play.api.Play._
 import play.api.data._
 import play.api.data.Forms._
-
 import play.api.libs.json._
 import play.api.mvc._
-
-import play.Logger
+import views._
 
 object AudienceController extends Controller with Secured with Formats with Utils {
   def audiences = IsAuthenticated { adminid =>
@@ -44,25 +40,32 @@ object AudienceController extends Controller with Secured with Formats with Util
   def audienceSave(publisherid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        request.body.asFormUrlEncoded.map { data =>
-          data.get("id").map { ids =>
-            Audience.findById(ids(0), admin).map { audience =>
-              audience.updateFromMap(mapToMap(data))
+        audienceForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Audience.findById(id, admin).map { audience =>
+                //TODO: fill from form
+                val msgs = audience.write().asScala
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(audience),
+                  "messages" -> Json.toJson(msgs))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val audience = new Audience("")
+              //TODO: fill from form
+              val publisher = Publisher.findById(publisherid, admin)
+              audience.publisher = publisher.get
               val msgs = audience.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(audience),
                 "messages" -> Json.toJson(msgs))))
-            }.getOrElse(NotFound)
-          }.getOrElse {
-            val audience = Audience.fromMap(mapToMap(data))
-            val publisher = Publisher.findById(publisherid, admin)
-            audience.publisher = publisher.get
-            val msgs = audience.write().asScala
-            Ok(JsObject(Seq(
-              "data" -> Json.toJson(audience),
-              "messages" -> Json.toJson(msgs))))
-          }
-        }.getOrElse(Forbidden)
+            })
       }.getOrElse(Forbidden)
   }
 

@@ -21,7 +21,8 @@ public class ControllerTest extends WithApplication {
 
 	@Test
 	public void publisherStatsJson() {
-		JsValue json = PublisherController.publisherJson(Admin.findById("1"));
+		JsValue json = PublisherController.publisherJson((Admin) Admin
+				.findById("1").orNull(null));
 		Logger.getLogger("test").info(json.toString());
 		assertThat(json.toString()).contains("name");
 	}

@@ -1,4 +1,4 @@
-define([ "knockout", "jquery.fileupload",
+define([ "knockout", "jquery.fileupload", "jquery",
  "jquery.iframe-transport", "jquery.fileupload-image", "jquery.fileupload-validate" ], (ko) ->
   fileuploadDefaults = -> {}
 

@@ -13,7 +13,7 @@ create table campaign_audience (
 alter table campaign_audience add constraint fk_campaign_audience_campaign_01 foreign key (campaign_id) references campaign (id) on delete restrict on update restrict;
 alter table campaign_audience add constraint fk_campaign_audience_audience_02 foreign key (audience_id) references audience (id) on delete restrict on update restrict;
 
-create table audience_website (
+create table if not exists audience_website (
   audience_id                   bigint not null,
   website_id                    bigint not null,
   constraint pk_audience_website primary key (audience_id, website_id))

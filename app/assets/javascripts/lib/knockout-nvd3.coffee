@@ -10,11 +10,17 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
         chart = chart || nv.models.linePlusBarChart()
       else if options.chartType == 'multibar'
         chart = chart || nv.models.multiBarChart()
-        if options.cumulateOther
-          sums = data.map (n,i) ->
-            [i, n.values.reduce (a,b) ->
-              a+b
-            , 0]
+        if options.cumulateOther && options.cumulateOther<data.length
+          sums = data.map (n,i) -> [n.values.reduce(((a,b) -> a.y+b.y),0),i]
+          sums.sort().reverse()
+          cum = {key: 'Other', cls: 'other'}
+          valx = []
+          valy = {}
+          for c in sums[(options.cumulateOther)...(data.length)]
+            cd = data[c[1]]
+            cum.timeframe = cd.timeframe
+          data = (data[c[1]] for c in sums[0...(options.cumulateOther)])
+          data.push cum
       else if options.chartType == 'cumulativeline'
         chart = chart || nv.models.mycumulativeLineChart()
         data = for n,i in data

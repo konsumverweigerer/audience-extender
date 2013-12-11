@@ -67,7 +67,9 @@
     ZeroClipboard.prototype._singleton.setCurrent(target);
   };
   var _addEventHandler = function(element, method, func) {
-    if (element.addEventListener) {
+    if ($ && $(element).on) {
+      $(element).on(method+".zc", func);
+    } else if (element.addEventListener) {
       element.addEventListener(method, func, false);
     } else if (element.attachEvent) {
       element.attachEvent("on" + method, func);
@@ -573,7 +575,7 @@
     }
   };
   if (typeof define === "function" && define.amd) {
-    define([ "require", "exports", "module" ], function(require, exports, module) {
+    define([ "require", "exports", "module", "jquery" ], function(require, exports, module) {
       _amdModuleId = module && module.id || null;
       return ZeroClipboard;
     });

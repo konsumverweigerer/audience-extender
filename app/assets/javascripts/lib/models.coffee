@@ -578,6 +578,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
             pa.selected true
         return self
 
+      @saveRoute = (page) ->
+        routes.controllers.CampaignController.campaignSave(page.publisher().id())
+
   class PathTarget extends ServerModels
     constructor: (d) ->
       super(d)
@@ -696,6 +699,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
         self.websiteNamesShort n
         return self
 
+      @saveRoute = (page) ->
+        routes.controllers.AudienceController.audienceSave(page.publisher().id())
+
   class Website extends ServerModels
     typeOf: (name) ->
       if name=='active' || name=='inactive' || name=='editing' || name=='selected' || name=='emailSent' || name=='emailFail' || name=='emailStatus' || name=='messages'
@@ -745,6 +751,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @sendcodebyemail = (id,email)->
         Math.floor 2*Math.random()
 
+      @saveRoute = (page) ->
+        routes.controllers.AudienceController.websiteSave(page.publisher().id())
+
   class Package extends ServerModels
     typeOf: (name) ->
       if name=='messages' || name=='selected' || name=='active'
@@ -790,6 +799,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @buyCpm = ko.observable(d?.buyCpm)
 
       @salesCpm = ko.observable(d?.salesCpm)
+
+      @saveRoute = (page) ->
+        routes.controllers.CampaignController.packageSave(page.publisher().id())
 
   class Creative extends ServerModels
     constructor: (d) ->

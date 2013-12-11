@@ -190,6 +190,18 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AdminController.adminList,
         routes.javascript.AdminController.adminSave)).as("text/javascript")
   }
+
+  def minProdWebJarAssetsAt(file: String): Action[AnyContent] = {
+    if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
+      try {
+        val newpath = controllers.WebJarAssets.locate(file.replace(".js", ".min.js"))
+        return controllers.WebJarAssets.at(newpath)
+      } catch {
+        case nf: java.lang.IllegalArgumentException =>
+      }
+    }
+    controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
+  }
 }
 
 trait Formats {
@@ -250,7 +262,7 @@ trait Formats {
 
   implicit object PathTargetFormat extends Format[PathTarget] {
     def reads(json: JsValue) = JsSuccess(new PathTarget(
-      (json \ "name").as[String]).updateFromMap(Map[String,Object](
+      (json \ "name").as[String]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String],
       "websiteId" -> (json \ "website").as[String],
       "urlPath" -> (json \ "url").as[String]).asJava))
@@ -264,7 +276,7 @@ trait Formats {
 
   implicit object WebsiteFormat extends Format[Website] {
     def reads(json: JsValue) = JsSuccess(new Website(
-      (json \ "name").as[String]).updateFromMap(Map[String,Object](
+      (json \ "name").as[String]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String],
       "url" -> (json \ "url").as[String],
       "email" -> (json \ "email").as[String]).asJava))
@@ -297,7 +309,7 @@ trait Formats {
 
   implicit object CampaignPackageFormat extends Format[CampaignPackage] {
     def reads(json: JsValue) = JsSuccess(new CampaignPackage(
-      (json \ "name").as[String]).updateFromMap(Map[String,Object](
+      (json \ "name").as[String]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String],
       "variant" -> (json \ "variant").as[String],
       "startDate" -> (json \ "startDate").as[String],
@@ -324,7 +336,7 @@ trait Formats {
   implicit object CreativeFormat extends Format[Creative] {
     def reads(json: JsValue) = JsSuccess(new Creative(
       (json \ "name").as[String],
-      (json \ "url").as[Option[String]]).updateFromMap(Map[String,Object](
+      (json \ "url").as[Option[String]]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(creative: Creative) = JsObject(Seq(
@@ -337,7 +349,7 @@ trait Formats {
 
   implicit object CampaignFormat extends Format[Campaign] {
     def reads(json: JsValue) = JsSuccess(new Campaign(
-      (json \ "name").as[String]).updateFromMap(Map[String,Object](
+      (json \ "name").as[String]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String],
       "package" -> (json \ "package").as[CampaignPackage],
       "audiences" -> (json \ "audiences").as[Seq[String]],
@@ -377,7 +389,7 @@ trait Formats {
   implicit object PublisherFormat extends Format[Publisher] {
     def reads(json: JsValue) = JsSuccess(new Publisher(
       (json \ "name").as[String],
-      (json \ "url").as[Option[String]]).updateFromMap(Map[String,Object](
+      (json \ "url").as[Option[String]]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(publisher: Publisher) = JsObject(Seq(
@@ -390,7 +402,7 @@ trait Formats {
   implicit object AdminFormat extends Format[Admin] {
     def reads(json: JsValue) = JsSuccess(new Admin(
       (json \ "name").as[String],
-      (json \ "email").as[String]).updateFromMap(Map[String,Object](
+      (json \ "email").as[String]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(admin: Admin) = JsObject(Seq(
@@ -403,7 +415,7 @@ trait Formats {
 }
 
 trait Utils {
-  def mapToMap(m: Map[String, Seq[String]]): java.util.Map[String, String] = {
+  def mapToMap(m: Map[String, Seq[String]]): java.util.Map[String, Object] = {
     m.map { v =>
       v._1 -> v._2(0)
     }

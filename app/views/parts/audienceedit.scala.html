@@ -1,5 +1,5 @@
 @(publishers: Seq[Publisher])
-<div class="modal fade" id="editAudience" tabindex="-1" role="dialog" aria-labelledby="editAudience" aria-hidden="true">
+<div class="modal fade" id="editAudience" tabindex="-1" role="dialog" aria-labelledby="editAudience" aria-hidden="true" data-keyboard="false" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -98,7 +98,7 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-primary" data-bind="visible: persisted">Copy Tracking Code</button>
+								<button type="button" class="btn btn-primary" data-bind="visible: persisted, zeroclipboard: code, zeroclipboardOptions: {}">Copy Tracking Code</button>
 								<button type="submit" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
 								<button type="submit" class="btn btn-primary" data-bind="click: $root.savewebsite, visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
 							</div>

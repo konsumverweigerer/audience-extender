@@ -5,6 +5,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 "lib/knockout-jqbootstrapvalidation", 
 "lib/knockout-datepicker", 
 "lib/knockout-nvd3", 
+"lib/knockout-zeroclipboard", 
 "lib/knockout-datatables", 
 "jsRoutes" ], (ko, mod) ->
   class AudienceDashboard
