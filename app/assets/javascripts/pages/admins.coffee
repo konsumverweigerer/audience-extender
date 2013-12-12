@@ -18,6 +18,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @admins = ko.observableArray []
 
+      @publisher = ko.observable()
+      @publishers = ko.observableArray []
+
+      @currentadmin = ko.observable(new mod.Admin {name:'',id:-1})
+
       @selectadmin = (a) ->
         {}
 
@@ -28,10 +33,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
   window.models = models
   #init
 
-  if window.data && window.data.admins
-    for a in window.data.admins
-      ad = new mod.Admin a
-      models.admins.push ad
+  $(document).ready ->
+    data.admins?.map (a,i) ->
+      am = new mod.Admin a
+      models.admins.push am
+
   models.datatable.data models.admins()
 
   require(["lib/data"],(demo) ->

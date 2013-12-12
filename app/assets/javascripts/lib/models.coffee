@@ -448,7 +448,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
               saveApply r
               if success? && r.messages? && r.messages.length==0
                 success r
-            fail: (r) ->
+            error: (r) ->
               if page.loader?
                 page.loader.previous()
               if page.alert?
@@ -470,7 +470,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
               removeApply r
               if success? && r.messages? && r.messages.length==0
                 success r
-            fail: (r) ->
+            error: (r) ->
               if page.loader?
                 page.loader.previous()
               if page.alert?

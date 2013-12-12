@@ -245,7 +245,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
   #init
 
   $(document).ready ->
-    data.publishers.map (p,i) ->
+    data.publishers?.map (p,i) ->
       pm = new mod.Publisher p
       models.publishers.push pm
       if p.active == 'true'
@@ -268,8 +268,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         models.alert.show('Warning','Could not change publisher','error')
     }
 
-  require(["lib/data"],(demo) ->
-    demo.generate(mod,models,'audience')
+  require(["lib/data"],(dat) ->
+    dat.generate(mod,models,'audience')
   )
   
   require(["lib/demodata"],(demo) ->

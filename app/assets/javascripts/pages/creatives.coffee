@@ -16,7 +16,15 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @datatablescroller = new mod.Scroller
       @datatable = new mod.Datatable ["name"]
 
-      @admins = ko.observableArray []
+      @creatives = ko.observableArray []
+
+      @publisher = ko.observable()
+      @publishers = ko.observableArray []
+
+      @currentcreative = ko.observable(new mod.Creative {name:'',id:-1})
+
+      @selectcreative = (c) ->
+        {}
 
   models = new Creatives
     
@@ -25,11 +33,19 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
   window.models = models
   #init
 
-  if window.data && window.data.admins
-    for a in window.data.admins
-      ad = new mod.Creative a
-      models.admins.push ad
-  models.datatable.data models.admins()
+  $(document).ready ->
+    data.creatives?.map (c,i) ->
+      cm = new mod.Creative c
+      models.creatives.push cm
+    data.publishers?.map (p,i) ->
+      pm = new mod.Publisher p
+      models.publishers.push pm
+    if !models.publisher() && models.publishers().length
+      p = models.publishers()[0]
+      p.active 'true'
+      models.publisher p
+
+  models.datatable.data models.creatives()
 
   require(["lib/data"],(demo) ->
     demo.generate(mod,models,'admin')

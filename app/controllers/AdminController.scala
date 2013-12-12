@@ -33,7 +33,10 @@ object AdminController extends Controller with Secured with Formats with Utils {
       Admin.findById(currentid).map { current =>
         Admin.findById(adminid).map { admin =>
           admin.delete()
-          Ok(html.admins(Admin.findByAdmin(current), current))
+          Ok(html.admins(
+            Admin.findByAdmin(current),
+            Publisher.findByAdmin(admin).asScala,
+            current))
         }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
   }
@@ -41,30 +44,30 @@ object AdminController extends Controller with Secured with Formats with Utils {
   def admins = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
-        Ok(
-          html.admins(
-            Admin.findByAdmin(admin).asScala,
-            admin))
+        Ok(html.admins(
+          Admin.findByAdmin(admin).asScala,
+          Publisher.findByAdmin(admin).asScala,
+          admin))
       }.getOrElse(Forbidden)
   }
 
   def creatives = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
-        Ok(
-          html.creatives(
-            Creative.findByAdmin(admin).asScala,
-            admin))
+        Ok(html.creatives(
+          Creative.findByAdmin(admin).asScala,
+          Publisher.findByAdmin(admin).asScala,
+          admin))
       }.getOrElse(Forbidden)
   }
 
   def cookies = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
-        Ok(
-          html.cookies(
-            models.Cookie.findByAdmin(admin).asScala,
-            admin))
+        Ok(html.cookies(
+          models.Cookie.findByAdmin(admin).asScala,
+          Publisher.findByAdmin(admin).asScala,
+          admin))
       }.getOrElse(Forbidden)
   }
 
@@ -72,8 +75,8 @@ object AdminController extends Controller with Secured with Formats with Utils {
   def adminList = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
-      Ok(adminJson(admin))
-    }.getOrElse(Forbidden)
+        Ok(adminJson(admin))
+      }.getOrElse(Forbidden)
   }
 
   def adminSave = IsAuthenticated { currentid =>

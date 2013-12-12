@@ -18,6 +18,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @publishers = ko.observableArray []
 
+      @currentpublisher = ko.observable(new mod.Publisher {name:'',id:-1})
+
       @selectpublisher = (p) ->
         {}
 
@@ -28,10 +30,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
   window.models = models
   #init
 
-  if window.data && window.data.publishers
-    for p in window.data.publishers
-      pu = new mod.Publisher p
-      models.publishers.push pu
+  $(document).ready ->
+    data.publishers?.map (p,i) ->
+      pm = new mod.Publisher p
+      models.publishers.push pm
+
   models.datatable.data models.publishers()
 
   require(["lib/data"],(demo) ->
