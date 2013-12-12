@@ -18,6 +18,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @admins = ko.observableArray []
 
+      @selectadmin = (a) ->
+        {}
+
   models = new Admins
     
   ko.applyBindings models

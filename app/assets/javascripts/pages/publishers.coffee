@@ -18,6 +18,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @publishers = ko.observableArray []
 
+      @selectpublisher = (p) ->
+        {}
+
   models = new Publishers
     
   ko.applyBindings models

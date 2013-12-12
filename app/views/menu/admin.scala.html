@@ -1,8 +1,8 @@
 @(active: String)
 <ul class="nav navbar-nav">
 	<li class="@if(active=="Dashboard"){active}"><a href="@routes.MainController.dashboard">Dashboard</a></li>
-	<li class="@if(active=="Creatives"){active}"><a href="@routes.PublisherController.publishers">Creatives</a></li>
-	<li class="@if(active=="Cookies"){active}"><a href="@routes.PublisherController.publishers">Cookies</a></li>
+	<li class="@if(active=="Creatives"){active}"><a href="@routes.AdminController.creatives">Creatives</a></li>
+	<li class="@if(active=="Cookies"){active}"><a href="@routes.AdminController.cookies">Cookies</a></li>
 	<li class="@if(active=="Publishers"){active}"><a href="@routes.PublisherController.publishers">Publishers</a></li>
 	<li class="@if(active=="Admins"){active}"><a href="@routes.AdminController.admins">Admins</a></li>
 </ul>
