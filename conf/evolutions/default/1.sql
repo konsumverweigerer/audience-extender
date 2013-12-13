@@ -1,7 +1,9 @@
 # --- !Ups
 
+create sequence admin_seq;
+
 create table admin (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('admin_seq')),
   email                     varchar(255),
   name                      varchar(255),
   password                  varchar(255),
@@ -25,8 +27,10 @@ create table admin (
   constraint pk_admin primary key (id))
 ;
 
+create sequence campaign_seq;
+
 create table campaign (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('campaign_seq')),
   name                      varchar(255),
   value                     decimal(6,4),
   publisher_id              bigint not null,
@@ -37,8 +41,10 @@ create table campaign (
   constraint pk_campaign primary key (id))
 ;
 
+create sequence campaign_package_seq;
+
 create table campaign_package (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('campaign_package_seq')),
   name                      varchar(255),
   variant                   varchar(255),
   campaign_id               bigint,
@@ -52,8 +58,10 @@ create table campaign_package (
   constraint pk_package primary key (id))
 ;
 
+create sequence audience_seq;
+
 create table audience (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('audience_seq')),
   name                      varchar(255),
   publisher_id              bigint not null,
   state                     varchar(4),
@@ -67,8 +75,10 @@ create table campaign_audience (
   constraint pk_campaign_audience primary key (campaign_id, audience_id))
 ;
 
+create sequence cookie_seq;
+
 create table cookie (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('cookie_seq')),
   name                      varchar(255),
   variant                   varchar(20),
   uuid                      varchar(50),
@@ -80,8 +90,10 @@ create table cookie (
   constraint pk_cookie primary key (id))
 ;
 
+create sequence cookie_stat_data_seq;
+
 create table cookie_stat_data (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('cookie_stat_data_seq')),
   timestep                  varchar(255),
   views                     bigint,
   cookie_id                 bigint not null,
@@ -89,8 +101,10 @@ create table cookie_stat_data (
   constraint pk_cookie_stat_data primary key (id))
 ;
 
+create sequence website_seq;
+
 create table website (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('website_seq')),
   name                      varchar(255),
   uuid                      varchar(50),
   email                     varchar(255),
@@ -103,8 +117,10 @@ create table audience_website (
   constraint pk_audience_website primary key (audience_id, website_id))
 ;
 
+create sequence path_target_seq;
+
 create table path_target (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('path_target_seq')),
   url_path                  varchar(255),
   variant                   varchar(255),
   audience_id               bigint,
@@ -112,9 +128,12 @@ create table path_target (
   constraint pk_path_target primary key (id))
 ;
 
+create sequence creative_seq;
+
 create table creative (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('creative_seq')),
   name                      varchar(255),
+  variant                   varchar(20),
   uuid                      varchar(50),
   url                       varchar(255),
   data                      bytea,
@@ -123,16 +142,20 @@ create table creative (
   constraint pk_creative primary key (id))
 ;
 
+create sequence creative_stat_data_seq;
+
 create table creative_stat_data (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('creative_stat_data_seq')),
   timestep                  varchar(255),
   views                     bigint,
   creative_id               bigint not null,
   constraint pk_creative_stat_data primary key (id))
 ;
 
+create sequence publisher_seq;
+
 create table publisher (
-  id                        bigint not null,
+  id                        bigint not null default(nextval('publisher_seq')),
   name                      varchar(255),
   created                   timestamp,
   changed                   timestamp,
@@ -151,28 +174,6 @@ create table publisher_admin (
   admin_id                       bigint not null,
   constraint pk_publisher_admin primary key (publisher_id, admin_id))
 ;
-
-create sequence admin_seq;
-
-create sequence website_seq;
-
-create sequence campaign_seq;
-
-create sequence audience_seq;
-
-create sequence campaign_package_seq;
-
-create sequence cookie_seq;
-
-create sequence cookie_stat_data_seq;
-
-create sequence creative_seq;
-
-create sequence creative_stat_data_seq;
-
-create sequence path_target_seq;
-
-create sequence publisher_seq;
 
 alter table admin add constraint fk_admin_publisher_1 foreign key (publisher_id) references publisher (id) on delete restrict on update restrict;
 create index ix_admin_publisher_1 on admin (publisher_id);
@@ -226,37 +227,35 @@ create unique index creative_uuid_id on creative (uuid);
 
 # --- !Downs
 
-SET REFERENTIAL_INTEGRITY FALSE;
+drop table if exists publisher_admin;
+
+drop table if exists campaign_audience;
 
 drop table if exists admin;
+
+drop table if exists creative_stat_data;
+
+drop table if exists creative;
+
+alter table campaign_package drop column campaign_id;
 
 drop table if exists campaign;
 
 drop table if exists campaign_package;
 
-drop table if exists audience;
-
-drop table if exists campaign_audience;
-
-drop table if exists cookie;
-
 drop table if exists cookie_stat_data;
 
-drop table if exists website;
+drop table if exists cookie;
 
 drop table if exists audience_website;
 
 drop table if exists path_target;
 
-drop table if exists creative;
+drop table if exists audience;
 
-drop table if exists creative_stat_data;
+drop table if exists website;
 
 drop table if exists publisher;
-
-drop table if exists publisher_admin;
-
-SET REFERENTIAL_INTEGRITY TRUE;
 
 drop sequence if exists admin_seq;
 

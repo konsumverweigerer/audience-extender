@@ -24,9 +24,11 @@ public class Creative extends Model {
 	@Required
 	public String name;
 
-	public String url;
-	public String uuid;
 	public String state;
+	public String variant;
+
+	public String uuid;
+	public String url;
 
 	public byte[] data;
 

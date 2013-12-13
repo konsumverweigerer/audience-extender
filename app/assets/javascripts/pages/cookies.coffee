@@ -14,7 +14,17 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @messages = ko.observableArray []
 
       @datatablescroller = new mod.Scroller
-      @datatable = new mod.Datatable ["name"]
+      @datatable = new mod.Datatable(["name", "state", "variant"],
+        state: (v) ->
+          if 'active' == v
+            '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
+          else if 'pending' == v
+            '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Not yet active</span>'
+          else if 'cancelled' == v
+            '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
+          else
+            v
+      )
 
       @cookies = ko.observable()
 
