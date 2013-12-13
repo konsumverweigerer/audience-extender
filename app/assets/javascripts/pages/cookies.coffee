@@ -26,7 +26,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
             v
       )
 
-      @cookies = ko.observable()
+      @cookies = ko.observableArray []
 
       @publisher = ko.observable()
       @publishers = ko.observableArray []
