@@ -38,9 +38,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       am = new mod.Admin a
       models.admins.push am
 
-  models.datatable.data models.admins()
-
   require(["lib/data"],(demo) ->
     demo.generate(mod,models,'admin')
+    models.datatable.data models.admins()
   )
 )

@@ -35,9 +35,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       pm = new mod.Publisher p
       models.publishers.push pm
 
-  models.datatable.data models.publishers()
-
   require(["lib/data"],(demo) ->
     demo.generate(mod,models,'publisher')
+    models.datatable.data models.publishers()
   )
 )

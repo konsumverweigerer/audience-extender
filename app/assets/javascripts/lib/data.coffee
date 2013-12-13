@@ -1,4 +1,4 @@
-define(["knockout"], (ko) ->
+define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
   loadwebsites = (mod,models) ->
 
   loadaudiences = (mod,models) ->

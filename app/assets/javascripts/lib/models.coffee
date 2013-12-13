@@ -924,6 +924,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
   Admin: Admin,
   Package: Package,
   Creative: Creative,
+  Cookie: Cookie,
   PathTarget: PathTarget,
   Publisher: Publisher,
   truncateToDay: truncateToDay,

@@ -45,9 +45,21 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       p.active 'true'
       models.publisher p
 
-  models.datatable.data models.creatives()
+  models.publisher.subscribe (nv) ->
+    a = routes.controllers.AdminController.changePublisher nv.id()
+    a.ajax {
+      success: (nv) ->
+        for p in models.publishers()
+          if nv.id==p.id()
+            p.active 'true'
+          else
+            p.active 'false'
+      error: ->
+        models.alert.show('Warning','Could not change publisher','error')
+    }
 
   require(["lib/data"],(demo) ->
-    demo.generate(mod,models,'admin')
+    demo.generate(mod,models,'creative')
+    models.datatable.data models.creatives()
   )
 )
