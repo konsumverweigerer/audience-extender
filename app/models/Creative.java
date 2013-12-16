@@ -1,6 +1,7 @@
 package models;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -24,7 +27,16 @@ public class Creative extends Model {
 	@Required
 	public String name;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
+
+	/*
+	 * allowed values: pending, active
+	 */
 	public String state;
+	/*
+	 * allowed values: image/png, image/gif, video/flv
+	 */
 	public String variant;
 
 	public String uuid;

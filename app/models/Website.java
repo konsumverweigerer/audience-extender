@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -24,6 +27,9 @@ public class Website extends Model {
 
 	@Required
 	public String name;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
 
 	public String uuid;
 	public String url;

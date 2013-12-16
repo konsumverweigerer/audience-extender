@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -24,8 +28,17 @@ public class Cookie extends Model {
 	@Required
 	public String name;
 
-	public String variant;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
+
+	/*
+	 * allowed values: pending, active
+	 */
 	public String state;
+	/*
+	 * allowed values: code, url
+	 */
+	public String variant;
 
 	public String uuid;
 	public Integer pathhash;
@@ -33,13 +46,39 @@ public class Cookie extends Model {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Audience audience;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Website website;
 
 	public Cookie(String name) {
 		this.name = name;
 		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");
+	}
+
+	public Cookie instance(String name, String variant, Audience audience,
+			Website website, Collection<PathTarget> paths) {
+		final Cookie cookie = new Cookie(name);
+		cookie.variant = variant;
+		this.pathhash = calculateHash(paths);
+		return cookie;
+	}
+
+	public Cookie instance(Cookie cookie, String name, String variant,
+			Audience audience, Website website, Collection<PathTarget> paths) {
+		if (cookie.audience.id.equals(audience.id)
+				&& cookie.website.id.equals(website.id)
+				&& cookie.pathhash == calculateHash(paths)) {
+			return cookie;
+		}
+		return instance(name, variant, audience, website, paths);
+	}
+
+	public static int calculateHash(Collection<PathTarget> paths) {
+		int h = 0;
+		for (final PathTarget path : paths) {
+			h = h ^ path.variant.hashCode();
+			h = h ^ path.urlPath.hashCode();
+		}
+		return h;
 	}
 
 	public static Cookie fromMap(Map<String, Object> data) {

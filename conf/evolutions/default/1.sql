@@ -32,6 +32,7 @@ create sequence campaign_seq;
 create table campaign (
   id                        bigint not null default(nextval('campaign_seq')),
   name                      varchar(255),
+  created                   timestamp,
   value                     decimal(6,4),
   publisher_id              bigint not null,
   campaign_package_id       bigint,
@@ -46,6 +47,7 @@ create sequence campaign_package_seq;
 create table campaign_package (
   id                        bigint not null default(nextval('campaign_package_seq')),
   name                      varchar(255),
+  created                   timestamp,
   variant                   varchar(255),
   campaign_id               bigint,
   start_date                timestamp,
@@ -58,12 +60,24 @@ create table campaign_package (
   constraint pk_package primary key (id))
 ;
 
+create sequence campaign_package_preview_seq;
+
+create table campaign_package_preview (
+  id                        bigint not null default(nextval('campaign_package_preview_seq')),
+  created                   timestamp,
+  variant                   varchar(20),
+  data                      bytea,
+  campaign_package_id       bigint,
+  constraint pk_campaign_package_preview primary key (id))
+;
+
 create sequence audience_seq;
 
 create table audience (
   id                        bigint not null default(nextval('audience_seq')),
   name                      varchar(255),
   publisher_id              bigint not null,
+  created                   timestamp,
   state                     varchar(4),
   tracking                  varchar(1024),
   constraint pk_audience primary key (id))
@@ -80,6 +94,7 @@ create sequence cookie_seq;
 create table cookie (
   id                        bigint not null default(nextval('cookie_seq')),
   name                      varchar(255),
+  created                   timestamp,
   variant                   varchar(20),
   uuid                      varchar(50),
   content                   varchar(1024),
@@ -106,9 +121,23 @@ create sequence website_seq;
 create table website (
   id                        bigint not null default(nextval('website_seq')),
   name                      varchar(255),
+  created                   timestamp,
   uuid                      varchar(50),
+  url                       varchar(255),
   email                     varchar(255),
+  publisher_id                bigint,
   constraint pk_website primary key (id))
+;
+
+create sequence website_preview_seq;
+
+create table website_preview (
+  id                        bigint not null default(nextval('website_preview_seq')),
+  created                   timestamp,
+  variant                   varchar(20),
+  data                      bytea,
+  website_id                bigint,
+  constraint pk_website_preview primary key (id))
 ;
 
 create table audience_website (
@@ -133,6 +162,7 @@ create sequence creative_seq;
 create table creative (
   id                        bigint not null default(nextval('creative_seq')),
   name                      varchar(255),
+  created                   timestamp,
   variant                   varchar(20),
   uuid                      varchar(50),
   url                       varchar(255),
@@ -199,6 +229,12 @@ alter table audience_website add constraint fk_audience_website_website_02 forei
 alter table audience add constraint fk_audience_publisher_1 foreign key (publisher_id) references publisher (id) on delete restrict on update restrict;
 create index ix_audience_publisher_1 on audience (publisher_id);
 
+alter table website add constraint fk_website_publisher_1 foreign key (publisher_id) references publisher (id) on delete restrict on update restrict;
+create index ix_website_publisher_1 on website (publisher_id);
+
+alter table website_preview add constraint fk_website_preview_website_1 foreign key (website_id) references website (id) on delete restrict on update restrict;
+create index ix_website_preview_website_1 on website_preview (website_id);
+
 alter table cookie add constraint fk_cookie_website_1 foreign key (website_id) references website (id) on delete restrict on update restrict;
 create index ix_cookie_website_1 on cookie (website_id);
 
@@ -210,6 +246,9 @@ create index ix_campaign_campaign_package_1 on campaign (campaign_package_id);
 
 alter table campaign_package add constraint fk_campaign_package_campaign_1 foreign key (campaign_id) references campaign (id) on delete restrict on update restrict;
 create index ix_campaign_package_campaign_1 on campaign_package (campaign_id);
+
+alter table campaign_package_preview add constraint fk_campaign_package_preview_campaign_package_1 foreign key (campaign_package_id) references campaign_package (id) on delete restrict on update restrict;
+create index ix_campaign_package_preview_campaign_package_1 on campaign_package_preview (campaign_package_id);
 
 alter table cookie_stat_data add constraint fk_cookie_stat_data_cookie_1 foreign key (cookie_id) references cookie (id) on delete restrict on update restrict;
 create index ix_cookie_stat_data_cookie_1 on cookie_stat_data (cookie_id);
@@ -241,6 +280,8 @@ alter table campaign_package drop column campaign_id;
 
 drop table if exists campaign;
 
+drop table if exists campaign_package_preview;
+
 drop table if exists campaign_package;
 
 drop table if exists cookie_stat_data;
@@ -253,17 +294,23 @@ drop table if exists path_target;
 
 drop table if exists audience;
 
+drop table if exists website_preview;
+
 drop table if exists website;
 
 drop table if exists publisher;
 
 drop sequence if exists admin_seq;
 
+drop sequence if exists website_preview_seq;
+
 drop sequence if exists website_seq;
 
 drop sequence if exists campaign_seq;
 
 drop sequence if exists audience_seq;
+
+drop sequence if exists campaign_package_preview_seq;
 
 drop sequence if exists campaign_package_seq;
 

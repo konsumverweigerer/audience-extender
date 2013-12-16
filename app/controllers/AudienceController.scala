@@ -94,25 +94,32 @@ object AudienceController extends Controller with Secured with Formats with Util
   def websiteSave(publisherid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        request.body.asFormUrlEncoded.map { data =>
-          data.get("id").map { ids =>
-            Website.findById(ids(0), admin).map { website =>
-              website.updateFromMap(mapToMap(data))
+        websiteForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Website.findById(id, admin).map { website =>
+                //TODO: fill from form
+                val msgs = website.write().asScala
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(website),
+                  "messages" -> Json.toJson(msgs))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val website = new Website("")
+              //TODO: fill from form
+              val publisher = Publisher.findById(publisherid, admin)
+              website.publisher = publisher.get
               val msgs = website.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(website),
                 "messages" -> Json.toJson(msgs))))
-            }.getOrElse(NotFound)
-          }.getOrElse {
-            val website = Website.fromMap(mapToMap(data))
-            val publisher = Publisher.findById(publisherid, admin)
-            website.publisher = publisher.get
-            val msgs = website.write().asScala
-            Ok(JsObject(Seq(
-              "data" -> Json.toJson(website),
-              "messages" -> Json.toJson(msgs))))
-          }
-        }.getOrElse(Forbidden)
+            })
       }.getOrElse(Forbidden)
   }
 

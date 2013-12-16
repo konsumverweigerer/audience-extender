@@ -33,7 +33,9 @@ define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko)
           ko.bindingHandlers.datatable.update(element,value.rows,allBindingsAccessor,viewModel,bindingContext)
         if datatableOptions.rowClick || value.rowClick
           $datatable.on('click.ko-datatables','tbody tr',(e) ->
-            (datatableOptions.rowClick || value.rowClick) value.data()[($datatable.fnGetData @).row]
+            r = $datatable.fnGetData @
+            if r?
+              (datatableOptions.rowClick || value.rowClick) value.data()[r.row]
           )
       else if datatableOptions.rowClick || value.rowClick
         $datatable.on('click.ko-datatables','tbody tr',(e) ->

@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -27,6 +30,12 @@ public class Audience extends Model {
 	@Required
 	public String name;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
+
+	/*
+	 * allowed: values active, pending, cancelled
+	 */
 	public String state;
 	public String tracking;
 
@@ -41,6 +50,7 @@ public class Audience extends Model {
 
 	public Audience(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public static Audience fromMap(Map<String, Object> data) {

@@ -32,6 +32,9 @@ public class Campaign extends Model {
 	@Required
 	public String name;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
 

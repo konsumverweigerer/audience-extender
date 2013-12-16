@@ -29,6 +29,12 @@ public class CampaignPackage extends Model {
 	@Required
 	public String name;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date created;
+
+	/*
+	 * allowed values: monthly, weekly, daily, custom
+	 */
 	public String variant;
 
 	@Temporal(TemporalType.TIMESTAMP)

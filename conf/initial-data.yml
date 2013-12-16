@@ -1,31 +1,210 @@
 admins:
 
  - &sysadmin !!models.Admin
-  email:       sysadmin@audience-extender.com
+  email:       sysadmin@audienceextender.com
   name:        System Administrator
   password:    AevaiShaeposhohng9ah
   adminRoles: sysadmin
         
  - &dummy !!models.Admin
-  email:       dummy@audience-extender.com
+  email:       dummy@audienceextender.com
   name:        Dummy user
   password:    $1$ojRtK.WM$EuBh4J3ot4F2WHV.8f1bB0
   adminRoles: none
         
 publishers:
 
- - !!models.Publisher
+ - &pu1 !!models.Publisher
   name:   First publisher
   owners:
    - *sysadmin
         
- - !!models.Publisher
+ - &pu2 !!models.Publisher
   name:   Second publisher
   owners:
    - *dummy
 
- - !!models.Publisher
+ - &pu3 !!models.Publisher
   name:   Third publisher
   owners:
    - *dummy
+
+websites:
+
+ - &we1 !!models.Website
+  publisher: *pu1
+  name: My Website
+  url: http://www.google.de
+
+ - &we2 !!models.Website
+  publisher: *pu1
+  name: Other Website
+  url: http://www.heise.de
+
+ - &we3 !!models.Website
+  publisher: *pu1
+  name: Some Website
+  url: http://app.audienceextender.com
+
+ - &we4 !!models.Website
+  publisher: *pu1
+  name: Last Website
+  url: http://app.audienceextender.com
+
+campaign_packages:
+
+ - &cp1 !!models.CampaignPackage
+  name: Small Package
+  variant: monthly
+  startDate: 2013-11-01
+  endDate: 2013-12-01
+  count: 1000
+  reach: 400
+  goal: 90000
+  buyCpm: 0.2
+  salesCpm: 0.4
+
+ - &cp2 !!models.CampaignPackage
+  name: Larger Package
+  variant: monthly
+  startDate: 2013-10-01
+  endDate: 2013-11-01
+  count: 10000
+  reach: 400
+  goal: 90000
+  buyCpm: 0.3
+  salesCpm: 0.5
+
+ - &cp3 !!models.CampaignPackage
+  name: Huge
+  variant: monthly
+  startDate: 2013-08-01
+  endDate: 2013-11-01
+  count: 100000
+  reach: 400
+  goal: 90000
+  buyCpm: 0.6
+  salesCpm: 0.8
+
+audiences:
+
+ - &au1 !!models.Audience
+  publisher: *pu1
+  name: My Audience
+  state: pending
+
+ - &au2 !!models.Audience
+  publisher: *pu1
+  name: Other Audience
+  state: active
+  tracking: some extra tracking code
+  websites:
+   - *we1
+   - *we2
+
+ - &au3 !!models.Audience
+  publisher: *pu1
+  name: Some Audience
+  state: cancelled
+
+campaigns:
+
+ - &ca1 !!models.Campaign
+  name: First Campaign
+
+ - &ca2 !!models.Campaign
+  name: Second Campaign
+
+ - &ca3 !!models.Campaign
+  name: Third Campaign
+
+ - &ca4 !!models.Campaign
+  name: Fourth Campaign
+
+path-targets:
+
+ - !!models.PathTarget
+  urlPath: mypath/1
+  variant: include
+  audience: *au2
+  website: *we1
+
+ - !!models.PathTarget
+  urlPath: mypath/or/2
+  variant: exclude
+  audience: *au2
+  website: *we2
+
+ - !!models.PathTarget
+  urlPath: pages
+  variant: include
+  audience: *au2
+  website: *we3
+
+cookie:
+
+ - &co1 !!models.Cookie
+  name: Creative1
+  state: pending
+  variant: code
+  pathhash: 0
+  audience: *au2
+  website: *we1
+
+ - &co2 !!models.Cookie
+  name: Creative2
+  state: active
+  variant: code
+  pathhash: 0
+  content: code to show1
+  audience: *au2
+  website: *we2
+
+ - &co3 !!models.Cookie
+  name: Creative3
+  state: pending
+  variant: code
+  pathhash: 0
+  audience: *au2
+  website: *we3
+
+ - &co4 !!models.Cookie
+  name: Creative4
+  state: active
+  variant: url
+  pathhash: 0
+  content: code to show1
+  audience: *au2
+  website: *we3
+
+ - &co5 !!models.Cookie
+  name: Creative5
+  state: pending
+  variant: url
+  pathhash: 0
+  audience: *au2
+  website: *we3
+
+creatives:
+
+ - &cr1 !!models.Creative
+  name: Creative1
+  state: active
+
+ - &cr2 !!models.Creative
+  name: Creative2
+  state: pending
+
+ - &cr3 !!models.Creative
+  name: Creative3
+  state: active
+
+ - &cr4 !!models.Creative
+  name: Creative4
+  state: pending
+
+ - &cr5 !!models.Creative
+  name: Creative5
+  state: active
+
 

@@ -21,6 +21,9 @@ public class PathTarget extends Model {
 	@Required
 	public String urlPath;
 
+	/*
+	 * allowed values: include, exclude
+	 */
 	public String variant;
 
 	@ManyToOne(fetch = FetchType.LAZY)
