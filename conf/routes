@@ -34,7 +34,11 @@ GET      /json/admins/list             controllers.AdminController.adminList
 POST     /json/admins/save             controllers.AdminController.adminSave
 
 GET      /cookies                      controllers.AdminController.cookies
+GET      /json/creatives/list          controllers.AdminController.creativeList
+GET      /json/creatives/save          controllers.AdminController.creativeSave
 GET      /creatives                    controllers.AdminController.creatives
+GET      /json/cookies/list            controllers.AdminController.cookieList
+GET      /json/cookies/save            controllers.AdminController.cookieSave
 
 GET      /data/dashboard               controllers.PublisherController.dashboard
 GET      /data/stats/:publisher        controllers.PublisherController.stats(publisher: Long)

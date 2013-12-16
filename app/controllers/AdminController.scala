@@ -28,6 +28,12 @@ object AdminController extends Controller with Secured with Formats with Utils {
   def adminJson(admin: Admin): JsValue =
     Json.toJson(Admin.findByAdmin(admin).asScala)
 
+  def cookieJson(admin: Admin): JsValue =
+    Json.toJson(models.Cookie.findByAdmin(admin).asScala)
+
+  def creativeJson(admin: Admin): JsValue =
+    Json.toJson(Creative.findByAdmin(admin).asScala)
+
   def deleteAdmin(adminid: String) = HasRole("sysadmin") { currentid =>
     implicit request =>
       Admin.findById(currentid).map { current =>
@@ -79,26 +85,107 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
+  def cookieList = HasRole("sysadmin") { adminid =>
+    request =>
+      Admin.findById(adminid).map { admin =>
+        Ok(cookieJson(admin))
+      }.getOrElse(Forbidden)
+  }
+
+  def creativeList = HasRole("sysadmin") { adminid =>
+    request =>
+      Admin.findById(adminid).map { admin =>
+        Ok(creativeJson(admin))
+      }.getOrElse(Forbidden)
+  }
+
   def adminSave = IsAuthenticated { currentid =>
     implicit request =>
       Admin.findById(currentid).map { current =>
-        request.body.asFormUrlEncoded.map { data =>
-          data.get("id").map { ids =>
-            Admin.findById(ids(0)).map { admin =>
-              admin.updateFromMap(mapToMap(data))
+        adminForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Admin.findById(id).map { admin =>
+                //TODO: fill from form
+                val msgs = admin.write()
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(admin),
+                  "messages" -> Json.toJson(msgs.asScala))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val admin = new Admin()
+              //TODO: fill from form
               val msgs = admin.write()
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(admin),
                 "messages" -> Json.toJson(msgs.asScala))))
-            }.getOrElse(NotFound)
-          }.getOrElse {
-            val admin = Admin.fromMap(mapToMap(data))
-            val msgs = admin.write()
-            Ok(JsObject(Seq(
-              "data" -> Json.toJson(admin),
-              "messages" -> Json.toJson(msgs.asScala))))
-          }
-        }.getOrElse(Forbidden)
+            })
+      }.getOrElse(Forbidden)
+  }
+
+  def creativeSave = IsAuthenticated { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        adminForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Admin.findById(id).map { admin =>
+                //TODO: fill from form
+                val msgs = admin.write()
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(admin),
+                  "messages" -> Json.toJson(msgs.asScala))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val admin = new Admin()
+              //TODO: fill from form
+              val msgs = admin.write()
+              Ok(JsObject(Seq(
+                "data" -> Json.toJson(admin),
+                "messages" -> Json.toJson(msgs.asScala))))
+            })
+      }.getOrElse(Forbidden)
+  }
+
+  def cookieSave = IsAuthenticated { currentid =>
+    implicit request =>
+      Admin.findById(currentid).map { current =>
+        adminForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Admin.findById(id).map { admin =>
+                //TODO: fill from form
+                val msgs = admin.write()
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(admin),
+                  "messages" -> Json.toJson(msgs.asScala))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val admin = new Admin()
+              //TODO: fill from form
+              val msgs = admin.write()
+              Ok(JsObject(Seq(
+                "data" -> Json.toJson(admin),
+                "messages" -> Json.toJson(msgs.asScala))))
+            })
       }.getOrElse(Forbidden)
   }
 

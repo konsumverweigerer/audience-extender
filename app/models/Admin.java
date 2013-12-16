@@ -79,6 +79,9 @@ public class Admin extends Model {
 	@Transient
 	public List<Publisher> publishers = new ArrayList<Publisher>();
 
+	public Admin() {
+	}
+	
 	public Admin(String name, String email) {
 		this(email, name, null);
 	}
@@ -202,7 +205,14 @@ public class Admin extends Model {
 
 	public static Option<Admin> findById(String id) {
 		if (id != null && !id.isEmpty()) {
-			final Admin admin = find.byId(Long.parseLong(id));
+			return findById(Long.parseLong(id));
+		}
+		return Option.empty();
+	}
+
+	public static Option<Admin> findById(Long id) {
+		if (id != null) {
+			final Admin admin = find.byId(id);
 			if (admin != null) {
 				return new Some<Admin>(admin);
 			}

@@ -75,7 +75,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         Ok(html.contact(contactForm, null)))
   }
 
-  def sendMessage = IsAuthenticated { adminid =>
+  def sendMessage = CheckIfIsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
         contactForm.bindFromRequest.fold(
@@ -188,7 +188,11 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AudienceController.websiteRemove,
         routes.javascript.AdminController.changePublisher,
         routes.javascript.AdminController.adminList,
-        routes.javascript.AdminController.adminSave)).as("text/javascript")
+        routes.javascript.AdminController.adminSave,
+        routes.javascript.AdminController.cookieList,
+        routes.javascript.AdminController.cookieSave,
+        routes.javascript.AdminController.creativeList,
+        routes.javascript.AdminController.creativeSave)).as("text/javascript")
   }
 
   def minProdWebJarAssetsAt(file: String): Action[AnyContent] = {
