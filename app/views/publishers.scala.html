@@ -4,8 +4,8 @@
 @menu.logout(current)
 @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/publishers.js").url)
 <script type="text/javascript">
-    //<![CDATA[
-    window.data = {};
+	//<![CDATA[
+	window.data = {};
 	window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());}
 	//]]>
 </script>
