@@ -65,6 +65,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     data.publishers?.map (p,i) ->
       pm = new mod.Publisher p
       models.publishers.push pm
+      if p.active == 'true'
+        models.publisher pm
     if !models.publisher() && models.publishers().length
       p = models.publishers()[0]
       p.active 'true'
