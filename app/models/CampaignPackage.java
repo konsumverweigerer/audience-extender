@@ -90,8 +90,12 @@ public class CampaignPackage extends Model {
 	}
 
 	public static Option<CampaignPackage> findById(String packageid, Admin admin) {
-		List<CampaignPackage> ret = null;
 		final Long id = packageid != null ? Long.valueOf(packageid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static Option<CampaignPackage> findById(Long id, Admin admin) {
+		List<CampaignPackage> ret = null;
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {

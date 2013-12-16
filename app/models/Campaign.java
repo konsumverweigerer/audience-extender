@@ -106,8 +106,12 @@ public class Campaign extends Model {
 	}
 
 	public static Option<Campaign> findById(String campaignid, Admin admin) {
-		List<Campaign> ret = null;
 		final Long id = campaignid != null ? Long.valueOf(campaignid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static Option<Campaign> findById(Long id, Admin admin) {
+		List<Campaign> ret = null;
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {

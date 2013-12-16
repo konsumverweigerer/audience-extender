@@ -44,25 +44,32 @@ object CampaignController extends Controller with Secured with Formats with Util
   def campaignSave(publisherid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        request.body.asFormUrlEncoded.map { data =>
-          data.get("id").map { ids =>
-            Campaign.findById(ids(0), admin).map { campaign =>
-              campaign.updateFromMap(mapToMap(data))
+        websiteForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Campaign.findById(id, admin).map { campaign =>
+                //TODO: fill from form
+                val msgs = campaign.write().asScala
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(campaign),
+                  "messages" -> Json.toJson(msgs))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val campaign = new Campaign("")
+              //TODO: fill from form
+              val publisher = Publisher.findById(publisherid, admin)
+              campaign.publisher = publisher.get
               val msgs = campaign.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(campaign),
                 "messages" -> Json.toJson(msgs))))
-            }.getOrElse(NotFound)
-          }.getOrElse {
-            val campaign = Campaign.fromMap(mapToMap(data))
-            val publisher = Publisher.findById(publisherid, admin)
-            campaign.publisher = publisher.get
-            val msgs = campaign.write().asScala
-            Ok(JsObject(Seq(
-              "data" -> Json.toJson(campaign),
-              "messages" -> Json.toJson(msgs))))
-          }
-        }.getOrElse(Forbidden)
+            })
       }.getOrElse(Forbidden)
   }
 
@@ -91,25 +98,32 @@ object CampaignController extends Controller with Secured with Formats with Util
   def packageSave(campaignid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        request.body.asFormUrlEncoded.map { data =>
-          data.get("id").map { ids =>
-            CampaignPackage.findById(ids(0), admin).map { pack =>
-              pack.updateFromMap(mapToMap(data))
+        websiteForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              CampaignPackage.findById(id, admin).map { pack =>
+                //TODO: fill from form
+                val msgs = pack.write().asScala
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(pack),
+                  "messages" -> Json.toJson(msgs))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val pack = new CampaignPackage("")
+              //TODO: fill from form
+              val campaign = Campaign.findById(campaignid, admin)
+              pack.campaign = campaign.get
               val msgs = pack.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(pack),
                 "messages" -> Json.toJson(msgs))))
-            }.getOrElse(NotFound)
-          }.getOrElse {
-            val pack = CampaignPackage.fromMap(mapToMap(data))
-            val campaign = Campaign.findById(campaignid, admin)
-            pack.campaign = campaign.get
-            val msgs = pack.write().asScala
-            Ok(JsObject(Seq(
-              "data" -> Json.toJson(pack),
-              "messages" -> Json.toJson(msgs))))
-          }
-        }.getOrElse(Forbidden)
+            })
       }.getOrElse(Forbidden)
   }
 
