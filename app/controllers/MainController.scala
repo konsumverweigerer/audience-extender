@@ -75,7 +75,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         Ok(html.contact(contactForm, null)))
   }
 
-  def sendMessage = IsAuthenticated { adminid =>
+  def sendMessage = CheckIfIsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
         contactForm.bindFromRequest.fold(

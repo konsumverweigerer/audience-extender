@@ -7,8 +7,8 @@ public class SendMail {
 	public static Boolean sendContactMessage(String email, String name,
 			String message) {
 		return sendMail("Audience extender: Contact form",
-				"info@audienceextender.com", "From: " + name + "\nMessage:\n\n"
-						+ message, null, null, "peter@audienceextender.com");
+				"sales@audienceextender.com", "From: " + name + "\nMessage:\n\n"
+						+ message, null, null, "contact@audienceextender.com");
 	}
 
 	private static boolean sendMail(String subject, String from, String text,
