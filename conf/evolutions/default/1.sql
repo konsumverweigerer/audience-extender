@@ -5,23 +5,23 @@ create sequence admin_seq;
 create table admin (
   id                        bigint not null default(nextval('admin_seq')),
   email                     varchar(255),
-  name                      varchar(255),
+  name                      varchar(120),
   password                  varchar(255),
-  password_change_token     varchar(255),
+  password_change_token     varchar(100),
   password_change_token_date timestamp,
-  email_confirm_token       varchar(255),
+  email_confirm_token       varchar(100),
   locked                    boolean,
   need_password_change      boolean,
   created                   timestamp,
   logged_in                 timestamp,
   changed                   timestamp,
-  url                       varchar(255),
-  streetaddress1            varchar(255),
-  streetaddress2            varchar(255),
-  streetaddress3            varchar(255),
-  state                     varchar(255),
-  country                   varchar(255),
-  telephone                 varchar(255),
+  url                       varchar(1024),
+  streetaddress1            varchar(100),
+  streetaddress2            varchar(100),
+  streetaddress3            varchar(100),
+  state                     varchar(50),
+  country                   varchar(50),
+  telephone                 varchar(20),
   admin_roles               varchar(255),
   publisher_id              bigint,
   constraint pk_admin primary key (id))
@@ -31,7 +31,7 @@ create sequence campaign_seq;
 
 create table campaign (
   id                        bigint not null default(nextval('campaign_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   created                   timestamp,
   value                     decimal(6,4),
   publisher_id              bigint not null,
@@ -46,9 +46,9 @@ create sequence campaign_package_seq;
 
 create table campaign_package (
   id                        bigint not null default(nextval('campaign_package_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   created                   timestamp,
-  variant                   varchar(255),
+  variant                   varchar(20),
   campaign_id               bigint,
   start_date                timestamp,
   end_date                  timestamp,
@@ -75,7 +75,7 @@ create sequence audience_seq;
 
 create table audience (
   id                        bigint not null default(nextval('audience_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   publisher_id              bigint not null,
   created                   timestamp,
   state                     varchar(4),
@@ -93,7 +93,7 @@ create sequence cookie_seq;
 
 create table cookie (
   id                        bigint not null default(nextval('cookie_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   created                   timestamp,
   variant                   varchar(20),
   uuid                      varchar(50),
@@ -120,10 +120,10 @@ create sequence website_seq;
 
 create table website (
   id                        bigint not null default(nextval('website_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   created                   timestamp,
   uuid                      varchar(50),
-  url                       varchar(255),
+  url                       varchar(1024),
   email                     varchar(255),
   publisher_id                bigint,
   constraint pk_website primary key (id))
@@ -151,7 +151,7 @@ create sequence path_target_seq;
 create table path_target (
   id                        bigint not null default(nextval('path_target_seq')),
   url_path                  varchar(255),
-  variant                   varchar(255),
+  variant                   varchar(20),
   audience_id               bigint,
   website_id                bigint,
   constraint pk_path_target primary key (id))
@@ -161,11 +161,11 @@ create sequence creative_seq;
 
 create table creative (
   id                        bigint not null default(nextval('creative_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   created                   timestamp,
   variant                   varchar(20),
   uuid                      varchar(50),
-  url                       varchar(255),
+  url                       varchar(1024),
   data                      bytea,
   campaign_id               bigint,
   state                     varchar(4),
@@ -176,7 +176,7 @@ create sequence creative_stat_data_seq;
 
 create table creative_stat_data (
   id                        bigint not null default(nextval('creative_stat_data_seq')),
-  timestep                  varchar(255),
+  timestep                  varchar(20),
   views                     bigint,
   creative_id               bigint not null,
   constraint pk_creative_stat_data primary key (id))
@@ -186,16 +186,16 @@ create sequence publisher_seq;
 
 create table publisher (
   id                        bigint not null default(nextval('publisher_seq')),
-  name                      varchar(255),
+  name                      varchar(120),
   created                   timestamp,
   changed                   timestamp,
-  url                       varchar(255),
-  streetaddress1            varchar(255),
-  streetaddress2            varchar(255),
-  streetaddress3            varchar(255),
-  state                     varchar(255),
-  country                   varchar(255),
-  telephone                 varchar(255),
+  url                       varchar(1024),
+  streetaddress1            varchar(100),
+  streetaddress2            varchar(100),
+  streetaddress3            varchar(100),
+  state                     varchar(50),
+  country                   varchar(50),
+  telephone                 varchar(20),
   constraint pk_publisher primary key (id))
 ;
 

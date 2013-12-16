@@ -51,7 +51,7 @@ websites:
   name: Last Website
   url: http://app.audienceextender.com
 
-campaign_packages:
+campaign-packages:
 
  - &cp1 !!models.CampaignPackage
   name: Small Package
@@ -91,12 +91,12 @@ audiences:
  - &au1 !!models.Audience
   publisher: *pu1
   name: My Audience
-  state: pending
+  state: P
 
  - &au2 !!models.Audience
   publisher: *pu1
   name: Other Audience
-  state: active
+  state: A
   tracking: some extra tracking code
   websites:
    - *we1
@@ -105,7 +105,7 @@ audiences:
  - &au3 !!models.Audience
   publisher: *pu1
   name: Some Audience
-  state: cancelled
+  state: C
 
 campaigns:
 
@@ -145,7 +145,7 @@ cookie:
 
  - &co1 !!models.Cookie
   name: Creative1
-  state: pending
+  state: P
   variant: code
   pathhash: 0
   audience: *au2
@@ -153,7 +153,7 @@ cookie:
 
  - &co2 !!models.Cookie
   name: Creative2
-  state: active
+  state: A
   variant: code
   pathhash: 0
   content: code to show1
@@ -162,7 +162,7 @@ cookie:
 
  - &co3 !!models.Cookie
   name: Creative3
-  state: pending
+  state: P
   variant: code
   pathhash: 0
   audience: *au2
@@ -170,7 +170,7 @@ cookie:
 
  - &co4 !!models.Cookie
   name: Creative4
-  state: active
+  state: A
   variant: url
   pathhash: 0
   content: code to show1
@@ -179,7 +179,7 @@ cookie:
 
  - &co5 !!models.Cookie
   name: Creative5
-  state: pending
+  state: P
   variant: url
   pathhash: 0
   audience: *au2
@@ -189,22 +189,75 @@ creatives:
 
  - &cr1 !!models.Creative
   name: Creative1
-  state: active
+  state: A
 
  - &cr2 !!models.Creative
   name: Creative2
-  state: pending
+  state: P
 
  - &cr3 !!models.Creative
   name: Creative3
-  state: active
+  state: A
 
  - &cr4 !!models.Creative
   name: Creative4
-  state: pending
+  state: P
 
  - &cr5 !!models.Creative
   name: Creative5
-  state: active
+  state: A
+
+cookie-stat-datas:
+
+ - !!models.CookieStatData
+  timestep: 20131101
+  views: 10
+  cookie: *co1
+
+ - !!models.CookieStatData
+  timestep: 2013110202
+  views: 17
+  cookie: *co1
+
+ - !!models.CookieStatData
+  timestep: 2013110204
+  views: 22
+  cookie: *co2
+
+ - !!models.CookieStatData
+  timestep: 2013110206
+  views: 31
+  cookie: *co2
+
+ - !!models.CookieStatData
+  timestep: 2013110208
+  views: 140
+  cookie: *co3
+
+ - !!models.CookieStatData
+  timestep: 2013110210
+  views: 15
+  cookie: *co3
+
+ - !!models.CookieStatData
+  timestep: 2013110212
+  views: 10
+  cookie: *co1
+
+ - !!models.CookieStatData
+  timestep: 2013110214
+  views: 25
+  cookie: *co4
+
+ - !!models.CookieStatData
+  timestep: 2013110216
+  views: 30
+  cookie: *co4
+
+ - !!models.CookieStatData
+  timestep: 2013110218
+  views: 40
+  cookie: *co1
+
 
 

@@ -93,7 +93,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @deleteaudience = ->
         if self.confirmaudiencedelete()==0
           return self.confirmaudiencedelete 1
-        alert('delete audience')
+        self.currentaudience().remove(self)
         self.currentaudience(new mod.Audience {name:'',id:-1})
         $('#editAudience').modal 'hide'
 
@@ -102,11 +102,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.currentaudience().refresh self.currentwebsites()
         l = self.audiencetable.data
         if a.id() && a.id()>0
-          alert('update audience')
+          self.currentaudience().save(self)
           l.remove byId a.id()
           l.push a
         else
-          alert('persist audience')
+          self.currentaudience().save(self)
           a.id 1000+Math.ceil 10000*Math.random()
           l.push a
         self.currentaudience(new mod.Audience {name:'',id:-1})
@@ -116,12 +116,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         a = self.currentwebsite()
         l = self.websites
         if a.id() && a.id() > 0
-          alert('update website')
+          self.currentwebsite().save(self)
           l.remove byId a.id()
           l.push a
           self.currentwebsite(new mod.Website {name:'',id:-1})
         else
-          alert('persist website')
+          self.currentwebsite().save(self)
           a.id 1000+Math.ceil 10000*Math.random()
           l.push a
         au = self.currentaudience()
@@ -170,7 +170,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         id = self.websitetodelete().id()
         self.websites.remove byId id
         self.currentwebsites.remove byId id
-        alert('delete website')
+        self.currentwebsite().remove(self)
         #todo: speed up refresh
         #au.refresh self.currentwebsites() for au in self.audiences()
         self.confirmwebsitedelete 0

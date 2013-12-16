@@ -201,16 +201,26 @@ public class Admin extends Model {
 
 	public static Option<Admin> findById(String id) {
 		if (id != null && !id.isEmpty()) {
-			return new Some<Admin>(find.byId(Long.parseLong(id)));
+			final Admin admin = find.byId(Long.parseLong(id));
+			if (admin != null) {
+				return new Some<Admin>(admin);
+			}
 		}
 		return Option.empty();
 	}
 
-	public static Admin findByToken(String id) {
+	public static Option<Admin> findByToken(String id) {
 		if (id != null && !id.isEmpty()) {
-			return find.byId(Long.parseLong(id));
+			for (final Admin admin : find.where().eq("emailConfirmToken", id)
+					.findList()) {
+				return new Some<Admin>(admin);
+			}
+			for (final Admin admin : find.where().eq("passwordChangeToken", id)
+					.findList()) {
+				return new Some<Admin>(admin);
+			}
 		}
-		return null;
+		return Option.empty();
 	}
 
 	private static final String TOKEN_ALPHABET = "ABCDEFGHKLMNPQRSTUWXYZ23456789";
