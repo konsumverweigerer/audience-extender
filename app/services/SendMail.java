@@ -1,5 +1,7 @@
 package services;
 
+import play.Logger;
+
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 
@@ -7,8 +9,9 @@ public class SendMail {
 	public static Boolean sendContactMessage(String email, String name,
 			String message) {
 		return sendMail("Audience extender: Contact form",
-				"sales@audienceextender.com", "From: " + name + "\nMessage:\n\n"
-						+ message, null, null, "contact@audienceextender.com");
+				"sales@audienceextender.com", "From: " + name
+						+ "\nMessage:\n\n" + message, null, null,
+				"contact@audienceextender.com");
 	}
 
 	private static boolean sendMail(String subject, String from, String text,
@@ -35,6 +38,7 @@ public class SendMail {
 				mail.send(text, html);
 			}
 		} catch (final Exception e) {
+			Logger.warn(e.getMessage(), e);
 			return false;
 		}
 		return true;

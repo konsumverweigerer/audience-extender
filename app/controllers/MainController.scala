@@ -81,15 +81,21 @@ object MainController extends Controller with Secured with Formats with Utils {
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, admin)),
           message => {
-            SendMail.sendContactMessage(message._1, message._2, message._3)
-            Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
+            if (SendMail.sendContactMessage(message._1, message._2, message._3)) {
+              Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
+            } else {
+              Redirect(routes.MainController.contact).flashing("error" -> "Could not send message")
+            }
           })
       }.getOrElse(
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, null)),
           message => {
-            SendMail.sendContactMessage(message._1, message._2, message._3)
-            Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
+            if (SendMail.sendContactMessage(message._1, message._2, message._3)) {
+              Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
+            } else {
+              Redirect(routes.MainController.contact).flashing("error" -> "Could not send message")
+            }
           }))
   }
 
