@@ -20,8 +20,22 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentpublisher = ko.observable(new mod.Publisher {name:'',id:-1})
 
-      @selectpublisher = (p) ->
-        {}
+      @selectpublisher = (a) ->
+        self.currentpublisher (new mod.Publisher()).copyFrom(c)
+        $('#editPublisher').modal 'show'
+
+      @savepublisher = ->
+        a = self.currentpublisher()
+        l = self.datatable.data
+        if a.id() && a.id()>0
+          a.save(self)
+          l.remove byId a.id()
+          l.push a
+        else
+          a.save(self)
+          l.push a
+        self.currentpublisher(new mod.Publisher {name:'',id:-1})
+        $('#editPublisher').modal 'hide'
 
   models = new Publishers
     

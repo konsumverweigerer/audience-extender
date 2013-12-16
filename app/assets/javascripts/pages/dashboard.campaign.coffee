@@ -118,11 +118,17 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @savepackage = ->
         a = self.currentpackage()
+        l = self.packages
+        if a.id() && a.id() > 0
+          a.save(self)
+          l.remove byId a.id()
+          l.push a
+          self.currentpackage(new mod.Package {name:'',id:-1})
+        else
+          a.save(self)
+          l.push a
         ca = self.currentcampaign()
-        alert('persist package')
-        a.id Math.ceil 1000+1000*Math.random()
         ca.package a.id()
-        self.packages.push a
         self.currentpackages.push a
 
       @newcampaign = ->
@@ -162,12 +168,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         a.refresh(self.currentwebsites(),self.currentpackages())
         l = self.campaigntable.data
         if a.id() && a.id()>0
-          alert('update campaign')
+          a.save(self)
           l.remove byId a.id()
           l.push a
         else
-          alert('persist campaign')
-          a.id Math.ceil 1000+1000*Math.random()
+          a.save(self)
           l.push a
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
         $('#editCampaign').modal 'hide'

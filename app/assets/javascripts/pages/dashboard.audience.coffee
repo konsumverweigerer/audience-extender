@@ -102,12 +102,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.currentaudience().refresh self.currentwebsites()
         l = self.audiencetable.data
         if a.id() && a.id()>0
-          self.currentaudience().save(self)
+          a.save(self)
           l.remove byId a.id()
           l.push a
         else
-          self.currentaudience().save(self)
-          a.id 1000+Math.ceil 10000*Math.random()
+          a.save(self)
           l.push a
         self.currentaudience(new mod.Audience {name:'',id:-1})
         $('#editAudience').modal 'hide'
@@ -116,13 +115,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         a = self.currentwebsite()
         l = self.websites
         if a.id() && a.id() > 0
-          self.currentwebsite().save(self)
+          a.save(self)
           l.remove byId a.id()
           l.push a
           self.currentwebsite(new mod.Website {name:'',id:-1})
         else
-          self.currentwebsite().save(self)
-          a.id 1000+Math.ceil 10000*Math.random()
+          a.save(self)
           l.push a
         au = self.currentaudience()
         self.currentwebsites.push a
