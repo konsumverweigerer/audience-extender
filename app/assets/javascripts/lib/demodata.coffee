@@ -31,8 +31,8 @@ define(["knockout"], (ko) ->
         state: ['paused','finished','active','pending','cancelled','rejected',rnd(0,99)+'%'][rnd(0,6)]
         revenue: 100*Math.random()
         cost: 10*Math.random()
-        from: d[0]
-        to: d[1]
+        startDate: d[0]
+        endDate: d[1]
         audiences: au
         creatives: cr
         package: rnd(0,5) || undefined

@@ -81,7 +81,7 @@ public class Admin extends Model {
 
 	public Admin() {
 	}
-	
+
 	public Admin(String name, String email) {
 		this(email, name, null);
 	}
@@ -288,6 +288,10 @@ public class Admin extends Model {
 	public static Option<Admin> findByEmailOption(String email) {
 		final Admin admin = findByEmail(email);
 		return new Some<Admin>(admin);
+	}
+
+	public List<Publisher> getPublishers() {
+		return publishers != null ? publishers : new ArrayList<Publisher>();
 	}
 
 	public boolean checkPwd(String password) {

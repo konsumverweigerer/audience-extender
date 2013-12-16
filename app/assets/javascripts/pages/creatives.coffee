@@ -12,15 +12,16 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
+      @credential = ko.observable()
 
       @datatablescroller = new mod.Scroller
       @datatable = new mod.Datatable(["name", "state", "variant"],
         state: (v) ->
-          if 'active' == v
+          if 'active' == v || 'A' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
-          else if 'pending' == v
+          else if 'pending' == v || 'P' == v
             '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Not yet active</span>'
-          else if 'cancelled' == v
+          else if 'cancelled' == v || 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
             v
@@ -33,20 +34,20 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentcreative = ko.observable(new mod.Creative {name:'',id:-1})
 
-      @selectcreative = (a) ->
-        self.currentcreative (new mod.Creative()).copyFrom(c)
+      @selectcreative = (c) ->
+        self.currentcreative (new mod.Creative()).copyFrom c
         $('#editCreative').modal 'show'
 
       @savecreative = ->
-        a = self.currentcreative()
+        c = self.currentcreative()
         l = self.datatable.data
-        if a.id() && a.id()>0
-          a.save(self)
-          l.remove byId a.id()
-          l.push a
+        if c.id() && c.id()>0
+          c.save self
+          l.remove byId c.id()
+          l.push c
         else
-          a.save(self)
-          l.push a
+          c.save self
+          l.push c
         self.currentcreative(new mod.Creative {name:'',id:-1})
         $('#editCreative').modal 'hide'
 
@@ -68,6 +69,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       p = models.publishers()[0]
       p.active 'true'
       models.publisher p
+    models.credential(new mod.Admin data.admin)
 
   models.publisher.subscribe (nv) ->
     a = routes.controllers.AdminController.changePublisher nv.id()

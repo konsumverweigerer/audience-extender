@@ -4,7 +4,7 @@ admins:
   email:       sysadmin@audience-extender.com
   name:        System Administrator (Demo)
   password:    AevaiShaeposhohng9ah
-  adminRoles: sysadmin
+  adminRoles: sysadmin demo
         
  - &sysadmin !!models.Admin
   email:       sysadmin@audienceextender.com

@@ -2,12 +2,13 @@
 @templates.main("Admins") {
 @menu.admin("Admins")
 @menu.logout(current)
-@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/admins.js").url)
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/admins.js").url)
 <script type="text/javascript">
 	//<![CDATA[
 	window.data = {};
-	window.data.admins = @{import play.api.libs.json._;import controllers.AdminController.AdminFormat;Html(Json.toJson(admins).toString());}
-  window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());}
+	window.data.admins = @{import play.api.libs.json._;import controllers.AdminController.AdminFormat;Html(Json.toJson(admins).toString());};
+	window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());};
+	window.data.admin = {email:'@current.email',roles:@{import play.api.libs.json._;Html(Json.toJson(current.getRoles().asScala).toString());}};
 	//]]>
 </script>
 } {
