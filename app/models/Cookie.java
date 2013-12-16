@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,15 @@ public class Cookie extends Model {
 	public static Finder<String, Cookie> find = new Finder<String, Cookie>(
 			String.class, Cookie.class);
 
+	public List<Message> write() {
+		if (this.uuid == null || this.uuid.isEmpty()) {
+			this.uuid = UuidHelper
+					.randomUUIDString("com.audienceextender.cookie");
+		}
+		save();
+		return Collections.emptyList();
+	}
+
 	public Cookie updateFromMap(Map<String, Object> data) {
 		return this;
 	}
@@ -103,10 +113,10 @@ public class Cookie extends Model {
 
 	public static List<Cookie> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {
-			return find.findList();
+			return find.fetch("audience").fetch("website").findList();
 		}
-		return find.where().eq("audience.publisher.owners.id", admin.id)
-				.findList();
+		return find.fetch("audience").fetch("website").where()
+				.eq("audience.publisher.owners.id", admin.id).findList();
 	}
 
 	public static Option<Cookie> findById(String cookieid, Admin admin) {
@@ -117,10 +127,12 @@ public class Cookie extends Model {
 	public static Option<Cookie> findById(Long id, Admin admin) {
 		List<Cookie> ret = null;
 		if (admin.isSysAdmin()) {
-			ret = find.where().eq("id", id).findList();
+			ret = find.fetch("audience").fetch("website").where().eq("id", id)
+					.findList();
 		} else {
-			ret = find.where().eq("audience.publisher.owners.id", admin.id)
-					.eq("id", id).findList();
+			ret = find.fetch("audience").fetch("website").where()
+					.eq("audience.publisher.owners.id", admin.id).eq("id", id)
+					.findList();
 		}
 		if (!ret.isEmpty()) {
 			return new Some<Cookie>(ret.get(0));
@@ -130,6 +142,14 @@ public class Cookie extends Model {
 
 	public static List<Cookie> findByUuid(String uuid) {
 		return find.where().eq("uuid", uuid).findList();
+	}
+
+	public Audience getAudience() {
+		return audience;
+	}
+
+	public Website getWebsite() {
+		return website;
 	}
 
 	@Override

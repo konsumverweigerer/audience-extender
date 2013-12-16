@@ -385,8 +385,8 @@ trait Formats {
       "state" -> JsString(cookie.state),
       "uuid" -> JsString(cookie.uuid),
       "variant" -> JsString(cookie.variant),
-      "audience" -> Json.toJson(cookie.audience),
-      "website" -> Json.toJson(cookie.website)))
+      "audience" -> Json.toJson(cookie.getAudience()),
+      "website" -> Json.toJson(cookie.getWebsite())))
   }
 
   implicit object CreativeFormat extends Format[Creative] {
@@ -399,6 +399,8 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(creative.id)),
       "name" -> JsString(creative.name),
       "preview" -> JsString(creative.getPreview()),
+      "state" -> JsString(creative.state),
+      "variant" -> JsString(creative.variant),
       "uuid" -> JsString(creative.uuid),
       "url" -> JsString(creative.url)))
   }

@@ -110,16 +110,34 @@ audiences:
 campaigns:
 
  - &ca1 !!models.Campaign
+  publisher: *pu1
   name: First Campaign
+  campaignPackage: *cp1
+  audiences: 
+   - *au1
 
  - &ca2 !!models.Campaign
+  publisher: *pu1
   name: Second Campaign
+  campaignPackage: *cp1
+  audiences: 
+   - *au1
+   - *au3
 
  - &ca3 !!models.Campaign
+  publisher: *pu1
   name: Third Campaign
+  campaignPackage: *cp1
+  audiences: 
+   - *au1
 
  - &ca4 !!models.Campaign
+  publisher: *pu1
   name: Fourth Campaign
+  campaignPackage: *cp1
+  audiences: 
+   - *au1
+   - *au2
 
 path-targets:
 
@@ -141,10 +159,10 @@ path-targets:
   audience: *au2
   website: *we3
 
-cookie:
+cookies:
 
  - &co1 !!models.Cookie
-  name: Creative1
+  name: Cookie1
   state: P
   variant: code
   pathhash: 0
@@ -152,7 +170,7 @@ cookie:
   website: *we1
 
  - &co2 !!models.Cookie
-  name: Creative2
+  name: Cookie2
   state: A
   variant: code
   pathhash: 0
@@ -161,7 +179,7 @@ cookie:
   website: *we2
 
  - &co3 !!models.Cookie
-  name: Creative3
+  name: Cookie3
   state: P
   variant: code
   pathhash: 0
@@ -169,7 +187,7 @@ cookie:
   website: *we3
 
  - &co4 !!models.Cookie
-  name: Creative4
+  name: Cookie4
   state: A
   variant: url
   pathhash: 0
@@ -178,7 +196,7 @@ cookie:
   website: *we3
 
  - &co5 !!models.Cookie
-  name: Creative5
+  name: Cookie5
   state: P
   variant: url
   pathhash: 0
@@ -189,22 +207,32 @@ creatives:
 
  - &cr1 !!models.Creative
   name: Creative1
+  campaign: *ca1
+  variant: url
   state: A
 
  - &cr2 !!models.Creative
   name: Creative2
+  campaign: *ca1
+  variant: url
   state: P
 
  - &cr3 !!models.Creative
   name: Creative3
+  campaign: *ca1
+  variant: url
   state: A
 
  - &cr4 !!models.Creative
   name: Creative4
+  campaign: *ca1
+  variant: url
   state: P
 
  - &cr5 !!models.Creative
   name: Creative5
+  campaign: *ca1
+  variant: url
   state: A
 
 cookie-stat-datas:
@@ -259,5 +287,56 @@ cookie-stat-datas:
   views: 40
   cookie: *co1
 
+creative-stat-datas:
+
+ - !!models.CreativeStatData
+  timestep: 20131101
+  views: 10
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110202
+  views: 17
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110204
+  views: 22
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110206
+  views: 31
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110208
+  views: 140
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110210
+  views: 15
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110212
+  views: 10
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110214
+  views: 25
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110216
+  views: 30
+  creative: *cr1
+
+ - !!models.CreativeStatData
+  timestep: 2013110218
+  views: 40
+  creative: *cr1
 
 

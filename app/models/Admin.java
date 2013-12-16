@@ -179,7 +179,8 @@ public class Admin extends Model {
 	}
 
 	public static boolean hasRole(String adminid, String role) {
-		final Admin admin = findById(adminid).orNull(null);
+		final Option<Admin> o = findById(adminid);
+		final Admin admin = o.nonEmpty() ? o.get() : null;
 		if (admin != null) {
 			return admin.getRoles().contains(role);
 		}

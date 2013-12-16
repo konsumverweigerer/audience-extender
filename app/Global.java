@@ -5,6 +5,10 @@ import models.Admin;
 import models.Audience;
 import models.Campaign;
 import models.CampaignPackage;
+import models.Cookie;
+import models.CookieStatData;
+import models.Creative;
+import models.CreativeStatData;
 import models.PathTarget;
 import models.Publisher;
 import models.Website;
@@ -36,6 +40,10 @@ public class Global extends GlobalSettings {
 			}
 			if (Ebean.find(Website.class).findRowCount() == 0) {
 				Ebean.save(all.get("websites"));
+				for (final Website website : Ebean.find(Website.class)
+						.findList()) {
+					website.write();
+				}
 			}
 			if (Ebean.find(CampaignPackage.class).findRowCount() == 0) {
 				Ebean.save(all.get("campaign-packages"));
@@ -48,6 +56,25 @@ public class Global extends GlobalSettings {
 			}
 			if (Ebean.find(Campaign.class).findRowCount() == 0) {
 				Ebean.save(all.get("campaigns"));
+			}
+			if (Ebean.find(Cookie.class).findRowCount() == 0) {
+				Ebean.save(all.get("cookies"));
+				for (final Cookie cookie : Ebean.find(Cookie.class).findList()) {
+					cookie.write();
+				}
+			}
+			if (Ebean.find(Creative.class).findRowCount() == 0) {
+				Ebean.save(all.get("creatives"));
+				for (final Creative creative : Ebean.find(Creative.class)
+						.findList()) {
+					creative.write();
+				}
+			}
+			if (Ebean.find(CookieStatData.class).findRowCount() == 0) {
+				Ebean.save(all.get("cookie-stat-datas"));
+			}
+			if (Ebean.find(CreativeStatData.class).findRowCount() == 0) {
+				Ebean.save(all.get("creative-stat-datas"));
 			}
 		}
 	}

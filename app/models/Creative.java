@@ -1,6 +1,7 @@
 package models;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
+import services.UuidHelper;
 
 @Entity
 public class Creative extends Model {
@@ -50,6 +52,7 @@ public class Creative extends Model {
 	public Creative(String name, Option<String> url) {
 		this.name = name;
 		this.url = url.orNull(null);
+		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.creative");
 	}
 
 	public static Creative fromMap(Map<String, Object> data) {
@@ -73,6 +76,15 @@ public class Creative extends Model {
 	public static Option<Creative> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {
 		return null;
+	}
+
+	public List<Message> write() {
+		if (this.uuid == null || this.uuid.isEmpty()) {
+			this.uuid = UuidHelper
+					.randomUUIDString("com.audienceextender.creative");
+		}
+		save();
+		return Collections.emptyList();
 	}
 
 	public Creative updateFromMap(Map<String, Object> data) {

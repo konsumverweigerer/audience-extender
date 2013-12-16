@@ -293,7 +293,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @mapper = ko.observable(mapper || {})
 
       @resolve = (base,attr) ->
-        if base.call
+        if base?.call
           self.resolve(base(),attr)
         else if attr
           if attr.split
@@ -834,6 +834,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @url = ko.observable d?.url
 
       @state = ko.observable d?.state
+
+      @variant = ko.observable d?.variant
 
       @previewUrl = ko.observable d?.previewUrl
 
