@@ -1,5 +1,11 @@
 admins:
 
+ - &demo !!models.Admin
+  email:       sysadmin@audience-extender.com
+  name:        System Administrator (Demo)
+  password:    AevaiShaeposhohng9ah
+  adminRoles: sysadmin
+        
  - &sysadmin !!models.Admin
   email:       sysadmin@audienceextender.com
   name:        System Administrator
@@ -17,6 +23,7 @@ publishers:
  - &pu1 !!models.Publisher
   name:   First publisher
   owners:
+   - *demo
    - *sysadmin
         
  - &pu2 !!models.Publisher

@@ -33,8 +33,22 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentcreative = ko.observable(new mod.Creative {name:'',id:-1})
 
-      @selectcreative = (c) ->
-        {}
+      @selectcreative = (a) ->
+        self.currentcreative (new mod.Creative()).copyFrom(c)
+        $('#editCreative').modal 'show'
+
+      @savecreative = ->
+        a = self.currentcreative()
+        l = self.datatable.data
+        if a.id() && a.id()>0
+          a.save(self)
+          l.remove byId a.id()
+          l.push a
+        else
+          a.save(self)
+          l.push a
+        self.currentcreative(new mod.Creative {name:'',id:-1})
+        $('#editCreative').modal 'hide'
 
   models = new Creatives
     

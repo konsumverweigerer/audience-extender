@@ -33,8 +33,22 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentcookie = ko.observable(new mod.Cookie {name:'',id:-1})
 
-      @selectcookie = (c) ->
-        {}
+      @selectcookie = (a) ->
+        self.currentcookie (new mod.Cookie()).copyFrom(c)
+        $('#editCookie').modal 'show'
+
+      @savecookie = ->
+        a = self.currentcookie()
+        l = self.datatable.data
+        if a.id() && a.id()>0
+          a.save(self)
+          l.remove byId a.id()
+          l.push a
+        else
+          a.save(self)
+          l.push a
+        self.currentcookie(new mod.Cookie {name:'',id:-1})
+        $('#editCookie').modal 'hide'
 
   models = new Creatives
     
