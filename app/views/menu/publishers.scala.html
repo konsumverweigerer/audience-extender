@@ -1,6 +1,6 @@
 @(publishers: Seq[Publisher])
 @if(publishers.size() > 1) {
-<li class="divider"></li>
-<select class="form-control" data-bind="options: publishers, optionsText: 'name', value: publisher" id="selectDate">
-</select>
+	<li class="divider"></li>
+	<select class="form-control" data-bind="options: publishers, optionsText: 'name', value: publisher">
+	</select>
 }

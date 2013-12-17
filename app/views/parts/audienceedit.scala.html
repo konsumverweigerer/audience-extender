@@ -67,11 +67,11 @@
 				<!-- ko if: confirmwebsitedelete()==0 -->
 				<div class="box-1" data-bind="fadeVisible: currentwebsite().editing, with: currentwebsite">
 					<h3 data-bind="text: persisted() ? 'Edit Website' : 'New Website'">New Website</h3>
-					<form class="form-horizontal" role="form" novalidate="true" action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: $root.savewebsite }">
+					<form class="form-horizontal" role="form" novalidate action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: $root.savewebsite }">
 						<div class="form-group control-group">
 							<label for="websitename" class="col-sm-3 control-label">Website Name</label>
 							<div class="col-sm-9">
-								<input type="text" required="true" data-validation-required-message="Enter a website name" class="form-control" id="websitename" placeholder="Website Name" data-bind="attr: {disabled: persisted}, value: name">
+								<input type="text" required data-validation-required-message="Enter a website name" class="form-control" id="websitename" placeholder="Website Name" data-bind="attr: {disabled: persisted}, value: name">
 							</div>
 							<div class="controls popover left">
 								<div class="arrow"></div>
@@ -85,7 +85,7 @@
 							</div>
 							<label for="websiteurl" class="col-sm-3 control-label">Website Url</label>
 							<div class="col-sm-9">
-								<input type="text" required="true" data-validation-required-message="Enter a website URL" data-validation-regex-regex="^http\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,5}(/\S*)?$" data-validation-regex-message="Enter valid URL" class="form-control" id="websiteurl" placeholder="Website Url" data-bind="attr: {disabled: persisted}, value: url">
+								<input type="text" required data-validation-required-message="Enter a website URL" data-validation-regex-regex="^http\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,5}(/\S*)?$" data-validation-regex-message="Enter valid URL" class="form-control" id="websiteurl" placeholder="Website Url" data-bind="attr: {disabled: persisted}, value: url">
 							</div>
 						</div>
 						<div class="form-group" data-bind="visible: persisted">
@@ -166,13 +166,13 @@
 
 					<div class="row">
 						<div class="col-sm-12 m-top">
-							<form class="form-horizontal" role="form" novalidate="true" action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: addpath, callbacks: { checkpath: checkpath } }">
+							<form class="form-horizontal" role="form" novalidate action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: addpath, callbacks: { checkpath: checkpath } }">
 								<div class="control-group">
 									<div class="input-group">
 										<span class="input-group-btn">
 											<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus-sign"></span> Add new path</button>
 										</span>
-										<input type="text" required="true" data-validation-callback-callback="checkpath" data-validation-required-message="Enter valid path segment ..." data-validation-regex-regex="^[A-Za-z0-9_/?=&-]+$" data-validation-regex-message="Enter valid path segment ..." class="form-control" data-bind="value: path" placeholder="Enter path ...">
+										<input type="text" required data-validation-callback-callback="checkpath" data-validation-required-message="Enter valid path segment ..." data-validation-regex-regex="^[A-Za-z0-9_/?=&-]+$" data-validation-regex-message="Enter valid path segment ..." class="form-control" data-bind="value: path" placeholder="Enter path ...">
 									</div>
 									<div class="help-block"></div>
 								</div>
