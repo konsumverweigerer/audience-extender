@@ -96,7 +96,9 @@ public class Website extends Model {
 	}
 
 	public static Option<Website> findByUUID(String uuid) {
-		final List<Website> ret = find.fetch("pathTargets").where().eq("uuid", uuid).findList();
+		final List<Website> ret = find.fetch("pathTargets")
+				.fetch("pathTargets.audience").where().eq("uuid", uuid)
+				.findList();
 		if (!ret.isEmpty()) {
 			return new Some<Website>(ret.get(0));
 		}

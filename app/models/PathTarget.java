@@ -26,10 +26,10 @@ public class PathTarget extends Model {
 	 */
 	public String variant;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Audience audience;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Website website;
 
 	public PathTarget(String urlPath) {
