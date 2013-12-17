@@ -54,6 +54,7 @@ GET      /data/graph/c/:from/:to       controllers.AudienceController.dashboard(
 
 # Content
 GET      /code/:c/:s                   controllers.ContentController.cookie(c: String,s: String)
+GET      /code/:c                      controllers.ContentController.cookie(c: String,s: String ?= "")
 GET      /obj/:c                       controllers.ContentController.creative(c: String)
 
 # Publishers

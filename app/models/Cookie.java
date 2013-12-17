@@ -33,7 +33,7 @@ public class Cookie extends Model {
 	public Date created;
 
 	/*
-	 * allowed values: pending, active
+	 * allowed values: pending, active, cancelled
 	 */
 	public String state;
 	/*
@@ -117,6 +117,12 @@ public class Cookie extends Model {
 		}
 		return find.fetch("audience").fetch("website").where()
 				.eq("audience.publisher.owners.id", admin.id).findList();
+	}
+
+	public static List<Cookie> findByWebsite(Long websiteid, Long audienceid) {
+		final List<Cookie> ret = find.where().eq("website.id", websiteid)
+				.eq("audience.id", audienceid).findList();
+		return ret;
 	}
 
 	public static Option<Cookie> findById(String cookieid, Admin admin) {

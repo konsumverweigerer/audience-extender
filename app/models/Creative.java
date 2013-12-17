@@ -98,6 +98,14 @@ public class Creative extends Model {
 		return find.all();
 	}
 
+	public static Option<Creative> findByUUID(String uuid) {
+		final List<Creative> ret = find.where().eq("uuid", uuid).findList();
+		if (!ret.isEmpty()) {
+			return new Some<Creative>(ret.get(0));
+		}
+		return Option.empty();
+	}
+
 	public static Option<Creative> findById(String creativeid, Admin admin) {
 		final Long id = creativeid != null ? Long.valueOf(creativeid) : 0L;
 		return findById(id, admin);

@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -37,6 +39,9 @@ public class Website extends Model {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Publisher publisher;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "website")
+	public List<PathTarget> pathTargets = new ArrayList<PathTarget>();
 
 	public Website(String name) {
 		this.name = name;
@@ -88,6 +93,14 @@ public class Website extends Model {
 						+ "src=\"http://app.audienceextender.com/%s\">\n</script>\n",
 						controllers.routes.ContentController.cookie(this.uuid,
 								"<sub>"));
+	}
+
+	public static Option<Website> findByUUID(String uuid) {
+		final List<Website> ret = find.fetch("pathTargets").where().eq("uuid", uuid).findList();
+		if (!ret.isEmpty()) {
+			return new Some<Website>(ret.get(0));
+		}
+		return Option.empty();
 	}
 
 	public static Option<Website> findById(String websiteid, Admin admin) {
