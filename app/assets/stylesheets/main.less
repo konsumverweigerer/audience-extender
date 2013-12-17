@@ -510,6 +510,11 @@ th {
 		border-bottom:1px dashed #dfdfdf;
 		padding-bottom:20px;
 	}
+	.border-all {
+		border:1px solid #dfdfdf;
+		padding:20px;
+		.rounded-corners;
+	}
 }
 .scroll-buttons {
 	bottom:20px;
@@ -881,6 +886,49 @@ nav.loginbar {
 .glyph-h6 {
 	margin:0 2px;
 	font-size:12px;
+}
+
+
+
+//responsive rules
+.slides .big-number {
+  display:none;
+}
+
+@media (max-width: 767px) {
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .slides .big-number {
+    display:block;
+		float:left;
+		font-size:150px;
+		margin:0 30px;
+  }
+	.slides .howitworks-title {
+		margin-top:30px;
+		span {
+			display:none;
+		}
+	}
+}
+
+@media (min-width: 1200px) {
+  .slides .big-number {
+    display:block;
+		float:left;
+		font-size:150px;
+		margin:20px 30px 0 50px;
+  }
+	.slides .howitworks-title {
+		margin-top:70px;
+		span {
+			display:none;
+		}
+	}
 }
 
 
