@@ -22,7 +22,7 @@ object MainController extends Controller with Secured with Formats with Utils {
   val loginForm = Form(
     tuple(
       "email" -> (email verifying nonEmpty),
-      "password" -> text)
+      "password" -> nonEmptyText)
       verifying ("Invalid email or password", result => result match {
         case (email, password) => (Admin.authenticate(email, password) != null)
       }))
@@ -119,7 +119,7 @@ object MainController extends Controller with Secured with Formats with Utils {
     forgotPasswordForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
       user => {
-        Redirect(routes.MainController.login).flashing("success" -> "Password reset e-mail sent")
+        Redirect(routes.MainController.login).flashing("success" -> "Password reset e-mail sent, check your mail and follow the instructions in the e-mail to reset your password")
       })
   }
 

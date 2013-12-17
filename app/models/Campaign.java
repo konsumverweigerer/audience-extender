@@ -133,12 +133,15 @@ public class Campaign extends Model {
 								prec);
 				if (data.nonEmpty()) {
 					Logger.debug("have " + data.get().size()
-							+ " cookie stat columns for " + campaign);
+							+ " creative stat columns for " + campaign);
 					for (final Tuple4<Object, Object, String, BigDecimal> dat : scala.collection.JavaConversions
 							.seqAsJavaList(data.get())) {
 						try {
 							final long t = df.parse(dat._3()).getTime();
-							final int s = dat._4().intValue();
+							double s = dat._4().doubleValue();
+							if (campaign.value!=null) {
+								s *= campaign.value.doubleValue();
+							}
 							if (revenues.containsKey(t)) {
 								revenues.put(t, revenues.get(t).intValue() + s);
 							} else {
