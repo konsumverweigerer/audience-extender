@@ -256,16 +256,25 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         models.alert.show('Warning','Could not change publisher','error')
     }
 
-  require(["lib/data"],(dat) ->
-    dat.generate(mod,models,'campaign')
-  )
-  
-  require(["lib/demodata"],(demo) ->
-    demo.generate(mod,models,'campaign')
-    models.campaignchartdaterange.dateRange 'Last Day'
-    models.campaigntablesearchbar.filldata = ->
-      models.campaigntable.data models.campaigntablesearchbar.filter models.campaigns()
-    models.campaigntablesearchbar.datatable models.campaigntable
-    models.campaigntablesearchbar.search()
-  )
+  models.credential.subscribe (nv) ->
+    if nv.roles().indexOf('demo')>=0
+      require(["lib/demodata"],(demo) ->
+        demo.generate(mod,models,'campaign')
+        models.campaignchartdaterange.dateRange 'Last Day'
+        models.campaigntablesearchbar.filldata = ->
+          models.campaigntable.data models.campaigntablesearchbar.filter models.campaigns()
+        models.campaigntablesearchbar.datatable models.campaigntable
+        models.campaigntablesearchbar.search()
+      )
+    else
+      require(["lib/data"],(dat) ->
+        models.publisher.subscribe (nv) ->
+          dat.generate(mod,models,'campaign')
+        dat.generate(mod,models,'campaign')
+        models.campaignchartdaterange.dateRange 'Last Day'
+        models.campaigntablesearchbar.filldata = ->
+          models.campaigntable.data models.campaigntablesearchbar.filter models.campaigns()
+        models.campaigntablesearchbar.datatable models.campaigntable
+        models.campaigntablesearchbar.search()
+      )
 )

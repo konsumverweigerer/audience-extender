@@ -448,13 +448,30 @@ trait Formats {
         e.getKey() -> JsString(e.getValue())))
   }
 
+  implicit object DecimalFormat extends Format[java.math.BigDecimal] {
+    def reads(json: JsValue) = JsSuccess(null)
+
+    def writes(dec: java.math.BigDecimal) = JsNumber(dec)
+  }
+
+  implicit object StringNumberMapFormat extends Format[java.util.Map[String, java.math.BigDecimal]] {
+    def reads(json: JsValue) = JsSuccess(null)
+
+    def writes(map: java.util.Map[String, java.math.BigDecimal]) = JsObject(
+      map.entrySet().asScala.toSeq.map(e =>
+        e.getKey() -> Json.toJson(e.getValue())))
+  }
+
   implicit object DatasetFormat extends Format[Dataset] {
     def reads(json: JsValue) = JsSuccess(null)
 
     def writes(dataset: Dataset) = JsObject(Seq(
-      "values" -> Json.toJson(dataset.getValues().asScala.toSeq),
+      "values" -> Json.toJson(dataset.getContent().asScala),
       "type" -> JsString(dataset.getType()),
-      "name" -> JsString(dataset.getName())))
+      "cls" -> JsString(dataset.getCls()),
+      "timeframe" -> JsString(dataset.getTimeframe()),
+      "name" -> JsString(dataset.getName()),
+      "key" -> JsString(dataset.getName())))
   }
 
   implicit object PublisherFormat extends Format[Publisher] {

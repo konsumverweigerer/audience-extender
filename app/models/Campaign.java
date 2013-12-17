@@ -1,11 +1,16 @@
 package models;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,13 +22,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
+import scala.Tuple4;
+import services.StatsHandler;
 
 @Entity
 public class Campaign extends Model {
+	public static final long DAY = 24 * 60 * 60 * 1000L;
+
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
@@ -73,8 +83,79 @@ public class Campaign extends Model {
 		return stats;
 	}
 
-	public static List<Dataset> statsByAdmin(Admin admin, String from, String to) {
+	private static Map<Number, Number> initValues(long from, long to,
+			String timeframe) {
+		long step = 7 * 24 * 60 * 60 * 1000;
+		if ("hours".equals(timeframe)) {
+			step = 60 * 60 * 1000;
+		} else if ("days".equals(timeframe)) {
+			step = 24 * 60 * 60 * 1000;
+		}
+		final Map<Number, Number> map = new HashMap<Number, Number>();
+		for (long i = from; i < to; i += step) {
+			map.put(i, 0);
+		}
+		Logger.debug("created " + map.size() + " bins from " + from + " to "
+				+ to);
+		return map;
+	}
+
+	public static List<Dataset> statsByAdmin(Admin admin, Long from, Long to) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
+		if (from != null && to != null) {
+			final Date startDate = new Date(from);
+			final Date endDate = new Date(to);
+			String timeframe = "months";
+			DateFormat df = new SimpleDateFormat("yyyyMM");
+			int prec = 6;
+			if ((to - from) < (2 * DAY)) {
+				timeframe = "hours";
+				prec = 10;
+				df = new SimpleDateFormat("yyyyMMddHH");
+			} else if ((to - from) < (3500 * DAY)) {
+				timeframe = "days";
+				prec = 8;
+				df = new SimpleDateFormat("yyyyMMdd");
+			}
+			final Map<Number, Number> iv = initValues(from, to, timeframe);
+			final Dataset revenue = new Dataset();
+			final Dataset cost = new Dataset();
+			final Dataset profit = new Dataset();
+			revenue.setName("Revenue");
+			revenue.setCls("revenue");
+			revenue.setTimeframe(timeframe);
+			final Map<Number, Number> revenues = new TreeMap<Number, Number>(iv);
+			final Map<Number, Number> costs = new TreeMap<Number, Number>(iv);
+			final Map<Number, Number> profits = new TreeMap<Number, Number>(iv);
+			for (final Campaign campaign : findByAdmin(admin)) {
+				final Option<scala.collection.immutable.List<Tuple4<Object, Object, String, BigDecimal>>> data = StatsHandler
+						.findcreativestats(campaign.id, startDate, endDate,
+								prec);
+				if (data.nonEmpty()) {
+					Logger.debug("have " + data.get().size()
+							+ " cookie stat columns for " + campaign);
+					for (final Tuple4<Object, Object, String, BigDecimal> dat : scala.collection.JavaConversions
+							.seqAsJavaList(data.get())) {
+						try {
+							final long t = df.parse(dat._3()).getTime();
+							final int s = dat._4().intValue();
+							if (revenues.containsKey(t)) {
+								revenues.put(t, revenues.get(t).intValue() + s);
+							} else {
+								revenues.put(t, s);
+							}
+						} catch (ParseException e) {
+						}
+					}
+				}
+			}
+			revenue.setTable(revenues);
+			cost.setTable(costs);
+			profit.setTable(profits);
+			stats.add(revenue);
+			stats.add(cost);
+			stats.add(profit);
+		}
 		return stats;
 	}
 

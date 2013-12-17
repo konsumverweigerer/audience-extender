@@ -34,17 +34,17 @@ GET      /json/admins/list             controllers.AdminController.adminList
 POST     /json/admins/save             controllers.AdminController.adminSave
 
 GET      /cookies                      controllers.AdminController.cookies
-GET      /json/creatives/list          controllers.AdminController.creativeList
+GET      /json/creatives/list/:pid     controllers.AdminController.creativeList(pid: String)
 GET      /json/creatives/save          controllers.AdminController.creativeSave
 GET      /creatives                    controllers.AdminController.creatives
-GET      /json/cookies/list            controllers.AdminController.cookieList
+GET      /json/cookies/list/:pid       controllers.AdminController.cookieList(pid: String)
 GET      /json/cookies/save            controllers.AdminController.cookieSave
 
 GET      /data/dashboard               controllers.PublisherController.dashboard
 GET      /data/stats/:publisher        controllers.PublisherController.stats(publisher: Long)
 
-GET      /data/graph/a/:from/:to       controllers.CampaignController.dashboard(from: String, to: String)
-GET      /data/graph/c/:from/:to       controllers.AudienceController.dashboard(from: String, to: String)
+GET      /data/graph/a/:from/:to       controllers.CampaignController.dashboard(from: Long, to: Long)
+GET      /data/graph/c/:from/:to       controllers.AudienceController.dashboard(from: Long, to: Long)
 
 #POST     /admins/publishers   controllers.AdminController.addPublisher()
 #DELETE   /admins/publishers   controllers.AdminController.removePublisher(group: Long)
@@ -93,7 +93,7 @@ GET      /webjars/*file                controllers.MainController.minProdWebJarA
 #GET      /assets/stylesheets/*file       controllers.MainController.minProdAssetsAt(path="/public/stylesheets", file)
 
 #GET      /assets/*file                 controllers.Assets.at(path="/public", file)
-GET     /assets/*file                  controllers.RemoteAssets.at(path="/public", file)
+GET      /assets/*file                 controllers.RemoteAssets.at(path="/public", file)
 
 # Every other page
 GET      /*path                        controllers.MainController.index(path)

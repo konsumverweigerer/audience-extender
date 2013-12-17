@@ -268,16 +268,30 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         models.alert.show('Warning','Could not change publisher','error')
     }
 
-  require(["lib/data"],(dat) ->
-    dat.generate(mod,models,'audience')
-  )
-  
-  require(["lib/demodata"],(demo) ->
-    demo.generate(mod,models,'audience')
-    models.audiencechartdaterange.dateRange 'Last Day'
-    models.audiencetablesearchbar.filldata = ->
-      models.audiencetable.data models.audiencetablesearchbar.filter models.audiences()
-    models.audiencetablesearchbar.datatable models.audiencetable
-    models.audiencetablesearchbar.search()
-  )
+  loaddata = (nv) ->
+    if nv.roles().indexOf('demo')>=0
+      require(["lib/demodata"],(demo) ->
+        demo.generate(mod,models,'audience')
+        models.audiencechartdaterange.dateRange 'Last Day'
+        models.audiencetablesearchbar.filldata = ->
+          models.audiencetable.data models.audiencetablesearchbar.filter models.audiences()
+        models.audiencetablesearchbar.datatable models.audiencetable
+        models.audiencetablesearchbar.search()
+      )
+    else
+      require(["lib/data"],(dat) ->
+        models.publisher.subscribe (nv) ->
+          dat.generate(mod,models,'audience')
+        dat.generate(mod,models,'audience')
+        models.audiencechartdaterange.dateRange 'Last Day'
+        models.audiencetablesearchbar.filldata = ->
+          models.audiencetable.data models.audiencetablesearchbar.filter models.audiences()
+        models.audiencetablesearchbar.datatable models.audiencetable
+        models.audiencetablesearchbar.search()
+      )
+
+  models.credential.subscribe (nv) ->
+    loaddata nv
+  if models.credential()?
+    loaddata models.credential()
 )

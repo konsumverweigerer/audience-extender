@@ -28,10 +28,10 @@ object AdminController extends Controller with Secured with Formats with Utils {
   def adminJson(admin: Admin): JsValue =
     Json.toJson(Admin.findByAdmin(admin).asScala)
 
-  def cookieJson(admin: Admin): JsValue =
+  def cookieJson(publisherid: String, admin: Admin): JsValue =
     Json.toJson(models.Cookie.findByAdmin(admin).asScala)
 
-  def creativeJson(admin: Admin): JsValue =
+  def creativeJson(publisherid: String, admin: Admin): JsValue =
     Json.toJson(Creative.findByAdmin(admin).asScala)
 
   def deleteAdmin(adminid: String) = HasRole("sysadmin") { currentid =>
@@ -85,17 +85,17 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
-  def cookieList = HasRole("sysadmin") { adminid =>
+  def cookieList(publisherid: String) = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
-        Ok(cookieJson(admin))
+        Ok(cookieJson(publisherid, admin))
       }.getOrElse(Forbidden)
   }
 
-  def creativeList = HasRole("sysadmin") { adminid =>
+  def creativeList(publisherid: String) = HasRole("sysadmin") { adminid =>
     request =>
       Admin.findById(adminid).map { admin =>
-        Ok(creativeJson(admin))
+        Ok(creativeJson(publisherid, admin))
       }.getOrElse(Forbidden)
   }
 

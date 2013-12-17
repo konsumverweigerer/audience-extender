@@ -2,15 +2,15 @@ package controllers
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-
 import models._
+import views._
 import play.api._
 import play.api.Play._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.json._
 import play.api.mvc._
-import views._
+import play.Logger
 
 object AudienceController extends Controller with Secured with Formats with Utils {
   def audiences = IsAuthenticated { adminid =>
@@ -138,7 +138,7 @@ object AudienceController extends Controller with Secured with Formats with Util
       }.getOrElse(Forbidden)
   }
 
-  def dashboard(from: String, to: String) = IsAuthenticated { adminid =>
+  def dashboard(from: Long, to: Long) = IsAuthenticated { adminid =>
     _ =>
       Admin.findById(adminid).map { admin =>
         Ok(Json.toJson(
