@@ -12,9 +12,17 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
+      @credential = ko.observable()
 
       @datatablescroller = new mod.Scroller
-      @datatable = new mod.Datatable ["name","email","roles","publishers"]
+      @datatable = new mod.Datatable(["name","email","roles","publishers"],
+        publishers: (v) ->
+          l = (p.name() for p in v)
+          n = l.join ', '
+          if n.length>30
+            return n.substr(0,28)+' ...'
+          return n
+      )
 
       @admins = ko.observableArray []
 
@@ -24,18 +32,18 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @currentadmin = ko.observable(new mod.Admin {name:'',id:-1})
 
       @selectadmin = (a) ->
-        self.currentadmin (new mod.Admin()).copyFrom(c)
+        self.currentadmin (new mod.Admin()).copyFrom a
         $('#editAdmin').modal 'show'
 
       @saveadmin = ->
         a = self.currentadmin()
         l = self.datatable.data
         if a.id() && a.id()>0
-          a.save(self)
+          a.save self
           l.remove byId a.id()
           l.push a
         else
-          a.save(self)
+          a.save self
           l.push a
         self.currentadmin(new mod.Admin {name:'',id:-1})
         $('#editAdmin').modal 'hide'
@@ -51,6 +59,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     data.admins?.map (a,i) ->
       am = new mod.Admin a
       models.admins.push am
+    models.credential(new mod.Admin data.admin)
 
   require(["lib/data"],(demo) ->
     demo.generate(mod,models,'admin')

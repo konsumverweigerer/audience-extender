@@ -110,7 +110,7 @@ public class Publisher extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.findList();
 		} else {
-			ret = find.where().eq("owners.id", admin.id).findList();
+			ret = find.fetch("owners").where().eq("owners.id", admin.id).findList();
 		}
 		for (final Publisher publisher : ret) {
 			if (admin.publisher != null
@@ -135,6 +135,10 @@ public class Publisher extends Model {
 			}
 		}
 		return false;
+	}
+
+	public List<Admin> getAdmins() {
+		return owners != null ? owners : new ArrayList<Admin>();
 	}
 
 	/**

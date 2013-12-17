@@ -9,14 +9,14 @@
 	<link rel="stylesheet" media="screen" href="@routes.MainController.minProdWebJarAssetsAt("css/bootstrap-editable.css")">
 	<link rel="stylesheet" media="screen" href="@routes.MainController.minProdWebJarAssetsAt("nv.d3.css")" >
 	<link rel="stylesheet" media="screen" href="@routes.MainController.minProdWebJarAssetsAt("css/jquery.fileupload-ui.css")" >
-	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-	<link rel="shortcut icon" href="@routes.Assets.at("images/favicon.ico")">
+	<link rel="stylesheet" media="screen" href="@routes.RemoteAssets.at("stylesheets/main.css")">
+	<link rel="shortcut icon" href="@routes.RemoteAssets.at("images/favicon.ico")">
 </head>
 <body>
 
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
-		<div id="loader" style="background:url(@routes.Assets.at("images/loader.gif"))" data-bind="fadeVisible: loader.isNotFirst"></div>
+		<div id="loader" style="background:url(@routes.RemoteAssets.at("images/loader.gif"))" data-bind="fadeVisible: loader.isNotFirst"></div>
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 				<span class="icon-bar"></span>

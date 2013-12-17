@@ -10,6 +10,9 @@
 		@form.globalError.map { error =>
 		<div class="alert alert-danger">@error.message</div>
 		}
+		@flash.get("error").map { message =>
+		<div class="alert alert-danger">@message</div>
+		}
 		@flash.get("success").map { message =>
 		<div class="alert alert-success">@message</div>
 		}

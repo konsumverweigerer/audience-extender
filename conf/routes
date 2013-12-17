@@ -92,7 +92,8 @@ GET      /webjars/*file                controllers.MainController.minProdWebJarA
 #GET      /assets/javascripts/*file       controllers.MainController.minProdAssetsAt(path="/public/javascripts/", file)
 #GET      /assets/stylesheets/*file       controllers.MainController.minProdAssetsAt(path="/public/stylesheets", file)
 
-GET      /assets/*file                 controllers.Assets.at(path="/public", file)
+#GET      /assets/*file                 controllers.Assets.at(path="/public", file)
+GET     /assets/*file                  controllers.RemoteAssets.at(path="/public", file)
 
 # Every other page
 GET      /*path                        controllers.MainController.index(path)

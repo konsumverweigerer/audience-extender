@@ -19,6 +19,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
+      @credential = ko.observable()
 
       @campaignchartdaterange = new mod.DateRange
       @campaignchart = new mod.Chartdata
@@ -36,26 +37,26 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         categoryFilter: 'state'
         searchFilter: 'name'
       }
-      @campaigntable = new mod.Datatable(["name","state","revenue","cost","from","to"],
+      @campaigntable = new mod.Datatable(["name","state","revenue","cost","startDate","endDate"],
         state: (v) ->
-          if 'paused' == v
+          if 'paused' == v || 'D' == v
             '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
-          else if 'finished' == v
+          else if 'finished' == v || 'F' == v
             '<span class="label label-primary"><span class="glyphicon glyphicon-flag"></span> Finished</span>'
-          else if 'active' == v
+          else if 'active' == v || 'A' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
-          else if 'pending' == v
+          else if 'pending' == v || 'P' == v
             '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
-          else if 'cancelled' == v
+          else if 'cancelled' == v || 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
-          else if 'rejected' == v
+          else if 'rejected' == v || 'R' == v
             '<span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span> Rejected</span>'
           else
             v
         revenue: (v) -> '$'+v.toFixed(2)
         cost: (v) -> '$'+v.toFixed(2)
-        from: (v) -> mod.datetostr(v)
-        to: (v) -> mod.datetostr(v)
+        startDate: (v) -> mod.datetostr(v)
+        endDate: (v) -> mod.datetostr(v)
       )
 
       @confirmcampaigndelete = ko.observable(0)
@@ -240,6 +241,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       p = models.publishers()[0]
       p.active 'true'
       models.publisher p
+    models.credential(new mod.Admin data.admin)
 
   models.publisher.subscribe (nv) ->
     a = routes.controllers.AdminController.changePublisher nv.id()
