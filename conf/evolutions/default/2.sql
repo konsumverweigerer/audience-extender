@@ -1,6 +1,6 @@
 # --- !Ups
 
-CREATE FUNCTION update_cookie_stats( cookieid INT, ts VARCHAR) RETURNS void as $$
+CREATE FUNCTION update_cookie_stats( cookieid BIGINT, ts VARCHAR) RETURNS void as $$
 BEGIN
   UPDATE cookie_stat_data set views = views + 1 WHERE cookie_id=cookieid AND timestep=ts AND sub IS NULL;;
   IF FOUND THEN RETURN;; END IF;;
@@ -12,7 +12,7 @@ BEGIN
   RETURN;;
 END;; $$ language plpgsql;
 
-CREATE FUNCTION update_cookie_stats_sub( cookieid INT, ts VARCHAR, s VARCHAR) RETURNS void as $$
+CREATE FUNCTION update_cookie_stats_sub( cookieid BIGINT, ts VARCHAR, s VARCHAR) RETURNS void as $$
 BEGIN 
   UPDATE cookie_stat_data set views = views + 1 WHERE cookie_id=cookieid AND timestep=ts AND sub=s;;
   IF FOUND THEN RETURN;; END IF;;
@@ -24,7 +24,7 @@ BEGIN
   RETURN;;
 END;; $$ language plpgsql;;
 
-CREATE FUNCTION update_creative_stats( creativeid INT, ts VARCHAR) RETURNS void as $$
+CREATE FUNCTION update_creative_stats( creativeid BIGINT, ts VARCHAR) RETURNS void as $$
 BEGIN
   UPDATE creative_stat_data set views = views + 1 WHERE creative_id=creativeid AND timestep=ts;;
   IF FOUND THEN RETURN;; END IF;;
@@ -38,6 +38,6 @@ END;; $$ language plpgsql;;
 
 # --- !Downs
 
-DROP FUNCTION update_cookie_stats( cookieid INT, ts VARCHAR);
-DROP FUNCTION update_cookie_stats_sub( cookieid INT, ts VARCHAR, s VARCHAR);
-DROP FUNCTION update_creative_stats( creativeid INT, ts VARCHAR);
+DROP FUNCTION update_cookie_stats( cookieid BIGINT, ts VARCHAR);
+DROP FUNCTION update_cookie_stats_sub( cookieid BIGINT, ts VARCHAR, s VARCHAR);
+DROP FUNCTION update_creative_stats( creativeid BIGINT, ts VARCHAR);

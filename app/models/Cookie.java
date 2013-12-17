@@ -125,6 +125,15 @@ public class Cookie extends Model {
 		return ret;
 	}
 
+	public static Option<Cookie> findByUUID(String uuid) {
+		final List<Cookie> ret = find.where().eq("uuid", uuid)
+				.findList();
+		if (!ret.isEmpty()) {
+			return new Some<Cookie>(ret.get(0));
+		}
+		return Option.empty();
+	}
+
 	public static Option<Cookie> findById(String cookieid, Admin admin) {
 		final Long id = cookieid != null ? Long.valueOf(cookieid) : 0L;
 		return findById(id, admin);

@@ -27,10 +27,10 @@ object StatsHandler {
     val timestep = df.format(new Date()).substring(0, prec)
     DB.withConnection { implicit c =>
       if (sub != null) {
-        val result: Boolean = SQL("select update_cookie_stats_sub()").on("timestep" -> timestep,
+        val result: Boolean = SQL("select update_cookie_stats_sub({id},{timestep},{sub})").on("timestep" -> timestep,
           "id" -> cookieid, "sub" -> sub).execute()
       } else {
-        val result: Boolean = SQL("select update_cookie_stats").on("timestep" -> timestep,
+        val result: Boolean = SQL("select update_cookie_stats({id},{timestep})").on("timestep" -> timestep,
           "id" -> cookieid).execute()
       }
     }
@@ -39,7 +39,7 @@ object StatsHandler {
   def countcreative(cookieid: Long, prec: Integer = 10) = {
     val timestep = df.format(new Date()).substring(0, prec)
     DB.withConnection { implicit c =>
-      val result: Boolean = SQL("select update_creative_stats()").on("timestep" -> timestep,
+      val result: Boolean = SQL("select update_creative_stats({id},{timestep})").on("timestep" -> timestep,
         "id" -> cookieid).execute()
     }
   }
