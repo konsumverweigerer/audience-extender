@@ -20,7 +20,7 @@
 						<h3>Select Audience</h3>
 						<div class="box-strips">
 							<div class="clearfix">
-								<div class="website-block-wrapper">
+								<div class="website-block-wrapper" data-bind="visible: currentaudiences().length!=0">
 									<div class="jcarousel-wrapper">
 										<div class="jcarousel" data-bind="carousel: audienceposition">
 											<ul data-bind="foreach: currentaudiences">
@@ -55,7 +55,7 @@
 											</span>
 										</a>
 									</div>
-									<div class="jcarousel-wrapper with-add-block">
+									<div class="jcarousel-wrapper with-add-block" data-bind="visible: currentpackages().length!=0">
 										<div class="jcarousel" data-bind="carousel: packageposition">
 											<ul data-bind="foreach: currentpackages">
 												<li>

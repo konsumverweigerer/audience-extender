@@ -133,6 +133,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.currentpackages.push a
 
       @newcampaign = ->
+        if self.campaigns().length==0
+          self.alert.show('Missing audiences','Before creating campaigns, you have to create audiences first','error')
+          return
         self.confirmcampaigndelete 0
         self.currentcampaign(new mod.Campaign {name:'New Campaign',id:0,state:'pending'})
         self.currentpackage(new mod.Package {name:'',id:-1})
@@ -220,6 +223,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @addcreative = (c) ->
         alert('uploaded creative')
+
+      @showadpackages = (c) ->
+        self.alert.show('New feature','Overview over your ad packages will be available soon','error')
+
+      @showyieldmaximizer = (c) ->
+        self.alert.show('New feature','Yield maximizer will be available soon','error')
 
   models = new CampaignDashboard
 

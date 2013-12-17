@@ -19,6 +19,15 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
     models.audiencechartdaterange.dataloader()
 
   loadcampaign = (mod,models) ->
+    models.campaignchartdaterange.dataloader = ->
+      st = models.campaignchartdaterange.startDate().getTime()
+      et = models.campaignchartdaterange.endDate().getTime()
+      r = routes.controllers.CampaignController.dashboard(st,et)
+      r.ajax {
+       success: (d) ->
+         models.campaignchart.chartcontent d
+      }
+    models.campaignchartdaterange.dataloader()
 
   loadadmins = (mod,models) ->
 

@@ -232,6 +232,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           a = a.concat self.currentwebsitemessages()
           return a
 
+      @showadpackages = (c) ->
+        self.alert.show('New feature','Overview over your ad packages will be available soon','error')
+
+      @showyieldmaximizer = (c) ->
+        self.alert.show('New feature','Yield maximizer will be available soon','error')
+
   models = new AudienceDashboard
 
   ko.applyBindings models
