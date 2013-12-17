@@ -9,8 +9,8 @@
 	@flash.get("success").map { message =>
 	<div class="alert alert-success">@message</div>
 	}
-	<input type="email" autofocus="" required="" placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
-	<input type="password" required="" placeholder="Password" class="form-control" id="password" name="password">
+	<input type="email" autofocus="" required placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
+	<input type="password" required placeholder="Password" class="form-control" id="password" name="password">
 	<button type="submit" class="btn btn-lg btn-primary btn-block" id="loginbutton">Sign in</button>
 	<p>
 		<a href="#" data-toggle="modal" data-target="#forgottenPassword">Password forgotten</a>
@@ -28,7 +28,7 @@
 				<div class="form-group">
 					<label for="email" class="col-sm-2 control-label">Email</label>
 					<div class="col-sm-10">
-						<input type="email" autofocus="" required="" placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
+						<input type="email" autofocus="" required placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
 						<input type="hidden" id="name" name="name">
 					</div>
 				</div>
