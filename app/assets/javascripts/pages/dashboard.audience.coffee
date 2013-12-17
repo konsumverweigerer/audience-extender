@@ -17,6 +17,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
+      @credential = ko.observable()
 
       @audiencechartdaterange = new mod.DateRange
       @audiencechart = new mod.Chartdata
@@ -33,11 +34,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       }
       @audiencetable = new mod.Datatable(["name","state","websiteNamesShort","count"],
         state: (v) ->
-          if 'active' == v
+          if 'active' == v || 'A' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
-          else if 'pending' == v
+          else if 'pending' == v || 'P' == v
             '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Not yet active</span>'
-          else if 'cancelled' == v
+          else if 'cancelled' == v || 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
             v
@@ -252,6 +253,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       p = models.publishers()[0]
       p.active 'true'
       models.publisher p
+    models.credential(new mod.Admin data.admin)
 
   models.publisher.subscribe (nv) ->
     a = routes.controllers.AdminController.changePublisher nv.id()

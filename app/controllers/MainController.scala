@@ -11,6 +11,9 @@ import play.Logger
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.data.format._
+import play.api.data.validation._
+import play.api.data.validation.Constraints._
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play._
@@ -18,7 +21,7 @@ import play.api.Play._
 object MainController extends Controller with Secured with Formats with Utils {
   val loginForm = Form(
     tuple(
-      "email" -> nonEmptyText,
+      "email" -> (email verifying nonEmpty),
       "password" -> text)
       verifying ("Invalid email or password", result => result match {
         case (email, password) => (Admin.authenticate(email, password) != null)
@@ -26,7 +29,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   val contactForm = Form(
     tuple(
-      "email" -> nonEmptyText,
+      "email" -> (email verifying nonEmpty),
       "name" -> text,
       "msg" -> text)
       verifying ("Could not send message", result => result match {
@@ -35,7 +38,7 @@ object MainController extends Controller with Secured with Formats with Utils {
 
   val forgotPasswordForm = Form(
     tuple(
-      "email" -> nonEmptyText,
+      "email" -> (email verifying nonEmpty),
       "name" -> text)
       verifying ("Unknown email address", result => result match {
         case (email, name) => (Admin.forgotPassword(email) != null)
@@ -464,6 +467,13 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(publisher.id)),
       "name" -> JsString(publisher.name),
       "active" -> JsString(if (publisher.active) "true" else "false"),
+      "admins" -> Json.toJson(publisher.getAdmins().asScala.map { admin =>
+        JsObject(Seq(
+          "id" -> JsNumber(BigDecimal(admin.id)),
+          "name" -> JsString(admin.name),
+          "roles" -> Json.toJson(admin.getRoles().asScala),
+          "email" -> JsString(admin.email)))
+      }),
       "url" -> JsString(publisher.url)))
   }
 
@@ -477,7 +487,7 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(admin.id)),
       "name" -> JsString(admin.name),
       "roles" -> Json.toJson(admin.getRoles().asScala),
-      "publishers" -> Json.toJson(admin.publishers.asScala),
+      "publishers" -> Json.toJson(admin.getPublishers().asScala),
       "email" -> JsString(admin.email)))
   }
 }

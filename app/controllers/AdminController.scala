@@ -132,7 +132,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
   def creativeSave = IsAuthenticated { currentid =>
     implicit request =>
       Admin.findById(currentid).map { current =>
-        adminForm.bindFromRequest.fold(
+        creativeForm.bindFromRequest.fold(
           errors => {
             val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
             BadRequest(JsObject(Seq(
@@ -162,7 +162,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
   def cookieSave = IsAuthenticated { currentid =>
     implicit request =>
       Admin.findById(currentid).map { current =>
-        adminForm.bindFromRequest.fold(
+        cookieForm.bindFromRequest.fold(
           errors => {
             val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
             BadRequest(JsObject(Seq(

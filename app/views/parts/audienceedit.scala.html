@@ -27,7 +27,7 @@
 								<a href="javascript:void(0)" class="website-block-add" data-bind="click: newwebsite">
 									<span class="website-name">Add New Website</span>
 									<span class="thumbnail-site">
-										<img alt="" src="@routes.Assets.at("images/thumbnail-add.gif")" />
+										<img alt="" src="@routes.RemoteAssets.at("images/thumbnail-add.gif")" />
 									</span>
 								</a>
 							</div>
@@ -38,7 +38,7 @@
 											<a href="javascript:void(0)" class="website-block" data-bind="click: $root.activatewebsite, css: {'selected': selected(), 'active': active()}">
 												<span class="website-name" data-bind="text: name"></span>
 												<span class="thumbnail-site">
-													<img alt="" src="@routes.Assets.at("images/thumbnail-site.gif")" />
+													<img alt="" src="@routes.RemoteAssets.at("images/thumbnail-site.gif")" />
 													<span></span>
 												</span>
 												<span class="website-audience"><span data-bind="text: count">0</span> Users <span class="glyphicon glyphicon-eye-open"></span></span>

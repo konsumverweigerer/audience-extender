@@ -2,12 +2,13 @@
 @templates.main("Dashboard") {
 @menu.admin("Dashboard")
 @menu.logout(current, menu.publishers(publishers))
-@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.Assets.at("javascripts/dashboard.campaign.js").url)
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/dashboard.campaign.js").url)
 <script type="text/javascript">
-//<![CDATA[
-window.data = {};
-window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());}
-//]]>
+	//<![CDATA[
+	window.data = {};
+	window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());};
+	window.data.admin = {email:'@current.email',roles:@{import play.api.libs.json._;Html(Json.toJson(current.getRoles().asScala).toString());}};
+	//]]>
 </script>
 }{
 <div class="header">
