@@ -40,7 +40,7 @@ object ContentController extends Controller with Utils {
           audiences.add(id)
         }
       } else if ("exclude".equals(p.variant)) {
-        if (exc.contains(id)) {
+        if (inc.contains(id)) {
           audiences.remove(id)
         }
       }
@@ -51,7 +51,7 @@ object ContentController extends Controller with Utils {
   def extractPath(headers: Headers, query: Map[String, Seq[String]]): String = {
     var path = ""
     headers.get(REFERER).map(p => path = p).getOrElse {
-      query.filter(p => "l".equals(p)).map { v =>
+      query.filter(p => "l".equals(p._1)).map { v =>
         v._2.map { l =>
           path = l
         }

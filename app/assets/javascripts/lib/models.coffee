@@ -824,6 +824,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @data = ko.observable d?.data
 
+      @saveRoute = (page) ->
+        routes.controllers.AdminController.cookieSave()
+
   class Creative extends ServerModels
     constructor: (d) ->
       super d
@@ -842,6 +845,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @uuid = ko.observable d?.uuid
 
       @data = ko.observable d?.data
+
+      @saveRoute = (page) ->
+        routes.controllers.AdminController.creativeSave()
 
   class Publisher extends ServerModels
     typeOf: (name) ->
@@ -874,6 +880,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @telephone = ko.observable d?.telephone
 
       @admins = ko.observableArray (d?.admins || []).map (v) -> new Admin v
+
+      @saveRoute = (page) ->
+        routes.controllers.PublisherController.publisherSave()
 
   class Admin extends ServerModels
     typeOf: (name) ->
@@ -912,6 +921,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @roles = ko.observableArray d?.roles
 
       @publishers = ko.observableArray (d?.publishers || []).map (v) -> new Publisher v
+
+      @saveRoute = (page) ->
+        routes.controllers.AdminController.adminSave()
 
   { Message: Message,
   Datatable: Datatable,

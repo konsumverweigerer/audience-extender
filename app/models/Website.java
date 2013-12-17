@@ -87,12 +87,25 @@ public class Website extends Model {
 		return this;
 	}
 
-	public String code() {
+	public String extendedCode() {
 		return String
-				.format("<script type=\"text/javascript\" "
-						+ "src=\"http://app.audienceextender.com/%s\">\n</script>\n",
+				.format("<script type=\"text/javascript\">\n"
+						+ "(function(){\n"
+						+ "var path='%s';\n"
+						+ "var prot=document.location.protocol;\n"
+						+ "var dom='app.audienceextender.com'\n;"
+						+ "var loc=encodeURIComponent(document.location);\n"
+						+ "document.write('<script src=\"'+prot+'//'+dom+path+'?l='+loc+'\"></scripts>');\n"
+						+ "})()\n</script>\n",
 						controllers.routes.ContentController.cookie(this.uuid,
 								"<sub>"));
+	}
+
+	public String code() {
+		return String
+				.format("<script type=\"text/javascript\" src=\"//app.audienceextender.com/%s\">\n"
+						+ "</script>\n", controllers.routes.ContentController
+						.cookie(this.uuid, "<sub>"));
 	}
 
 	public static Option<Website> findByUUID(String uuid) {
