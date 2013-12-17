@@ -3,16 +3,22 @@ package controllers
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.collection.mutable.{ ArrayBuffer, HashSet }
+import scala.concurrent._
+
 import models._
 import views._
 import services._
+
 import play.api._
 import play.api.Play._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.json._
 import play.api.mvc._
+import play.api.libs.concurrent.Execution.Implicits._
+
 import play.Logger
+
 import java.util.regex.Pattern
 
 object ContentController extends Controller with Utils {
@@ -61,7 +67,15 @@ object ContentController extends Controller with Utils {
   }
 
   def countCookie(cookie: models.Cookie, sub: String) = {
-    StatsHandler.countcookie(cookie.id, sub)
+    future {
+      StatsHandler.countcookie(cookie.id, sub)
+    }
+  }
+
+  def countCreative(creative: models.Creative) = {
+    future {
+      StatsHandler.countcreative(creative.id)
+    }
   }
 
   def sendCookie(cookies: Seq[String]): SimpleResult =
@@ -95,6 +109,7 @@ object ContentController extends Controller with Utils {
 
   def creative = (uuid: String) => Action { implicit request =>
     Creative.findByUUID(uuid).map { creative =>
+      countCreative(creative)
       Ok(creative.data).as(creative.variant)
     }.getOrElse(NotFound)
   }
