@@ -30,8 +30,8 @@ object MainController extends Controller with Secured with Formats with Utils {
   val contactForm = Form(
     tuple(
       "email" -> (email verifying nonEmpty),
-      "name" -> text,
-      "msg" -> text)
+      "name" -> nonEmptyText,
+      "msg" -> nonEmptyText)
       verifying ("Could not send message", result => result match {
         case (email, name, msg) => (SendMail.sendContactMessage(email, name, msg) != null)
       }))

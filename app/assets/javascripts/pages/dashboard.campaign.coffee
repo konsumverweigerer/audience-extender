@@ -256,7 +256,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         models.alert.show('Warning','Could not change publisher','error')
     }
 
-  models.credential.subscribe (nv) ->
+  loaddata = (nv) ->
     if nv.roles().indexOf('demo')>=0
       require(["lib/demodata"],(demo) ->
         demo.generate(mod,models,'campaign')
@@ -277,4 +277,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         models.campaigntablesearchbar.datatable models.campaigntable
         models.campaigntablesearchbar.search()
       )
+
+  models.credential.subscribe (nv) ->
+    loaddata nv
+  if models.credential()?
+    loaddata models.credential()
 )

@@ -6,7 +6,7 @@
 }{
 	<div class="container">
 		<h2>Contact Us</h2>
-		@helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal") {
+		@helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal", 'novalidate -> "") {
 		@form.globalError.map { error =>
 		<div class="alert alert-danger">@error.message</div>
 		}
@@ -16,19 +16,19 @@
 		@flash.get("success").map { message =>
 		<div class="alert alert-success">@message</div>
 		}
-		<div class="form-group">
+		<div class="form-group @{if(form.error("name")){"has-warning"}}">
 			<label for="name" class="col-sm-2 control-label">Name</label>
 			<div class="col-sm-10">
 				<input type="text" autofocus="" placeholder="Name" class="form-control" id="name" name="name" value="@form("name").value">
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group @{if(form.error("email")){"has-warning"}}">
 			<label for="email" class="col-sm-2 control-label">Email</label>
 			<div class="col-sm-10">
 				<input type="email" autofocus="" required placeholder="Email" class="form-control" id="email" name="email" value="@form("email").value">
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group @{if(form.error("msg")){"has-warning"}}">
 			<label for="msg" class="col-sm-2 control-label">Message</label>
 			<div class="col-sm-10">
 				<textarea placeholder="Message" required class="form-control" id="msg" name="msg">@form("msg").value</textarea>
