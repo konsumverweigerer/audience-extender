@@ -190,6 +190,10 @@ public class Admin extends Model {
 		return false;
 	}
 
+	public boolean is(String role) {
+		return getRoles().contains(role);
+	}
+
 	public List<Message> remove() {
 		return Collections.emptyList();
 	}

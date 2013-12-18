@@ -1,11 +1,57 @@
 define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
   loadwebsites = (mod,models) ->
+    websites = (nv) ->
+      if nv?.id?
+        id = nv.id()
+        r = routes.controllers.AudienceController.websiteList id
+        r.ajax {
+          success: (d) ->
+            models.websites.push new mod.Website x for x in d
+            v.refresh models.websites() for v in models.audiences()
+            models.audiencetablesearchbar?.search()
+        }
+    models.publisher.subscribe = (nv) -> websites nv
+    websites models.publisher()
 
   loadaudiences = (mod,models) ->
+    audiences = (nv) ->
+      if nv?.id?
+        id = nv.id()
+        r = routes.controllers.AudienceController.audienceList id
+        r.ajax {
+          success: (d) ->
+            models.audiences.push new mod.Audience x for x in d
+            if models.websites?
+              v.refresh models.websites() for v in models.audiences()
+            models.audiencetablesearchbar?.search()
+        }
+    models.publisher.subscribe = (nv) -> audiences nv
+    audiences models.publisher()
 
   loadpackages = (mod,models) ->
+    packages = (nv) ->
+      if nv?.id?
+        id = nv.id()
+        r = routes.controllers.CampaignController.packageList id
+        r.ajax {
+          success: (d) ->
+            models.packages.push new mod.Package x for x in d
+        }
+    models.publisher.subscribe = (nv) -> packages nv
+    packages models.publisher()
 
   loadcampaigns = (mod,models) ->
+    campaigns = (nv) ->
+      if nv?.id?
+        id = nv.id()
+        r = routes.controllers.CampaignController.campaignList id
+        r.ajax {
+          success: (d) ->
+            models.campaigns.push new mod.Campaign x for x in d
+            models.campaigntablesearchbar?.search()
+        }
+    models.publisher.subscribe = (nv) -> campaigns nv
+    campaigns models.publisher()
 
   loadaudience = (mod,models) ->
     models.audiencechartdaterange.dataloader = ->

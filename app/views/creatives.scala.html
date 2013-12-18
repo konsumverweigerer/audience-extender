@@ -1,6 +1,6 @@
 @(creatives: Seq[Creative], publishers: Seq[Publisher], current: Admin)
 @templates.main("Creatives") {
-@menu.admin("Creatives")
+@menu.admin("Creatives", current)
 @menu.logout(current, menu.publishers(publishers))
 @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/creatives.js").url)
 <script type="text/javascript">

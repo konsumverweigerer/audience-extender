@@ -1,7 +1,7 @@
-@(form: play.api.data.Form[(String,String,String)], admin: Admin)(implicit flash: play.api.mvc.Flash) 
-@templates.public("Contact", homelink = if(admin!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
-@if(admin!=null) {
-	@menu.public(admin)
+@(form: play.api.data.Form[(String,String,String)], current: Admin)(implicit flash: play.api.mvc.Flash)
+@templates.public("Contact", homelink = if(current!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
+@if(current!=null) {
+	@menu.public(current)
 }
 }{
 	<div class="container">

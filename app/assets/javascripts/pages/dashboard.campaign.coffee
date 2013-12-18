@@ -1,14 +1,14 @@
 require([ "knockout", "lib/models", "jquery", "bootstrap",
-"lib/knockout-misc", 
-"lib/knockout-carousel", 
-"lib/knockout-fileupload", 
-"lib/knockout-slider", 
-"lib/knockout-wizard", 
-"lib/knockout-editable", 
-"lib/knockout-jqbootstrapvalidation", 
-"lib/knockout-datepicker", 
-"lib/knockout-nvd3", 
-"lib/knockout-datatables", 
+"lib/knockout-misc",
+"lib/knockout-carousel",
+"lib/knockout-fileupload",
+"lib/knockout-slider",
+"lib/knockout-wizard",
+"lib/knockout-editable",
+"lib/knockout-jqbootstrapvalidation",
+"lib/knockout-datepicker",
+"lib/knockout-nvd3",
+"lib/knockout-datatables",
 "jsRoutes" ], (ko, mod) ->
   class CampaignDashboard
     constructor: (d) ->
@@ -28,28 +28,28 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @campaigntablesearchbar = new mod.Searchbar {
         availableCategories: ['Any','Paused','Finished','Active','Pending','Cancelled','Rejected']
         categoryTags:
-          paused: 'Paused'
-          finished: 'Finished'
-          active: 'Active'
-          pending: 'Pending'
-          cancelled: 'Cancelled'
-          rejected: 'Rejected'
+          D: 'Paused'
+          F: 'Finished'
+          A: 'Active'
+          P: 'Pending'
+          C: 'Cancelled'
+          R: 'Rejected'
         categoryFilter: 'state'
         searchFilter: 'name'
       }
       @campaigntable = new mod.Datatable(["name","state","revenue","cost","startDate","endDate"],
         state: (v) ->
-          if 'paused' == v || 'D' == v
+          if 'D' == v
             '<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> Paused</span>'
-          else if 'finished' == v || 'F' == v
+          else if 'F' == v
             '<span class="label label-primary"><span class="glyphicon glyphicon-flag"></span> Finished</span>'
-          else if 'active' == v || 'A' == v
+          else if 'A' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
-          else if 'pending' == v || 'P' == v
+          else if 'P' == v
             '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Pending</span>'
-          else if 'cancelled' == v || 'C' == v
+          else if 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
-          else if 'rejected' == v || 'R' == v
+          else if 'R' == v
             '<span class="label label-danger"><span class="glyphicon glyphicon-warning-sign"></span> Rejected</span>'
           else
             v
@@ -82,8 +82,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         ca = self.currentcampaign()
         pa = self.currentpackage()
         [r,s] = [0,0]
-        if pa.id()<0 || ca.package()!=pa.id()
-          id = ca.package()
+        id = ko.unwrap ca.package()?.id
+        if pa.id()<0 || id!=pa.id()
           pa = p for p in self.packages() when id==p.id()
         if ca? && pa?
           #todo: model for audience
@@ -129,7 +129,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           a.save(self)
           l.push a
         ca = self.currentcampaign()
-        ca.package a.id()
+        ca.package {id: a.id()}
         self.currentpackages.push a
 
       @newcampaign = ->
@@ -198,17 +198,17 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.packageposition.maxValue self.packages().length
         self.packageposition.currentValue ''
         self.checkmaxstep()
-        
+
       @selectaudience = (c) ->
         if not c.active()
           v.active false for v in self.currentaudiences()
           c.active true
         else if c.selected()
           c.selected false
-          self.currentcampaign().audiences.remove c.id()
+          self.currentcampaign().audiences.remove byId c.id()
         else
           c.selected true
-          self.currentcampaign().audiences.push c.id()
+          self.currentcampaign().audiences.push {id: c.id()}
         self.checkmaxstep()
 
       @selectpackage = (c) ->
@@ -218,7 +218,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         else if not c.selected()
           v.selected false for v in self.currentpackages()
           c.selected true
-          self.currentcampaign().package c.id()
+          self.currentcampaign().package {id: c.id()}
         self.checkmaxstep()
 
       @addcreative = (c) ->

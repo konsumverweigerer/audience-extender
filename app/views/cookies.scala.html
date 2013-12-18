@@ -1,6 +1,6 @@
 @(cookies: Seq[models.Cookie], publishers: Seq[Publisher], current: Admin)
 @templates.main("Cookies") {
-@menu.admin("Cookies")
+@menu.admin("Cookies", current)
 @menu.logout(current, menu.publishers(publishers))
 @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/cookies.js").url)
 <script type="text/javascript">

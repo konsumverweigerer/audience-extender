@@ -19,6 +19,7 @@ object ApplicationBuild extends Build {
 
     "org.springframework" % "spring-context" % "3.2.2.RELEASE",
     "javax.inject" % "javax.inject" % "1",
+    "com.newrelic.agent.java" % "newrelic-agent" % "3.2.2",
 
     "edu.vt.middleware" % "vt-password" % "3.1.2",
     "com.typesafe" %% "play-plugins-mailer" % "2.2.0",

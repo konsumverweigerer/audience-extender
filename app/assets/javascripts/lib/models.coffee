@@ -20,7 +20,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
     [from,to]
 
   datetostr = (v) ->
-    (v.getMonth()+1)+"/"+v.getDate()+"/"+v.getFullYear()
+    if v instanceof Date
+      return (v.getMonth()+1)+"/"+v.getDate()+"/"+v.getFullYear()
+    return ''
 
   strtodate = (s) ->
     v = s.split '/'
@@ -549,17 +551,17 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @name = ko.observable d?.name
 
-      @state = ko.observable d?.state
+      @state = ko.observable(d?.state || 'P')
 
-      @revenue = ko.observable d?.revenue
+      @revenue = ko.observable(d?.revenue || 0)
 
-      @cost = ko.observable d?.cost
+      @cost = ko.observable(d?.cost || 0)
 
       @package = ko.observable d?.package
 
-      @audiences = ko.observableArray d?.audiences
+      @audiences = ko.observableArray(d?.audiences || [])
 
-      @creatives = ko.observableArray d?.creatives
+      @creatives = ko.observableArray(new mod.Creative x for x in (d?.creatives || []))
 
       @startDate = ko.observable d?.startDate
 
@@ -686,12 +688,15 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @refresh = (websites) ->
         n = []
+        ids = []
+        for wi in self.websites()
+          ids.push wi.id
+          if wi.name?
+            n.push wi.name
+          else
+            n.push web.name() for web in websites when wi?.id==web.id()
         for web in websites
-          web.selected false
-          for wi in self.websites()
-            if wi==web.id()
-              n.push web.name()
-              web.selected true
+          web.selected ids.indexOf(web.id())>=0
         n = n.join(', ')
         self.websiteNames n
         if n.length > 20
@@ -736,7 +741,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @refreshSelf = (audience) ->
         id = self.id()
-        if not (self.selected true for wi in audience.websites() when wi==id).length
+        if not (self.selected true for wi in audience.websites() when wi?.id==id).length
           self.selected false
         return self
 

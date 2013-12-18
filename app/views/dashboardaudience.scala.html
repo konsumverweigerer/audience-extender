@@ -1,6 +1,6 @@
 @(publishers: Seq[Publisher], current: Admin)
 @templates.main("Dashboard") {
-@menu.admin("Dashboard")
+@menu.admin("Dashboard", current)
 @menu.logout(current, menu.publishers(publishers))
 @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/dashboard.audience.js").url)
 <script type="text/javascript">

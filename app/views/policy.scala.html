@@ -1,7 +1,7 @@
-@(admin: Admin)
-@templates.public("Privacy Policy", homelink = if(admin!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
-@if(admin!=null) {
-	@menu.public(admin)
+@(current: Admin)
+@templates.public("Privacy Policy", homelink = if(current!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
+@if(current!=null) {
+	@menu.public(current)
 }
 }{
 	<div class="container">

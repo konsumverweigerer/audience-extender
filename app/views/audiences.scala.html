@@ -1,6 +1,6 @@
 @(audiences: Seq[Audience], current: Admin)
 @templates.main("Audiences") {
-@menu.admin("Audiences")
+@menu.admin("Audiences", current)
 @menu.logout(current)
 } {
 <div class="container">

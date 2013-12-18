@@ -1,18 +1,30 @@
 define(["knockout"], (ko) ->
   rnd = (f,t) -> f+Math.floor((1+t-f)*Math.random())
 
+  generatewebsites = (mod,models) ->
+    ws = models.websites
+    m = 10+Math.ceil(10*Math.random())
+    for i in [1...m]
+      w = new mod.Website
+        id:i
+        name:'Website '+i
+        count: Math.ceil 100000*Math.random()
+        code:'<script src="http://test/my/code/'+(Math.ceil(10000*Math.random()))+'" type="text/javascript"></script>'
+      ws.push w
+    v.refresh models.websites() for v in models.audiences()
+
   generateaudiences = (mod,models) ->
     n = new Date()
     val = []
     j = 1
     for i in [0..(rnd(40,140))]
       d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
-      ws = [1..(rnd(1,10))]
+      ws = ({id: l} for l in [1..(rnd(1,10))])
       ps = ({id: j++, path: '/my/'+l+'/path',active: ['on','off'][rnd(0,1)],website: ws[rnd(1,ws.length)-1]} for l in [0..(rnd(1,10))])
       val[i++] = new mod.Audience
         id: i
         name:'Audience '+rnd(1,1000)
-        state: ['active','pending','cancelled'][rnd(0,2)]
+        state: ['A','P','C'][rnd(0,2)]
         websites: ws
         count: Math.ceil 10000*Math.random()
         paths: ps
@@ -23,19 +35,19 @@ define(["knockout"], (ko) ->
     val = []
     for i in [0..(rnd(40,140))]
       d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
-      au = [1...(rnd(1,3))]
+      au = ({id: l}  for l in [1...(rnd(1,3))])
       cr = ((new mod.Creative {id:j,name:'Creative '+rnd(1,1000),url: '/assets/images/thumbnail-site.gif'}) for j in [1...(rnd(1,3))])
       val[i++] = new mod.Campaign
         id: i
         name: 'Campaign '+rnd(1,1000)
-        state: ['paused','finished','active','pending','cancelled','rejected',rnd(0,99)+'%'][rnd(0,6)]
+        state: ['D','F','A','P','C','R',rnd(0,99)+'%'][rnd(0,6)]
         revenue: 100*Math.random()
         cost: 10*Math.random()
         startDate: d[0]
         endDate: d[1]
         audiences: au
         creatives: cr
-        package: rnd(0,5) || undefined
+        package: {id: rnd(1,5)}
     models.campaigns val
 
   generatepackages = (mod,models) ->
@@ -54,8 +66,7 @@ define(["knockout"], (ko) ->
     data = -> []
     models.audiencechartdaterange.dataloader = ->
       models.audiencechart.chartcontent data()
-    v.refresh models.websites() for v in models.audiences()
-    
+
     require(["webjars!nv.d3.js"], ->
       data = ->
         m = (models.audiencechartdaterange.endDate()-models.audiencechartdaterange.startDate())/(24*60*60*1000)
@@ -99,7 +110,7 @@ define(["knockout"], (ko) ->
         )
       models.audiencechart.chartcontent data()
     )
-    
+
   generatecampaign = (mod,models) ->
     data = -> []
     models.campaignchartdaterange.dataloader = ->
@@ -137,7 +148,7 @@ define(["knockout"], (ko) ->
         )
         dat[0].values[0].y = 0
         dat[1].values[0].y = 0
-        dat[2] = 
+        dat[2] =
           key: 'Profit'
           cls: 'profit'
           values: sumdata(dat[0].values,dat[1].values)
@@ -149,7 +160,7 @@ define(["knockout"], (ko) ->
           v.map((n,i) -> {x:n.x,y:n.y+w[i].y})
         else
           []
-    
+
       stream_index = (d, i, idxf) ->
         {x: idxf(i),y: 100*Math.max(0, d)}
 
@@ -172,18 +183,6 @@ define(["knockout"], (ko) ->
       models.campaignchart.chartcontent data()
     )
 
-  generatewebsites = (mod,models) ->
-    ws = models.websites()
-    m = 10+Math.ceil(10*Math.random())
-    for i in [1...m]
-      w = new mod.Website
-        id:i
-        name:'Website '+i
-        count: Math.ceil 100000*Math.random()
-        code:'<script src="http://test/my/code/'+(Math.ceil(10000*Math.random()))+'" type="text/javascript"></script>'
-      ws.push(w)
-    return
-    
   { generate: (mod,models,page) ->
     if 'audience'==page
       generatewebsites(mod,models)

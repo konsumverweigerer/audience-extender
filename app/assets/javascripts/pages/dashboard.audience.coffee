@@ -1,12 +1,12 @@
 require([ "knockout", "lib/models", "jquery", "bootstrap",
-"lib/knockout-misc", 
-"lib/knockout-carousel", 
-"lib/knockout-editable", 
-"lib/knockout-jqbootstrapvalidation", 
-"lib/knockout-datepicker", 
-"lib/knockout-nvd3", 
-"lib/knockout-zeroclipboard", 
-"lib/knockout-datatables", 
+"lib/knockout-misc",
+"lib/knockout-carousel",
+"lib/knockout-editable",
+"lib/knockout-jqbootstrapvalidation",
+"lib/knockout-datepicker",
+"lib/knockout-nvd3",
+"lib/knockout-zeroclipboard",
+"lib/knockout-datatables",
 "jsRoutes" ], (ko, mod) ->
   class AudienceDashboard
     constructor: (d) ->
@@ -26,24 +26,24 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @audiencetablesearchbar = new mod.Searchbar {
         availableCategories: ['Any','Active','Not yet active','Deleted']
         categoryTags:
-          active: 'Active'
-          pending: 'Not yet active'
-          cancelled: 'Deleted'
+          A: 'Active'
+          P: 'Not yet active'
+          C: 'Deleted'
         categoryFilter: 'state'
         searchFilter: 'name'
       }
       @audiencetable = new mod.Datatable(["name","state","websiteNamesShort","count"],
         state: (v) ->
-          if 'active' == v || 'A' == v
+          if 'A' == v
             '<span class="label label-success"><span class="glyphicon glyphicon-play"></span> Active</span>'
-          else if 'pending' == v || 'P' == v
+          else if 'P' == v
             '<span class="label label-info"><span class="glyphicon glyphicon-time"></span> Not yet active</span>'
-          else if 'cancelled' == v || 'C' == v
+          else if 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
             v
         count: (v) ->
-          '<span class="badge">'+v+'</span>'
+          '<span class="badge">'+(v ? 0)+'</span>'
       )
 
       @confirmaudiencedelete = ko.observable(0)
@@ -145,7 +145,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.currentaudience().refresh self.currentwebsites()
         self.websiteposition.maxValue self.currentwebsites().length
         self.websiteposition.currentValue ''
-        
+
       @cleardeletewebsite = ->
         self.confirmwebsitedelete 0
 
@@ -169,7 +169,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         id = self.websitetodelete().id()
         self.websites.remove byId id
         self.currentwebsites.remove byId id
-        self.currentwebsite().remove(self)
+        self.currentwebsite().remove self
         #todo: speed up refresh
         #au.refresh self.currentwebsites() for au in self.audiences()
         self.confirmwebsitedelete 0
@@ -187,7 +187,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         else
           self.selectwebsite c
         self.currentaudience().activewebsite c.id()
-        self.currentwebsite(c)
+        self.currentwebsite c
 
       @selectwebsite = (c,e) ->
         e?.stopPropagation()
@@ -195,10 +195,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           return
         if c.selected()
           c.selected false
-          self.currentaudience().websites.remove c.id()
+          self.currentaudience().websites.remove byId c.id()
         else
           c.selected true
-          self.currentaudience().websites.push c.id()
+          self.currentaudience().websites.push {id:c.id(),name:c.name()}
 
       @editwebsite = (c,e) ->
         e?.stopPropagation()

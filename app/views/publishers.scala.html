@@ -1,6 +1,6 @@
 @(publishers: Seq[Publisher], current: Admin)
 @templates.main("Publishers") {
-@menu.admin("Publishers")
+@menu.admin("Publishers", current)
 @menu.logout(current)
 @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/publishers.js").url)
 <script type="text/javascript">

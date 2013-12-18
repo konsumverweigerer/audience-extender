@@ -102,6 +102,19 @@ object MainController extends Controller with Secured with Formats with Utils {
           }))
   }
 
+  def sendContactMessage = Action {
+    implicit request =>
+      contactForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(html.index(null, formWithErrors)),
+        message => {
+          if (SendMail.sendContactMessage(message._1, message._2, message._3)) {
+            Redirect(routes.MainController.index(request.path)).flashing("success" -> "Your message was sent")
+          } else {
+            Redirect(routes.MainController.index(request.path)).flashing("error" -> "Could not send message")
+          }
+        })
+  }
+
   /**
    * Handle login form submission.
    */
@@ -136,9 +149,9 @@ object MainController extends Controller with Secured with Formats with Utils {
    */
   def index(path: String) = Action { implicit request =>
     request.session.get(Security.username).map {
-      id => Ok(html.index(Admin.findById(id).orNull))
+      id => Ok(html.index(Admin.findById(id).orNull, contactForm))
     }.getOrElse(
-      Ok(html.index(Admin.findByEmail(""))))
+      Ok(html.index(Admin.findByEmail(""), contactForm)))
   }
 
   def base = index("")
@@ -148,7 +161,7 @@ object MainController extends Controller with Secured with Formats with Utils {
       Admin.findById(adminid).map { admin =>
         Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
-        Ok(html.index(Admin.findByEmail(""))))
+        Ok(html.index(Admin.findByEmail(""), contactForm)))
   }
 
   def dashboardCampaign = IsAuthenticated { adminid =>
@@ -156,7 +169,7 @@ object MainController extends Controller with Secured with Formats with Utils {
       Admin.findById(adminid).map { admin =>
         Ok(html.dashboardcampaign(Publisher.findByAdmin(admin).asScala, admin))
       }.getOrElse(
-        Ok(html.index(Admin.findByEmail(""))))
+        Ok(html.index(Admin.findByEmail(""), contactForm)))
   }
 
   def dashboard = dashboardAudience
@@ -170,7 +183,7 @@ object MainController extends Controller with Secured with Formats with Utils {
           Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
         }
       }.getOrElse(
-        Ok(html.index(Admin.findByEmail(""))))
+        Ok(html.index(Admin.findByEmail(""), contactForm)))
   }
 
   /** The javascript router. */
@@ -376,13 +389,13 @@ trait Formats {
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaignPackage.id)),
       "variant" -> JsString(campaignPackage.variant),
-      "startDate" -> Json.toJson(campaignPackage.startDate),
-      "endDate" -> Json.toJson(campaignPackage.endDate),
-      "count" -> JsNumber(BigDecimal(campaignPackage.count)),
-      "reach" -> JsNumber(BigDecimal(campaignPackage.reach)),
-      "goal" -> JsNumber(BigDecimal(campaignPackage.goal)),
-      "buyCpm" -> JsNumber(BigDecimal(campaignPackage.buyCpm)),
-      "salesCpm" -> JsNumber(BigDecimal(campaignPackage.salesCpm)),
+      "startDate" -> (if (campaignPackage.startDate != null) Json.toJson(campaignPackage.startDate) else JsString("")),
+      "endDate" -> (if (campaignPackage.endDate != null) Json.toJson(campaignPackage.endDate) else JsString("")),
+      "count" -> (if (campaignPackage.count != null) JsNumber(BigDecimal(campaignPackage.count)) else JsNumber(0)),
+      "reach" -> (if (campaignPackage.reach != null) JsNumber(BigDecimal(campaignPackage.reach)) else JsNumber(0)),
+      "goal" -> (if (campaignPackage.goal != null) JsNumber(BigDecimal(campaignPackage.goal)) else JsNumber(0)),
+      "buyCpm" -> (if (campaignPackage.buyCpm != null) JsNumber(BigDecimal(campaignPackage.buyCpm)) else JsNumber(0)),
+      "salesCpm" -> (if (campaignPackage.salesCpm != null) JsNumber(BigDecimal(campaignPackage.salesCpm)) else JsNumber(0)),
       "name" -> JsString(campaignPackage.name)))
   }
 
@@ -432,11 +445,14 @@ trait Formats {
     def writes(campaign: Campaign) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaign.id)),
       "value" -> JsNumber(BigDecimal(campaign.value)),
-      "startDate" -> Json.toJson(campaign.startDate),
-      "endDate" -> Json.toJson(campaign.endDate),
-      "packages" -> Json.toJson(campaign.campaignPackage),
+      "startDate" -> (if (campaign.startDate != null) Json.toJson(campaign.startDate) else JsString("")),
+      "endDate" -> (if (campaign.endDate != null) Json.toJson(campaign.endDate) else JsString("")),
+      "package" -> Json.toJson(campaign.campaignPackage),
       "audiences" -> Json.toJson(campaign.audiences.asScala),
       "creatives" -> Json.toJson(campaign.creatives.asScala),
+      "revenue" -> JsNumber(0),
+      "state" -> JsString("A"),
+      "cost" -> JsNumber(0),
       "name" -> JsString(campaign.name)))
   }
 
