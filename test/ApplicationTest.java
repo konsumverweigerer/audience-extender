@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import play.mvc.Content;
 import services.UuidHelper;
+import controllers.MainController;
 
 public class ApplicationTest {
 	@Test
@@ -24,7 +25,8 @@ public class ApplicationTest {
 
 	@Test
 	public void renderTemplate() {
-		Content html = views.html.index.render(null);
+		Content html = views.html.index
+				.render(null, MainController.contactForm());
 		assertThat(contentType(html)).isEqualTo("text/html");
 		assertThat(contentAsString(html)).contains("html");
 	}
