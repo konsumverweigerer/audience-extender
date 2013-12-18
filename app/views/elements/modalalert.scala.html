@@ -2,15 +2,13 @@
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-bind="attr: { 'id': @{model}.name }">
 	<div class="modal-dialog modal-alert">
 		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: @{model}.dismiss">&times;</button>
-				<h4 class="modal-title" data-bind="text: @{model}.title"></h4>
-			</div>
 			<div class="alert" data-bind="css: { 'alert-danger': @{model}.isError, 'alert-warning': @{model}.isWarning }">
-				<span class="glyph-h2 glyphicon pull-left" data-bind="visible: @{model}.isWarning() || @{model}.isError(), css: { 'glyphicon-warning-sign': @{model}.isWarning() || @{model}.isError() }"></span><span data-bind="text: @{model}.content"></span>
-				<div class="m-top text-right">
-					<button type="button" class="btn btn-default" data-bind="click: @{model}.dismiss">Ok</button>
-				</div>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: @{model}.dismiss">&times;</button>
+				<h4 class="modal-title">
+					<span class="glyphicon" data-bind="css: { 'glyphicon-exclamation-sign': @{model}.isWarning(), 'glyphicon-ban-circle': @{model}.isError(), 'glyphicon-info-sign': !(@{model}.isError() || @{model}.isWarning()) }"></span>
+					<span data-bind="text: @{model}.title"></span>
+				</h4>
+				<span data-bind="text: @{model}.content"></span>
 			</div>
 		</div>
 	</div>
