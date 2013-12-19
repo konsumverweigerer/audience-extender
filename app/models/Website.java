@@ -45,6 +45,7 @@ public class Website extends Model {
 
 	public Website(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public static Website fromMap(Map<String, Object> data) {

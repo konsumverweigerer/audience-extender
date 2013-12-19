@@ -49,6 +49,7 @@ public class Publisher extends Model {
 
 	public Publisher(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public Publisher(String name, Option<String> url) {

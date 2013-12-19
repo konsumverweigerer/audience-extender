@@ -67,10 +67,11 @@ public class Campaign extends Model {
 
 	public Campaign(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public static Campaign fromMap(Map<String, Object> data) {
-		final Campaign campaign = new Campaign("New Website");
+		final Campaign campaign = new Campaign("New Campaign");
 		campaign.updateFromMap(data);
 		return campaign;
 	}

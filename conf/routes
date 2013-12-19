@@ -15,7 +15,7 @@ GET      /logout                       controllers.MainController.logout
 
 GET      /contact                      controllers.MainController.contact
 POST     /contact                      controllers.MainController.sendMessage
-POST     /#gettingstarted              controllers.MainController.sendContactMessage
+#POST     /#gettingstarted              controllers.MainController.sendContactMessage
 POST     /                             controllers.MainController.sendContactMessage
 GET      /policy                       controllers.MainController.policy
 GET      /tos                          controllers.MainController.tos

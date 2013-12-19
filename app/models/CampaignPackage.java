@@ -56,6 +56,7 @@ public class CampaignPackage extends Model {
 
 	public CampaignPackage(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public static CampaignPackage fromMap(Map<String, Object> data) {

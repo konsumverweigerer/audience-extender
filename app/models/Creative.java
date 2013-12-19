@@ -39,7 +39,7 @@ public class Creative extends Model {
 	public Date created;
 
 	/*
-	 * allowed values: pending, active
+	 * allowed values: pending, active, removed
 	 */
 	public String state;
 	/*

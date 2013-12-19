@@ -134,19 +134,22 @@
 				@flash.get("success").map { message =>
 				<div class="alert alert-success">@message</div>
 				}
+				@flash.get("error").map { message =>
+				<div class="alert alert-danger">@message</div>
+				}
 				<div class="form-group @{if(form.error("name")){"has-warning"}}">
 					<div class="col-sm-offset-2 col-sm-8">
-						<input class="form-control" required type="text" placeholder="Name" id="name" name="name" value="">
+						<input class="form-control" required type="text" placeholder="Name" id="name" name="name" value="@form("name").value"">
 					</div>
 				</div>
 				<div class="form-group @{if(form.error("email")){"has-warning"}}">
 					<div class="col-sm-offset-2 col-sm-8">
-						<input class="form-control" required type="email" placeholder="Email" id="email" name="email" value="">
+						<input class="form-control" required type="email" placeholder="Email" id="email" name="email" value="@form("email").value"">
 					</div>
 				</div>
 				<div class="form-group @{if(form.error("msg")){"has-warning"}}">
 					<div class="col-sm-offset-2 col-sm-8">
-						<textarea class="form-control" required placeholder="Message" id="msg" name="msg"></textarea>
+						<textarea class="form-control" required placeholder="Message" id="msg" name="msg">@form("msg").value</textarea>
 					</div>
 				</div>
 				<div class="form-group">

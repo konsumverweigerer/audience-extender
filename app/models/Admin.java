@@ -80,6 +80,7 @@ public class Admin extends Model {
 	public List<Publisher> publishers = new ArrayList<Publisher>();
 
 	public Admin() {
+		this.created = new Date();
 	}
 
 	public Admin(String name, String email) {
@@ -91,6 +92,7 @@ public class Admin extends Model {
 		this.name = name;
 		this.password = password;
 		this.adminRoles = "";
+		this.created = new Date();
 	}
 
 	public static Admin fromMap(Map<String, Object> data) {

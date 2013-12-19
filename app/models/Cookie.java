@@ -53,6 +53,7 @@ public class Cookie extends Model {
 	public Cookie(String name) {
 		this.name = name;
 		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");
+		this.created = new Date();
 	}
 
 	public Cookie instance(String name, String variant, Audience audience,

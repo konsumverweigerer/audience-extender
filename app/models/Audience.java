@@ -46,7 +46,13 @@ public class Audience extends Model {
 	public Date created;
 
 	/*
-	 * allowed: values active, pending, cancelled
+	 * allowed: values pending, active, cancelled
+	 *
+	 * pending: not all needed cookies are active yet
+	 *
+	 * active: all needed cookies are active
+	 *
+	 * cancelled: deleted
 	 */
 	public String state;
 	public String tracking;
@@ -62,6 +68,7 @@ public class Audience extends Model {
 
 	public Audience(String name) {
 		this.name = name;
+		this.state = "P";
 		this.created = new Date();
 	}
 
