@@ -11,7 +11,7 @@ define([ "knockout", "jquery.fileupload", "jquery",
       previewCrop: true
     }
 
-  attachfileupload = ($fileupload,fileuploadOptions,valueAccessor)
+  attachfileupload = ($fileupload,fileuploadOptions,valueAccessor) ->
     $fileupload.off '.ko'
 
     if fileuploadOptions.progress?
@@ -33,11 +33,11 @@ define([ "knockout", "jquery.fileupload", "jquery",
       )
     if fileuploadOptions.fileuploaddone?
       $fileupload.on('fileuploaddone.ko', (e,data) ->
-        fileuploadOptions.fileuploaddone(e,data)
+        fileuploadOptions.fileuploaddone(e,data.result)
       )
-    if ko.isObservable valueAccessor()
+    if valueAccessor()?
       $fileupload.on('fileuploaddone.ko.va', (e,data) ->
-        valueAccessor() data.result.files
+        valueAccessor() data.result
       )
     if fileuploadOptions.fileuploadfail?
       $fileupload.on('fileuploadfail.ko', (e,data) ->
@@ -50,7 +50,7 @@ define([ "knockout", "jquery.fileupload", "jquery",
 
   preprocess = (fileuploadOptions) ->
     if fileuploadOptions.route?
-      fileuploadOptions.url = route.ajax.url
+      fileuploadOptions.url = fileuploadOptions.route.url
     if fileuploadOptions.dropZone? && fileuploadOptions.dropZone instanceof String
       fileuploadOptions.dropZone = $(fileuploadOptions.dropZone)
     if fileuploadOptions.pasteZone? && fileuploadOptions.pasteZone instanceof String

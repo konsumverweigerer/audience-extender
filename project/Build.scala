@@ -29,7 +29,7 @@ object ApplicationBuild extends Build {
             
 
     "org.springframework.data" % "spring-data-jpa" % "1.3.2.RELEASE",
-    "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
+//    "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
 
     "org.webjars" %% "webjars-play" % "2.2.1" exclude("org.scala-lang", "scala-library"),

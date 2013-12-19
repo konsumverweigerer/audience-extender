@@ -98,14 +98,14 @@ public class Website extends Model {
 						+ "document.write('<script src=\"'+prot+'//'+dom+path+'?l='+loc+'\"></scripts>');\n"
 						+ "})()\n</script>\n",
 						controllers.routes.ContentController.cookie(this.uuid,
-								"<sub>"));
+								"<sub>").url());
 	}
 
 	public String code() {
-		return String
-				.format("<script type=\"text/javascript\" src=\"//app.audienceextender.com/%s\">\n"
+		return String.format(
+				"<script type=\"text/javascript\" src=\"//app.audienceextender.com/%s\">\n"
 						+ "</script>\n", controllers.routes.ContentController
-						.cookie(this.uuid, "<sub>"));
+						.cookie(this.uuid, "<sub>").url());
 	}
 
 	public static Option<Website> findByUUID(String uuid) {

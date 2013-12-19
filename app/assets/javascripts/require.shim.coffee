@@ -62,10 +62,10 @@ define("jquery.fileupload-validate", [ "webjars!jquery.fileupload-validate.js" ]
 define("d3.v2", [ "webjars!d3.v2.js" ], -> )
 define("nv.d3", [ "webjars!nv.d3.js" ], -> )
 
-define("load-image", [ "ext/load-image" ], -> )
-define("load-image-meta", [ ], -> )
-define("load-image-exif", [ ], -> )
-define("load-image-ios", [ ], -> )
+define("load-image", [ "ext/load-image" ], (loadImage) -> loadImage)
+define("load-image-meta", [ "ext/load-image-meta" ], -> )
+define("load-image-exif", [ "ext/load-image-exif" ], -> )
+define("load-image-ios", [ "ext/load-image-ios" ], -> )
 define("canvas-to-blob", [ "ext/canvas-to-blob" ], -> )
 
 define("jsRoutes", ["/routes.js"], -> )

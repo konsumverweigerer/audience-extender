@@ -22,7 +22,10 @@ object PublisherController extends Controller with Secured with Formats with Uti
       Admin.findById(adminid).map { admin =>
         Publisher.findById(publisherid, admin).map { publisher =>
           request.body.asMultipartFormData.map { body =>
-            body.file("creative").map { file =>
+            body.file("files[]").map { file =>
+              Logger.debug("uploading " + file.filename + " to " + publisher)
+              Logger.debug("contentType: " + file.contentType.getOrElse("application/octet-steam"))
+              Logger.debug("file: " + file.ref.file)
               Creative.addUpload(publisher, file.contentType.getOrElse("application/octet-steam"),
                 file.filename, file.ref.file).map { creative =>
                   Ok(Json.toJson(creative))

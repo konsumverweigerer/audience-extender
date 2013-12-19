@@ -537,6 +537,28 @@ define([ "knockout", "jsRoutes" ], (ko) ->
         else
           self.dismissed 1
 
+  class Creative extends ServerModels
+    constructor: (d) ->
+      super d
+      self = @
+
+      @name = ko.observable d?.name
+
+      @url = ko.observable d?.url
+
+      @state = ko.observable d?.state
+
+      @variant = ko.observable d?.variant
+
+      @previewUrl = ko.observable d?.previewUrl
+
+      @uuid = ko.observable d?.uuid
+
+      @data = ko.observable d?.data
+
+      @saveRoute = (page) ->
+        routes.controllers.AdminController.creativeSave()
+
   class Campaign extends ServerModels
     typeOf: (name) ->
       if name=='messages'
@@ -561,7 +583,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @audiences = ko.observableArray(d?.audiences || [])
 
-      @creatives = ko.observableArray(new mod.Creative x for x in (d?.creatives || []))
+      @creatives = ko.observableArray(new Creative x for x in (d?.creatives || []))
 
       @startDate = ko.observable d?.startDate
 
@@ -682,7 +704,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @refreshSelf = (campaign) ->
         id = self.id()
-        if not (self.selected true for au in campaign.audiences() when au==id).length
+        if not (self.selected true for au in campaign.audiences() when au?.id==id).length
           self.selected false
         return self
 
@@ -784,7 +806,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @campaign = ko.observable d?.campaign
 
       @refreshSelf = (campaign) ->
-        self.selected campaign.package()==self.id()
+        self.selected campaign.package()?.id==self.id()
         return self
 
       @startDate = ko.observable(d?.startDate ? new Date())
@@ -831,28 +853,6 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @saveRoute = (page) ->
         routes.controllers.AdminController.cookieSave()
-
-  class Creative extends ServerModels
-    constructor: (d) ->
-      super d
-      self = @
-
-      @name = ko.observable d?.name
-
-      @url = ko.observable d?.url
-
-      @state = ko.observable d?.state
-
-      @variant = ko.observable d?.variant
-
-      @previewUrl = ko.observable d?.previewUrl
-
-      @uuid = ko.observable d?.uuid
-
-      @data = ko.observable d?.data
-
-      @saveRoute = (page) ->
-        routes.controllers.AdminController.creativeSave()
 
   class Publisher extends ServerModels
     typeOf: (name) ->

@@ -72,6 +72,8 @@ POST     /json/campaigns/save/:pid     controllers.CampaignController.campaignSa
 POST     /json/packages/save/:cid      controllers.CampaignController.packageSave(cid: String)
 DELETE   /json/campaigns/remove/:pid   controllers.CampaignController.campaignRemove(pid: String, aid: String)
 DELETE   /json/packages/remove/:cid    controllers.CampaignController.packageRemove(cid: String, wid: String)
+GET      /campaign/creative/:c/:t      controllers.ContentController.creativeContent(c: String,t: String)
+
 
 # Audiences
 GET      /audiences                    controllers.AudienceController.audiences

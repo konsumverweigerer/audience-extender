@@ -78,6 +78,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentpackage = ko.observable(new mod.Package {name:''})
 
+      @creativeRoute = ->
+        routes.controllers.PublisherController.uploadCreative(self.publisher()?.id())
+
       @results = ->
         ca = self.currentcampaign()
         pa = self.currentpackage()
@@ -222,7 +225,14 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.checkmaxstep()
 
       @addcreative = (c) ->
-        alert('uploaded creative')
+        if self.currentcampaign()
+          self.currentcampaign().creatives.push new mod.Creative c
+        self.checkmaxstep()
+
+      @removecreative = (c) ->
+        if self.currentcampaign()
+          self.currentcampaign().creatives.remove c
+        self.checkmaxstep()
 
       @showadpackages = (c) ->
         self.alert.show('New feature','Overview over your ad packages will be available soon','error')

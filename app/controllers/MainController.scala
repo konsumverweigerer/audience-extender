@@ -424,11 +424,11 @@ trait Formats {
     def writes(creative: Creative) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(creative.id)),
       "name" -> JsString(creative.name),
-      "preview" -> JsString(creative.getPreview()),
+      "previewUrl" -> JsString(creative.getPreview()),
       "state" -> JsString(creative.state),
       "variant" -> JsString(creative.variant),
       "uuid" -> JsString(creative.uuid),
-      "url" -> JsString(creative.url)))
+      "url" -> JsString(creative.getCreativeUrl())))
   }
 
   implicit object CampaignFormat extends Format[Campaign] {

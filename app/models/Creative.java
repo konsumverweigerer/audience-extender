@@ -1,6 +1,12 @@
 package models;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +43,7 @@ public class Creative extends Model {
 	 */
 	public String state;
 	/*
-	 * allowed values: image/png, image/gif, video/flv
+	 * allowed values: image/png, image/gif, video/flv, external
 	 */
 	public String variant;
 
@@ -51,8 +57,10 @@ public class Creative extends Model {
 
 	public Creative(String name, Option<String> url) {
 		this.name = name;
-		this.url = url.orNull(null);
-		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.creative");
+		this.url = url.nonEmpty() ? url.get() : null;
+		this.uuid = UuidHelper
+				.randomUUIDString("com.audienceextender.creative");
+		this.created = new Date();
 	}
 
 	public static Creative fromMap(Map<String, Object> data) {
@@ -75,7 +83,29 @@ public class Creative extends Model {
 
 	public static Option<Creative> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {
-		return null;
+		if (publisher != null && file != null) {
+			final Creative creative = new Creative(filename,
+					Option.<String> empty());
+			creative.variant = contentType;
+			creative.state = "P";
+			final ByteArrayOutputStream os = new ByteArrayOutputStream();
+			final Path path = file.toPath();
+			try (final ReadableByteChannel sbc = Files.newByteChannel(path)) {
+				final ByteBuffer buf = ByteBuffer.allocate(512);
+				while (sbc.read(buf) > 0) {
+					buf.rewind();
+					os.write(buf.array());
+				}
+				creative.data = os.toByteArray();
+				creative.save();
+				return new Some<Creative>(creative);
+			} catch (IOException x) {
+				System.out.println("caught exception: " + x);
+			} finally {
+				file.delete();
+			}
+		}
+		return Option.empty();
 	}
 
 	public List<Message> write() {
@@ -126,7 +156,19 @@ public class Creative extends Model {
 	}
 
 	public String getPreview() {
-		return this.url;
+		if ("external".equals(this.variant)) {
+			return this.url != null ? this.url : "";
+		}
+		return controllers.routes.ContentController.creativeContent(this.uuid,
+				"preview").url();
+	}
+
+	public String getCreativeUrl() {
+		if ("external".equals(this.variant)) {
+			return this.url != null ? this.url : "";
+		}
+		return controllers.routes.ContentController.creativeContent(this.uuid,
+				"full").url();
 	}
 
 	@Override

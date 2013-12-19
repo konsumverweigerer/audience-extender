@@ -17,6 +17,8 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits._
 
+import com.sksamuel.scrimage._
+
 import play.Logger
 
 import java.util.regex.Pattern
@@ -105,6 +107,20 @@ object ContentController extends Controller with Utils {
         sendCookie(cookies)
       }.getOrElse(NotFound.as("text/javascript"))
     }
+  }
+
+  def creativeContent = (uuid: String, t: String) => Action { implicit request =>
+    Creative.findByUUID(uuid).map { creative =>
+      if ("external".equals(creative.variant)) {
+        Redirect(creative.url)
+      } else if (creative.data != null && "preview".equals(t)) {
+        Ok(Image(creative.data).fit(176, 74).write(com.sksamuel.scrimage.Format.PNG)).as("image/png")
+      } else if (creative.data != null) {
+        Ok(creative.data).as(creative.variant)
+      } else {
+        Ok("").as("application/octet-steam")
+      }
+    }.getOrElse(NotFound)
   }
 
   def creative = (uuid: String) => Action { implicit request =>
