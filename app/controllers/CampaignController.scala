@@ -1,23 +1,47 @@
 package controllers
 
-import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.JavaConversions.bufferAsJavaList
-import scala.collection.JavaConversions.seqAsJavaList
-import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
-import models.Admin
-import models.Campaign
-import models.CampaignPackage
-import models.Message
-import models.Publisher
-import play.api.libs.json.JsObject
-import play.api.libs.json.JsValue
-import play.api.libs.json.Json
-import play.api.mvc.Action
-import play.api.mvc.Controller
-import views.html
+import models._
+import play.Logger
+import play.api.libs.json._
+import play.api.mvc._
+import views._
 
 object CampaignController extends Controller with Secured with Formats with Utils {
+  def uploadCreative = (publisherid: String) => IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        Publisher.findById(publisherid, admin).map { publisher =>
+          request.body.asMultipartFormData.map { body =>
+            body.file("files[]").map { file =>
+              Logger.debug("uploading " + file.filename + " to " + publisher)
+              Logger.debug("contentType: " + file.contentType.getOrElse("application/octet-steam"))
+              Logger.debug("file: " + file.ref.file)
+              Creative.addUpload(publisher, file.contentType.getOrElse("application/octet-steam"),
+                file.filename, file.ref.file).map { creative =>
+                  Ok(Json.toJson(creative))
+                }.getOrElse(NotFound)
+            }.getOrElse(NotFound)
+          }.getOrElse(NotFound)
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
+  def deleteCreative = (publisherid: String, creativeid: String) => IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        Publisher.findById(publisherid, admin).map { publisher =>
+          Creative.findById(creativeid, admin).map { creative =>
+            creative.state = "R"
+            creative.update();
+            Ok(Json.toJson(creative))
+          }.getOrElse(Forbidden)
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   def campaigns = IsAuthenticated { adminid =>
     _ =>
       Admin.findById(adminid).map { admin =>
@@ -53,9 +77,32 @@ object CampaignController extends Controller with Secured with Formats with Util
               "messages" -> Json.toJson(msgs))))
           },
           data =>
-            Some(data._1).map { id =>
-              Campaign.findById(id.getOrElse(-1L), admin).map { campaign =>
-                //TODO: fill from form
+            data._1.map { id =>
+              Campaign.findById(id, admin).map { campaign =>
+                campaign.name = data._2
+                if (campaign.campaignPackage != null) {
+                  if (campaign.campaignPackage.campaignPackage == null ||
+                    !campaign.campaignPackage.campaignPackage.id.equals(data._3.get)) {
+                    data._3.map { packid =>
+                      CampaignPackage.findById(packid, admin).map { pack =>
+                        campaign.campaignPackage = new CampaignPackage("")
+                        campaign.campaignPackage.campaignPackage = pack
+                      }
+                    }
+                  }
+                }
+                campaign.audiences.clear()
+                data._4.map { audienceid =>
+                  Audience.findById(audienceid, admin).map { audience =>
+                    campaign.audiences.add(audience)
+                  }
+                }
+                campaign.creatives.clear()
+                data._4.map { creativeid =>
+                  Creative.findById(creativeid, admin).map { creative =>
+                    campaign.creatives.add(creative)
+                  }
+                }
                 val msgs = campaign.write().asScala
                 Ok(JsObject(Seq(
                   "data" -> Json.toJson(campaign),
@@ -63,7 +110,25 @@ object CampaignController extends Controller with Secured with Formats with Util
               }.getOrElse(NotFound)
             }.getOrElse {
               val campaign = new Campaign("")
-              //TODO: fill from form
+              campaign.name = data._2
+              data._3.map { packid =>
+                CampaignPackage.findById(packid, admin).map { pack =>
+                  campaign.campaignPackage = new CampaignPackage("")
+                  campaign.campaignPackage.campaignPackage = pack
+                }
+              }
+              campaign.audiences.clear()
+              data._4.map { audienceid =>
+                Audience.findById(audienceid, admin).map { audience =>
+                  campaign.audiences.add(audience)
+                }
+              }
+                campaign.creatives.clear()
+                data._4.map { creativeid =>
+                  Creative.findById(creativeid, admin).map { creative =>
+                    campaign.creatives.add(creative)
+                  }
+                }
               val publisher = Publisher.findById(publisherid, admin)
               campaign.publisher = publisher.get
               val msgs = campaign.write().asScala
@@ -107,13 +172,13 @@ object CampaignController extends Controller with Secured with Formats with Util
               "messages" -> Json.toJson(msgs))))
           },
           data =>
-            Some(data._1).map { id =>
-              CampaignPackage.findById(id.getOrElse(-1L), admin).map { pack =>
+            data._1.map { id =>
+              CampaignPackage.findById(id, admin).map { pack =>
                 pack.name = data._2
                 pack.variant = "custom"
                 pack.startDate = data._3.getOrElse(null)
                 pack.endDate = data._4.getOrElse(null)
-                pack.count = data._5
+                pack.impressions = data._5
                 pack.reach = data._6
                 pack.goal = data._7
                 if (data._8 != null) {
@@ -133,7 +198,7 @@ object CampaignController extends Controller with Secured with Formats with Util
               pack.variant = "custom"
               pack.startDate = data._3.getOrElse(null)
               pack.endDate = data._4.getOrElse(null)
-              pack.count = data._5
+              pack.impressions = data._5
               pack.reach = data._6
               pack.goal = data._7
               if (data._8 != null) {

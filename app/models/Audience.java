@@ -171,6 +171,7 @@ public class Audience extends Model {
 		save();
 		for (final PathTarget pathTarget: this.pathTargets) {
 			pathTarget.save();
+			pathTarget.update();
 		}
 		Ebean.saveManyToManyAssociations(this, "websites");
 		update();

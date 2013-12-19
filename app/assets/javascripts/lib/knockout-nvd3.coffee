@@ -1,4 +1,6 @@
 define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
+  nvdddDefaults = -> {}
+
   rendernvddd = (element,options,data) ->
     if !$(element).is 'svg'
       element = $(element).find('svg').first()[0]
@@ -85,14 +87,14 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
-      nvdddOptions = allBindings.nvdddOptions || {}
+      nvdddOptions = $.extend(nvdddDefaults(),allBindings.nvdddOptions || {})
       if val.chartcontent && ko.isObservable(val.chartcontent)
         val.chartcontent.subscribe (nv) ->
-          ko.bindingHandlers.datatable.update(element, val.chartcontent, allBindingsAccessor, viewModel, bindingContext)
+          ko.bindingHandlers.datatable.update(element,val.chartcontent,allBindingsAccessor,viewModel,bindingContext)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       val = ko.unwrap(valueAccessor())
       allBindings = allBindingsAccessor()
-      nvdddOptions = allBindings.nvdddOptions || {}
+      nvdddOptions = $.extend(nvdddDefaults(),allBindings.nvdddOptions || {})
       if val == null
         val = []
       rendernvddd(element,nvdddOptions,val)

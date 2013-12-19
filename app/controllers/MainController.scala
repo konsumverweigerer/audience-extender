@@ -270,7 +270,7 @@ trait Formats {
     tuple(
       "id" -> optional(longNumber),
       "name" -> nonEmptyText,
-      "package" -> longNumber,
+      "package" -> optional(longNumber),
       "audiences" -> list(
         longNumber),
       "creatives" -> list(
@@ -385,7 +385,7 @@ trait Formats {
       "variant" -> (json \ "variant").as[String],
       "startDate" -> (json \ "startDate").as[String],
       "endDate" -> (json \ "endDate").as[String],
-      "count" -> (json \ "count").as[String],
+      "impressions" -> (json \ "count").as[String],
       "reach" -> (json \ "reach").as[String],
       "goal" -> (json \ "goal").as[String],
       "buyCpm" -> (json \ "buyCpm").as[String],
@@ -396,7 +396,7 @@ trait Formats {
       "variant" -> JsString(campaignPackage.variant),
       "startDate" -> (if (campaignPackage.startDate != null) Json.toJson(campaignPackage.startDate) else JsString("")),
       "endDate" -> (if (campaignPackage.endDate != null) Json.toJson(campaignPackage.endDate) else JsString("")),
-      "count" -> (if (campaignPackage.count != null) JsNumber(BigDecimal(campaignPackage.count)) else JsNumber(0)),
+      "count" -> (if (campaignPackage.impressions != null) JsNumber(BigDecimal(campaignPackage.impressions)) else JsNumber(0)),
       "reach" -> (if (campaignPackage.reach != null) JsNumber(BigDecimal(campaignPackage.reach)) else JsNumber(0)),
       "goal" -> (if (campaignPackage.goal != null) JsNumber(BigDecimal(campaignPackage.goal)) else JsNumber(0)),
       "buyCpm" -> (if (campaignPackage.buyCpm != null) JsNumber(BigDecimal(campaignPackage.buyCpm)) else JsNumber(0)),

@@ -22,6 +22,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.avaje.ebean.Ebean;
+
 import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -56,6 +58,12 @@ public class Campaign extends Model {
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date endDate;
 
+	/*
+	 * allowed: values pending, active, cancelled
+	 *
+	 */
+	public String state;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	public CampaignPackage campaignPackage;
 
@@ -125,6 +133,12 @@ public class Campaign extends Model {
 			revenue.setName("Revenue");
 			revenue.setCls("revenue");
 			revenue.setTimeframe(timeframe);
+			cost.setName("Cost");
+			cost.setCls("cost");
+			cost.setTimeframe(timeframe);
+			profit.setName("Profit");
+			profit.setCls("profit");
+			profit.setTimeframe(timeframe);
 			final Map<Number, Number> revenues = new TreeMap<Number, Number>(iv);
 			final Map<Number, Number> costs = new TreeMap<Number, Number>(iv);
 			final Map<Number, Number> profits = new TreeMap<Number, Number>(iv);
@@ -140,7 +154,7 @@ public class Campaign extends Model {
 						try {
 							final long t = df.parse(dat._3()).getTime();
 							double s = dat._4().doubleValue();
-							if (campaign.value!=null) {
+							if (campaign.value != null) {
 								s *= campaign.value.doubleValue();
 							}
 							if (revenues.containsKey(t)) {
@@ -183,6 +197,16 @@ public class Campaign extends Model {
 
 	public List<Message> write() {
 		save();
+		for (final Creative creative : this.creatives) {
+			creative.save();
+			creative.campaign = this;
+			creative.update();
+		}
+		if (this.campaignPackage != null) {
+			this.campaignPackage.save();
+		}
+		Ebean.saveManyToManyAssociations(this, "audiences");
+		update();
 		return Collections.emptyList();
 	}
 

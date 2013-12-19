@@ -42,7 +42,7 @@ public class CampaignPackage extends Model {
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date endDate;
 
-	public Long count;
+	public Long impressions;
 	public Long reach;
 	public Long goal;
 
@@ -51,8 +51,11 @@ public class CampaignPackage extends Model {
 	@Column(precision = 6, scale = 6)
 	public BigDecimal salesCpm;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Campaign campaign;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	public CampaignPackage campaignPackage;
 
 	public CampaignPackage(String name) {
 		this.name = name;
@@ -83,6 +86,7 @@ public class CampaignPackage extends Model {
 
 	public List<Message> write() {
 		save();
+		update();
 		return Collections.emptyList();
 	}
 
