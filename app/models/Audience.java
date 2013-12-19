@@ -21,6 +21,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.avaje.ebean.Ebean;
+
 import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -167,6 +169,11 @@ public class Audience extends Model {
 	public List<Message> write() {
 		// TODO: check website/paths if new cookies are needed
 		save();
+		for (final PathTarget pathTarget: this.pathTargets) {
+			pathTarget.save();
+		}
+		Ebean.saveManyToManyAssociations(this, "websites");
+		update();
 		return Collections.emptyList();
 	}
 

@@ -76,11 +76,12 @@ public class Website extends Model {
 	}
 
 	public List<Message> write() {
+		save();
 		if (this.uuid == null || this.uuid.isEmpty()) {
 			this.uuid = UuidHelper
 					.randomUUIDString("com.audienceextender.website");
 		}
-		save();
+		update();
 		return Collections.emptyList();
 	}
 

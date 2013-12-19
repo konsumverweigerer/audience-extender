@@ -127,7 +127,7 @@
 			<h2 class="text-center">Let's monetize together</h2>
 			<p class="text-center">Reach out today, and find out what you could be earning tomorrow.</p>
 			<p class="text-center">Call us at <strong>+1 (917) 934-3019</strong> or fill in the below form and we'll get back to you.</p>
-@helper.form(routes.MainController.sendContactMessage, 'class -> "form-horizontal form-contact", 'role -> "form", 'novalidate -> "") {
+@helper.form(routes.MainController.sendMessage, 'class -> "form-horizontal form-contact", 'role -> "form", 'novalidate -> "") {
 				@form.globalError.map { error =>
 				<div class="alert alert-danger">@error.message</div>
 				}

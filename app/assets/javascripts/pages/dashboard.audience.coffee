@@ -12,7 +12,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
-      byId = (id) -> ((w) -> w.id()==id)
+      byId = (id) -> ((w) -> ko.unwrap(w.id)==id)
 
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
@@ -116,20 +116,28 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         a = self.currentwebsite()
         l = self.websites
         if a.id() && a.id() > 0
-          a.save(self)
+          a.editing false
+          a.save self
           l.remove byId a.id()
           l.push a
           self.currentwebsite(new mod.Website {name:'',id:-1})
+          self.currentwebsites.push a
         else
-          a.save(self)
-          l.push a
+          a.save(self, () -> 
+            a.editing false
+            l.push a
+            self.currentwebsites.push a
+            au = self.currentaudience()
+            w.refreshSelf(au).active(false).editing(false) for w in self.currentwebsites()
+            self.currentaudience().refresh self.currentwebsites()
+            self.websiteposition.maxValue self.currentwebsites().length
+            self.websiteposition.currentValue 'last'
+          )
         au = self.currentaudience()
-        self.currentwebsites.push a
         w.refreshSelf(au).active(false).editing(false) for w in self.currentwebsites()
         self.currentaudience().refresh self.currentwebsites()
         self.websiteposition.maxValue self.currentwebsites().length
         self.websiteposition.currentValue 'last'
-        self.editwebsite a
 
       @selectaudience = (c) ->
         self.confirmwebsitedelete 0
@@ -247,6 +255,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     models.selectaudience c
 
   window.models = models
+  models.mod = mod
   #init
 
   $(document).ready ->

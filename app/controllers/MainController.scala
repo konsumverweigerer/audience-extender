@@ -233,31 +233,33 @@ object MainController extends Controller with Secured with Formats with Utils {
 trait Formats {
   val websiteForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> nonEmptyText,
       "url" -> text,
-      "email" -> email))
+      "email" -> optional(email)))
 
   val audienceForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> nonEmptyText,
-      "tracking" -> text,
-      "paths" -> list(
-        tuple(
-          "id" -> longNumber,
-          "website" -> longNumber,
-          "urlPath" -> nonEmptyText)),
-      "websites" -> list(tuple(
+      "tracking" -> optional(text),
+      "paths" -> list(tuple(
+        "id" -> optional(longNumber),
         "website" -> longNumber,
-        "allPath" -> boolean))))
+        "path" -> nonEmptyText,
+        "include" -> boolean)),
+      "websitePaths" -> list(tuple(
+        "id" -> optional(longNumber),
+        "allPath" -> boolean)),
+      "startDate" -> optional(date),
+      "endDate" -> optional(date)))
 
   val packageForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> text,
-      "startDate" -> date,
-      "endDate" -> date,
+      "startDate" -> optional(date),
+      "endDate" -> optional(date),
       "count" -> number,
       "reach" -> number,
       "goal" -> number,
@@ -266,7 +268,7 @@ trait Formats {
 
   val campaignForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> nonEmptyText,
       "package" -> longNumber,
       "audiences" -> list(
@@ -336,7 +338,7 @@ trait Formats {
     def writes(pathTarget: PathTarget) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(pathTarget.id)),
       "website" -> JsNumber(BigDecimal(pathTarget.website.id)),
-      "url" -> JsString(pathTarget.urlPath),
+      "path" -> JsString(pathTarget.urlPath),
       "variant" -> JsString(pathTarget.variant)))
   }
 
@@ -368,7 +370,10 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(audience.id)),
       "name" -> JsString(audience.name),
       "tracking" -> JsString(audience.tracking),
-      "paths" -> Json.toJson(audience.pathTargets.asScala),
+      "paths" -> Json.toJson(audience.pathTargets.asScala.filter(p => (!"*".equals(p.urlPath)))),
+      "allpaths" -> JsObject(audience.pathTargets.asScala.filter(p => "*".equals(p.urlPath)).map { p =>
+        p.website.id.toString -> JsString(if ("include".equals(p.variant)) "on" else "off")
+      }),
       "websites" -> Json.toJson(audience.websites.asScala),
       "state" -> JsString(audience.state)))
   }
@@ -449,7 +454,7 @@ trait Formats {
       "endDate" -> (if (campaign.endDate != null) Json.toJson(campaign.endDate) else JsString("")),
       "package" -> Json.toJson(campaign.campaignPackage),
       "audiences" -> Json.toJson(campaign.audiences.asScala),
-      "creatives" -> Json.toJson(campaign.creatives.asScala),
+      "creatives" -> Json.toJson(campaign.creatives.asScala.filter(c => !"R".equals(c.state))),
       "revenue" -> JsNumber(0),
       "state" -> JsString("A"),
       "cost" -> JsNumber(0),

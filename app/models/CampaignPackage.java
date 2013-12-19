@@ -33,7 +33,7 @@ public class CampaignPackage extends Model {
 	public Date created;
 
 	/*
-	 * allowed values: monthly, weekly, daily, custom
+	 * allowed values: custom, monthly, weekly, daily
 	 */
 	public String variant;
 

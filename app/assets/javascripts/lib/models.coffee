@@ -390,9 +390,11 @@ define([ "knockout", "jsRoutes" ], (ko) ->
           value.toMap()
         else if ko.isObservable value
           self.toObject value()
-        else if value instanceof Array and value?.indexOf
+        else if value instanceof Array && value?.indexOf?
           self.toObject v for v in value
-        else if value? and not value.call
+        else if value instanceof Object && value?.read?
+          value.read()
+        else if value? && not value.call
           value
         else
           undefined
@@ -431,23 +433,23 @@ define([ "knockout", "jsRoutes" ], (ko) ->
             self.messages.push new Message v
         self.fromJson r.data
 
-      @saveApply = (r) ->
+      @removeApply = (r) ->
         if r.messages? && r.messages.length!=0
           for v in r.messages
             self.messages.push new Message v
         self.fromJson r.data
 
       @save = (page, success) ->
-        route = self.saveRoute(page)
+        route = self.saveRoute page
         if route?
           if page.loader?
             page.loader.next()
           result = route.ajax
-            data: self.toMap
+            data: $.param(self.toMap()).replace(/[%]5B([A-Za-z]*)[%]5D=/g,'.$1=')
             success: (r) ->
               if page.loader?
                 page.loader.previous()
-              saveApply r
+              self.saveApply r
               if success? && r.messages? && r.messages.length==0
                 success r
             error: (r) ->
@@ -460,16 +462,16 @@ define([ "knockout", "jsRoutes" ], (ko) ->
                   priority: 'error'
 
       @remove = (page) ->
-        route = self.removeRoute(page)
+        route = self.removeRoute page
         if route?
           if page.loader?
             page.loader.next()
           result = route.ajax
-            data: self.toMap
+            data: self.toMap()
             success: (r) ->
               if page.loader?
                 page.loader.previous()
-              removeApply r
+              self.removeApply r
               if success? && r.messages? && r.messages.length==0
                 success r
             error: (r) ->
@@ -517,7 +519,13 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @isError = ko.computed -> self.priority()=='error'
 
-      @show = (title,content,priority) ->
+      @show = (dortitle,content,priority) ->
+        if dortitle instanceof Object
+          title = dortitle.title
+          content = dortitle.content
+          priority = dortitle.priority
+        else
+          title = dortitle
         if title?
           self.title title
         if content?
@@ -589,6 +597,14 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @endDate = ko.observable d?.endDate
 
+      @dates = ko.computed
+        read: ->
+          [self.startDate(),self.endDate()]
+        write: (v) ->
+          if v.length == 2
+            self.startDate v[0]
+            self.endDate v[1]
+
       @refresh = (audiences,packages) ->
         for au in audiences
           au.selected false
@@ -616,11 +632,13 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @active = ko.observable d?.active
 
+      @include = ko.computed -> self.active()
+
   class Audience extends ServerModels
     typeOf: (name) ->
       if name=='paths'
         return { isIgnored: false, isArray: true, isModel: true, model: PathTarget }
-      else if name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty' || name=='messages' || name=='selected' || name=='active'
+      else if name=="websitePaths" || name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty' || name=='messages' || name=='selected' || name=='active'
         return { isIgnored: true }
       super(name)
 
@@ -646,6 +664,18 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @active = ko.observable false
 
+      @startDate = ko.observable d?.startDate
+
+      @endDate = ko.observable d?.endDate
+
+      @dates = ko.computed
+        read: ->
+          [self.startDate(),self.endDate()]
+        write: (v) ->
+          if v.length == 2
+            self.startDate v[0]
+            self.endDate v[1]
+
       @nonempty = ko.computed -> (self.websites() || []).length>0
 
       @websiteNames = ko.observable ''
@@ -656,19 +686,29 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @paths = ko.observableArray (d?.paths || []).map (v) -> new PathTarget v
 
+      @allpathsbyid = (id, c) ->
+        if c?
+          self.allpaths()[id] = c
+        else
+          self.allpaths()[id]
+
       @allpaths = ko.observable(d?.allpaths || {})
 
       @currentallpath = ko.computed
         read: ->
           aw = self.activewebsite()
-          ( aw && self.allpaths()[aw] ) || 'off'
+          ( aw && self.allpathsbyid(aw) ) || 'off'
         write: (v) ->
           aw = self.activewebsite()
           if aw
-            w = self.allpaths()
-            w[aw] = v
-            self.allpaths w
+            self.allpathsbyid(aw,v)
         owner: self.allpaths
+
+      @websitePaths =
+        read: ->
+          for we in self.websites()
+            s = self.allpathsbyid we.id
+            {id: we.id, name: we.name,allPath: (s!='off')}
 
       @currentpaths = ko.computed ->
         self.paths().filter (n,i) ->
@@ -749,7 +789,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @codeCopied = ko.observable()
 
-      @count = ko.observable d?.count
+      @count = ko.observable (d?.count || 0)
 
       @email = ko.observable d?.email
 

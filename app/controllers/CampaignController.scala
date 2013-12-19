@@ -1,16 +1,21 @@
 package controllers
 
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
-import models._
-import views._
-import play.api._
-import play.api.Play._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.libs.json._
-import play.api.mvc._
-import play.Logger
+import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConversions.bufferAsJavaList
+import scala.collection.JavaConversions.seqAsJavaList
+import scala.collection.JavaConverters.asScalaBufferConverter
+
+import models.Admin
+import models.Campaign
+import models.CampaignPackage
+import models.Message
+import models.Publisher
+import play.api.libs.json.JsObject
+import play.api.libs.json.JsValue
+import play.api.libs.json.Json
+import play.api.mvc.Action
+import play.api.mvc.Controller
+import views.html
 
 object CampaignController extends Controller with Secured with Formats with Utils {
   def campaigns = IsAuthenticated { adminid =>
@@ -40,7 +45,7 @@ object CampaignController extends Controller with Secured with Formats with Util
   def campaignSave(publisherid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        websiteForm.bindFromRequest.fold(
+        campaignForm.bindFromRequest.fold(
           errors => {
             val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
             BadRequest(JsObject(Seq(
@@ -49,7 +54,7 @@ object CampaignController extends Controller with Secured with Formats with Util
           },
           data =>
             Some(data._1).map { id =>
-              Campaign.findById(id, admin).map { campaign =>
+              Campaign.findById(id.getOrElse(-1L), admin).map { campaign =>
                 //TODO: fill from form
                 val msgs = campaign.write().asScala
                 Ok(JsObject(Seq(
@@ -94,7 +99,7 @@ object CampaignController extends Controller with Secured with Formats with Util
   def packageSave(campaignid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        websiteForm.bindFromRequest.fold(
+        packageForm.bindFromRequest.fold(
           errors => {
             val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
             BadRequest(JsObject(Seq(
@@ -103,8 +108,20 @@ object CampaignController extends Controller with Secured with Formats with Util
           },
           data =>
             Some(data._1).map { id =>
-              CampaignPackage.findById(id, admin).map { pack =>
-                //TODO: fill from form
+              CampaignPackage.findById(id.getOrElse(-1L), admin).map { pack =>
+                pack.name = data._2
+                pack.variant = "custom"
+                pack.startDate = data._3.getOrElse(null)
+                pack.endDate = data._4.getOrElse(null)
+                pack.count = data._5
+                pack.reach = data._6
+                pack.goal = data._7
+                if (data._8 != null) {
+                  pack.buyCpm = new java.math.BigDecimal(data._8.toString)
+                }
+                if (data._9 != null) {
+                  pack.salesCpm = new java.math.BigDecimal(data._9.toString)
+                }
                 val msgs = pack.write().asScala
                 Ok(JsObject(Seq(
                   "data" -> Json.toJson(pack),
@@ -112,7 +129,19 @@ object CampaignController extends Controller with Secured with Formats with Util
               }.getOrElse(NotFound)
             }.getOrElse {
               val pack = new CampaignPackage("")
-              //TODO: fill from form
+              pack.name = data._2
+              pack.variant = "custom"
+              pack.startDate = data._3.getOrElse(null)
+              pack.endDate = data._4.getOrElse(null)
+              pack.count = data._5
+              pack.reach = data._6
+              pack.goal = data._7
+              if (data._8 != null) {
+                pack.buyCpm = new java.math.BigDecimal(data._8.toString)
+              }
+              if (data._9 != null) {
+                pack.salesCpm = new java.math.BigDecimal(data._9.toString)
+              }
               val campaign = Campaign.findById(campaignid, admin)
               pack.campaign = campaign.get
               val msgs = pack.write().asScala

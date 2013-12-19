@@ -168,7 +168,7 @@ public class Admin extends Model {
 	}
 
 	public static Admin updatePassword(Long id, Admin admin) {
-		return updateBasic(find.byId(id), admin);
+		return updatePassword(find.byId(id), admin);
 	}
 
 	public static Admin updatePassword(Admin current, Admin admin) {
