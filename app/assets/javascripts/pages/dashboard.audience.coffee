@@ -21,6 +21,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @audiencechartdaterange = new mod.DateRange
       @audiencechart = new mod.Chartdata
+      @audiencecharttype = ko.observable 'multibar'
 
       @audiencetablescroller = new mod.Scroller
       @audiencetablesearchbar = new mod.Searchbar {
@@ -250,12 +251,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
   ko.applyBindings models
 
-  # todo: via ko
-  models.audiencetable.rowClick = (c) ->
-    models.selectaudience c
-
   window.models = models
-  models.mod = mod
   #init
 
   $(document).ready ->

@@ -80,7 +80,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="dashboard" data-bind="nvddd: campaignchart.chartcontent, nvdddOptions: {chartType: 'cumulativeline', yFormat: 'currency', colors: ['#275980','#bf0c0c','#f3b300']}">
+					<div class="dashboard" data-bind="nvddd: campaignchart.chartcontent, nvdddOptions: {chartType: campaigncharttype, yFormat: 'currency', colors: ['#275980','#bf0c0c','#f3b300']}">
 						<svg></svg>
 					</div>
 				</div>
@@ -108,7 +108,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered data-table" data-bind="datatable: campaigntable, datatableScroller: campaigntablescroller, datatableOptions: { aoColumns: [ { sType: 'string' }, { sType: 'html' }, { sType: 'currency' }, { sType: 'currency' }, { sType: 'date' }, { sType: 'date' } ] }">
+							<table class="table table-striped table-bordered data-table" data-bind="datatable: campaigntable, datatableScroller: campaigntablescroller, datatableOptions: { aoColumns: [ { sType: 'string' }, { sType: 'html' }, { sType: 'currency' }, { sType: 'currency' }, { sType: 'date' }, { sType: 'date' } ], rowClick: selectcampaign }">
 								<thead>
 									<tr>
 										<th class="sorting">Name</th>
