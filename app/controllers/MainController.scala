@@ -393,6 +393,7 @@ trait Formats {
 
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaignPackage.id)),
+      "name" -> JsString(campaignPackage.name),
       "variant" -> JsString(campaignPackage.variant),
       "startDate" -> (if (campaignPackage.startDate != null) Json.toJson(campaignPackage.startDate) else JsString("")),
       "endDate" -> (if (campaignPackage.endDate != null) Json.toJson(campaignPackage.endDate) else JsString("")),
@@ -400,8 +401,7 @@ trait Formats {
       "reach" -> (if (campaignPackage.reach != null) JsNumber(BigDecimal(campaignPackage.reach)) else JsNumber(0)),
       "goal" -> (if (campaignPackage.goal != null) JsNumber(BigDecimal(campaignPackage.goal)) else JsNumber(0)),
       "buyCpm" -> (if (campaignPackage.buyCpm != null) JsNumber(BigDecimal(campaignPackage.buyCpm)) else JsNumber(0)),
-      "salesCpm" -> (if (campaignPackage.salesCpm != null) JsNumber(BigDecimal(campaignPackage.salesCpm)) else JsNumber(0)),
-      "name" -> JsString(campaignPackage.name)))
+      "salesCpm" -> (if (campaignPackage.salesCpm != null) JsNumber(BigDecimal(campaignPackage.salesCpm)) else JsNumber(0))))
   }
 
   implicit object CookieFormat extends Format[models.Cookie] {
@@ -449,6 +449,7 @@ trait Formats {
 
     def writes(campaign: Campaign) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaign.id)),
+      "name" -> JsString(campaign.name),
       "value" -> JsNumber(BigDecimal(campaign.value)),
       "startDate" -> (if (campaign.startDate != null) Json.toJson(campaign.startDate) else JsString("")),
       "endDate" -> (if (campaign.endDate != null) Json.toJson(campaign.endDate) else JsString("")),
@@ -456,9 +457,8 @@ trait Formats {
       "audiences" -> Json.toJson(campaign.audiences.asScala),
       "creatives" -> Json.toJson(campaign.creatives.asScala.filter(c => !"R".equals(c.state))),
       "revenue" -> JsNumber(0),
-      "state" -> JsString("A"),
       "cost" -> JsNumber(0),
-      "name" -> JsString(campaign.name)))
+      "state" -> JsString(campaign.state)))
   }
 
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {

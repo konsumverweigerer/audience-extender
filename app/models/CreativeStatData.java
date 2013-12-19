@@ -1,7 +1,9 @@
 package models;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -22,6 +24,10 @@ public class CreativeStatData extends Model {
 
 	@Required
 	public long views = 0;
+	@Column(precision = 6, scale = 6)
+	public BigDecimal revenue;
+	@Column(precision = 6, scale = 6)
+	public BigDecimal cost;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Creative creative;

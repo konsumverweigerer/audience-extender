@@ -49,6 +49,8 @@ create table campaign_package (
   name                      varchar(120),
   created                   timestamp,
   variant                   varchar(20),
+  state                     varchar(4),
+  publisher_id              bigint,
   campaign_id               bigint,
   campaign_package_id       bigint,
   start_date                timestamp,
@@ -250,6 +252,9 @@ create index ix_campaign_campaign_package_1 on campaign (campaign_package_id);
 
 alter table campaign_package add constraint fk_campaign_package_campaign_1 foreign key (campaign_id) references campaign (id) on delete restrict on update restrict;
 create index ix_campaign_package_campaign_1 on campaign_package (campaign_id);
+
+alter table campaign_package add constraint fk_campaign_package_publisher_1 foreign key (publisher_id) references publisher (id) on delete restrict on update restrict;
+create index ix_campaign_package_publisher_1 on campaign_package (publisher_id);
 
 alter table campaign_package add constraint fk_campaign_package_campaign_package_1 foreign key (campaign_package_id) references campaign_package (id) on delete restrict on update restrict;
 create index ix_campaign_package_campaign_package_1 on campaign_package (campaign_package_id);

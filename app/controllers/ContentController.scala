@@ -124,6 +124,14 @@ object ContentController extends Controller with Utils {
     }.getOrElse(NotFound)
   }
 
+  def websiteContent = (wid: String, t: String) => Action { implicit request =>
+    NotFound
+  }
+
+  def campaignPackageContent = (cid: String, t: String) => Action { implicit request =>
+    NotFound
+  }
+
   def creative = (uuid: String) => Action { implicit request =>
     Creative.findByUUID(uuid).map { creative =>
       countCreative(creative)

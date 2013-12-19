@@ -36,6 +36,7 @@ public class CampaignPackage extends Model {
 	 * allowed values: custom, monthly, weekly, daily
 	 */
 	public String variant;
+	public String state;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date startDate;
@@ -51,9 +52,10 @@ public class CampaignPackage extends Model {
 	@Column(precision = 6, scale = 6)
 	public BigDecimal salesCpm;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Publisher publisher;
 	@ManyToOne(fetch = FetchType.EAGER)
 	public Campaign campaign;
-
 	@ManyToOne(fetch = FetchType.EAGER)
 	public CampaignPackage campaignPackage;
 
