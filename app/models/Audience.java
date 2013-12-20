@@ -21,6 +21,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.avaje.ebean.Ebean;
+
 import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -46,7 +48,13 @@ public class Audience extends Model {
 	public Date created;
 
 	/*
-	 * allowed: values active, pending, cancelled
+	 * allowed: values pending, active, cancelled
+	 *
+	 * pending: not all needed cookies are active yet
+	 *
+	 * active: all needed cookies are active
+	 *
+	 * cancelled: deleted
 	 */
 	public String state;
 	public String tracking;
@@ -62,6 +70,7 @@ public class Audience extends Model {
 
 	public Audience(String name) {
 		this.name = name;
+		this.state = "P";
 		this.created = new Date();
 	}
 
@@ -160,6 +169,12 @@ public class Audience extends Model {
 	public List<Message> write() {
 		// TODO: check website/paths if new cookies are needed
 		save();
+		for (final PathTarget pathTarget: this.pathTargets) {
+			pathTarget.save();
+			pathTarget.update();
+		}
+		Ebean.saveManyToManyAssociations(this, "websites");
+		update();
 		return Collections.emptyList();
 	}
 

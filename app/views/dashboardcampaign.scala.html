@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-4">
+				<div class="col-sm-4 hidden-xs">
 					<form class="form-horizontal" role="form">
 						<div class="form-group well-fix">
 							<label for="selectDate" class="col-sm-2 control-label">Dates</label>
@@ -51,7 +51,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<div data-bind="datepicker: campaignchartdaterange, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }" class="well well-sm m-null input-daterange">
 						<div class="row">
 							<div class="col-sm-6">
@@ -77,10 +77,20 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-sm-2 hidden-xs">
+					<div class="btn-group" data-toggle="buttons">
+						<label class="btn btn-default active btn-sm">
+							<input type="radio" name="charttype" value="cumulativeline" data-bind="checkedChange: campaigncharttype">Sum
+						</label>
+						<label class="btn btn-default btn-sm">
+							<input type="radio" name="charttype" value="line" data-bind="checkedChange: campaigncharttype">Line
+						</label>
+					</div>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="dashboard" data-bind="nvddd: campaignchart.chartcontent, nvdddOptions: {chartType: 'cumulativeline',yFormat: 'currency'}">
+					<div class="dashboard" data-bind="nvddd: campaignchart.chartcontent, nvdddOptions: {chartType: campaigncharttype, yFormat: 'currency', colors: ['#275980','#bf0c0c','#f3b300']}">
 						<svg></svg>
 					</div>
 				</div>
@@ -102,13 +112,13 @@
 				<div class="row">
 					@elements.searchbar("campaigntablesearchbar")
 				</div>
-				<div class="row">
+				<div class="row hidden-lg">
 					@elements.pagination("campaigntablescroller")
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered data-table" data-bind="datatable: campaigntable, datatableScroller: campaigntablescroller, datatableOptions: { aoColumns: [ { sType: 'string' }, { sType: 'html' }, { sType: 'currency' }, { sType: 'currency' }, { sType: 'date' }, { sType: 'date' } ] }">
+							<table class="table table-striped table-bordered data-table" data-bind="datatable: campaigntable, datatableScroller: campaigntablescroller, datatableOptions: { aoColumns: [ { sType: 'string' }, { sType: 'html' }, { sType: 'currency' }, { sType: 'currency' }, { sType: 'date' }, { sType: 'date' } ], rowClick: selectcampaign }">
 								<thead>
 									<tr>
 										<th class="sorting">Name</th>
@@ -134,10 +144,10 @@
 					<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-bind="click: newcampaign"><span></span><span class="glyphicon glyphicon-plus-sign"></span> New Campaign</button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-bind="click: showyieldmaximizer"><span></span><span class="glyphicon glyphicon-plus-sign"></span> Yield Maximiser</button>
+					<button type="button" disabled="true" class="btn btn-lg btn-block btn-plus" data-bind="click: showyieldmaximizer"><span></span><span class="glyphicon glyphicon-plus-sign"></span> Yield Maximiser <span class="label label-info">soon</span></button>
 				</p>
 				<p>
-					<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-bind="click: showadpackages"><span></span><span class="glyphicon glyphicon-plus-sign"></span> AD Packages</button>
+					<button type="button" disabled="true" class="btn btn-lg btn-block btn-plus" data-bind="click: showadpackages"><span></span><span class="glyphicon glyphicon-plus-sign"></span> AD Packages <span class="label label-info">soon</span></button>
 				</p>
 			</div>
 		</div>

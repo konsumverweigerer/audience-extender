@@ -39,7 +39,7 @@ public class Creative extends Model {
 	public Date created;
 
 	/*
-	 * allowed values: pending, active
+	 * allowed values: pending, active, removed
 	 */
 	public String state;
 	/*
@@ -90,7 +90,8 @@ public class Creative extends Model {
 			creative.state = "P";
 			final ByteArrayOutputStream os = new ByteArrayOutputStream();
 			final Path path = file.toPath();
-			try (final ReadableByteChannel sbc = Files.newByteChannel(path)) {
+			try {
+				final ReadableByteChannel sbc = Files.newByteChannel(path);
 				final ByteBuffer buf = ByteBuffer.allocate(512);
 				while (sbc.read(buf) > 0) {
 					buf.rewind();

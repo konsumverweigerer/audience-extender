@@ -97,6 +97,7 @@ object ContentController extends Controller with Utils {
             countCookie(cookie, sub)
           }
         }
+        //TODO: add 3rd party tracking
       }
       sendCookie(cookies)
     }.getOrElse {
@@ -121,6 +122,14 @@ object ContentController extends Controller with Utils {
         Ok("").as("application/octet-steam")
       }
     }.getOrElse(NotFound)
+  }
+
+  def websiteContent = (wid: String, t: String) => Action { implicit request =>
+    NotFound
+  }
+
+  def campaignPackageContent = (cid: String, t: String) => Action { implicit request =>
+    NotFound
   }
 
   def creative = (uuid: String) => Action { implicit request =>

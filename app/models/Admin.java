@@ -15,6 +15,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+
 import play.data.format.Formats.NonEmpty;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
@@ -80,6 +82,7 @@ public class Admin extends Model {
 	public List<Publisher> publishers = new ArrayList<Publisher>();
 
 	public Admin() {
+		this.created = new Date();
 	}
 
 	public Admin(String name, String email) {
@@ -91,6 +94,7 @@ public class Admin extends Model {
 		this.name = name;
 		this.password = password;
 		this.adminRoles = "";
+		this.created = new Date();
 	}
 
 	public static Admin fromMap(Map<String, Object> data) {
@@ -166,7 +170,7 @@ public class Admin extends Model {
 	}
 
 	public static Admin updatePassword(Long id, Admin admin) {
-		return updateBasic(find.byId(id), admin);
+		return updatePassword(find.byId(id), admin);
 	}
 
 	public static Admin updatePassword(Admin current, Admin admin) {
@@ -200,6 +204,7 @@ public class Admin extends Model {
 
 	public List<Message> write() {
 		save();
+		update();
 		return Collections.emptyList();
 	}
 
@@ -304,6 +309,13 @@ public class Admin extends Model {
 
 	public boolean isSysAdmin() {
 		return getRoles().contains("sysadmin");
+	}
+
+	public void setRoles(List<String> roles) {
+		if (roles != null) {
+			this.adminRoles = StringUtils.join(roles, ",");
+		}
+		this.adminRoles = "";
 	}
 
 	public List<String> getRoles() {

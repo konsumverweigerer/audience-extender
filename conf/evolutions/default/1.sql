@@ -49,10 +49,13 @@ create table campaign_package (
   name                      varchar(120),
   created                   timestamp,
   variant                   varchar(20),
+  state                     varchar(4),
+  publisher_id              bigint,
   campaign_id               bigint,
+  campaign_package_id       bigint,
   start_date                timestamp,
   end_date                  timestamp,
-  count                     bigint,
+  impressions               bigint,
   reach                     bigint,
   goal                      bigint,
   buy_cpm                   decimal(6,6),
@@ -178,6 +181,9 @@ create table creative_stat_data (
   id                        bigint not null default(nextval('creative_stat_data_seq')),
   timestep                  varchar(20),
   views                     bigint,
+  cpm                       decimal(6,4),
+  cost                      decimal(6,4),
+  revenue                   decimal(6,4),
   creative_id               bigint not null,
   constraint pk_creative_stat_data primary key (id))
 ;
@@ -246,6 +252,12 @@ create index ix_campaign_campaign_package_1 on campaign (campaign_package_id);
 
 alter table campaign_package add constraint fk_campaign_package_campaign_1 foreign key (campaign_id) references campaign (id) on delete restrict on update restrict;
 create index ix_campaign_package_campaign_1 on campaign_package (campaign_id);
+
+alter table campaign_package add constraint fk_campaign_package_publisher_1 foreign key (publisher_id) references publisher (id) on delete restrict on update restrict;
+create index ix_campaign_package_publisher_1 on campaign_package (publisher_id);
+
+alter table campaign_package add constraint fk_campaign_package_campaign_package_1 foreign key (campaign_package_id) references campaign_package (id) on delete restrict on update restrict;
+create index ix_campaign_package_campaign_package_1 on campaign_package (campaign_package_id);
 
 alter table campaign_package_preview add constraint fk_campaign_package_preview_campaign_package_1 foreign key (campaign_package_id) references campaign_package (id) on delete restrict on update restrict;
 create index ix_campaign_package_preview_campaign_package_1 on campaign_package_preview (campaign_package_id);

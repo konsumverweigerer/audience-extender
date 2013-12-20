@@ -65,7 +65,7 @@ campaign-packages:
   variant: monthly
   startDate: 2013-11-01
   endDate: 2013-12-01
-  count: 1000
+  impressions: 1000
   reach: 400
   goal: 90000
   buyCpm: 0.2
@@ -76,7 +76,7 @@ campaign-packages:
   variant: monthly
   startDate: 2013-10-01
   endDate: 2013-11-01
-  count: 10000
+  impressions: 10000
   reach: 400
   goal: 90000
   buyCpm: 0.3
@@ -87,7 +87,7 @@ campaign-packages:
   variant: monthly
   startDate: 2013-08-01
   endDate: 2013-11-01
-  count: 100000
+  impressions: 100000
   reach: 400
   goal: 90000
   buyCpm: 0.6

@@ -25,8 +25,8 @@ public class ApplicationTest {
 
 	@Test
 	public void renderTemplate() {
-		Content html = views.html.index
-				.render(null, MainController.contactForm());
+		Content html = views.html.index.render(null,
+				MainController.contactForm(), null);
 		assertThat(contentType(html)).isEqualTo("text/html");
 		assertThat(contentAsString(html)).contains("html");
 	}

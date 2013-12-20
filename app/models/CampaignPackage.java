@@ -33,16 +33,17 @@ public class CampaignPackage extends Model {
 	public Date created;
 
 	/*
-	 * allowed values: monthly, weekly, daily, custom
+	 * allowed values: custom, monthly, weekly, daily
 	 */
 	public String variant;
+	public String state;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date startDate;
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date endDate;
 
-	public Long count;
+	public Long impressions;
 	public Long reach;
 	public Long goal;
 
@@ -52,10 +53,15 @@ public class CampaignPackage extends Model {
 	public BigDecimal salesCpm;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	public Publisher publisher;
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Campaign campaign;
+	@ManyToOne(fetch = FetchType.EAGER)
+	public CampaignPackage campaignPackage;
 
 	public CampaignPackage(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public static CampaignPackage fromMap(Map<String, Object> data) {
@@ -82,6 +88,7 @@ public class CampaignPackage extends Model {
 
 	public List<Message> write() {
 		save();
+		update();
 		return Collections.emptyList();
 	}
 

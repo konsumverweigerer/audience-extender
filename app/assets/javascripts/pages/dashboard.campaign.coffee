@@ -23,6 +23,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @campaignchartdaterange = new mod.DateRange
       @campaignchart = new mod.Chartdata
+      @campaigncharttype = ko.observable 'cumulativeline'
 
       @campaigntablescroller = new mod.Scroller
       @campaigntablesearchbar = new mod.Searchbar {
@@ -243,9 +244,6 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
   models = new CampaignDashboard
 
   ko.applyBindings(models)
-
-  models.campaigntable.rowClick = (c) ->
-    models.selectcampaign c
 
   window.models = models
   #init

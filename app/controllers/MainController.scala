@@ -209,6 +209,8 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AudienceController.websiteSave,
         routes.javascript.AudienceController.websiteRemove,
         routes.javascript.AdminController.changePublisher,
+        routes.javascript.AdminController.attachPublisher,
+        routes.javascript.AdminController.detachPublisher,
         routes.javascript.AdminController.adminList,
         routes.javascript.AdminController.adminSave,
         routes.javascript.AdminController.cookieList,
@@ -233,31 +235,33 @@ object MainController extends Controller with Secured with Formats with Utils {
 trait Formats {
   val websiteForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> nonEmptyText,
       "url" -> text,
-      "email" -> email))
+      "email" -> optional(email)))
 
   val audienceForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> nonEmptyText,
-      "tracking" -> text,
-      "paths" -> list(
-        tuple(
-          "id" -> longNumber,
-          "website" -> longNumber,
-          "urlPath" -> nonEmptyText)),
-      "websites" -> list(tuple(
+      "tracking" -> optional(text),
+      "paths" -> list(tuple(
+        "id" -> optional(longNumber),
         "website" -> longNumber,
-        "allPath" -> boolean))))
+        "path" -> nonEmptyText,
+        "include" -> boolean)),
+      "websitePaths" -> list(tuple(
+        "id" -> optional(longNumber),
+        "allPath" -> boolean)),
+      "startDate" -> optional(date),
+      "endDate" -> optional(date)))
 
   val packageForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> text,
-      "startDate" -> date,
-      "endDate" -> date,
+      "startDate" -> optional(date),
+      "endDate" -> optional(date),
       "count" -> number,
       "reach" -> number,
       "goal" -> number,
@@ -266,33 +270,41 @@ trait Formats {
 
   val campaignForm = Form(
     tuple(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "name" -> nonEmptyText,
-      "package" -> longNumber,
+      "package" -> optional(longNumber),
       "audiences" -> list(
         longNumber),
       "creatives" -> list(
-        longNumber)))
+        longNumber),
+      "startDate" -> optional(date),
+      "endDate" -> optional(date)))
 
   val adminForm = Form(
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
-      "package" -> longNumber,
-      "audiences" -> list(
-        longNumber),
-      "creatives" -> list(
-        longNumber)))
+      "roles" -> list(
+        text),
+      "url" -> optional(text),
+      "streetaddress1" -> optional(text),
+      "streetaddress2" -> optional(text),
+      "streetaddress3" -> optional(text),
+      "state" -> optional(text),
+      "country" -> optional(text),
+      "telephone" -> optional(text)))
 
   val publisherForm = Form(
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
-      "package" -> longNumber,
-      "audiences" -> list(
-        longNumber),
-      "creatives" -> list(
-        longNumber)))
+      "url" -> optional(text),
+      "streetaddress1" -> optional(text),
+      "streetaddress2" -> optional(text),
+      "streetaddress3" -> optional(text),
+      "state" -> optional(text),
+      "country" -> optional(text),
+      "telephone" -> optional(text)))
 
   val cookieForm = Form(
     tuple(
@@ -336,7 +348,7 @@ trait Formats {
     def writes(pathTarget: PathTarget) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(pathTarget.id)),
       "website" -> JsNumber(BigDecimal(pathTarget.website.id)),
-      "url" -> JsString(pathTarget.urlPath),
+      "path" -> JsString(pathTarget.urlPath),
       "variant" -> JsString(pathTarget.variant)))
   }
 
@@ -368,7 +380,10 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(audience.id)),
       "name" -> JsString(audience.name),
       "tracking" -> JsString(audience.tracking),
-      "paths" -> Json.toJson(audience.pathTargets.asScala),
+      "paths" -> Json.toJson(audience.pathTargets.asScala.filter(p => (!"*".equals(p.urlPath)))),
+      "allpaths" -> JsObject(audience.pathTargets.asScala.filter(p => "*".equals(p.urlPath)).map { p =>
+        p.website.id.toString -> JsString(if ("include".equals(p.variant)) "on" else "off")
+      }),
       "websites" -> Json.toJson(audience.websites.asScala),
       "state" -> JsString(audience.state)))
   }
@@ -380,7 +395,7 @@ trait Formats {
       "variant" -> (json \ "variant").as[String],
       "startDate" -> (json \ "startDate").as[String],
       "endDate" -> (json \ "endDate").as[String],
-      "count" -> (json \ "count").as[String],
+      "impressions" -> (json \ "count").as[String],
       "reach" -> (json \ "reach").as[String],
       "goal" -> (json \ "goal").as[String],
       "buyCpm" -> (json \ "buyCpm").as[String],
@@ -388,15 +403,15 @@ trait Formats {
 
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaignPackage.id)),
+      "name" -> JsString(campaignPackage.name),
       "variant" -> JsString(campaignPackage.variant),
       "startDate" -> (if (campaignPackage.startDate != null) Json.toJson(campaignPackage.startDate) else JsString("")),
       "endDate" -> (if (campaignPackage.endDate != null) Json.toJson(campaignPackage.endDate) else JsString("")),
-      "count" -> (if (campaignPackage.count != null) JsNumber(BigDecimal(campaignPackage.count)) else JsNumber(0)),
+      "count" -> (if (campaignPackage.impressions != null) JsNumber(BigDecimal(campaignPackage.impressions)) else JsNumber(0)),
       "reach" -> (if (campaignPackage.reach != null) JsNumber(BigDecimal(campaignPackage.reach)) else JsNumber(0)),
       "goal" -> (if (campaignPackage.goal != null) JsNumber(BigDecimal(campaignPackage.goal)) else JsNumber(0)),
       "buyCpm" -> (if (campaignPackage.buyCpm != null) JsNumber(BigDecimal(campaignPackage.buyCpm)) else JsNumber(0)),
-      "salesCpm" -> (if (campaignPackage.salesCpm != null) JsNumber(BigDecimal(campaignPackage.salesCpm)) else JsNumber(0)),
-      "name" -> JsString(campaignPackage.name)))
+      "salesCpm" -> (if (campaignPackage.salesCpm != null) JsNumber(BigDecimal(campaignPackage.salesCpm)) else JsNumber(0))))
   }
 
   implicit object CookieFormat extends Format[models.Cookie] {
@@ -444,16 +459,16 @@ trait Formats {
 
     def writes(campaign: Campaign) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaign.id)),
+      "name" -> JsString(campaign.name),
       "value" -> JsNumber(BigDecimal(campaign.value)),
       "startDate" -> (if (campaign.startDate != null) Json.toJson(campaign.startDate) else JsString("")),
       "endDate" -> (if (campaign.endDate != null) Json.toJson(campaign.endDate) else JsString("")),
       "package" -> Json.toJson(campaign.campaignPackage),
       "audiences" -> Json.toJson(campaign.audiences.asScala),
-      "creatives" -> Json.toJson(campaign.creatives.asScala),
+      "creatives" -> Json.toJson(campaign.creatives.asScala.filter(c => !"R".equals(c.state))),
       "revenue" -> JsNumber(0),
-      "state" -> JsString("A"),
       "cost" -> JsNumber(0),
-      "name" -> JsString(campaign.name)))
+      "state" -> JsString(campaign.state)))
   }
 
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {

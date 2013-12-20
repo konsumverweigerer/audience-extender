@@ -45,6 +45,7 @@ public class Website extends Model {
 
 	public Website(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public static Website fromMap(Map<String, Object> data) {
@@ -75,11 +76,12 @@ public class Website extends Model {
 	}
 
 	public List<Message> write() {
+		save();
 		if (this.uuid == null || this.uuid.isEmpty()) {
 			this.uuid = UuidHelper
 					.randomUUIDString("com.audienceextender.website");
 		}
-		save();
+		update();
 		return Collections.emptyList();
 	}
 

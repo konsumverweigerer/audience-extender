@@ -13,6 +13,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.avaje.ebean.Ebean;
+
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
@@ -49,6 +51,7 @@ public class Publisher extends Model {
 
 	public Publisher(String name) {
 		this.name = name;
+		this.created = new Date();
 	}
 
 	public Publisher(String name, Option<String> url) {
@@ -83,6 +86,8 @@ public class Publisher extends Model {
 
 	public List<Message> write() {
 		save();
+		Ebean.saveManyToManyAssociations(this, "admins");
+		update();
 		return Collections.emptyList();
 	}
 
