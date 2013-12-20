@@ -228,12 +228,39 @@ object AdminController extends Controller with Secured with Formats with Utils {
       }.getOrElse(Forbidden)
   }
 
+  def attachPublisher(adminid: String, publisherid: String) = IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        Admin.changePublisher(publisherid, admin).map { publisher =>
+          publisher.owners.add(admin)
+          val msgs = publisher.write().asScala
+          Ok(Json.toJson(JsObject(Seq(
+            "data" -> Json.toJson(msgs.isEmpty()),
+            "messages" -> Json.toJson(msgs)))))
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
+  def detachPublisher(adminid: String, publisherid: String) = IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        Admin.changePublisher(publisherid, admin).map { publisher =>
+          publisher.owners.remove(admin)
+          if (admin.publisher.equals(publisher)) { admin.publisher = null }
+          val msgs = (admin.write().asScala)
+          msgs.addAll(publisher.write().asScala)
+          Ok(Json.toJson(JsObject(Seq(
+            "data" -> Json.toJson(msgs.isEmpty()),
+            "messages" -> Json.toJson(msgs)))))
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   def changePublisher(publisherid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
-          Ok(
-            Json.toJson(publisher))
+          Ok(Json.toJson(publisher))
         }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
   }

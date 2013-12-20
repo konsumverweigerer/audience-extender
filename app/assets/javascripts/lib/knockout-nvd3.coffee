@@ -1,10 +1,39 @@
 define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
   nvdddDefaults = -> {}
 
+  cumulate = (options,data) ->
+    if data? && options.cumulateOther && options.cumulateOther<data.length
+      sums = data.map (n,i) -> [n.values.map((a) -> a.y).reduce(((a,b) -> a+b),0),i]
+      sums.sort (a,b) -> b[0]-a[0]
+      cum = {key: 'Other', cls: 'other', values: []}
+      for c in sums[(options.cumulateOther)...(data.length)]
+        cd = data[c[1]]
+        cum.timeframe = cd.timeframe
+        cum.values.push d for d in cd.values
+      cum.values.sort (a,b) -> (a.x-b.x)
+      cd = {}
+      vals = []
+      for d in cum.values
+        if d.x!=cd.x
+          if cd.x?
+            vals.push cd
+            cd = {}
+          cd.x = d.x
+          cd.y = d.y
+        else
+          cd.y += d.y
+      if cd.x?
+        vals.push cd
+      cum.values = vals
+      data = (data[c[1]] for c in sums[0...(options.cumulateOther)])
+      data.push cum
+    data
+
   rendernvddd = (element,options,data) ->
     if !$(element).is 'svg'
       element = $(element).find('svg').first()[0]
     nv.addGraph ->
+      data = data || []
       chart = nv.graphs.pop()
       xformat = options.xFormat || 'date'
       yformat = options.yFormat || 'number'
@@ -17,31 +46,7 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
         chart = chart || nv.models.linePlusBarChart()
       else if nvct == 'multibar'
         chart = chart || nv.models.multiBarChart()
-        if options.cumulateOther && options.cumulateOther<data.length
-          sums = data.map (n,i) -> [n.values.map((a) -> a.y).reduce(((a,b) -> a+b),0),i]
-          sums.sort (a,b) -> b[0]-a[0]
-          cum = {key: 'Other', cls: 'other', values: []}
-          for c in sums[(options.cumulateOther)...(data.length)]
-            cd = data[c[1]]
-            cum.timeframe = cd.timeframe
-            cum.values.push d for d in cd.values
-          cum.values.sort (a,b) -> (a.x-b.x)
-          cd = {}
-          vals = []
-          for d in cum.values
-            if d.x!=cd.x
-              if cd.x?
-                vals.push cd
-                cd = {}
-              cd.x = d.x
-              cd.y = d.y
-            else
-              cd.y += d.y
-          if cd.x?
-            vals.push cd
-          cum.values = vals
-          data = (data[c[1]] for c in sums[0...(options.cumulateOther)])
-          data.push cum
+        data = cumulate(options,data)
       else if nvct == 'cumulativeline'
         chart = chart || nv.models.mycumulativeLineChart()
         data = for n,i in data
@@ -53,6 +58,9 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
             sv = d.y
             d
           l
+      else if nvct == 'line'
+        chart = chart || nv.models.lineChart()
+        data = cumulate(options,data)
       else
         chart = chart || nv.models.lineChart()
       chart.nvct = nvct

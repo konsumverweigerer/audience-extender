@@ -6,11 +6,30 @@
 				<h4 class="modal-title">New/Edit Creative: <a href="#" id="creativename" data-bind="editable: currentcreative().name" data-type="text" data-pk="1" data-title="Enter Creative Name">New Creative</a></h4>
 			</div>
 			<div class="modal-body">
+				<div class="box-1" data-bind="with: currentcreative">
+					<h3 data-bind="text: persisted() ? 'Edit Admin' : 'New Admin'">New Creative</h3>
+					<form class="form-horizontal" role="form" novalidate action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: $root.savecreative }">
+						<div class="form-group control-group">
+							<label for="creativename" class="col-sm-3 control-label">Creative Name</label>
+							<div class="col-sm-9">
+								<input type="text" required data-validation-required-message="Enter a creative name" class="form-control" id="creativename" placeholder="Admin Name" data-bind="value: name">
+							</div>
+							<div class="controls popover left">
+								<div class="arrow"></div>
+								<div class="popover-title"><span class="glyphicon glyphicon-exclamation-sign"></span><span> </span><span class="help-block"></span></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save Creative</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+				<button type="button" class="btn btn-danger pull-left" data-bind="click: $root.deletecreative"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+				<button type="button" class="btn btn-default" data-bind="click: $root.clearcreative">Cancel</button>
 			</div>
 		</div>
 	</div>

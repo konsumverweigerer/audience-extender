@@ -202,6 +202,7 @@ public class Admin extends Model {
 
 	public List<Message> write() {
 		save();
+		update();
 		return Collections.emptyList();
 	}
 

@@ -28,7 +28,9 @@ GET      /admin/:id                                controllers.AdminController.a
 POST     /admin/:id                                controllers.AdminController.saveAdmin(id: String)
 DELETE   /admin/:id                                controllers.AdminController.deleteAdmin(id: String)
 
-PUT      /changePublisher                          controllers.AdminController.changePublisher(publisherid)
+PUT      /changePublisher/:pid                     controllers.AdminController.changePublisher(pid: String)
+PUT      /attachPublisher/:pid/:aid                controllers.AdminController.attachPublisher(aid:String, pid:String)
+PUT      /detachPublisher/:pid/:aid                controllers.AdminController.detachPublisher(aid:String, pid:String)
 
 GET      /admins                                   controllers.AdminController.admins
 POST     /admins                                   controllers.AdminController.addAdmin
