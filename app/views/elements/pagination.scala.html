@@ -1,5 +1,5 @@
 @(model: String)
-<div class="col-xs-6">
+<div class="col-xs-4 hidden-xs">
 	<p class="pagination-fix" data-bind="fadeVisible: @{model}.hasData" style="display:none;">
 		<strong class="pagination-text">Displaying: <span
 			data-bind="text: @{model}.fromIndex"></span> - <span
@@ -7,7 +7,7 @@
 			data-bind="text: @{model}.maxIndex"></span></strong>
 	</p>
 </div>
-<div class="col-xs-6">
+<div class="col-xs-8">
 	<ul class="pagination pagination-sm pull-right m-null-top" data-bind="fadeVisible: @{model}.hasPages" style="display:none;">
 		<li><a href="javascript:void(0)"
 			data-bind="click: @{model}.previous">&laquo;</a></li>
