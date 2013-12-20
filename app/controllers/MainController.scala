@@ -276,27 +276,35 @@ trait Formats {
       "audiences" -> list(
         longNumber),
       "creatives" -> list(
-        longNumber)))
+        longNumber),
+      "startDate" -> optional(date),
+      "endDate" -> optional(date)))
 
   val adminForm = Form(
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
-      "package" -> longNumber,
-      "audiences" -> list(
-        longNumber),
-      "creatives" -> list(
-        longNumber)))
+      "roles" -> list(
+        text),
+      "url" -> optional(text),
+      "streetaddress1" -> optional(text),
+      "streetaddress2" -> optional(text),
+      "streetaddress3" -> optional(text),
+      "state" -> optional(text),
+      "country" -> optional(text),
+      "telephone" -> optional(text)))
 
   val publisherForm = Form(
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
-      "package" -> longNumber,
-      "audiences" -> list(
-        longNumber),
-      "creatives" -> list(
-        longNumber)))
+      "url" -> optional(text),
+      "streetaddress1" -> optional(text),
+      "streetaddress2" -> optional(text),
+      "streetaddress3" -> optional(text),
+      "state" -> optional(text),
+      "country" -> optional(text),
+      "telephone" -> optional(text)))
 
   val cookieForm = Form(
     tuple(

@@ -15,6 +15,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+
 import play.data.format.Formats.NonEmpty;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
@@ -307,6 +309,13 @@ public class Admin extends Model {
 
 	public boolean isSysAdmin() {
 		return getRoles().contains("sysadmin");
+	}
+
+	public void setRoles(List<String> roles) {
+		if (roles != null) {
+			this.adminRoles = StringUtils.join(roles, ",");
+		}
+		this.adminRoles = "";
 	}
 
 	public List<String> getRoles() {
