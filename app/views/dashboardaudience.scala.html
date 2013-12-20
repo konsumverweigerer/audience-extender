@@ -23,7 +23,7 @@
 	<div class="row">
 		<div class="col-md-9">
 			<div class="row">
-				<div class="col-sm-4">
+				<div class="col-sm-4 hidden-xs">
 					<form class="form-horizontal" role="form">
 						<div class="form-group well-fix">
 							<label for="selectDate" class="col-sm-2 control-label">Dates</label>
@@ -34,7 +34,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<div data-bind="datepicker: audiencechartdaterange, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }" class="well well-sm m-null input-daterange">
 						<div class="row">
 							<div class="col-sm-6">
@@ -58,6 +58,16 @@
 								</form>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="col-sm-2 hidden-xs">
+					<div class="btn-group" data-toggle="buttons">
+						<label class="btn btn-default active">
+							<input type="radio" name="charttype" value="multibar" data-bind="checkedChange: audiencecharttype">Bar
+						</label>
+						<label class="btn btn-default">
+							<input type="radio" name="charttype" value="line" data-bind="checkedChange: audiencecharttype">Line
+						</label>
 					</div>
 				</div>
 			</div>
