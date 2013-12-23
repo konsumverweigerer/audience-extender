@@ -19,6 +19,8 @@ import play.api.mvc._
 import play.api.Play._
 
 object MainController extends Controller with Secured with Formats with Utils {
+  import play.api.Play.current
+
   val loginForm = Form(
     tuple(
       "email" -> (email verifying nonEmpty),
@@ -33,7 +35,7 @@ object MainController extends Controller with Secured with Formats with Utils {
       "name" -> nonEmptyText,
       "msg" -> nonEmptyText)
       verifying ("Could not send message", result => result match {
-        case (email, name, msg) => (SendMail.sendContactMessage(email, name, msg) != null)
+        case (email, name, msg) => (SendMail.sendContactMessage(current, email, name, msg) != null)
       }))
 
   val forgotPasswordForm = Form(
@@ -84,7 +86,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, admin)),
           message => {
-            if (SendMail.sendContactMessage(message._1, message._2, message._3)) {
+            if (SendMail.sendContactMessage(current, message._1, message._2, message._3)) {
               Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
             } else {
               Redirect(routes.MainController.contact).flashing("error" -> "Could not send message")
@@ -94,7 +96,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         contactForm.bindFromRequest.fold(
           formWithErrors => BadRequest(html.contact(formWithErrors, null)),
           message => {
-            if (SendMail.sendContactMessage(message._1, message._2, message._3)) {
+            if (SendMail.sendContactMessage(current, message._1, message._2, message._3)) {
               Redirect(routes.MainController.contact).flashing("success" -> "Your message was sent")
             } else {
               Redirect(routes.MainController.contact).flashing("error" -> "Could not send message")
@@ -107,7 +109,7 @@ object MainController extends Controller with Secured with Formats with Utils {
       contactForm.bindFromRequest.fold(
         formWithErrors => BadRequest(html.index(null, formWithErrors)),
         message => {
-          if (SendMail.sendContactMessage(message._1, message._2, message._3)) {
+          if (SendMail.sendContactMessage(current, message._1, message._2, message._3)) {
             Redirect(routes.MainController.index(request.path)).flashing("success" -> "Your message was sent")
           } else {
             Redirect(routes.MainController.index(request.path)).flashing("error" -> "Could not send message")
@@ -364,7 +366,7 @@ trait Formats {
       "url" -> JsString(website.url),
       "email" -> JsString(website.email),
       "uuid" -> JsString(website.uuid),
-      "code" -> JsString(website.code()),
+      "code" -> JsString(website.code(current)),
       "name" -> JsString(website.name)))
   }
 

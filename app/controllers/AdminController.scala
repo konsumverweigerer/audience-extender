@@ -17,13 +17,29 @@ import play.api.mvc._
 import play.Logger
 
 object AdminController extends Controller with Secured with Formats with Utils {
+  def NullSome[A](t: A) = if (t != null) Some(t) else None
+
   val basicAdminForm: Form[Admin] = Form(
     mapping(
-      "id" -> number,
+      "id" -> longNumber,
       "name" -> text,
-      "email" -> text)(
-        (id: Int, name: String, email: String) => new Admin(email, name, null))(
-          (admin: Admin) => Some(admin.id.toInt, admin.name, admin.email)))
+      "email" -> email,
+      "url" -> optional(text),
+      "streetaddress1" -> optional(text),
+      "streetaddress2" -> optional(text),
+      "streetaddress3" -> optional(text),
+      "state" -> optional(text),
+      "country" -> optional(text),
+      "telephone" -> optional(text))(
+        (id, name, email, url,
+          streetaddress1, streetaddress2, streetaddress3, state, country, telephone) =>
+          new Admin(email, name, null))(
+          (admin: Admin) => {
+            val id: Long = admin.id
+            val t = (id, admin.name, admin.email, NullSome(admin.url), NullSome(admin.streetaddress1), NullSome(admin.streetaddress2),
+              NullSome(admin.streetaddress3), NullSome(admin.state), NullSome(admin.country), NullSome(admin.telephone))
+            Some(t)
+          }))
 
   def adminJson(admin: Admin): JsValue =
     Json.toJson(Admin.findByAdmin(admin).asScala)
@@ -269,7 +285,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
     implicit request =>
       Admin.findById(currentid).map { current =>
         basicAdminForm.fill(current)
-        Ok(html.admin(current, current))
+        Ok(html.current(Seq(current), current))
       }.getOrElse(Forbidden)
   }
 

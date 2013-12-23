@@ -52,7 +52,9 @@ object ApplicationBuild extends Build {
       requireJs += "pages/publishers.js",
       requireJs += "pages/cookies.js",
       requireJs += "pages/creatives.js",
-      
+
+      requireJs += "pages/admin.js",
+
       requireJsShim := "require.shim.js",
 
       sources in doc in Compile := List()

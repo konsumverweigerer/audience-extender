@@ -14,10 +14,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import play.api.Application;
+import play.api.Play;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
 import scala.Some;
+import scala.collection.immutable.Set;
 import services.UuidHelper;
 
 @Entity
@@ -89,25 +92,33 @@ public class Website extends Model {
 		return this;
 	}
 
-	public String extendedCode() {
+	public String extendedCode(Application app) {
+		final Option<String> domain = Play.configuration(app).getString(
+				"cookiedomain", Option.<Set<String>> empty());
 		return String
 				.format("<script type=\"text/javascript\">\n"
 						+ "(function(){\n"
 						+ "var path='%s';\n"
 						+ "var prot=document.location.protocol;\n"
-						+ "var dom='app.audienceextender.com'\n;"
+						+ "var dom='%s'\n;"
 						+ "var loc=encodeURIComponent(document.location);\n"
 						+ "document.write('<script src=\"'+prot+'//'+dom+path+'?l='+loc+'\"></scripts>');\n"
 						+ "})()\n</script>\n",
 						controllers.routes.ContentController.cookie(this.uuid,
-								"<sub>").url());
+								"<sub>").url(),
+						domain.nonEmpty() ? domain.get()
+								: "cookiedomain.com");
 	}
 
-	public String code() {
+	public String code(Application app) {
+		final Option<String> domain = Play.configuration(app).getString(
+				"cookiedomain", Option.<Set<String>> empty());
 		return String.format(
-				"<script type=\"text/javascript\" src=\"//app.audienceextender.com/%s\">\n"
-						+ "</script>\n", controllers.routes.ContentController
-						.cookie(this.uuid, "<sub>").url());
+				"<script type=\"text/javascript\" src=\"//%s%s\">\n"
+						+ "</script>\n", domain.nonEmpty() ? domain.get()
+						: "cookiedomain.com",
+				controllers.routes.ContentController.cookie(this.uuid, "<sub>")
+						.url());
 	}
 
 	public static Option<Website> findByUUID(String uuid) {

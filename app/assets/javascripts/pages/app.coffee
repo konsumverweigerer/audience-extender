@@ -10,7 +10,7 @@ define(["jquery", "bootstrap"], ->
       dest = 0;
       winheight = $(window).height()
       docheight = $(document).height()
-      offs = $('a[name='+@hash.substr(1)+']').offset().top
+      offs = $('a[name='+@hash.substr(1)+']').offset()?.top ? 0
       maxdest = docheight-winheight
       if offs > maxdest && offs > firstoffs
         dest = maxdest - firstoffs
@@ -22,7 +22,7 @@ define(["jquery", "bootstrap"], ->
       current = scrollPos()
       pos = 0
       $('a.scroll').each( (i,el) => 
-        offs = $('a[name='+el.hash.substr(1)+']').offset().top
+        offs = $('a[name='+el.hash.substr(1)+']').offset()?.top ? 0
         if offs < current && offs > pos
           pos = offs - firstoffs
       )
@@ -37,7 +37,7 @@ define(["jquery", "bootstrap"], ->
       maxpos = docheight-winheight
       pos = maxpos - firstoffs
       $('a.scroll').each( (i,el) => 
-        offs = $('a[name='+el.hash.substr(1)+']').offset().top
+        offs = $('a[name='+el.hash.substr(1)+']').offset()?.top ? 0
         if offs > (current + firstoffs + 10) && offs < pos
           pos = offs - firstoffs
       )

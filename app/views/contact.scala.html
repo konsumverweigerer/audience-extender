@@ -1,6 +1,13 @@
 @(form: play.api.data.Form[(String,String,String)], current: Admin)(implicit flash: play.api.mvc.Flash)
 @templates.public("Contact", homelink = if(current!=null)(routes.MainController.dashboard)else(routes.MainController.base)) {
-@if(current!=null) {
+<ul class="nav navbar-nav">
+	<li><a class="scroll" href="@{routes.MainController.index("")}#howitworks">How it works</a></li>
+	<li><a class="scroll" href="@{routes.MainController.index("")}#benefits">Benefits</a></li>
+	<li><a class="scroll" href="@{routes.MainController.index("")}#pricing">Pricing</a></li>
+</ul>
+@if(current==null) {
+	@menu.login()
+} else {
 	@menu.public(current)
 }
 }{

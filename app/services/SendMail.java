@@ -1,17 +1,22 @@
 package services;
 
 import play.Logger;
+import play.api.Application;
+import play.api.Play;
+import scala.Option;
+import scala.collection.immutable.Set;
 
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 
 public class SendMail {
-	public static Boolean sendContactMessage(String email, String name,
-			String message) {
-		return sendMail("Audience extender: Contact form",
-				"contact@audienceextender.com", "From: " + name
-						+ "\nMessage:\n\n" + message, null, null,
-				"sales@audienceextender.com");
+	public static Boolean sendContactMessage(Application app, String email,
+			String name, String message) {
+		final Option<String> sendTo = Play.configuration(app).getString(
+				"contactemail", Option.<Set<String>> empty());
+		return sendMail("Audience extender: Contact form", email, "From: "
+				+ name + "\nMessage:\n\n" + message, null, null,
+				sendTo.nonEmpty() ? sendTo.get() : "root@localhost");
 	}
 
 	private static boolean sendMail(String subject, String from, String text,

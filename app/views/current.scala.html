@@ -1,9 +1,38 @@
-@(current: Admin)
+@(admins: Seq[Admin], current: Admin)
 @templates.main("My Account") {
 @menu.admin("My Account", current)
 @menu.logout(current)
+@helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = routes.RemoteAssets.at("javascripts/admin.js").url)
+<script type="text/javascript">
+	//<![CDATA[
+	window.data = {};
+	window.data.admins = @{import play.api.libs.json._;import controllers.AdminController.AdminFormat;Html(Json.toJson(admins).toString());};
+	window.data.admin = {email:'@current.email',roles:@{import play.api.libs.json._;Html(Json.toJson(current.getRoles().asScala).toString());}};
+	//]]>
+</script>
 } {
-<div class="container">
-	<article class="current"></article>
+<div class="container m-top">
+	<div class="row">
+		<div class="col-md-9">
+			<form class="form-horizontal" role="form" novalidate action="javascript:void(0)" data-bind="jqvalidation: { submitSuccess: $root.saveadmin }">
+				<div class="form-group control-group">
+					<label for="adminname" class="col-sm-3 control-label">Admin Name</label>
+					<div class="col-sm-9">
+						<input type="text" required data-validation-required-message="Enter a admin name" class="form-control" id="adminname" placeholder="Admin Name" data-bind="value: name">
+					</div>
+					<div class="controls popover left">
+						<div class="arrow"></div>
+						<div class="popover-title"><span class="glyphicon glyphicon-exclamation-sign"></span><span> </span><span class="help-block"></span></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save Admin</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
+@elements.modalalert("alert")
 }

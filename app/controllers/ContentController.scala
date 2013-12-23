@@ -97,7 +97,15 @@ object ContentController extends Controller with Utils {
             countCookie(cookie, sub)
           }
         }
-        //TODO: add 3rd party tracking
+        var tracking = ArrayBuffer[Long]()
+        website.pathTargets.map { target =>
+          if (audienceid.equals(target.audience.id)) {
+            if (!tracking.contains(target.audience.id)) {
+              cookies.add(target.audience.tracking)
+              tracking.add(target.audience.id)
+            }
+          }
+        }
       }
       sendCookie(cookies)
     }.getOrElse {
