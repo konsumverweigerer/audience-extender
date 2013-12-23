@@ -56,15 +56,15 @@ public class Cookie extends Model {
 		this.created = new Date();
 	}
 
-	public Cookie instance(String name, String variant, Audience audience,
+	public static Cookie instance(String name, String variant, Audience audience,
 			Website website, Collection<PathTarget> paths) {
 		final Cookie cookie = new Cookie(name);
 		cookie.variant = variant;
-		this.pathhash = calculateHash(paths);
+		cookie.pathhash = calculateHash(paths);
 		return cookie;
 	}
 
-	public Cookie instance(Cookie cookie, String name, String variant,
+	public static Cookie instance(Cookie cookie, String name, String variant,
 			Audience audience, Website website, Collection<PathTarget> paths) {
 		if (cookie.audience.id.equals(audience.id)
 				&& cookie.website.id.equals(website.id)
@@ -72,6 +72,16 @@ public class Cookie extends Model {
 			return cookie;
 		}
 		return instance(name, variant, audience, website, paths);
+	}
+
+	public boolean checkCookie(Audience audience,
+			Website website, Collection<PathTarget> paths) {
+		if (this.audience.id.equals(audience.id)
+				&& this.website.id.equals(website.id)
+				&& this.pathhash == calculateHash(paths)) {
+			return true;
+		}
+		return false;
 	}
 
 	public static int calculateHash(Collection<PathTarget> paths) {
@@ -127,8 +137,7 @@ public class Cookie extends Model {
 	}
 
 	public static Option<Cookie> findByUUID(String uuid) {
-		final List<Cookie> ret = find.where().eq("uuid", uuid)
-				.findList();
+		final List<Cookie> ret = find.where().eq("uuid", uuid).findList();
 		if (!ret.isEmpty()) {
 			return new Some<Cookie>(ret.get(0));
 		}

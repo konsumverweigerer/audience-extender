@@ -103,14 +103,14 @@ public class Admin extends Model {
 		return admin;
 	}
 
-	public static Admin authenticate(String email, String password) {
+	public static Option<Admin> authenticate(String email, String password) {
 		email = email.toLowerCase();
 		for (final Admin admin : find.where().eq("email", email).findList()) {
 			if (admin.checkPwd(password)) {
-				return admin;
+				return new Some<Admin>(admin);
 			}
 		}
-		return null;
+		return Option.empty();
 	}
 
 	public static Admin forgotPassword(String email) {
@@ -192,6 +192,9 @@ public class Admin extends Model {
 			return admin.getRoles().contains(role);
 		}
 		return false;
+	}
+
+	public void login(String session) {
 	}
 
 	public boolean is(String role) {

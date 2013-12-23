@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,8 +22,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.avaje.ebean.Ebean;
-
 import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -31,6 +30,8 @@ import scala.Some;
 import scala.Tuple5;
 import scala.collection.JavaConversions;
 import services.StatsHandler;
+
+import com.avaje.ebean.Ebean;
 
 @Entity
 public class Audience extends Model {
@@ -49,11 +50,11 @@ public class Audience extends Model {
 
 	/*
 	 * allowed: values pending, active, cancelled
-	 *
+	 * 
 	 * pending: not all needed cookies are active yet
-	 *
+	 * 
 	 * active: all needed cookies are active
-	 *
+	 * 
 	 * cancelled: deleted
 	 */
 	public String state;
@@ -67,6 +68,9 @@ public class Audience extends Model {
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "audience")
 	public List<PathTarget> pathTargets = new ArrayList<PathTarget>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "audience")
+	public List<Cookie> cookies = new ArrayList<Cookie>();
 
 	public Audience(String name) {
 		this.name = name;
@@ -166,14 +170,43 @@ public class Audience extends Model {
 		return Collections.emptyList();
 	}
 
+	public List<PathTarget> getWebsitePathTargets(Website website) {
+		final List<PathTarget> ret = new ArrayList<PathTarget>();
+		for (final PathTarget pathTarget : this.pathTargets) {
+			if (website != null && pathTarget.website != null
+					&& website.id.equals(pathTarget.website.id)) {
+				ret.add(pathTarget);
+			}
+		}
+		return ret;
+	}
+
 	public List<Message> write() {
 		// TODO: check website/paths if new cookies are needed
 		save();
-		for (final PathTarget pathTarget: this.pathTargets) {
+		for (final PathTarget pathTarget : this.pathTargets) {
 			pathTarget.save();
 			pathTarget.update();
 		}
 		Ebean.saveManyToManyAssociations(this, "websites");
+		for (final Website website : this.websites) {
+			boolean valid = false;
+			final Collection<PathTarget> paths = getWebsitePathTargets(website);
+			for (final Cookie cookie : this.cookies) {
+				if (cookie.checkCookie(this, website, paths)) {
+					valid = true;
+				} else if (website.id.equals(cookie.website.id)) {
+					cookie.state = "C";
+					cookie.update();
+				}
+			}
+			if (!valid) {
+				final Cookie cookie = Cookie
+						.instance("Cookie for " + this.name, "code", this,
+								website, paths);
+				cookie.save();
+			}
+		}
 		update();
 		return Collections.emptyList();
 	}

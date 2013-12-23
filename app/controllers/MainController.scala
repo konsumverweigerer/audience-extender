@@ -2,6 +2,7 @@ package controllers
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
+import org.joda.time.format.{ DateTimeFormat, DateTimeFormatter }
 
 import models._
 import services._
@@ -24,10 +25,7 @@ object MainController extends Controller with Secured with Formats with Utils {
   val loginForm = Form(
     tuple(
       "email" -> (email verifying nonEmpty),
-      "password" -> nonEmptyText)
-      verifying ("Invalid email or password", result => result match {
-        case (email, password) => (Admin.authenticate(email, password) != null)
-      }))
+      "password" -> nonEmptyText))
 
   val contactForm = Form(
     tuple(
@@ -121,9 +119,15 @@ object MainController extends Controller with Secured with Formats with Utils {
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(html.login(formWithErrors)),
       user => {
-        Logger.info("logging in: " + user._1)
-        Redirect(routes.MainController.dashboard).withSession(
-          Security.username -> Admin.findByEmail(user._1).id.toString())
+        Admin.authenticate(user._1, user._2).map { admin =>
+          admin.login(request.id.toString)
+          Logger.info("logging in: " + user._1)
+          Redirect(routes.MainController.dashboard).withSession(
+            Security.username -> admin.id.toString(),
+            LOGINDATE -> loginDf.print({ new java.util.Date }.getTime))
+        }.getOrElse {
+          BadRequest(html.login(loginForm.fillAndValidate(user).withError("", "Invalid email or password")))
+        }
       })
   }
 
@@ -550,13 +554,26 @@ trait Utils {
  * Provide security features
  */
 trait Secured {
+  val LOGINDATE = "date"
+
+  val loginDf: DateTimeFormatter =
+    DateTimeFormat.forPattern("yyyyMMddHHmmss")
 
   private def username(request: RequestHeader) = request.session.get(Security.username)
 
   /**
    * Retrieve the connected user id.
    */
-  private def adminid(request: RequestHeader) = request.session.get(Security.username)
+  private def adminid(request: RequestHeader) = {
+    request.session.get(LOGINDATE).map { d =>
+      val e = loginDf.parseDateTime(d)
+      if (e.plusHours(2).isAfterNow()) {
+        request.session.get(Security.username)
+      } else {
+        None
+      }
+    }.getOrElse(None)
+  }
 
   /**
    * Redirect to login if the user in not authorized.
@@ -569,7 +586,9 @@ trait Secured {
    * Action for authenticated users.
    */
   def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(adminid, onUnauthorized) { admin =>
-    Action(request => f(admin)(request))
+    Action(implicit request =>
+      f(admin)(request).withSession(request.session +
+        (LOGINDATE -> loginDf.print({ new java.util.Date }.getTime))))
   }
 
   def TryAuthenticated(
@@ -585,7 +604,9 @@ trait Secured {
   }
 
   def CheckIfIsAuthenticated(f: => String => Request[AnyContent] => Result) = TryAuthenticated(adminid) { admin =>
-    Action(request => f(admin)(request))
+    Action(implicit request =>
+      f(admin)(request).withSession(request.session +
+        (LOGINDATE -> loginDf.print({ new java.util.Date }.getTime))))
   }
 
   /**
