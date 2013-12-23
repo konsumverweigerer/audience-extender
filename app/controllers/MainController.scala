@@ -33,10 +33,7 @@ object MainController extends Controller with Secured with Formats with Utils {
     tuple(
       "email" -> (email verifying nonEmpty),
       "name" -> nonEmptyText,
-      "msg" -> nonEmptyText)
-      verifying ("Could not send message", result => result match {
-        case (email, name, msg) => (SendMail.sendContactMessage(current, email, name, msg) != null)
-      }))
+      "msg" -> nonEmptyText))
 
   val forgotPasswordForm = Form(
     tuple(
