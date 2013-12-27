@@ -185,8 +185,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         } else {
           Ok(html.dashboardaudience(Publisher.findByAdmin(admin).asScala, admin))
         }
-      }.getOrElse(
-        Ok(html.index(Admin.findByEmail(""), contactForm)))
+      }.getOrElse(Ok(html.index(Admin.findByEmail(""), contactForm)))
   }
 
   /** The javascript router. */
@@ -232,6 +231,10 @@ object MainController extends Controller with Secured with Formats with Utils {
       }
     }
     controllers.WebJarAssets.at(controllers.WebJarAssets.locate(file))
+  }
+
+  def redirectSSL = Action { implicit request =>
+    MovedPermanently("https://" + request.host + request.uri)
   }
 }
 
@@ -553,6 +556,7 @@ trait Utils {
 /**
  * Provide security features
  */
+
 trait Secured {
   val LOGINDATE = "date"
 
@@ -580,13 +584,50 @@ trait Secured {
    */
   private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.MainController.login)
 
-  // --
+  def ActionOverHttps(f: Request[AnyContent] => Result): Action[AnyContent] = Action { request =>
+    request.headers.get("x-forwarded-proto") match {
+      case Some(header) => if ("https" == header) {
+        f(request) match {
+          case res: PlainResult => res.withHeaders(("Strict-Transport-Security", "max-age=31536000")) // or "max-age=31536000; includeSubDomains"
+          case res: Result => res
+        }
+      } else {
+        if (Play.isProd) {
+          Results.Redirect("https://" + request.host + request.uri)
+        } else {
+          f(request)
+        }
+      }
+      case None => f(request)
+    }
+  }
+
+  def EssentialActionOverHttps(action: EssentialAction): EssentialAction = EssentialAction { request =>
+    import play.api.libs.concurrent.Execution.Implicits._
+    request.headers.get("x-forwarded-proto") match {
+      case Some(header) => if ("https" == header) {
+        action(request).map { res =>
+          res match {
+            case res: PlainResult => res.withHeaders(("Strict-Transport-Security", "max-age=31536000")) // or "max-age=31536000; includeSubDomains"
+            case res: Result => res
+          }
+        }
+      } else action(request).map { res =>
+        if (Play.isProd) {
+          Results.Redirect("https://" + request.host + request.uri)
+        } else {
+          res
+        }
+      }
+      case None => action(request)
+    }
+  }
 
   /**
    * Action for authenticated users.
    */
   def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(adminid, onUnauthorized) { admin =>
-    Action(implicit request =>
+    ActionOverHttps(implicit request =>
       f(admin)(request).withSession(request.session +
         (LOGINDATE -> loginDf.print({ new java.util.Date }.getTime))))
   }
@@ -596,7 +637,7 @@ trait Secured {
 
     EssentialAction { request =>
       userinfo(request).map { user =>
-        action(user)(request)
+        EssentialActionOverHttps(action(user))(request)
       }.getOrElse {
         action(null)(request)
       }

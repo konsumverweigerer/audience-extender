@@ -1,5 +1,11 @@
 @(form: play.api.data.Form[(String,String)])(implicit flash: play.api.mvc.Flash) 
-@templates.public("Login") { } {
+@templates.public("Login") {
+<ul class="nav navbar-nav">
+	<li><a href="@{routes.MainController.index("")}#howitworks">How it works</a></li>
+	<li><a href="@{routes.MainController.index("")}#benefits">Benefits</a></li>
+	<li><a href="@{routes.MainController.index("")}#pricing">Pricing</a></li>
+</ul>
+}{
 @helper.form(routes.MainController.authenticate, 'class -> "form-signin", 'novalidate -> "true") {
 	<h2 class="form-signin-heading">Please sign in</h2>
 
