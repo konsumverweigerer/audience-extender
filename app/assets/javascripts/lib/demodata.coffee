@@ -67,7 +67,7 @@ define(["knockout"], (ko) ->
     models.audiencechartdaterange.dataloader = ->
       models.audiencechart.chartcontent data()
 
-    require(["webjars!nv.d3.js"], ->
+    require(["nv.d3"], ->
       data = ->
         m = (models.audiencechartdaterange.endDate()-models.audiencechartdaterange.startDate())/(24*60*60*1000)
         sd = models.audiencechartdaterange.startDate().getTime()
@@ -116,7 +116,7 @@ define(["knockout"], (ko) ->
     models.campaignchartdaterange.dataloader = ->
       models.campaignchart.chartcontent data()
 
-    require(["webjars!nv.d3.js"], ->
+    require(["nv.d3"], ->
       data = ->
         m = (models.campaignchartdaterange.endDate()-models.campaignchartdaterange.startDate())/(24*60*60*1000)
         sd = models.campaignchartdaterange.startDate().getTime()

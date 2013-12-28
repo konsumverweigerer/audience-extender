@@ -19,6 +19,12 @@ import play.libs.Yaml;
 import com.avaje.ebean.Ebean;
 
 public class Global extends GlobalSettings {
+	// @SuppressWarnings("unchecked")
+	// @Override
+	// public <T extends play.api.mvc.EssentialFilter> Class<T>[] filters() {
+	// return new Class[] { GzipFilter.class };
+	// }
+
 	public void onStart(Application app) {
 		InitialData.insert(app);
 	}

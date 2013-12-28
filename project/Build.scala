@@ -16,27 +16,28 @@ object ApplicationBuild extends Build {
 
 //    "com.typesafe.play" % "sbt-plugin" % "2.2.1",
 //    "com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.1.1",
+//    "com.typesafe.play.extras" %% "iteratees-extras" % "1.2.0",
 
     "org.springframework" % "spring-context" % "3.2.2.RELEASE",
     "javax.inject" % "javax.inject" % "1",
     "com.newrelic.agent.java" % "newrelic-agent" % "3.2.2",
 
     "edu.vt.middleware" % "vt-password" % "3.1.2",
-    "com.typesafe" %% "play-plugins-mailer" % "2.2.0",
+    "com.typesafe" %% "play-plugins-mailer" % "[2.2.0,)",
     "com.sksamuel.scrimage" % "scrimage-core_2.10" % "1.3.9" exclude("org.scala-lang", "scala-library"),
     "com.sksamuel.scrimage" % "scrimage-filters_2.10" % "1.3.9" exclude("org.scala-lang", "scala-library"),
     "org.xhtmlrenderer" % "flying-saucer-core" % "9.0.1",
-            
 
     "org.springframework.data" % "spring-data-jpa" % "1.3.2.RELEASE",
 //    "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
 
     "org.webjars" %% "webjars-play" % "2.2.1" exclude("org.scala-lang", "scala-library"),
-    "org.webjars" % "requirejs" % "2.1.8",
-    "org.webjars" % "bootstrap" % "3.0.0" exclude("org.webjars", "jquery"),
-    "org.webjars" % "knockout" % "2.3.0",
-    "org.webjars" % "nvd3" % "8415ee55d3",
+    "org.webjars" % "requirejs" % "[2.1.8,)",
+    "org.webjars" % "bootstrap" % "[3.0.0,)" exclude("org.webjars", "jquery"),
+    "org.webjars" % "knockout" % "[2.3.0,)",
+//    "org.webjars" % "nvd3" % "[8415ee55d3,)",
+    "org.webjars" % "d3js" % "3.3.5",
     "org.webjars" % "datatables-tools" % "2.1.5",
     "org.webjars" % "jquery-file-upload" % "8.4.2" exclude("org.webjars", "jquery"),
     "org.webjars" % "bootstrap-datepicker" % "1.2.0",
