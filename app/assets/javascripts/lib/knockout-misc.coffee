@@ -99,14 +99,15 @@ define([ "knockout" ], (ko) ->
         $element = $(element)
         modelValue = ko.unwrap valueAccessor()
         if isValueArray
-          element.checked = ko.utils.arrayIndexOf(modelValue,checkedValue())>=0
+          $element.prop('checked',ko.utils.arrayIndexOf(modelValue,checkedValue())>=0)
         else if isCheckbox
-          element.checked = modelValue
+          $element.prop('checked',modelValue)
         else if isRadio
           if checkedValue()==modelValue
-            $element.parent('label').button('toggle')
+            $element.prop('checked',true)
+#            $element.parent('label').button('toggle')
         else
-          element.checked = (checkedValue()==modelValue)
+          $element.prop('checked',checkedValue()==modelValue)
 
       isCheckbox = element.type == "checkbox"
       isRadio = element.type == "radio"
