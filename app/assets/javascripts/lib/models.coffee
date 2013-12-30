@@ -1,10 +1,21 @@
-define([ "knockout", "jsRoutes" ], (ko) ->
+define(['knockout', 'jsRoutes'], (ko) ->
   day = 24*60*60*1000
 
   ranges = [ { name: 'Last Day', from: 2, to: 1, unit: 'day' },
      { name: 'This Week', from: 1, to: 0, unit: 'week' },
      { name: 'Last Week', from: 2, to: 1, unit: 'week' },
      { name: 'Last 2 Weeks', from: 3, to: 1, unit: 'week' }]
+
+  rangedays = (from,to) ->
+    from = from.getTime()
+    to = to.getTime()
+    t for t in [from..to] by day
+
+  dayrange = (d,s,e) ->
+    base = new Date(d.getFullYear(),d.getMonth(),d.getDate())
+    from = new Date base.getTime()+((1-s)*day)
+    to = new Date base.getTime()+((e)*day)
+    t for t in [from..to] by day
 
   truncateToDay = (d,s,e,u) ->
     base = new Date(d.getFullYear(),d.getMonth(),d.getDate())
@@ -17,7 +28,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
     else
       from = new Date base.getTime()+((1-s)*day)
       to = new Date base.getTime()+((1-e)*day)
-    [from,to]
+    return [from,to]
 
   datetostr = (v) ->
     if v instanceof Date
@@ -32,7 +43,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
     a = ['']
     for n in ranges
       a.push n.name
-    a
+    return a
 
   class DateRange
     constructor: ->
@@ -342,7 +353,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @isNotLast = ko.computed -> self.currentValue()<self.maxValue()
 
-      @isInner = ko.computed -> 
+      @isInner = ko.computed ->
         self.currentValue()>self.minValue() && self.currentValue()<self.maxValue()
 
       @previous = ->
@@ -584,7 +595,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class Campaign extends ServerModels
     typeOf: (name) ->
-      if ['messages','uploadprogress'].indexOf(name)>=0
+      if ['messages','uploadprogress','schedulechart'].indexOf(name)>=0
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -613,6 +624,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @startDate = ko.observable d?.startDate
 
       @endDate = ko.observable d?.endDate
+
+      @schedulechart = new mod.Chartdata
 
       @dates = ko.computed
         read: ->
@@ -646,6 +659,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @addupload = (e,data) ->
         {}
 
+      @dataloader = (e,data) ->
+        {}
+
       @saveRoute = (page) ->
         routes.controllers.CampaignController.campaignSave(page.publisher().id())
 
@@ -658,7 +674,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @website = ko.observable d?.website
 
-      @website = ko.computed -> 
+      @website = ko.computed ->
         v = self.website()
         if v?.id
           return ko.unwrap v.id
@@ -1036,6 +1052,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
   PathTarget: PathTarget,
   Publisher: Publisher,
   truncateToDay: truncateToDay,
+  dayrange: dayrange,
+  rangedays: rangedays,
   datetostr: datetostr,
   strtodate: strtodate }
 )

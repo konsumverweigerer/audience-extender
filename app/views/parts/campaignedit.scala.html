@@ -179,8 +179,40 @@
 					</div>
 
 					<div id="step3" class="step-pane">
-						<h3>Schedule Campaign</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam accumsan placerat augue vel semper. Donec eu tortor sit amet lectus malesuada mattis eu at leo. Curabitur aliquam eros nisi, non sollicitudin diam convallis vitae. Sed laoreet felis ac sem rutrum dapibus. Integer mollis placerat diam, eu lacinia nisi sagittis in. Phasellus nibh ipsum, accumsan eu magna ut, pretium pellentesque quam. Cras accumsan eget dui a blandit. Donec eget urna mattis, interdum leo sit amet, facilisis tortor. Ut varius cursus euismod. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi interdum mollis dui et tempor.</p>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="schedule" data-bind="nvddd: currentcampaign().schedulechart.chartcontent, nvdddOptions: {chartType: 'mylinePlusStackedAreaChart', yFormat: 'integer'}">
+									<svg></svg>
+								</div>
+							</div>
+						</div>
+						<div class="panel-heading">
+							<h4 class="panel-title">Create Custom AD Package</h4>
+						</div>
+						<div class="panel-body">
+							<form class="form" role="form" data-bind="with: currentcampaign">
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="row">
+											<div class="col-xs-6 input-daterange" data-bind="datepicker: dates, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }">
+												<div class="form-group">
+													<label for="startdate">Start Date</label>
+													<div class="input-group date">
+														<input type="text" class="form-control span2 date-picker" id="startdate" placeholder="Enter start date ..."><span class="input-group-addon btn"><span class="glyphicon glyphicon-th"></span></span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="enddate">End Date</label>
+													<div class="input-group date">
+														<input type="text" class="form-control span2 date-picker" id="enddate" placeholder="Enter end date ..."><span class="input-group-addon btn"><span class="glyphicon glyphicon-th"></span></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 				<div class="actions text-right m-top">

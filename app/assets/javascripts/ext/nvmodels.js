@@ -82,7 +82,6 @@ nv.models.mycumulativeLineChart = function() {
           availableHeight = (height || parseInt(container.style('height')) || 400)
                              - margin.top - margin.bottom;
 
-
       chart.update = function() { container.transition().duration(transitionDuration).call(chart) };
       chart.container = this;
 
@@ -104,7 +103,6 @@ nv.models.mycumulativeLineChart = function() {
                         .on('dragstart', dragStart)
                         .on('drag', dragMove)
                         .on('dragend', dragEnd);
-
 
       function dragStart(d,i) {
         d3.select(chart.container)
@@ -149,13 +147,11 @@ nv.models.mycumulativeLineChart = function() {
 
       //------------------------------------------------------------
 
-
       //------------------------------------------------------------
       // Setup Scales
 
       x = lines.xScale();
       y = lines.yScale();
-
 
       if (!rescaleY) {
         var seriesDomains = data
@@ -183,9 +179,7 @@ nv.models.mycumulativeLineChart = function() {
 
       //------------------------------------------------------------
 
-
       var data = indexify(index.i, data);
-
 
       //------------------------------------------------------------
       // Setup containers and skeleton of chart
@@ -202,7 +196,6 @@ nv.models.mycumulativeLineChart = function() {
       gEnter.append('g').attr('class', 'nv-avgLinesWrap').style("pointer-events","none");
       gEnter.append('g').attr('class', 'nv-legendWrap');
       gEnter.append('g').attr('class', 'nv-controlsWrap');
-      
 
       //------------------------------------------------------------
       // Legend
@@ -226,7 +219,6 @@ nv.models.mycumulativeLineChart = function() {
 
       //------------------------------------------------------------
 
-
       //------------------------------------------------------------
       // Controls
 
@@ -243,7 +235,6 @@ nv.models.mycumulativeLineChart = function() {
       }
 
       //------------------------------------------------------------
-
 
       wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
@@ -266,7 +257,7 @@ nv.models.mycumulativeLineChart = function() {
 
       //------------------------------------------------------------
       // Main Chart Component(s)
-      
+
       //------------------------------------------------------------
       //Set up interactive layer
       if (useInteractiveGuideline) {
@@ -293,8 +284,6 @@ nv.models.mycumulativeLineChart = function() {
         .color(data.map(function(d,i) {
           return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled && !data[i].tempDisabled; }));
-
-
 
       var linesWrap = g.select('.nv-linesWrap')
           .datum(data.filter(function(d) { return  !d.disabled && !d.tempDisabled }));
@@ -368,7 +357,6 @@ nv.models.mycumulativeLineChart = function() {
 
       //------------------------------------------------------------
 
-
       //------------------------------------------------------------
       // Setup Axes
 
@@ -385,7 +373,6 @@ nv.models.mycumulativeLineChart = function() {
             .call(xAxis);
       }
 
-
       if (showYAxis) {
         yAxis
           .scale(y)
@@ -397,16 +384,14 @@ nv.models.mycumulativeLineChart = function() {
       }
       //------------------------------------------------------------
 
-
       //============================================================
       // Event Handling/Dispatching (in chart's scope)
       //------------------------------------------------------------
 
-
       function updateZero() {
         indexLine
           .data([index]);
-        
+
         //When dragging the index line, turn off line transitions.
         // Then turn them back on when done dragging.
         var oldDuration = chart.transitionDuration();
@@ -438,7 +423,7 @@ nv.models.mycumulativeLineChart = function() {
         updateZero();
       });
 
-      controls.dispatch.on('legendClick', function(d,i) { 
+      controls.dispatch.on('legendClick', function(d,i) {
         d.disabled = !d.disabled;
         rescaleY = !d.disabled;
 
@@ -447,9 +432,8 @@ nv.models.mycumulativeLineChart = function() {
         chart.update();
       });
 
-
       legend.dispatch.on('stateChange', function(newState) {
-        state.disabled = newState.disabled; 
+        state.disabled = newState.disabled;
         dispatch.stateChange(state);
         chart.update();
       });
@@ -457,12 +441,11 @@ nv.models.mycumulativeLineChart = function() {
       interactiveLayer.dispatch.on('elementMousemove', function(e) {
           lines.clearHighlights();
           var singlePoint, pointIndex, pointXLocation, allData = [];
-          
-          
+
           data
-          .filter(function(series, i) { 
+          .filter(function(series, i) {
             series.seriesIndex = i;
-            return !series.disabled; 
+            return !series.disabled;
           })
           .forEach(function(series,i) {
               pointIndex = nv.interactiveBisect(series.values, e.pointXValue, chart.x());
@@ -516,7 +499,6 @@ nv.models.mycumulativeLineChart = function() {
         if (tooltips) showTooltip(e, that.parentNode);
       });
 
-
       // Update chart from a state object passed to event handler
       dispatch.on('changeState', function(e) {
 
@@ -528,7 +510,6 @@ nv.models.mycumulativeLineChart = function() {
           state.disabled = e.disabled;
         }
 
-
         if (typeof e.index !== 'undefined') {
           index.i = e.index;
           index.x = dx(index.i);
@@ -538,7 +519,6 @@ nv.models.mycumulativeLineChart = function() {
           indexLine
             .data([index]);
         }
-
 
         if (typeof e.rescaleY !== 'undefined') {
           rescaleY = e.rescaleY;
@@ -553,7 +533,6 @@ nv.models.mycumulativeLineChart = function() {
 
     return chart;
   }
-
 
   //============================================================
   // Event Handling/Dispatching (out of chart's scope)
@@ -574,7 +553,6 @@ nv.models.mycumulativeLineChart = function() {
 
   //============================================================
 
-
   //============================================================
   // Expose Public Variables
   //------------------------------------------------------------
@@ -590,7 +568,7 @@ nv.models.mycumulativeLineChart = function() {
   d3.rebind(chart, lines, 'defined', 'isArea', 'x', 'y', 'xScale','yScale', 'size', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY', 'interactive', 'clipEdge', 'clipVoronoi','useVoronoi',  'id');
 
   chart.options = nv.utils.optionsFunc.bind(chart);
-  
+
   chart.margin = function(_) {
     if (!arguments.length) return margin;
     margin.top    = typeof _.top    != 'undefined' ? _.top    : margin.top;
@@ -710,7 +688,6 @@ nv.models.mycumulativeLineChart = function() {
 
   //============================================================
 
-
   //============================================================
   // Functions
   //------------------------------------------------------------
@@ -736,6 +713,291 @@ nv.models.mycumulativeLineChart = function() {
 
   //============================================================
 
+  return chart;
+}
+nv.models.mylinePlusStackedAreaChart = function() {
+  "use strict";
+  //============================================================
+  // Public Variables with Default Settings
+  //------------------------------------------------------------
+
+  var margin = {top: 30, right: 20, bottom: 50, left: 60},
+      color = d3.scale.category20().range(),
+      width = null,
+      height = null,
+      showLegend = true,
+      tooltips = true,
+      tooltip = function(key, x, y, e, graph) {
+        return '<h3>' + key + '</h3>' +
+               '<p>' +  y + ' at ' + x + '</p>'
+      },
+      x,
+      y,
+      yDomain1,
+      yDomain2
+      ; //can be accessed via chart.lines.[x/y]Scale()
+
+  //============================================================
+  // Private Variables
+  //------------------------------------------------------------
+
+  var x = d3.scale.linear(),
+      yScale = d3.scale.linear(),
+
+      lines = nv.models.line().yScale(yScale),
+
+      stack = nv.models.stackedArea().yScale(yScale),
+
+      xAxis = nv.models.axis().scale(x).orient('bottom').tickPadding(5),
+      yAxis = nv.models.axis().scale(yScale).orient('left'),
+
+      legend = nv.models.legend().height(30),
+      dispatch = d3.dispatch('tooltipShow', 'tooltipHide');
+
+  var showTooltip = function(e, offsetElement) {
+    var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
+        top = e.pos[1] + ( offsetElement.offsetTop || 0),
+        x = xAxis.tickFormat()(lines.x()(e.point, e.pointIndex)),
+        y = yAxis.tickFormat()(lines.y()(e.point, e.pointIndex)),
+        content = tooltip(e.series.key, x, y, e, chart);
+
+    nv.tooltip.show([left, top], content, undefined, undefined, offsetElement.offsetParent);
+  };
+
+  function chart(selection) {
+    selection.each(function(data) {
+      var container = d3.select(this),
+          that = this;
+
+      chart.update = function() { container.transition().call(chart); };
+      chart.container = this;
+
+      var availableWidth = (width  || parseInt(container.style('width')) || 960)
+                             - margin.left - margin.right,
+          availableHeight = (height || parseInt(container.style('height')) || 400)
+                             - margin.top - margin.bottom;
+
+      var dataLines = data.filter(function(d) {return !d.disabled && d.type == 'line'})
+      var dataStack = data.filter(function(d) {return !d.disabled && d.type == 'area'})
+
+      var series = data.filter(function(d) {return !d.disabled})
+            .map(function(d) {
+              return d.values.map(function(d,i) {
+                return { x: d.x, y: d.y }
+              })
+            })
+
+      x.domain(d3.extent(d3.merge(series), function(d) { return d.x } ))
+          .range([0, availableWidth]);
+
+      var wrap = container.selectAll('g.wrap.linePlusAreaChart').data([data]);
+      var gEnter = wrap.enter().append('g').attr('class', 'wrap nvd3 linePlusAreaChart').append('g');
+
+      gEnter.append('g').attr('class', 'x axis');
+      gEnter.append('g').attr('class', 'y axis');
+      gEnter.append('g').attr('class', 'linesWrap');
+      gEnter.append('g').attr('class', 'stackWrap');
+      gEnter.append('g').attr('class', 'legendWrap');
+
+      var g = wrap.select('g');
+
+      if (showLegend) {
+        legend.width( availableWidth / 2 );
+
+        g.select('.legendWrap')
+            .datum(data.map(function(series) {
+              series.originalKey = series.originalKey === undefined ? series.key : series.originalKey;
+              series.key = series.originalKey;
+              return series;
+            }))
+          .call(legend);
+
+        if ( margin.top != legend.height()) {
+          margin.top = legend.height();
+          availableHeight = (height || parseInt(container.style('height')) || 400)
+                             - margin.top - margin.bottom;
+        }
+
+        g.select('.legendWrap')
+            .attr('transform', 'translate(' + ( availableWidth / 2 ) + ',' + (-margin.top) +')');
+      }
+
+      lines
+        .width(availableWidth)
+        .height(availableHeight)
+        .interpolate("monotone")
+        .color(data.map(function(d,i) {
+          return d.color || color[i % color.length];
+        }).filter(function(d,i) { return !data[i].disabled && data[i].type == 'line'}));
+
+      stack
+        .width(availableWidth)
+        .height(availableHeight)
+        .color(data.map(function(d,i) {
+          return d.color || color[i % color.length];
+        }).filter(function(d,i) { return !data[i].disabled && data[i].type == 'area'}));
+
+      g.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+      var linesWrap = g.select('.linesWrap')
+          .datum(dataLines)
+      var stackWrap = g.select('.stackWrap')
+          .datum(dataStack)
+
+      var extraValue = dataStack.length ? dataStack.map(function(a){return a.values}).reduce(function(a,b){
+        return a.map(function(aVal,i){return {x: aVal.x, y: aVal.y + b[i].y}})
+      }).concat([{x:0, y:0}]) : []
+
+      yScale .domain(yDomain || d3.extent(d3.merge(series).concat(extraValue), function(d) { return d.y } ))
+              .range([0, availableHeight])
+
+      lines.yDomain(yScale.domain())
+      stack.yDomain(yScale.domain())
+
+      if(dataStack.length){d3.transition(stackWrap).call(stack);}
+      if(dataLines.length){d3.transition(linesWrap).call(lines);}
+
+
+      xAxis
+        .ticks( availableWidth / 100 )
+        .tickSize(-availableHeight, 0);
+
+      g.select('.x.axis')
+          .attr('transform', 'translate(0,' + availableHeight + ')');
+      d3.transition(g.select('.x.axis'))
+          .call(xAxis);
+
+      yAxis
+        .ticks( availableHeight / 36 )
+        .tickSize( -availableWidth, 0);
+
+
+      d3.transition(g.select('.y.axis'))
+          .call(yAxis);
+
+      g.select('.y.axis')
+          .style('opacity', series.length ? 1 : 0)
+          .attr('transform', 'translate(' + x.range()[1] + ',0)');
+
+      legend.dispatch.on('stateChange', function(newState) {
+        chart.update();
+      });
+
+      dispatch.on('tooltipShow', function(e) {
+        if (tooltips) showTooltip(e, that.parentNode);
+      });
+
+    });
+
+    return chart;
+  }
+
+  //============================================================
+  // Event Handling/Dispatching (out of chart's scope)
+  //------------------------------------------------------------
+
+  lines.dispatch.on('elementMouseover.tooltip', function(e) {
+    e.pos = [e.pos[0] +  margin.left, e.pos[1] + margin.top];
+    dispatch.tooltipShow(e);
+  });
+
+  lines.dispatch.on('elementMouseout.tooltip', function(e) {
+    dispatch.tooltipHide(e);
+  });
+
+  stack.dispatch.on('tooltipShow', function(e) {
+    //disable tooltips when value ~= 0
+    //// TODO: consider removing points from voronoi that have 0 value instead of this hack
+    if (!Math.round(stack.y()(e.point) * 100)) {  // 100 will not be good for very small numbers... will have to think about making this valu dynamic, based on data range
+      setTimeout(function() { d3.selectAll('.point.hover').classed('hover', false) }, 0);
+      return false;
+    }
+
+    e.pos = [e.pos[0] + margin.left, e.pos[1] + margin.top],
+    dispatch.tooltipShow(e);
+  });
+
+  stack.dispatch.on('tooltipHide', function(e) {
+    dispatch.tooltipHide(e);
+  });
+
+  dispatch.on('tooltipHide', function() {
+    if (tooltips) nv.tooltip.cleanup();
+  });
+
+  //============================================================
+  // Global getters and setters
+  //------------------------------------------------------------
+
+  chart.dispatch = dispatch;
+  chart.lines = lines;
+  chart.stack = stack;
+  chart.xAxis = xAxis;
+  chart.yAxis = yAxis;
+  chart.options = nv.utils.optionsFunc.bind(chart);
+
+  chart.x = function(_) {
+    if (!arguments.length) return getX;
+    getX = _;
+    lines.x(_);
+    return chart;
+  };
+
+  chart.y = function(_) {
+    if (!arguments.length) return getY;
+    getY = _;
+    lines.y(_);
+    return chart;
+  };
+
+  chart.yDomain = function(_) {
+    if (!arguments.length) return yDomain;
+    yDomain = _;
+    return chart;
+  };
+
+  chart.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return chart;
+  };
+
+  chart.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return chart;
+  };
+
+  chart.height = function(_) {
+    if (!arguments.length) return height;
+    height = _;
+    return chart;
+  };
+
+  chart.color = function(_) {
+    if (!arguments.length) return color;
+    color = _;
+    legend.color(_);
+    return chart;
+  };
+
+  chart.showLegend = function(_) {
+    if (!arguments.length) return showLegend;
+    showLegend = _;
+    return chart;
+  };
+
+  chart.tooltips = function(_) {
+    if (!arguments.length) return tooltips;
+    tooltips = _;
+    return chart;
+  };
+
+  chart.tooltipContent = function(_) {
+    if (!arguments.length) return tooltip;
+    tooltip = _;
+    return chart;
+  };
 
   return chart;
 }

@@ -30,6 +30,39 @@ define(["knockout"], (ko) ->
         paths: ps
     models.audiences val
 
+  generateschedulechart = (campaigns,campaign,mod,models) ->
+    data = -> []
+    campaign.dataloader = ->
+      campaign.schedulechart.chartcontent data()
+
+    require(["nv.d3"], ->
+      data = ->
+        ret = []
+        days = mod.dayrange(new Date(),30,30)
+        aus = campaign.audiences()
+        for au in models.currentaudiences()
+          if aus.indexOf(au)>=0
+            ret.push
+              key: au.name()
+              cls: 'audience'
+              type: 'line'
+              values: ({x:d,y:rnd(10,100)} for d in days)
+              timeframe: 'days'
+        for ca in campaigns
+          if campaign.id()!=ca.id()
+            pa = campaign.package()
+            if pa?
+              rd = mod.rangedays(campaign.startDate(),campaign.endDate())
+              c = pa.count()/(rd.length)
+              ret.push
+                key: ca.name()
+                cls: 'campaign'
+                type: 'area'
+                values: ({x:d,y:c} for d in rd)
+                timeframe: 'days'
+        return ret
+    )
+
   generatecampaigns = (mod,models) ->
     n = new Date()
     val = []
@@ -49,6 +82,8 @@ define(["knockout"], (ko) ->
         creatives: cr
         package: {id: rnd(1,5)}
     models.campaigns val
+    for ca in models.campaigns()
+      generateschedulechart(models.campaigns(),ca,mod,models)
 
   generatepackages = (mod,models) ->
     val = []
