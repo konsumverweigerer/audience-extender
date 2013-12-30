@@ -175,7 +175,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @savecampaign = ->
         a = self.currentcampaign()
-        a.refresh(self.currentwebsites(),self.currentpackages())
+        a.refresh(self.currentaudiences(),self.currentpackages())
         l = self.campaigntable.data
         if a.id() && a.id()>0
           a.save(self)
@@ -229,7 +229,11 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @addcreative = (c) ->
         if self.currentcampaign()
-          self.currentcampaign().creatives.push new mod.Creative c
+          if c.indexOf?
+            for x in c
+              self.currentcampaign().creatives.push new mod.Creative x
+          else
+            self.currentcampaign().creatives.push new mod.Creative c
         self.checkmaxstep()
 
       @removecreative = (c) ->

@@ -636,7 +636,15 @@ define([ "knockout", "jsRoutes" ], (ko) ->
         return self
 
       @failedupload = (e,data) ->
-        alert(e)
+        if e?.type=='fileuploadprocessfail'
+          for f in data.files when f.error?
+            self.messages.push new Message
+              title: 'Could not upload file'
+              content: f.error
+              priority: 'error'
+
+      @addupload = (e,data) ->
+        {}
 
       @saveRoute = (page) ->
         routes.controllers.CampaignController.campaignSave(page.publisher().id())

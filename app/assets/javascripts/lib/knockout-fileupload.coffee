@@ -34,6 +34,14 @@ define([ "knockout", "jquery.fileupload", "jquery",
       $fileupload.on('fileuploadprocessalways.ko', (e,data) ->
         fileuploadOptions.fileuploadprocessalways(e,data)
       )
+    if fileuploadOptions.fileuploadprocessfail?
+      $fileupload.on('fileuploadprocessfail.ko', (e,data) ->
+        fileuploadOptions.fileuploadprocessfail(e,data)
+      )
+    if fileuploadOptions.fileuploadprocessdone?
+      $fileupload.on('fileuploadprocessdone.ko', (e,data) ->
+        fileuploadOptions.fileuploadprocessdone(e,data)
+      )
     if fileuploadOptions.fileuploaddone?
       $fileupload.on('fileuploaddone.ko', (e,data) ->
         fileuploadOptions.fileuploaddone(e,data.result)

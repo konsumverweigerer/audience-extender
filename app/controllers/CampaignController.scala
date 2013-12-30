@@ -19,9 +19,10 @@ object CampaignController extends Controller with Secured with Formats with Util
               Logger.debug("uploading " + file.filename + " to " + publisher)
               Logger.debug("contentType: " + file.contentType.getOrElse("application/octet-steam"))
               Logger.debug("file: " + file.ref.file)
+              //TODO: handle zip
               Creative.addUpload(publisher, file.contentType.getOrElse("application/octet-steam"),
                 file.filename, file.ref.file).map { creative =>
-                  Ok(Json.toJson(creative))
+                  Ok(Json.toJson(Seq(creative)))
                 }.getOrElse(NotFound)
             }.getOrElse(NotFound)
           }.getOrElse(NotFound)

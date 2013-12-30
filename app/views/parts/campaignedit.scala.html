@@ -6,7 +6,7 @@
 				<button type="button" class="close" aria-hidden="true" data-bind="click: clearcampaign">&times;</button>
 				<h4 class="modal-title">New/Edit Campaign</h4>
 			</div>
-			<div class="modal-body" data-bind="wizard: campaignstep.currentValue">
+			<div class="modal-body" data-bind="wizard: campaignstep.currentValue, noty: currentcampaign().messages, notyOptions: {}">
 				<h3 class="m-null-top m-btm">Campaign Name: <a href="#" id="campaignename" data-bind="editable: currentcampaign().name" data-type="text" data-pk="1" data-title="Enter Campaign Name">New Campaign</a></h3>
 				<div class="wizard">
 					<ul class="steps">
@@ -152,7 +152,7 @@
 							<span class="btn btn-success fileinput-button">
 								<span class="glyphicon glyphicon-plus"></span>
 								<span>...or choose files</span>
-								<input type="file" multiple="" data-bind="fileupload: addcreative, fileuploadOptions: { route: creativeRoute(), dropZone: '.box-drag-and-drop-banner', fileuploadfail: currentcampaign().failedupload, progress: currentcampaign().uploadprogress.currentValue }">
+								<input type="file" multiple="" data-bind="fileupload: addcreative, fileuploadOptions: { acceptFileTypes: /(\.|\/)(gif|jpe?g|png|swf|zip)$/i, route: creativeRoute(), dropZone: '.box-drag-and-drop-banner', fileuploadfail: currentcampaign().failedupload, fileuploadadd: currentcampaign().addupload, fileuploadprocessfail: currentcampaign().failedupload, fileuploadprocessdone: currentcampaign().addupload, progress: currentcampaign().uploadprogress.currentValue }">
 							</span>
 						</div>
 						<h3>Your Uploads</h3>
