@@ -1,13 +1,13 @@
-define(['jquery'], function() {
-/*! jCarousel - v0.3.0-rc.1 - 2013-11-12
+/*! jCarousel - v0.3.0 - 2013-11-22
 * http://sorgalla.com/jcarousel
 * Copyright (c) 2013 Jan Sorgalla; Licensed MIT */
+define(['jquery'], function() {
 (function($) {
     'use strict';
 
     var jCarousel = $.jCarousel = {};
 
-    jCarousel.version = '0.3.0-rc.1';
+    jCarousel.version = '0.3.0';
 
     var rRelativeTarget = /^([+\-]=)?(.+)$/;
 
@@ -246,6 +246,7 @@ define(['jquery'], function() {
         rtl:         false,
         circular:    false,
         underflow:   false,
+        relative:    false,
 
         _options: {
             list: function() {
@@ -323,6 +324,9 @@ define(['jquery'], function() {
 
             this.lt = this.vertical ? 'top' : 'left';
 
+            // Ensure before closest() call
+            this.relative = this.list().css('position') === 'relative';
+
             // Force list and items reload
             this._list  = null;
             this._items = null;
@@ -378,11 +382,11 @@ define(['jquery'], function() {
                 pos     = this.list().position()[this.lt],
                 closest = $(), // Ensure we're returning a jQuery instance
                 stop    = false,
-                lrb     = this.vertical ? 'bottom' : (this.rtl ? 'left' : 'right'),
+                lrb     = this.vertical ? 'bottom' : (this.rtl && !this.relative ? 'left' : 'right'),
                 width;
 
-            if (this.rtl && !this.vertical) {
-                pos = (pos + this.list().width() - this.clipping()) * -1;
+            if (this.rtl && this.relative && !this.vertical) {
+                pos += this.list().width() - this.clipping();
             }
 
             this.items().each(function() {
@@ -406,6 +410,7 @@ define(['jquery'], function() {
                     }
                 }
             });
+
 
             return closest;
         },
@@ -494,7 +499,9 @@ define(['jquery'], function() {
                             if (wrap === 'both' || wrap === 'last') {
                                 this._scroll(0, animate, callback);
                             } else {
-                                this._scroll(Math.min(this.index(this._target) + scroll, end), animate, callback);
+                                if ($.isFunction(callback)) {
+                                    callback.call(this, false);
+                                }
                             }
                         }
                     } else {
@@ -522,7 +529,7 @@ define(['jquery'], function() {
 
                                     if (!isVisible) {
                                         props = {};
-                                        props[this.lt] = this.dimension(curr) * (this.rtl ? -1 : 1);
+                                        props[this.lt] = this.dimension(curr);
                                         this.moveBy(props);
                                     }
 
@@ -565,19 +572,12 @@ define(['jquery'], function() {
                                     // Force items reload
                                     this._items = null;
 
-                                    var lt  = toFloat(this.list().position()[this.lt]),
-                                        dim = this.dimension(curr);
-
-                                    if (this.rtl && !this.vertical) {
-                                        lt += dim;
-                                    } else {
-                                        lt -= dim;
-                                    }
+                                    var dim = this.dimension(curr);
 
                                     props = {};
-                                    props[this.lt] = lt + 'px';
+                                    props[this.lt] = -dim;
+                                    this.moveBy(props);
 
-                                    this.move(props);
                                 }
 
                                 this._scroll(curr, animate, callback);
@@ -596,14 +596,24 @@ define(['jquery'], function() {
             return this;
         },
         moveBy: function(properties, opts) {
-            var position = this.list().position();
+            var position = this.list().position(),
+                multiplier = 1,
+                correction = 0;
+
+            if (this.rtl && !this.vertical) {
+                multiplier = -1;
+
+                if (this.relative) {
+                    correction = this.list().width() - this.clipping();
+                }
+            }
 
             if (properties.left) {
-                properties.left = position.left + toFloat(properties.left) + 'px';
+                properties.left = (position.left + correction + toFloat(properties.left) * multiplier) + 'px';
             }
 
             if (properties.top) {
-                properties.top = position.top + toFloat(properties.top) + 'px';
+                properties.top = (position.top + correction + toFloat(properties.top) * multiplier) + 'px';
             }
 
             return this.move(properties, opts);
@@ -698,7 +708,7 @@ define(['jquery'], function() {
             this._prepare(item);
 
             var pos     = this._position(item),
-                currPos = toFloat(this.list().position()[this.lt]);
+                currPos = this.list().position()[this.lt];
 
             if (pos === currPos) {
                 if ($.isFunction(callback)) {
@@ -726,7 +736,11 @@ define(['jquery'], function() {
 
             var pos = this.list().position()[this.lt];
 
-            if (this.rtl) {
+            if (this.rtl && this.relative && !this.vertical) {
+                pos += this.list().width() - this.clipping();
+            }
+
+            if (this.rtl && !this.vertical) {
                 pos += this.tail;
             } else {
                 pos -= this.tail;
@@ -808,7 +822,8 @@ define(['jquery'], function() {
                 },
                 curr,
                 isVisible,
-                margin;
+                margin,
+                dim;
 
             if (center) {
                 wh /= 2;
@@ -840,7 +855,7 @@ define(['jquery'], function() {
 
                         if (!isVisible) {
                             var props = {};
-                            props[this.lt] = this.dimension(curr) * (this.rtl ? -1 : 1);
+                            props[this.lt] = this.dimension(curr);
                             this.moveBy(props);
                         }
 
@@ -848,7 +863,13 @@ define(['jquery'], function() {
                         this._items = null;
                     }
 
-                    wh += this.dimension(curr);
+                    dim = this.dimension(curr);
+
+                    if (dim === 0) {
+                        break;
+                    }
+
+                    wh += dim;
 
                     update.last    = curr;
                     update.visible = update.visible.add(curr);
@@ -880,7 +901,13 @@ define(['jquery'], function() {
                         break;
                     }
 
-                    wh += this.dimension(curr);
+                    dim = this.dimension(curr);
+
+                    if (dim === 0) {
+                        break;
+                    }
+
+                    wh += dim;
 
                     update.first   = curr;
                     update.visible = update.visible.add(curr);
@@ -924,7 +951,12 @@ define(['jquery'], function() {
                 centerOffset = center ? (this.clipping() / 2) - (this.dimension(first) / 2) : 0;
 
             if (this.rtl && !this.vertical) {
-                pos -= this.clipping() - this.dimension(first);
+                if (this.relative) {
+                    pos -= this.list().width() - this.dimension(first);
+                } else {
+                    pos -= this.clipping() - this.dimension(first);
+                }
+
                 pos += centerOffset;
             } else {
                 pos -= centerOffset;
@@ -933,7 +965,7 @@ define(['jquery'], function() {
             if (!center &&
                 (this.index(item) > this.index(first) || this.inTail) &&
                 this.tail) {
-                pos = this.rtl ? pos - this.tail : pos + this.tail;
+                pos = this.rtl && !this.vertical ? pos - this.tail : pos + this.tail;
                 this.inTail = true;
             } else {
                 this.inTail = false;

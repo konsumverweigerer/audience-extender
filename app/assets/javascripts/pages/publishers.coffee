@@ -1,9 +1,10 @@
 require([ "knockout", "lib/models", "jquery", "bootstrap",
-"lib/knockout-misc", 
-"lib/knockout-editable", 
-"lib/knockout-jqbootstrapvalidation", 
-"lib/knockout-datepicker", 
-"lib/knockout-datatables", 
+"lib/knockout-misc",
+"lib/knockout-editable",
+"lib/knockout-jqbootstrapvalidation",
+"lib/knockout-datepicker",
+"lib/knockout-datatables",
+"lib/knockout-noty",
 "jsRoutes" ], (ko, mod) ->
   class Publishers
     constructor: (d) ->
@@ -31,6 +32,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @selectpublisher = (p) ->
         self.currentpublisher (new mod.Publisher()).copyFrom p
         $('#editPublisher').modal 'show'
+
+      @addadmin = (a) ->
+        self.currentpublisher.addadmin(a,self.messages)
+
+      @deladmin = (a) ->
+        self.currentpublisher.deladmin(a,self.messages)
 
       @savepublisher = ->
         p = self.currentpublisher()

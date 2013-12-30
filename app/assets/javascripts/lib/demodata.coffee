@@ -36,7 +36,7 @@ define(["knockout"], (ko) ->
     for i in [0..(rnd(40,140))]
       d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
       au = ({id: l}  for l in [1...(rnd(1,3))])
-      cr = ((new mod.Creative {id:j,name:'Creative '+rnd(1,1000),url: '/assets/images/thumbnail-site.gif'}) for j in [1...(rnd(1,3))])
+      cr = ((new mod.Creative {id:j,name:'Creative '+rnd(1,1000),url: '/assets/images/thumbnail-site.gif',previewUrl: '/assets/images/thumbnail-site.gif'}) for j in [1...(rnd(1,3))])
       val[i++] = new mod.Campaign
         id: i
         name: 'Campaign '+rnd(1,1000)

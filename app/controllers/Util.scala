@@ -152,6 +152,7 @@ trait Formats {
       "email" -> JsString(website.email),
       "uuid" -> JsString(website.uuid),
       "code" -> JsString(website.code(current)),
+      "codeextended" -> JsString(website.extendedCode(current)),
       "name" -> JsString(website.name)))
   }
 

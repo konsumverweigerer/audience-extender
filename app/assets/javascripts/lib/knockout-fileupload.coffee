@@ -17,7 +17,10 @@ define([ "knockout", "jquery.fileupload", "jquery",
     if fileuploadOptions.progress?
       $fileupload.on('fileuploadprogressall.ko', (e,data) ->
         progress = parseInt(data.loaded/data.total*100,10)
-        $(fileuploadOptions.progress).css('width',progress + '%')
+        if ko.isObservable fileuploadOptions.progress
+          fileuploadOptions.progress progress
+        else
+          $(fileuploadOptions.progress).css('width',progress + '%')
       )
     else if fileuploadOptions.fileuploadprogressall?
       $fileupload.on('fileuploadprogressall.ko', (e,data) ->

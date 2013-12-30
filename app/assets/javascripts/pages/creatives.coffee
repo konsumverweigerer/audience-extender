@@ -1,9 +1,10 @@
 require([ "knockout", "lib/models", "jquery", "bootstrap",
-"lib/knockout-misc", 
-"lib/knockout-editable", 
-"lib/knockout-jqbootstrapvalidation", 
-"lib/knockout-datepicker", 
-"lib/knockout-datatables", 
+"lib/knockout-misc",
+"lib/knockout-editable",
+"lib/knockout-jqbootstrapvalidation",
+"lib/knockout-datepicker",
+"lib/knockout-datatables",
+"lib/knockout-noty",
 "jsRoutes" ], (ko, mod) ->
   class Creatives
     constructor: (d) ->

@@ -38,6 +38,31 @@ define([ "knockout" ], (ko) ->
     result target()
     return result
 
+  ko.extenders.percent = (target,precision) ->
+    result = ko.computed(
+      read: ->
+        target()+'%'
+      write: (newValue) ->
+        current = target()
+        roundingMultiplier = Math.pow(10,precision)
+        v = (''+newValue)
+        p = newValue instanceof String && v.indexOf('%')<0
+        newValueAsNum = parseFloat +(v.replace(/[%]/,''))
+        if isNaN newValueAsNum
+          newValueAsNum = 0
+        if p
+          newValueAsNum = newValueAsNum*100
+        valueToWrite = Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier
+        if valueToWrite!=current
+          target valueToWrite
+        else
+          if newValue!=current
+            target.notifySubscribers valueToWrite
+    ).extend { notify: 'always' }
+ 
+    result target()
+    return result
+
   ko.extenders.currency = (target,lang) ->
     result = ko.computed(
       read: target
@@ -58,6 +83,23 @@ define([ "knockout" ], (ko) ->
         else
           if newValue!=current
             target.notifySubscribers valueToWrite
+    ).extend { notify: 'always' }
+ 
+    result target()
+    return result
+
+  ko.extenders.tail = (target,num) ->
+    result = ko.computed(
+      read: ->
+        val = target()
+        if val?.indexOf?
+          t = val.length
+          f = t-num
+          if f<=0
+            return val
+          return (v for v in val[f...t])
+        return val
+      write: (newValue) ->
     ).extend { notify: 'always' }
  
     result target()

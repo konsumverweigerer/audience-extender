@@ -7,6 +7,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 "lib/knockout-nvd3",
 "lib/knockout-zeroclipboard",
 "lib/knockout-datatables",
+"lib/knockout-noty",
 "jsRoutes" ], (ko, mod) ->
   class AudienceDashboard
     constructor: (d) ->
@@ -17,6 +18,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
+      @news = ko.observableArray []
       @credential = ko.observable()
 
       @audiencechartdaterange = new mod.DateRange
@@ -216,6 +218,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         nw = (new mod.Website()).copyFrom(c)
         nw.editing true
         nw.active true
+        nw.sendemail = ->
+          nw.sendcodebyemail(nw.id(),nw.email(),self)
         self.currentwebsite nw
         if not c.active()
           (v.active false; v.editing false) for v in self.currentwebsites()

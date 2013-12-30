@@ -91,6 +91,7 @@ POST     /json/audiences/save/:pid                 controllers.AudienceControlle
 POST     /json/websites/save/:pid                  controllers.AudienceController.websiteSave(pid: String)
 DELETE   /json/audiences/remove/:pid               controllers.AudienceController.audienceRemove(pid: String, aid: String)
 DELETE   /json/websites/remove/:pid                controllers.AudienceController.websiteRemove(pid: String, wid: String)
+PUT      /json/websites/sendcode/:wid/:pid         controllers.AudienceController.sendWebsiteCode(email: String, pid: String, wid: String)
 
 # Dashboard
 GET      /dashboard                                controllers.MainController.dashboard

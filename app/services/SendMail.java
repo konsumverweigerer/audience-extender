@@ -10,6 +10,18 @@ import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 
 public class SendMail {
+	public static Boolean sendWebsiteCodeEmail(Application app, String email,
+			String code) {
+		// TODO: add HTML version
+		final Option<String> sendTo = Play.configuration(app).getString(
+				"contactemail", Option.<Set<String>> empty());
+		return sendMail("Audience extender: Cookie code",
+				sendTo.nonEmpty() ? sendTo.get() : "root@localhost",
+				"The code to integrate into your website is:\n\n" + code
+						+ "\n\n" + "Please make sure you copy it as is", null,
+				null, email);
+	}
+
 	public static Boolean sendContactMessage(Application app, String email,
 			String name, String message) {
 		final Option<String> sendTo = Play.configuration(app).getString(

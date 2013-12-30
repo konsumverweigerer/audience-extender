@@ -342,6 +342,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @isNotLast = ko.computed -> self.currentValue()<self.maxValue()
 
+      @isInner = ko.computed -> 
+        self.currentValue()>self.minValue() && self.currentValue()<self.maxValue()
+
       @previous = ->
         v = self.currentValue()
         if v==''
@@ -362,9 +365,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class ServerModels
     typeOf: (name) ->
-      if name=='real' || name=='persisted' || name=='transientnew'
-        return { isIgnored: true }
-      { isIgnored: false, isArray: false, isModel: false, model: null }
+      if ['real','persisted','transientnew'].indexOf(name)>=0
+        return { isIgnored: true, isSend: false }
+      { isIgnored: false, isSend: true, isArray: false, isModel: false, model: null }
 
     constructor: (d) ->
       self = @
@@ -383,6 +386,16 @@ define([ "knockout", "jsRoutes" ], (ko) ->
           v = self.toObject value
           if v?
             m[name] = v
+        return m
+
+      @toSendMap = ->
+        m = {}
+        for name, value of self
+          t = self.typeOf name
+          if t?.isSend?
+            v = self.toObject value
+            if v?
+              m[name] = v
         return m
 
       @toObject = (value) ->
@@ -445,7 +458,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
           if page.loader?
             page.loader.next()
           result = route.ajax
-            data: $.param(self.toMap()).replace(/[%]5B([A-Za-z]*)[%]5D=/g,'.$1=')
+            data: $.param(self.toSendMap()).replace(/[%]5B([A-Za-z]*)[%]5D=/g,'.$1=')
             success: (r) ->
               if page.loader?
                 page.loader.previous()
@@ -489,8 +502,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class Message extends ServerModels
     typeOf: (name) ->
-      if name=='name' || name=='dismissed'
-        return { isIgnored: true }
+      if ['name','dismissed'].indexOf(name)>=0
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (dortitle,content,priority) ->
@@ -518,6 +531,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       @isWarning = ko.computed -> self.priority()=='warning'
 
       @isError = ko.computed -> self.priority()=='error'
+
+      @isSuccess = ko.computed -> self.priority()=='success'
 
       @show = (dortitle,content,priority) ->
         if dortitle instanceof Object
@@ -569,8 +584,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class Campaign extends ServerModels
     typeOf: (name) ->
-      if name=='messages'
-        return { isIgnored: true }
+      if ['messages','uploadprogress'].indexOf(name)>=0
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (d) ->
@@ -578,6 +593,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
       self = @
 
       @messages = ko.observableArray []
+
+      @uploadprogress = new Counter {wrap:false,minValue:0,maxValue:100}
 
       @name = ko.observable d?.name
 
@@ -618,6 +635,9 @@ define([ "knockout", "jsRoutes" ], (ko) ->
             pa.selected true
         return self
 
+      @failedupload = (e,data) ->
+        alert(e)
+
       @saveRoute = (page) ->
         routes.controllers.CampaignController.campaignSave(page.publisher().id())
 
@@ -630,16 +650,22 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @website = ko.observable d?.website
 
+      @website = ko.computed -> 
+        v = self.website()
+        if v?.id
+          return ko.unwrap v.id
+        return v
+
       @active = ko.observable d?.active
 
-      @include = ko.computed -> self.active()
+      @include = ko.computed -> self.active()=='on'
 
   class Audience extends ServerModels
     typeOf: (name) ->
       if name=='paths'
-        return { isIgnored: false, isArray: true, isModel: true, model: PathTarget }
-      else if name=="websitePaths" || name=='currentpaths' || name=='activewebsite' || name=='currentallpath' || name=='path' || name=='nonempty' || name=='messages' || name=='selected' || name=='active'
-        return { isIgnored: true }
+        return { isIgnored: false, isSend: true, isArray: true, isModel: true, model: PathTarget }
+      else if ['websitePaths','currentpaths','activewebsite','currentallpath','path','nonempty','messages','selected','active'].indexOf(name)>=0
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (d) ->
@@ -771,8 +797,8 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
   class Website extends ServerModels
     typeOf: (name) ->
-      if name=='active' || name=='inactive' || name=='editing' || name=='selected' || name=='emailSent' || name=='emailFail' || name=='emailStatus' || name=='messages' || name=='codeCopied'
-        return { isIgnored: true }
+      if ['active','inactive','editing','selected','emailSent','emailFail','emailStatus','messages','codeCopied'].indexOf(name)>=0
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (d) ->
@@ -813,22 +839,37 @@ define([ "knockout", "jsRoutes" ], (ko) ->
 
       @emailFail = ko.computed -> self.emailStatus()=='fail'
 
-      @sendemail = ->
-        if self.sendcodebyemail(self.id(),self.email())
-          self.emailStatus 'success'
-        else
-          self.emailStatus 'fail'
+      @sendemail = -> true
 
-      @sendcodebyemail = (id,email)->
-        Math.floor 2*Math.random()
+      @sendcodebyemail = (id,email,page)->
+        routes.controllers.AudienceController.sendWebsiteCode(email,page.publisher().id(),id).ajax
+          success: (r) ->
+            s = 'success'
+            for m in r.messages
+              message = new Message m
+              self.messages.push message
+              if message.isError()
+                s = 'error'
+            if r.messages.length==0
+              self.messages.push new Message
+                title: 'E-mail sent successfully to '+email
+                content: 'Check your e-mail for code'
+                priority: 'success'
+            self.emailStatus s
+          error: (r) ->
+            self.messages.push new Message
+              title: 'Server error'
+              content: 'Could not send e-mail to '+email
+              priority: 'error'
+            self.emailStatus 'fail'
 
       @saveRoute = (page) ->
         routes.controllers.AudienceController.websiteSave(page.publisher().id())
 
   class Package extends ServerModels
     typeOf: (name) ->
-      if name=='messages' || name=='selected' || name=='active'
-        return { isIgnored: true }
+      if ['messages','selected','active'].indexOf(name)>=0
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (d) ->
@@ -897,7 +938,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
   class Publisher extends ServerModels
     typeOf: (name) ->
       if name=='messages'
-        return { isIgnored: true }
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (d) ->
@@ -932,7 +973,7 @@ define([ "knockout", "jsRoutes" ], (ko) ->
   class Admin extends ServerModels
     typeOf: (name) ->
       if name=='messages'
-        return { isIgnored: true }
+        return { isIgnored: true, isSend: false }
       super(name)
 
     constructor: (d) ->

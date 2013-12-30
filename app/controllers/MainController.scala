@@ -210,6 +210,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.AudienceController.websiteList,
         routes.javascript.AudienceController.websiteSave,
         routes.javascript.AudienceController.websiteRemove,
+        routes.javascript.AudienceController.sendWebsiteCode,
         routes.javascript.AdminController.changePublisher,
         routes.javascript.AdminController.attachPublisher,
         routes.javascript.AdminController.detachPublisher,

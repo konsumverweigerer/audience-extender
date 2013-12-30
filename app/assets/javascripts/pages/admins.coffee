@@ -1,9 +1,10 @@
 require([ "knockout", "lib/models", "jquery", "bootstrap",
-"lib/knockout-misc", 
-"lib/knockout-editable", 
-"lib/knockout-jqbootstrapvalidation", 
-"lib/knockout-datepicker", 
-"lib/knockout-datatables", 
+"lib/knockout-misc",
+"lib/knockout-editable",
+"lib/knockout-jqbootstrapvalidation",
+"lib/knockout-datepicker",
+"lib/knockout-datatables",
+"lib/knockout-noty",
 "jsRoutes" ], (ko, mod) ->
   class Admins
     constructor: (d) ->
@@ -34,6 +35,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @selectadmin = (a) ->
         self.currentadmin (new mod.Admin()).copyFrom a
         $('#editAdmin').modal 'show'
+
+      @addpublisher = (p) ->
+        self.currentadmin.addpublisher(p,self.messages)
+
+      @delpublisher = (p) ->
+        self.currentadmin.delpublisher(p,self.messages)
 
       @saveadmin = ->
         a = self.currentadmin()

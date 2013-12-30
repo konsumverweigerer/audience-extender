@@ -99,6 +99,16 @@
 								<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Explanation about Tracking code here...</div>
 							</div>
 						</div>
+						<!-- ko foreach: messages.extend({'tail': 2}) -->
+							<div class="col-sm-3"></div>
+							<div class="col-sm-9">
+								<div class="alert" data-bind="css: {'alert-info': isInfo, 'alert-warning': isWarning, 'alert-danger': isError, 'alert-success': isSuccess}">
+									<a class="close" data-dismiss="alert" href="javascript:void(0)" aria-hidden="true" data-bind="click: dismiss">&times;</a>
+									<h4 data-bind="text: title"></h4>
+									<span data-bind="text: content"></span>
+								</div>
+							</div>
+						<!-- /ko -->
 						<div class="form-group control-group" data-bind="css: {'has-success': emailSent, 'has-error': emailFail}, visible: persisted">
 							<label for="email" class="col-sm-3 control-label">Send Tracking Code via Email</label>
 							<div class="col-sm-9">

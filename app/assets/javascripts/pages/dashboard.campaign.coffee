@@ -9,6 +9,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 "lib/knockout-datepicker",
 "lib/knockout-nvd3",
 "lib/knockout-datatables",
+"lib/knockout-noty",
 "jsRoutes" ], (ko, mod) ->
   class CampaignDashboard
     constructor: (d) ->
@@ -19,6 +20,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
+      @news = ko.observableArray []
       @credential = ko.observable()
 
       @campaignchartdaterange = new mod.DateRange

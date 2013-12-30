@@ -6,6 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 
 import models._
 import views._
+import services._
 
 import play.api._
 import play.api.Play._
@@ -218,6 +219,24 @@ object AudienceController extends Controller with Secured with Formats with Util
           Ok(JsObject(Seq(
             "data" -> Json.toJson(website),
             "messages" -> Json.toJson(msgs.asScala))))
+        }.getOrElse(NotFound)
+      }.getOrElse(Forbidden)
+  }
+
+  def sendWebsiteCode(email: String, publisherid: String, websiteid: String) = IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        Website.findById(websiteid, admin).map { website =>
+          val msgs = ArrayBuffer[Message]()
+          val res = SendMail.sendWebsiteCodeEmail(current, email, website.code(current))
+          if (res != null && res) {
+            msgs.add(new Message("Code E-mail", "E-mail sent successfully sent to " + email, "success"))
+          } else {
+            msgs.add(new Message("Code E-mail", "Could not send e-mail to " + email + ", check email address", "error"))
+          }
+          Ok(JsObject(Seq(
+            "data" -> Json.toJson(website),
+            "messages" -> Json.toJson(msgs))))
         }.getOrElse(NotFound)
       }.getOrElse(Forbidden)
   }
