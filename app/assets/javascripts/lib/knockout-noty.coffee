@@ -45,7 +45,7 @@ define([ "knockout", "ext/jquery.noty" ], (ko) ->
           o.timeout = 10000
         if opts?.container? && opts?.localMsg?
           c = opts.container
-          if c instanceof String
+          if c instanceof String || typeof(c)=='string'
             c = $(c)
           c.noty o
         else

@@ -62,9 +62,9 @@ define([ "knockout", "jquery.fileupload", "jquery",
   preprocess = (fileuploadOptions) ->
     if fileuploadOptions.route?
       fileuploadOptions.url = fileuploadOptions.route.url
-    if fileuploadOptions.dropZone? && fileuploadOptions.dropZone instanceof String
+    if fileuploadOptions.dropZone? && (fileuploadOptions.dropZone instanceof String || typeof(fileuploadOptions.dropZone)=='string')
       fileuploadOptions.dropZone = $(fileuploadOptions.dropZone)
-    if fileuploadOptions.pasteZone? && fileuploadOptions.pasteZone instanceof String
+    if fileuploadOptions.pasteZone? && (fileuploadOptions.pasteZone instanceof String || typeof(fileuploadOptions.pasteZone)=='string')
       fileuploadOptions.pasteZone = $(fileuploadOptions.pasteZone)
 
   ko.bindingHandlers.fileupload =

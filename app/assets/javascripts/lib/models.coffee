@@ -7,14 +7,17 @@ define(['knockout', 'jsRoutes'], (ko) ->
      { name: 'Last 2 Weeks', from: 3, to: 1, unit: 'week' }]
 
   rangedays = (from,to) ->
-    from = from.getTime()
-    to = to.getTime()
-    t for t in [from..to] by day
+    ft = from.getTime()
+    tt = to.getTime()
+    if ft<tt
+      t for t in [ft..tt] by day
+    else
+      [0]
 
   dayrange = (d,s,e) ->
     base = new Date(d.getFullYear(),d.getMonth(),d.getDate())
-    from = new Date base.getTime()+((1-s)*day)
-    to = new Date base.getTime()+((e)*day)
+    from = (new Date base.getTime()+((1-s)*day)).getTime()
+    to = (new Date base.getTime()+((e)*day)).getTime()
     t for t in [from..to] by day
 
   truncateToDay = (d,s,e,u) ->
@@ -380,16 +383,16 @@ define(['knockout', 'jsRoutes'], (ko) ->
         return { isIgnored: true, isSend: false }
       { isIgnored: false, isSend: true, isArray: false, isModel: false, model: null }
 
+    copyFrom: (c) ->
+      @fromJson c.toMap()
+
+    toJson: ->
+      ko.toJSON(self)
+
     constructor: (d) ->
       self = @
 
       @id = ko.observable d?.id
-
-      @toJson = ->
-        ko.toJSON(self)
-
-      @copyFrom = (c) ->
-        self.fromJson c.toMap()
 
       @toMap = ->
         m = {}
@@ -597,7 +600,12 @@ define(['knockout', 'jsRoutes'], (ko) ->
     typeOf: (name) ->
       if ['messages','uploadprogress','schedulechart'].indexOf(name)>=0
         return { isIgnored: true, isSend: false }
-      super(name)
+      super name
+
+    copyFrom: (c) ->
+      ca = super c
+      ca.dataloader = c.dataloader
+      return ca
 
     constructor: (d) ->
       super d
@@ -610,6 +618,8 @@ define(['knockout', 'jsRoutes'], (ko) ->
       @name = ko.observable d?.name
 
       @state = ko.observable(d?.state || 'P')
+
+      @variant = ko.observable d?.variant
 
       @revenue = ko.observable(d?.revenue || 0)
 
@@ -625,15 +635,17 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @endDate = ko.observable d?.endDate
 
-      @schedulechart = new mod.Chartdata
+      @schedulechart = new Chartdata
 
-      @dates = ko.computed
+      @dates = ko.computed(
         read: ->
           [self.startDate(),self.endDate()]
         write: (v) ->
           if v.length == 2
             self.startDate v[0]
             self.endDate v[1]
+      ).extend
+        throttle: 100
 
       @refresh = (audiences,packages) ->
         for au in audiences
@@ -656,11 +668,14 @@ define(['knockout', 'jsRoutes'], (ko) ->
               content: f.error
               priority: 'error'
 
-      @addupload = (e,data) ->
-        {}
+      @addupload = (e,data) -> {}
 
-      @dataloader = (e,data) ->
-        {}
+      @refreshdata = ->
+        self.dataloader self
+      @dates.subscribe ->
+        self.refreshdata()
+
+      @dataloader = (ca) -> {}
 
       @saveRoute = (page) ->
         routes.controllers.CampaignController.campaignSave(page.publisher().id())

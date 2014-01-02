@@ -32,34 +32,76 @@ define(["knockout"], (ko) ->
 
   generateschedulechart = (campaigns,campaign,mod,models) ->
     data = -> []
-    campaign.dataloader = ->
-      campaign.schedulechart.chartcontent data()
+    campaign.dataloader = (ca)->
+      ca.schedulechart.chartcontent data ca
 
     require(["nv.d3"], ->
-      data = ->
+      data = (campaign) ->
         ret = []
-        days = mod.dayrange(new Date(),30,30)
-        aus = campaign.audiences()
-        for au in models.currentaudiences()
-          if aus.indexOf(au)>=0
-            ret.push
-              key: au.name()
-              cls: 'audience'
-              type: 'line'
-              values: ({x:d,y:rnd(10,100)} for d in days)
-              timeframe: 'days'
-        for ca in campaigns
-          if campaign.id()!=ca.id()
-            pa = campaign.package()
-            if pa?
-              rd = mod.rangedays(campaign.startDate(),campaign.endDate())
+        days = mod.dayrange(campaign.startDate(),20,90)
+        now = (new Date()).getTime()
+        day = 24*60*60*1000
+        maxc = 0
+        aus = (ko.unwrap a.id for a in campaign.audiences())
+        rd = mod.rangedays(campaign.startDate(),campaign.endDate())
+        for pa in models.currentpackages() when pa.id()==(campaign.package()?.id)
+          c = pa.count()/(rd.length)
+          maxc = maxc+c
+          ps = for d in days
+            if rd.indexOf(d)>=0
+              {x:d,y:c}
+            else
+              {x:d,y:0}
+          ret.push
+            key: campaign.name()
+            cls: 'campaign'
+            type: 'area'
+            values: ps
+            color: '#a00'
+            timeframe: 'days'
+        greys = ('#'+(new Number(a).toString(16))+(new Number(a).toString(16))+(new Number(a).toString(16)) for a in [5..13] by 2)
+        ci = 0
+        for ca in campaigns when campaign.id()!=ca.id()
+          if (a for a in ca.audiences() when aus.indexOf(ko.unwrap a.id)>=0).length>0
+            rd = mod.rangedays(ca.startDate(),ca.endDate())
+            for pa in models.currentpackages() when pa.id()==(ca.package()?.id)
               c = pa.count()/(rd.length)
+              maxc = maxc+(c/2)
+              ps = for d in days
+                if rd.indexOf(d)>=0
+                  {x:d,y:c}
+                else
+                  {x:d,y:0}
               ret.push
                 key: ca.name()
                 cls: 'campaign'
                 type: 'area'
-                values: ({x:d,y:c} for d in rd)
+                color: greys[ci%greys.length]
+                values: ps
                 timeframe: 'days'
+              ci = ci+1
+        for au in models.currentaudiences() when aus.indexOf(ko.unwrap au.id)>=0
+          lv = 0
+          rd =
+            key: (ko.unwrap au.name)
+            cls: 'audience'
+            type: 'line'
+            values: for d,i in days when d<=now
+              lv = rnd((0.5+(i/(2*days.length)))*maxc,1.2*maxc)
+              {x:d,y:lv}
+            timeframe: 'days'
+          rc = -1
+          ed =
+            key: (ko.unwrap au.name)+' (est)'
+            cls: 'projection'
+            type: 'line'
+            values: for d in days when (now-day)<d
+              rc = rc+1
+              {x:d,y:lv*Math.exp(-rc/days.length)}
+            timeframe: 'days'
+          ret.push ed
+          ret.push rd
+        ret.reverse()
         return ret
     )
 
@@ -67,8 +109,8 @@ define(["knockout"], (ko) ->
     n = new Date()
     val = []
     for i in [0..(rnd(40,140))]
-      d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
-      au = ({id: l}  for l in [1...(rnd(1,3))])
+      d = mod.truncateToDay(n,rnd(1,100),-rnd(1,100))
+      au = ({id: l}  for l in [1...(rnd(1,models.audiences().length))] when rnd(0,100)>95)
       cr = ((new mod.Creative {id:j,name:'Creative '+rnd(1,1000),url: '/assets/images/thumbnail-site.gif',previewUrl: '/assets/images/thumbnail-site.gif'}) for j in [1...(rnd(1,3))])
       val[i++] = new mod.Campaign
         id: i
@@ -80,7 +122,7 @@ define(["knockout"], (ko) ->
         endDate: d[1]
         audiences: au
         creatives: cr
-        package: {id: rnd(1,5)}
+        package: {id: rnd(1,models.packages().length)}
     models.campaigns val
     for ca in models.campaigns()
       generateschedulechart(models.campaigns(),ca,mod,models)

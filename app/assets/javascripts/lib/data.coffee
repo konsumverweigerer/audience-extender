@@ -1,4 +1,9 @@
-define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
+define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
+  tojson = (d) ->
+    if d instanceof String || typeof(d)=='string'
+      return $.parseJSON d
+    return d
+
   loadwebsites = (mod,models) ->
     websites = (nv) ->
       if nv?.id?
@@ -6,7 +11,7 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
         r = routes.controllers.AudienceController.websiteList id
         r.ajax {
           success: (d) ->
-            models.websites.push new mod.Website x for x in d
+            models.websites.push new mod.Website x for x in tojson d
             v.refresh models.websites() for v in models.audiences()
             models.audiencetablesearchbar?.search()
         }
@@ -20,7 +25,7 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
         r = routes.controllers.AudienceController.audienceList id
         r.ajax {
           success: (d) ->
-            models.audiences.push new mod.Audience x for x in d
+            models.audiences.push new mod.Audience x for x in tojson d
             if models.websites?
               v.refresh models.websites() for v in models.audiences()
             models.audiencetablesearchbar?.search()
@@ -35,7 +40,7 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
         r = routes.controllers.CampaignController.packageList id
         r.ajax {
           success: (d) ->
-            models.packages.push new mod.Package x for x in d
+            models.packages.push new mod.Package x for x in tojson d
         }
     models.publisher.subscribe = (nv) -> packages nv
     packages models.publisher()
@@ -47,7 +52,7 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
         r = routes.controllers.CampaignController.campaignList id
         r.ajax {
           success: (d) ->
-            models.campaigns.push new mod.Campaign x for x in d
+            models.campaigns.push new mod.Campaign x for x in tojson d
             models.campaigntablesearchbar?.search()
         }
     models.publisher.subscribe = (nv) -> campaigns nv
@@ -60,7 +65,7 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
       r = routes.controllers.AudienceController.dashboard(st,et)
       r.ajax {
        success: (d) ->
-         models.audiencechart.chartcontent d
+         models.audiencechart.chartcontent tojson d
       }
     models.audiencechartdaterange.dataloader()
 
@@ -71,7 +76,7 @@ define(["knockout", "lib/models", "jsRoutes"], (ko,mod) ->
       r = routes.controllers.CampaignController.dashboard(st,et)
       r.ajax {
        success: (d) ->
-         models.campaignchart.chartcontent d
+         models.campaignchart.chartcontent tojson d
       }
     models.campaignchartdaterange.dataloader()
 

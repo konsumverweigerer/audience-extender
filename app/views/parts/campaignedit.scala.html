@@ -181,26 +181,25 @@
 					<div id="step3" class="step-pane">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="schedule" data-bind="nvddd: currentcampaign().schedulechart.chartcontent, nvdddOptions: {chartType: 'mylinePlusStackedAreaChart', yFormat: 'integer'}">
+								<div class="schedule with-transitions" data-bind="nvddd: currentcampaign().schedulechart.chartcontent, nvdddOptions: {chartType: 'lineplusarea', yFormat: 'integer', showLegend: false}">
 									<svg></svg>
 								</div>
 							</div>
-						</div>
-						<div class="panel-heading">
-							<h4 class="panel-title">Create Custom AD Package</h4>
 						</div>
 						<div class="panel-body">
 							<form class="form" role="form" data-bind="with: currentcampaign">
 								<div class="row">
 									<div class="col-sm-12">
-										<div class="row">
-											<div class="col-xs-6 input-daterange" data-bind="datepicker: dates, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }">
+										<div class="row input-daterange" data-bind="datepicker: dates, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }">
+											<div class="col-xs-6">
 												<div class="form-group">
 													<label for="startdate">Start Date</label>
 													<div class="input-group date">
 														<input type="text" class="form-control span2 date-picker" id="startdate" placeholder="Enter start date ..."><span class="input-group-addon btn"><span class="glyphicon glyphicon-th"></span></span>
 													</div>
 												</div>
+											</div>
+											<div class="col-xs-6">
 												<div class="form-group">
 													<label for="enddate">End Date</label>
 													<div class="input-group date">

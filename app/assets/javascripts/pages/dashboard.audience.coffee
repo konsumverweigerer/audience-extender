@@ -13,7 +13,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
-      byId = (id) -> ((w) -> ko.unwrap(w.id)==id)
+      byId = (id) -> ((w) -> (ko.unwrap w.id)==id)
 
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()

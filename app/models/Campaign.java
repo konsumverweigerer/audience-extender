@@ -63,6 +63,7 @@ public class Campaign extends Model {
 	 *
 	 */
 	public String state;
+	public String variant;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	public CampaignPackage campaignPackage;

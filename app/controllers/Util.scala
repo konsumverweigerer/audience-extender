@@ -3,11 +3,9 @@ package controllers
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import org.joda.time.format.{ DateTimeFormat, DateTimeFormatter }
-
 import models._
 import services._
 import views._
-
 import play.Logger
 import play.api._
 import play.api.data._
@@ -18,6 +16,7 @@ import play.api.data.validation.Constraints._
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play._
+import java.util.Date
 
 trait Formats {
   val websiteForm = Form(
@@ -65,7 +64,8 @@ trait Formats {
       "creatives" -> list(
         longNumber),
       "startDate" -> optional(date),
-      "endDate" -> optional(date)))
+      "endDate" -> optional(date),
+      "variant" -> text))
 
   val adminForm = Form(
     tuple(
@@ -181,8 +181,8 @@ trait Formats {
       (json \ "name").as[String]).updateFromMap(Map[String, Object](
       "id" -> (json \ "id").as[String],
       "variant" -> (json \ "variant").as[String],
-      "startDate" -> (json \ "startDate").as[String],
-      "endDate" -> (json \ "endDate").as[String],
+      "startDate" -> (json \ "startDate").as[Date],
+      "endDate" -> (json \ "endDate").as[Date],
       "impressions" -> (json \ "count").as[String],
       "reach" -> (json \ "reach").as[String],
       "goal" -> (json \ "goal").as[String],
@@ -241,8 +241,9 @@ trait Formats {
       "package" -> (json \ "package").as[CampaignPackage],
       "audiences" -> (json \ "audiences").as[Seq[String]],
       "creatives" -> (json \ "creatives").as[Seq[String]],
-      "startDate" -> (json \ "startDate").as[String],
-      "endDate" -> (json \ "endDate").as[String],
+      "startDate" -> (json \ "startDate").as[Date],
+      "endDate" -> (json \ "endDate").as[Date],
+      "variant" -> (json \ "variant").as[String],
       "value" -> (json \ "value").as[String]).asJava))
 
     def writes(campaign: Campaign) = JsObject(Seq(
@@ -256,6 +257,7 @@ trait Formats {
       "creatives" -> Json.toJson(campaign.creatives.asScala.filter(c => !"R".equals(c.state))),
       "revenue" -> JsNumber(0),
       "cost" -> JsNumber(0),
+      "variant" -> JsString(campaign.variant),
       "state" -> JsString(campaign.state)))
   }
 

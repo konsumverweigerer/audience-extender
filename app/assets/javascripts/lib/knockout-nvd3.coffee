@@ -58,6 +58,8 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
             sv = d.y
             d
           l
+      else if nvct == 'lineplusarea'
+        chart = chart || nv.models.mylinePlusStackedAreaChart()
       else if nvct == 'line'
         chart = chart || nv.models.lineChart()
         data = cumulate(options,data)
@@ -92,8 +94,9 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
           (d3.format '.0f') d
         else
           (d3.format '.2f') d
-      if options.colors
-        chart.color options.colors
+      for opt in ['color','showLegend','width','height','tooltips','tooltipContent']
+        if options[opt]? && chart[opt]?
+          chart[opt] options[opt]
       selection.datum data
       selection.transition().duration(500).call chart
       nv.utils.windowResize ->

@@ -56,8 +56,8 @@ define([ "knockout", "bootstrap-datepicker", "jquery" ], (ko) ->
         dr = $datepicker.data 'datepicker'
         dp = dr.pickers
         if val.length==2 && dp.length==2
-          dp[0].setDate val[0]
-          dp[1].setDate val[1]
+          dp[0].setDate(val[0] ? new Date())
+          dp[1].setDate(val[1] ? new Date())
         dr.updateDates()
       else
         val = ko.utils.unwrapObservable value

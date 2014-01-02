@@ -46,7 +46,7 @@ define([ "knockout" ], (ko) ->
         current = target()
         roundingMultiplier = Math.pow(10,precision)
         v = (''+newValue)
-        p = newValue instanceof String && v.indexOf('%')<0
+        p = (newValue instanceof String || typeof(newValue)=='string') && v.indexOf('%')<0
         newValueAsNum = parseFloat +(v.replace(/[%]/,''))
         if isNaN newValueAsNum
           newValueAsNum = 0

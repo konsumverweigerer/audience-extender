@@ -15,7 +15,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
-      byId = (id) -> ((w) -> w.id()==id)
+      byId = (id) -> ((w) -> (ko.unwrap w.id)==id)
 
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
@@ -78,7 +78,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentcampaign = ko.observable(new mod.Campaign {name:''})
       @campaignstep = new mod.Counter {value:1, minValue:1, maxValue:1, wrap:false}
-
+      @campaignstep.currentValue.subscribe (nv) ->
+        if nv>=3
+          self.currentcampaign()?.refreshdata()
+      
       @currentpackage = ko.observable(new mod.Package {name:''})
 
       @creativeRoute = ->

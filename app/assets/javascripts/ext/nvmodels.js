@@ -23,7 +23,7 @@ nv.models.mycumulativeLineChart = function() {
     , rightAlignYAxis = false
     , tooltips = true
     , showControls = true
-    , useInteractiveGuideline = false
+    , useInteractiveGuideline = true
     , rescaleY = true
     , tooltip = function(key, x, y, e, graph) {
         return '<h3>' + key + '</h3>' +
@@ -348,7 +348,7 @@ nv.models.mycumulativeLineChart = function() {
           .attr('x', -2)
           .attr('fill', 'red')
           .attr('fill-opacity', .5)
-          .style("pointer-events","all")
+          .style('pointer-events','all')
           .call(indexDrag)
 
       indexLine
@@ -722,37 +722,50 @@ nv.models.mylinePlusStackedAreaChart = function() {
   //------------------------------------------------------------
 
   var margin = {top: 30, right: 20, bottom: 50, left: 60},
-      color = d3.scale.category20().range(),
+      color = nv.utils.defaultColor(),
       width = null,
       height = null,
       showLegend = true,
+      rightAlignYAxis = false,
       tooltips = true,
+      useInteractiveGuideline = true,
       tooltip = function(key, x, y, e, graph) {
         return '<h3>' + key + '</h3>' +
                '<p>' +  y + ' at ' + x + '</p>'
       },
       x,
       y,
-      yDomain1,
-      yDomain2
+      yDomain
       ; //can be accessed via chart.lines.[x/y]Scale()
 
   //============================================================
   // Private Variables
   //------------------------------------------------------------
 
-  var x = d3.scale.linear(),
+  var x = d3.time.scale(),
       yScale = d3.scale.linear(),
-
       lines = nv.models.line().yScale(yScale),
-
       stack = nv.models.stackedArea().yScale(yScale),
+      xAxis = nv.models.axis().scale(x),
+      yAxis = nv.models.axis().scale(yScale),
+      legend = nv.models.legend(),
+      interactiveLayer = nv.interactiveGuideline(),
+      id = lines.id(),
+      state = { index: 0 },
+      defaultState = null,
+      noData = 'No Data Available.',
+      average = function(d) { return d.average },
+      dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'changeState'),
+      transitionDuration = 250
+      ;
 
-      xAxis = nv.models.axis().scale(x).orient('bottom').tickPadding(5),
-      yAxis = nv.models.axis().scale(yScale).orient('left'),
-
-      legend = nv.models.legend().height(30),
-      dispatch = d3.dispatch('tooltipShow', 'tooltipHide');
+    xAxis
+      .orient('bottom')
+      .tickPadding(7)
+    ;
+    yAxis
+      .orient((rightAlignYAxis) ? 'right' : 'left')
+    ;
 
   var showTooltip = function(e, offsetElement) {
     var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
@@ -772,6 +785,37 @@ nv.models.mylinePlusStackedAreaChart = function() {
       chart.update = function() { container.transition().call(chart); };
       chart.container = this;
 
+      state.disabled = data.map(function(d) { return !!d.disabled });
+
+      if (!defaultState) {
+          var key;
+          defaultState = {};
+          for (key in state) {
+            if (state[key] instanceof Array)
+              defaultState[key] = state[key].slice(0);
+            else
+              defaultState[key] = state[key];
+          }
+        }
+
+      if (!data || !data.length || !data.filter(function(d) { return d.values.length }).length) {
+        var noDataText = container.selectAll('.nv-noData').data([noData]);
+
+        noDataText.enter().append('text')
+          .attr('class', 'nvd3 nv-noData')
+          .attr('dy', '-.7em')
+          .style('text-anchor', 'middle');
+
+        noDataText
+          .attr('x', margin.left + availableWidth / 2)
+          .attr('y', margin.top + availableHeight / 2)
+          .text(function(d) { return d });
+
+        return chart;
+      } else {
+        container.selectAll('.nv-noData').remove();
+      }
+      
       var availableWidth = (width  || parseInt(container.style('width')) || 960)
                              - margin.left - margin.right,
           availableHeight = (height || parseInt(container.style('height')) || 400)
@@ -790,22 +834,24 @@ nv.models.mylinePlusStackedAreaChart = function() {
       x.domain(d3.extent(d3.merge(series), function(d) { return d.x } ))
           .range([0, availableWidth]);
 
-      var wrap = container.selectAll('g.wrap.linePlusAreaChart').data([data]);
-      var gEnter = wrap.enter().append('g').attr('class', 'wrap nvd3 linePlusAreaChart').append('g');
-
-      gEnter.append('g').attr('class', 'x axis');
-      gEnter.append('g').attr('class', 'y axis');
-      gEnter.append('g').attr('class', 'linesWrap');
-      gEnter.append('g').attr('class', 'stackWrap');
-      gEnter.append('g').attr('class', 'legendWrap');
-
+      var interactivePointerEvents = (useInteractiveGuideline) ? "none" : "all";
+      var wrap = container.selectAll('g.nv-wrap.nv-linePlusAreaChart').data([data]);
+      var gEnter = wrap.enter().append('g').attr('class', 'wrap nvd3 nv-wrap nv-linePlusAreaChart').append('g');
       var g = wrap.select('g');
 
-      if (showLegend) {
-        legend.width( availableWidth / 2 );
+      gEnter.append('g').attr('class', 'nv-interactive');
+      gEnter.append('g').attr('class', 'nv-x nv-axis');
+      gEnter.append('g').attr('class', 'nv-y nv-axis');
+      gEnter.append('g').attr('class', 'nv-background');
+      gEnter.append('g').attr('class', 'nv-linesWrap');
+      gEnter.append('g').attr('class', 'nv-stackWrap').style("pointer-events",interactivePointerEvents);
+      gEnter.append('g').attr('class', 'nv-legendWrap');
 
-        g.select('.legendWrap')
-            .datum(data.map(function(series) {
+      if (showLegend) {
+          legend.width(availableWidth);
+
+        g.select('.nv-legendWrap')
+            .datum(data.filter(function(d) {return !d.disabled && d.type == 'line'}).map(function(series) {
               series.originalKey = series.originalKey === undefined ? series.key : series.originalKey;
               series.key = series.originalKey;
               return series;
@@ -818,30 +864,47 @@ nv.models.mylinePlusStackedAreaChart = function() {
                              - margin.top - margin.bottom;
         }
 
-        g.select('.legendWrap')
+        g.select('.nv-legendWrap')
             .attr('transform', 'translate(' + ( availableWidth / 2 ) + ',' + (-margin.top) +')');
       }
+
+      if (useInteractiveGuideline) {
+        interactiveLayer
+          .width(availableWidth)
+          .height(availableHeight)
+          .margin({left:margin.left,top:margin.top})
+          .svgContainer(container)
+          .xScale(x);
+        wrap.select(".nv-interactive").call(interactiveLayer);
+      }
+
+      gEnter.select('.nv-background')
+        .append('rect');
+
+      g.select('.nv-background rect')
+        .attr('width', availableWidth)
+        .attr('height', availableHeight);
 
       lines
         .width(availableWidth)
         .height(availableHeight)
         .interpolate("monotone")
         .color(data.map(function(d,i) {
-          return d.color || color[i % color.length];
+          return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled && data[i].type == 'line'}));
 
       stack
         .width(availableWidth)
         .height(availableHeight)
         .color(data.map(function(d,i) {
-          return d.color || color[i % color.length];
+          return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled && data[i].type == 'area'}));
 
       g.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-      var linesWrap = g.select('.linesWrap')
+      var linesWrap = g.select('.nv-linesWrap')
           .datum(dataLines)
-      var stackWrap = g.select('.stackWrap')
+      var stackWrap = g.select('.nv-stackWrap')
           .datum(dataStack)
 
       var extraValue = dataStack.length ? dataStack.map(function(a){return a.values}).reduce(function(a,b){
@@ -857,29 +920,26 @@ nv.models.mylinePlusStackedAreaChart = function() {
       if(dataStack.length){d3.transition(stackWrap).call(stack);}
       if(dataLines.length){d3.transition(linesWrap).call(lines);}
 
-
       xAxis
-        .ticks( availableWidth / 100 )
+        .scale(x)
+        .ticks( Math.min(dataStack[0].values.length,availableWidth/70) )
         .tickSize(-availableHeight, 0);
 
-      g.select('.x.axis')
+      g.select('.nv-x.nv-axis')
           .attr('transform', 'translate(0,' + availableHeight + ')');
-      d3.transition(g.select('.x.axis'))
+      d3.transition(g.select('.nv-x.nv-axis'))
           .call(xAxis);
 
       yAxis
         .ticks( availableHeight / 36 )
         .tickSize( -availableWidth, 0);
 
-
-      d3.transition(g.select('.y.axis'))
-          .call(yAxis);
-
-      g.select('.y.axis')
-          .style('opacity', series.length ? 1 : 0)
-          .attr('transform', 'translate(' + x.range()[1] + ',0)');
+      d3.transition(g.select('.nv-y.nv-axis'))
+        .call(yAxis);
 
       legend.dispatch.on('stateChange', function(newState) {
+        state.disabled = newState.disabled;
+        dispatch.stateChange(state);
         chart.update();
       });
 
@@ -887,6 +947,76 @@ nv.models.mylinePlusStackedAreaChart = function() {
         if (tooltips) showTooltip(e, that.parentNode);
       });
 
+      interactiveLayer.dispatch.on('elementMousemove', function(e) {
+        var singlePoint, pointIndex, pointXLocation, allData = [];
+
+        data
+        .filter(function(series, i) {
+          series.seriesIndex = i;
+          return !series.disabled && series.type=='area';
+        })
+        .forEach(function(series,i) {
+            pointIndex = nv.interactiveBisect(series.values, e.pointXValue, chart.x());
+            var point = series.values[pointIndex];
+            if (typeof point === 'undefined') return;
+            if (typeof singlePoint === 'undefined') singlePoint = point;
+            if (typeof pointXLocation === 'undefined') pointXLocation = chart.xScale()(chart.x()(point,pointIndex));
+            allData.push({
+                key: series.key,
+                value: chart.y()(point, pointIndex),
+                stackedValue: point.display
+            });
+        });
+        var yValue = chart.yScale().invert(e.mouseY);
+        var yDistMax = Infinity, indexToHighlight = null;
+        allData.forEach(function(series,i) {
+           yValue = Math.abs(yValue);
+           var stackedY0 = Math.abs(series.stackedValue.y0);
+           var stackedY = Math.abs(series.stackedValue.y);
+           if ( yValue >= stackedY0 && yValue <= (stackedY + stackedY0))
+           {
+              indexToHighlight = i;
+              return;
+           }
+        });
+        if (indexToHighlight != null) {
+           allData[indexToHighlight].highlight = true;
+        }
+
+        var xValue = xAxis.tickFormat()(chart.x()(singlePoint,pointIndex), pointIndex);
+        allData = allData.filter(function(series,i){return series.highlight});
+        allData.forEach(function(series,i){
+          interactiveLayer.tooltip
+            .position({left: e.mouseX + margin.left, top: e.mouseY + margin.top})
+            .chartContainer(that.parentNode)
+            .enabled(tooltips)
+            .valueFormatter(function(d,i) {
+               return yAxis.tickFormat()(d);
+            })
+            .data(
+                {
+                  value: xValue,
+                  series: allData
+                }
+            )();
+        });
+      });
+
+      interactiveLayer.dispatch.on('elementMouseout',function(e) {
+        dispatch.tooltipHide();
+      });
+
+      dispatch.on('changeState', function(e) {
+        if (typeof e.disabled !== 'undefined') {
+          data.forEach(function(series,i) {
+            series.disabled = e.disabled[i];
+          });
+
+          state.disabled = e.disabled;
+        }
+
+        chart.update();
+      });
     });
 
     return chart;
@@ -905,21 +1035,21 @@ nv.models.mylinePlusStackedAreaChart = function() {
     dispatch.tooltipHide(e);
   });
 
-  stack.dispatch.on('tooltipShow', function(e) {
-    //disable tooltips when value ~= 0
-    //// TODO: consider removing points from voronoi that have 0 value instead of this hack
-    if (!Math.round(stack.y()(e.point) * 100)) {  // 100 will not be good for very small numbers... will have to think about making this valu dynamic, based on data range
-      setTimeout(function() { d3.selectAll('.point.hover').classed('hover', false) }, 0);
-      return false;
-    }
-
-    e.pos = [e.pos[0] + margin.left, e.pos[1] + margin.top],
-    dispatch.tooltipShow(e);
-  });
-
-  stack.dispatch.on('tooltipHide', function(e) {
-    dispatch.tooltipHide(e);
-  });
+//  stack.dispatch.on('tooltipShow', function(e) {
+//    //disable tooltips when value ~= 0
+//    //// TODO: consider removing points from voronoi that have 0 value instead of this hack
+//    if (!Math.round(stack.y()(e.point) * 100)) {  // 100 will not be good for very small numbers... will have to think about making this valu dynamic, based on data range
+//      setTimeout(function() { d3.selectAll('.point.hover').classed('hover', false) }, 0);
+//      return false;
+//    }
+//
+//    e.pos = [e.pos[0] + margin.left, e.pos[1] + margin.top],
+//    dispatch.tooltipShow(e);
+//  });
+//
+//  stack.dispatch.on('tooltipHide', function(e) {
+//    dispatch.tooltipHide(e);
+//  });
 
   dispatch.on('tooltipHide', function() {
     if (tooltips) nv.tooltip.cleanup();
@@ -934,31 +1064,18 @@ nv.models.mylinePlusStackedAreaChart = function() {
   chart.stack = stack;
   chart.xAxis = xAxis;
   chart.yAxis = yAxis;
+  chart.interactiveLayer = interactiveLayer;
+
+  d3.rebind(chart, lines, 'defined', 'isArea', 'x', 'y', 'xScale','yScale', 'size', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY', 'interactive', 'clipEdge', 'clipVoronoi','useVoronoi',  'id');
+
   chart.options = nv.utils.optionsFunc.bind(chart);
-
-  chart.x = function(_) {
-    if (!arguments.length) return getX;
-    getX = _;
-    lines.x(_);
-    return chart;
-  };
-
-  chart.y = function(_) {
-    if (!arguments.length) return getY;
-    getY = _;
-    lines.y(_);
-    return chart;
-  };
-
-  chart.yDomain = function(_) {
-    if (!arguments.length) return yDomain;
-    yDomain = _;
-    return chart;
-  };
 
   chart.margin = function(_) {
     if (!arguments.length) return margin;
-    margin = _;
+    margin.top    = typeof _.top    != 'undefined' ? _.top    : margin.top;
+    margin.right  = typeof _.right  != 'undefined' ? _.right  : margin.right;
+    margin.bottom = typeof _.bottom != 'undefined' ? _.bottom : margin.bottom;
+    margin.left   = typeof _.left   != 'undefined' ? _.left   : margin.left;
     return chart;
   };
 
@@ -976,14 +1093,31 @@ nv.models.mylinePlusStackedAreaChart = function() {
 
   chart.color = function(_) {
     if (!arguments.length) return color;
-    color = _;
-    legend.color(_);
+    color = nv.utils.getColor(_);
+    legend.color(color);
+    return chart;
+  };
+
+  chart.useInteractiveGuideline = function(_) {
+    if(!arguments.length) return useInteractiveGuideline;
+    useInteractiveGuideline = _;
+    if (_ === true) {
+       chart.interactive(false);
+       chart.useVoronoi(false);
+    }
     return chart;
   };
 
   chart.showLegend = function(_) {
     if (!arguments.length) return showLegend;
     showLegend = _;
+    return chart;
+  };
+
+  chart.rightAlignYAxis = function(_) {
+    if(!arguments.length) return rightAlignYAxis;
+    rightAlignYAxis = _;
+    yAxis.orient( (_) ? 'right' : 'left');
     return chart;
   };
 
@@ -996,6 +1130,12 @@ nv.models.mylinePlusStackedAreaChart = function() {
   chart.tooltipContent = function(_) {
     if (!arguments.length) return tooltip;
     tooltip = _;
+    return chart;
+  };
+
+  chart.transitionDuration = function(_) {
+    if (!arguments.length) return transitionDuration;
+    transitionDuration = _;
     return chart;
   };
 
