@@ -55,9 +55,9 @@ public class Campaign extends Model {
 	public static Option<Campaign> findById(Long id, Admin admin) {
 		List<Campaign> ret = null;
 		if (admin.isSysAdmin()) {
-			ret = find.where().eq("id", id).findList();
+			ret = find.fetch("audiences").where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("publisher.owners.id", admin.getId())
+			ret = find.fetch("audiences").where().eq("publisher.owners.id", admin.getId())
 					.eq("id", id).findList();
 		}
 		if (!ret.isEmpty()) {

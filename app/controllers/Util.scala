@@ -136,6 +136,7 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(pathTarget.getId)),
       "website" -> JsNumber(BigDecimal(pathTarget.getWebsite.getId)),
       "path" -> JsString(pathTarget.getUrlPath),
+      "active" -> JsString(if ("include".equals(pathTarget.getVariant)) "on" else "off"),
       "variant" -> JsString(pathTarget.getVariant)))
   }
 

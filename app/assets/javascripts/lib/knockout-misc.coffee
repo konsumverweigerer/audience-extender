@@ -146,8 +146,11 @@ define([ "knockout" ], (ko) ->
           $element.prop('checked',modelValue)
         else if isRadio
           if checkedValue()==modelValue
-            $element.prop('checked',true)
-#            $element.parent('label').button('toggle')
+            if !$element.prop('checked')
+              $element.parent('label').button('toggle')
+          else
+            if $element.prop('checked')
+              $element.parent('label').button('toggle')
         else
           $element.prop('checked',checkedValue()==modelValue)
 

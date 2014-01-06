@@ -63,17 +63,17 @@ object AudienceController extends Controller with Secured with Formats with Util
                 audience.setName(data._2)
                 audience.setTracking(data._3.getOrElse(null))
                 if (data._5 != null) {
-                  audience.getWebsites().clear()
+                  audience.getWebsites.clear
                   data._5.map { t =>
                     Website.findById(t._1.getOrElse(-1L), admin).map { website =>
-                      audience.getWebsites().add(website)
-                      val l = audience.getPathTargets().filter(p => "*".equals(p.getUrlPath) && t._1.equals(p.getWebsite.getId()))
+                      audience.getWebsites.add(website)
+                      val l = audience.getPathTargets.filter(p => "*".equals(p.getUrlPath) && t._1.getOrElse(-1).equals(p.getWebsite.getId))
                       if (l.isEmpty()) {
                         val tg = new PathTarget("*")
                         tg.setVariant(if (t._2) "include" else "exclude")
                         tg.setAudience(audience)
                         tg.setWebsite(website)
-                        audience.getPathTargets().add(tg)
+                        audience.getPathTargets.add(tg)
                       } else {
                         l.map { tg =>
                           tg.setVariant(if (t._2) "include" else "exclude")
@@ -84,10 +84,10 @@ object AudienceController extends Controller with Secured with Formats with Util
                 }
                 if (data._4 != null) {
                   data._4.map { t =>
-                    val ids = audience.getPathTargets().map(p => p.getId)
+                    val ids = audience.getPathTargets.map(p => p.getId)
                     Website.findById(t._2, admin).map { website =>
                       if (t._1.getOrElse(-1L) > 0) {
-                        audience.getPathTargets().filter(p => t._1.equals(p.getId)).map { tg =>
+                        audience.getPathTargets.filter(p => t._1.getOrElse(-1).equals(p.getId)).map { tg =>
                           tg.setVariant(if (t._4) "include" else "exclude")
                         }
                       } else {
@@ -95,15 +95,15 @@ object AudienceController extends Controller with Secured with Formats with Util
                         tg.setWebsite(website)
                         tg.setVariant(if (t._4) "include" else "exclude")
                         tg.setAudience(audience)
-                        audience.getPathTargets().add(tg)
+                        audience.getPathTargets.add(tg)
                       }
                     }
-                    audience.getPathTargets().filter(p => p.getId != null && !ids.contains(p.getId)).map { tg =>
+                    audience.getPathTargets.filter(p => p.getId != null && !ids.contains(p.getId)).map { tg =>
                       tg.delete();
                     }
                   }
                 }
-                val msgs = audience.write().asScala
+                val msgs = audience.write.asScala
                 Ok(JsObject(Seq(
                   "data" -> Json.toJson(audience),
                   "messages" -> Json.toJson(msgs))))
@@ -116,12 +116,12 @@ object AudienceController extends Controller with Secured with Formats with Util
               if (data._5 != null) {
                 data._5.map { t =>
                   Website.findById(t._1.getOrElse(-1L), admin).map { website =>
-                    audience.getWebsites().add(website)
+                    audience.getWebsites.add(website)
                     val tg = new PathTarget("*")
                     tg.setVariant(if (t._2) "include" else "exclude")
                     tg.setAudience(audience)
                     tg.setWebsite(website)
-                    audience.getPathTargets().add(tg)
+                    audience.getPathTargets.add(tg)
                   }
                 }
               }
@@ -132,13 +132,13 @@ object AudienceController extends Controller with Secured with Formats with Util
                     tg.setWebsite(website)
                     tg.setVariant(if (t._4) "include" else "exclude")
                     tg.setAudience(audience)
-                    audience.getPathTargets().add(tg)
+                    audience.getPathTargets.add(tg)
                   }
                 }
               }
               val publisher = Publisher.findById(publisherid, admin)
               audience.setPublisher(publisher.get)
-              val msgs = audience.write().asScala
+              val msgs = audience.write.asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(audience),
                 "messages" -> Json.toJson(msgs))))
@@ -150,7 +150,7 @@ object AudienceController extends Controller with Secured with Formats with Util
     implicit request =>
       Admin.findById(adminid).map { admin =>
         Audience.findById(audienceid, admin).map { audience =>
-          val msgs = audience.remove().asScala
+          val msgs = audience.remove.asScala
           if (msgs.isEmpty()) {
             audience.save()
           }
@@ -189,7 +189,7 @@ object AudienceController extends Controller with Secured with Formats with Util
               Website.findById(id, admin).map { website =>
                 website.setName(data._2)
                 website.setUrl(data._3)
-                val msgs = website.write().asScala
+                val msgs = website.write.asScala
                 Ok(JsObject(Seq(
                   "data" -> Json.toJson(website),
                   "messages" -> Json.toJson(msgs))))
@@ -200,7 +200,7 @@ object AudienceController extends Controller with Secured with Formats with Util
               website.setUrl(data._3)
               val publisher = Publisher.findById(publisherid, admin)
               website.setPublisher(publisher.get)
-              val msgs = website.write().asScala
+              val msgs = website.write.asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(website),
                 "messages" -> Json.toJson(msgs))))

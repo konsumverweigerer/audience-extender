@@ -703,7 +703,9 @@ define(['knockout', 'jsRoutes'], (ko) ->
     typeOf: (name) ->
       if name=='paths'
         return { isIgnored: false, isSend: true, isArray: true, isModel: true, model: PathTarget }
-      else if ['websitePaths','currentpaths','activewebsite','currentallpath','path','nonempty','messages','selected','active'].indexOf(name)>=0
+      else if ['websitePaths'].indexOf(name)>=0
+        return { isIgnored: true, isSend: true }
+      else if ['currentpaths','activewebsite','currentallpath','path','nonempty','messages','selected','active'].indexOf(name)>=0
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -762,12 +764,13 @@ define(['knockout', 'jsRoutes'], (ko) ->
       @currentallpath = ko.computed
         read: ->
           aw = self.activewebsite()
-          ( aw && self.allpathsbyid(aw) ) || 'off'
+          ( aw && self.allpaths()[aw] ) || 'off'
         write: (v) ->
           aw = self.activewebsite()
           if aw
-            self.allpathsbyid(aw,v)
-        owner: self.allpaths
+            n = $.extend({},self.allpaths())
+            n[aw] = v
+            self.allpaths(n)
 
       @websitePaths =
         read: ->

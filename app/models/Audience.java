@@ -54,15 +54,16 @@ public class Audience extends Model {
 	}
 
 	public static Option<Audience> findById(Long id, Admin admin) {
-		List<Object> ret = null;
+		List<Audience> ret = null;
 		if (admin.isSysAdmin()) {
-			ret = find.where().eq("id", id).findIds();
+			ret = find.fetch("websites").where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("publisher.owners.id", admin.getId())
-					.eq("id", id).findIds();
+			ret = find.fetch("websites").where()
+					.eq("publisher.owners.id", admin.getId()).eq("id", id)
+					.findList();
 		}
 		if (!ret.isEmpty()) {
-			return new Some<Audience>(find.byId((Long) ret.get(0)));
+			return new Some<Audience>(ret.get(0));
 		}
 		return Option.empty();
 	}
