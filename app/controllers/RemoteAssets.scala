@@ -19,7 +19,11 @@ object RemoteAssets extends Controller {
   def getAsset(path: String, file: String): Action[AnyContent] = Action.async { request =>
     val action = Assets.at(path, file)
     implicit val ex = action.executionContext
-    action.apply(request).map { r => r.withHeaders(DATE -> df.print({ new java.util.Date }.getTime)) }
+    action.apply(request).map { result =>
+      result.withHeaders{
+        DATE -> df.print({ new java.util.Date }.getTime)
+      }
+    }
   }
 
   def getUrl(file: String) = {

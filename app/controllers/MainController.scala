@@ -223,9 +223,9 @@ object MainController extends Controller with Secured with Formats with Utils {
   }
 
   def minProdWebJarAssetsAt(file: String): Action[AnyContent] = {
-    if (!file.endsWith(".min.js") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
+    if (!file.endsWith(".min.js") && !file.endsWith(".min.css") && Mode.Prod == Play.maybeApplication.map(_.mode).getOrElse(Mode.Dev)) {
       try {
-        val newpath = controllers.WebJarAssets.locate(file.replace(".js", ".min.js"))
+        val newpath = controllers.WebJarAssets.locate(file.replace(".js", ".min.js").replace(".css", ".min.css"))
         return controllers.WebJarAssets.at(newpath)
       } catch {
         case nf: java.lang.IllegalArgumentException =>
