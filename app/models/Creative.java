@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
@@ -86,8 +87,8 @@ public class Creative extends Model {
 		if (publisher != null && file != null) {
 			final Creative creative = new Creative(filename,
 					Option.<String> empty());
-			creative.variant = contentType;
-			creative.state = "P";
+			creative.setVariant(contentType);
+			creative.setState("P");
 			final ByteArrayOutputStream os = new ByteArrayOutputStream();
 			final Path path = file.toPath();
 			try {
@@ -97,11 +98,11 @@ public class Creative extends Model {
 					buf.rewind();
 					os.write(buf.array());
 				}
-				creative.data = os.toByteArray();
+				creative.setData(os.toByteArray());
 				creative.save();
 				return new Some<Creative>(creative);
 			} catch (IOException x) {
-				System.out.println("caught exception: " + x);
+				Logger.info("caught exception: " + x);
 			} finally {
 				file.delete();
 			}
@@ -219,7 +220,8 @@ public class Creative extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("campaign.publisher.owners.id", admin.getId())
+			ret = find.where()
+					.eq("campaign.publisher.owners.id", admin.getId())
 					.eq("id", id).findList();
 		}
 		if (!ret.isEmpty()) {
@@ -230,7 +232,7 @@ public class Creative extends Model {
 
 	public String getPreview() {
 		if ("external".equals(this.variant)) {
-			return this.url != null ? this.url : "";
+			return getUrl() != null ? getUrl() : "";
 		}
 		return controllers.routes.ContentController.creativeContent(this.uuid,
 				"preview").url();

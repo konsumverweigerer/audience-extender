@@ -248,7 +248,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
     implicit request =>
       Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
-          publisher.owners.add(admin)
+          publisher.getOwners().add(admin)
           val msgs = publisher.write().asScala
           Ok(Json.toJson(JsObject(Seq(
             "data" -> Json.toJson(msgs.isEmpty()),
@@ -261,7 +261,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
     implicit request =>
       Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
-          publisher.owners.remove(admin)
+          publisher.getOwners().remove(admin)
           if (admin.getPublisher.equals(publisher)) { admin.setPublisher(null) }
           val msgs = (admin.write().asScala)
           msgs.addAll(publisher.write().asScala)

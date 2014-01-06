@@ -134,8 +134,8 @@ public class Campaign extends Model {
 			final Map<Number, Number> profits = new TreeMap<Number, Number>(iv);
 			for (final Campaign campaign : findByAdmin(admin)) {
 				final Option<scala.collection.immutable.List<Tuple4<Object, Object, String, BigDecimal>>> data = StatsHandler
-						.findcreativestats(campaign.id, startDate, endDate,
-								prec);
+						.findcreativestats(campaign.getId(), startDate,
+								endDate, prec);
 				if (data.nonEmpty()) {
 					Logger.debug("have " + data.get().size()
 							+ " creative stat columns for " + campaign);
@@ -144,8 +144,8 @@ public class Campaign extends Model {
 						try {
 							final long t = df.parse(dat._3()).getTime();
 							double s = dat._4().doubleValue();
-							if (campaign.value != null) {
-								s *= campaign.value.doubleValue();
+							if (campaign.getValue() != null) {
+								s *= campaign.getValue().doubleValue();
 							}
 							if (revenues.containsKey(t)) {
 								revenues.put(t, revenues.get(t).intValue() + s);
@@ -209,55 +209,55 @@ public class Campaign extends Model {
 
 	public Campaign(String name) {
 		this.name = name;
-		created = new Date();
+		this.created = new Date();
 	}
 
 	public List<Audience> getAudiences() {
-		return audiences;
+		return this.audiences;
 	}
 
 	public CampaignPackage getCampaignPackage() {
-		return campaignPackage;
+		return this.campaignPackage;
 	}
 
 	public Date getCreated() {
-		return created;
+		return this.created;
 	}
 
 	public List<Creative> getCreatives() {
-		return creatives;
+		return this.creatives;
 	}
 
 	public Date getEndDate() {
-		return endDate;
+		return this.endDate;
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public Publisher getPublisher() {
-		return publisher;
+		return this.publisher;
 	}
 
 	public Date getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 
 	public String getState() {
-		return state;
+		return this.state;
 	}
 
 	public BigDecimal getValue() {
-		return value;
+		return this.value;
 	}
 
 	public String getVariant() {
-		return variant;
+		return this.variant;
 	}
 
 	public List<Message> remove() {
@@ -314,7 +314,7 @@ public class Campaign extends Model {
 
 	@Override
 	public String toString() {
-		return "Campaign(" + name + ")";
+		return "Campaign(" + this.name + ")";
 	}
 
 	public Campaign updateFromMap(Map<String, Object> data) {
@@ -325,7 +325,7 @@ public class Campaign extends Model {
 		save();
 		for (final Creative creative : getCreatives()) {
 			creative.save();
-			creative.campaign = this;
+			creative.setCampaign(this);
 			creative.update();
 		}
 		if (getCampaignPackage() != null) {

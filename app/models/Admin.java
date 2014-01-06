@@ -100,7 +100,7 @@ public class Admin extends Model {
 			Admin admin) {
 		final Long id = publisherid != null ? Long.parseLong(publisherid) : 0L;
 		for (final Publisher publisher : Publisher.findByAdmin(admin)) {
-			if (id.equals(publisher.id)) {
+			if (id.equals(publisher.getId())) {
 				admin.setPublisher(publisher);
 				admin.save();
 				publisher.setActive(true);
@@ -147,7 +147,7 @@ public class Admin extends Model {
 			if (p != null) {
 				c.setPublishers(p);
 			} else {
-				c.setPublishers(Collections.<Publisher>emptyList());
+				c.setPublishers(Collections.<Publisher> emptyList());
 			}
 		}
 		return admins;
@@ -227,9 +227,9 @@ public class Admin extends Model {
 		if (admin != null && admin.isSysAdmin()) {
 			final Admin newAdmin = new Admin("email@provider.com", "New Login",
 					"");
-			admin.created = new Date();
-			admin.locked = true;
-			admin.emailConfirmToken = createToken();
+			admin.setCreated(new Date());
+			admin.setLocked(true);
+			admin.setEmailConfirmToken(createToken());
 			admin.save();
 			return newAdmin;
 		}
@@ -238,8 +238,8 @@ public class Admin extends Model {
 
 	public static Admin updateBasic(Admin current, Admin admin) {
 		if (current != null) {
-			current.name = admin.name;
-			current.email = admin.email;
+			current.setName(admin.name);
+			current.setEmail(admin.email);
 			current.save();
 		}
 		return current;
@@ -251,10 +251,10 @@ public class Admin extends Model {
 
 	public static Admin updatePassword(Admin current, Admin admin) {
 		if (current != null) {
-			if (admin.pwdClear != null && admin.pwdVerify != null
-					&& admin.pwdClear.equals(admin.pwdVerify)) {
+			if (admin.getPwdClear() != null && admin.getPwdVerify() != null
+					&& admin.getPwdClear().equals(admin.getPwdVerify())) {
 				final String salt = UnixMD5Crypt.generateSalt(4);
-				admin.password = UnixMD5Crypt.crypt(admin.pwdClear, salt);
+				admin.setPassword(UnixMD5Crypt.crypt(admin.getPwdClear(), salt));
 			}
 			current.save();
 		}
@@ -266,7 +266,7 @@ public class Admin extends Model {
 	}
 
 	public Admin() {
-		created = new Date();
+		this.created = new Date();
 	}
 
 	public Admin(String name, String email) {
@@ -277,8 +277,8 @@ public class Admin extends Model {
 		this.email = email;
 		this.name = name;
 		this.password = password;
-		adminRoles = "";
-		created = new Date();
+		this.adminRoles = "";
+		this.created = new Date();
 	}
 
 	public boolean checkPwd(String password) {
@@ -286,81 +286,82 @@ public class Admin extends Model {
 	}
 
 	public String getAdminRoles() {
-		return adminRoles;
+		return this.adminRoles;
 	}
 
 	public Date getChanged() {
-		return changed;
+		return this.changed;
 	}
 
 	public String getCountry() {
-		return country;
+		return this.country;
 	}
 
 	public Date getCreated() {
-		return created;
+		return this.created;
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public String getEmailConfirmToken() {
-		return emailConfirmToken;
+		return this.emailConfirmToken;
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public Boolean getLocked() {
-		return locked;
+		return this.locked;
 	}
 
 	public Date getLoggedIn() {
-		return loggedIn;
+		return this.loggedIn;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public Boolean getNeedPasswordChange() {
-		return needPasswordChange;
+		return this.needPasswordChange;
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public String getPasswordChangeToken() {
-		return passwordChangeToken;
+		return this.passwordChangeToken;
 	}
 
 	public Date getPasswordChangeTokenDate() {
-		return passwordChangeTokenDate;
+		return this.passwordChangeTokenDate;
 	}
 
 	public Publisher getPublisher() {
-		return publisher;
+		return this.publisher;
 	}
 
 	public List<Publisher> getPublishers() {
-		return publishers != null ? publishers : new ArrayList<Publisher>();
+		return this.publishers != null ? this.publishers
+				: new ArrayList<Publisher>();
 	}
 
 	public String getPwdClear() {
-		return pwdClear;
+		return this.pwdClear;
 	}
 
 	public String getPwdVerify() {
-		return pwdVerify;
+		return this.pwdVerify;
 	}
 
 	public List<String> getRoles() {
 		final List<String> roles = new ArrayList<String>();
-		if (adminRoles != null) {
-			for (final String role : adminRoles.split("[,]")) {
+		if (getAdminRoles() != null) {
+			for (final String role : getAdminRoles().split("[,]")) {
 				roles.add(role);
 			}
 		}
@@ -368,27 +369,27 @@ public class Admin extends Model {
 	}
 
 	public String getState() {
-		return state;
+		return this.state;
 	}
 
 	public String getStreetaddress1() {
-		return streetaddress1;
+		return this.streetaddress1;
 	}
 
 	public String getStreetaddress2() {
-		return streetaddress2;
+		return this.streetaddress2;
 	}
 
 	public String getStreetaddress3() {
-		return streetaddress3;
+		return this.streetaddress3;
 	}
 
 	public String getTelephone() {
-		return telephone;
+		return this.telephone;
 	}
 
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 
 	public boolean is(String role) {
@@ -480,9 +481,9 @@ public class Admin extends Model {
 
 	public void setRoles(List<String> roles) {
 		if (roles != null) {
-			adminRoles = StringUtils.join(roles, ",");
+			setAdminRoles(StringUtils.join(roles, ","));
 		}
-		adminRoles = "";
+		setAdminRoles("");
 	}
 
 	public void setState(String state) {
@@ -511,7 +512,7 @@ public class Admin extends Model {
 
 	@Override
 	public String toString() {
-		return "Admin(" + email + ")";
+		return "Admin(" + this.email + ")";
 	}
 
 	public Admin updateFromMap(Map<String, Object> data) {

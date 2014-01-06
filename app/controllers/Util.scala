@@ -302,9 +302,9 @@ trait Formats {
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(publisher: Publisher) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(publisher.id)),
-      "name" -> JsString(publisher.name),
-      "active" -> JsString(if (publisher.active) "true" else "false"),
+      "id" -> JsNumber(BigDecimal(publisher.getId)),
+      "name" -> JsString(publisher.getName),
+      "active" -> JsString(if (publisher.isActive) "true" else "false"),
       "admins" -> Json.toJson(publisher.getAdmins().asScala.map { admin =>
         JsObject(Seq(
           "id" -> JsNumber(BigDecimal(admin.getId)),
@@ -312,7 +312,7 @@ trait Formats {
           "roles" -> Json.toJson(admin.getRoles().asScala),
           "email" -> JsString(admin.getEmail)))
       }),
-      "url" -> JsString(publisher.url)))
+      "url" -> JsString(publisher.getUrl)))
   }
 
   implicit object AdminFormat extends Format[Admin] {

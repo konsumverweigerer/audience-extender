@@ -189,40 +189,40 @@ public class Audience extends Model {
 
 	public Audience(String name) {
 		this.name = name;
-		state = "P";
-		created = new Date();
+		this.state = "P";
+		this.created = new Date();
 	}
 
 	public List<Cookie> getCookies() {
-		return cookies;
+		return this.cookies;
 	}
 
 	public Date getCreated() {
-		return created;
+		return this.created;
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public List<PathTarget> getPathTargets() {
-		return pathTargets;
+		return this.pathTargets;
 	}
 
 	public Publisher getPublisher() {
-		return publisher;
+		return this.publisher;
 	}
 
 	public String getState() {
-		return state;
+		return this.state;
 	}
 
 	public String getTracking() {
-		return tracking;
+		return this.tracking;
 	}
 
 	public List<PathTarget> getWebsitePathTargets(Website website) {
@@ -237,7 +237,7 @@ public class Audience extends Model {
 	}
 
 	public List<Website> getWebsites() {
-		return websites;
+		return this.websites;
 	}
 
 	public List<Message> remove() {
@@ -282,7 +282,7 @@ public class Audience extends Model {
 
 	@Override
 	public String toString() {
-		return "Audience(" + name + ")";
+		return "Audience(" + this.name + ")";
 	}
 
 	public Audience updateFromMap(Map<String, Object> data) {
@@ -292,7 +292,7 @@ public class Audience extends Model {
 	public List<Message> write() {
 		// TODO: check website/paths if new cookies are needed
 		save();
-		for (final PathTarget pathTarget : pathTargets) {
+		for (final PathTarget pathTarget : this.pathTargets) {
 			pathTarget.save();
 			pathTarget.update();
 		}

@@ -41,8 +41,8 @@ public class Publisher extends Model {
 		}
 		for (final Publisher publisher : ret) {
 			if (admin.getPublisher() != null
-					&& admin.getPublisher().id.equals(publisher.id)) {
-				publisher.active = true;
+					&& admin.getPublisher().getId().equals(publisher.getId())) {
+				publisher.setActive(true);
 			}
 		}
 		return ret;
@@ -84,7 +84,7 @@ public class Publisher extends Model {
 				return true;
 			} else {
 				final Publisher publisher = findById(publisher_id);
-				if (publisher.owners.contains(admin)) {
+				if (publisher.getOwners().contains(admin)) {
 					return true;
 				}
 			}
@@ -98,33 +98,27 @@ public class Publisher extends Model {
 	}
 
 	@Id
-	public Long id;
+	private Long id;
 	@Required
-	public String name;
+	private String name;
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	private Date created;
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date changed;
+	private Date changed;
 
-	public String url;
-
-	public String streetaddress1;
-
-	public String streetaddress2;
-
-	public String streetaddress3;
-
-	public String state;
-
-	public String country;
-
-	public String telephone;
+	private String url;
+	private String streetaddress1;
+	private String streetaddress2;
+	private String streetaddress3;
+	private String state;
+	private String country;
+	private String telephone;
 
 	@ManyToMany
-	public List<Admin> owners = new ArrayList<Admin>();
+	private List<Admin> owners = new ArrayList<Admin>();
 
 	@Transient
-	public boolean active = false;
+	private boolean active = false;
 
 	public static Finder<Long, Publisher> find = new Finder<Long, Publisher>(
 			Long.class, Publisher.class);
@@ -143,6 +137,54 @@ public class Publisher extends Model {
 		return owners != null ? owners : new ArrayList<Admin>();
 	}
 
+	public Date getChanged() {
+		return changed;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public List<Admin> getOwners() {
+		return owners;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public String getStreetaddress1() {
+		return streetaddress1;
+	}
+
+	public String getStreetaddress2() {
+		return streetaddress2;
+	}
+
+	public String getStreetaddress3() {
+		return streetaddress3;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
 	public boolean isActive() {
 		return active;
 	}
@@ -153,6 +195,54 @@ public class Publisher extends Model {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public void setChanged(Date changed) {
+		this.changed = changed;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setOwners(List<Admin> owners) {
+		this.owners = owners;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setStreetaddress1(String streetaddress1) {
+		this.streetaddress1 = streetaddress1;
+	}
+
+	public void setStreetaddress2(String streetaddress2) {
+		this.streetaddress2 = streetaddress2;
+	}
+
+	public void setStreetaddress3(String streetaddress3) {
+		this.streetaddress3 = streetaddress3;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	@Override

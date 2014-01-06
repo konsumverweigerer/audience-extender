@@ -106,67 +106,67 @@ public class CampaignPackage extends Model {
 
 	public CampaignPackage(String name) {
 		this.name = name;
-		created = new Date();
+		this.created = new Date();
 	}
 
 	public BigDecimal getBuyCpm() {
-		return buyCpm;
+		return this.buyCpm;
 	}
 
 	public Campaign getCampaign() {
-		return campaign;
+		return this.campaign;
 	}
 
 	public CampaignPackage getCampaignPackage() {
-		return campaignPackage;
+		return this.campaignPackage;
 	}
 
 	public Date getCreated() {
-		return created;
+		return this.created;
 	}
 
 	public Date getEndDate() {
-		return endDate;
+		return this.endDate;
 	}
 
 	public Long getGoal() {
-		return goal;
+		return this.goal;
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public Long getImpressions() {
-		return impressions;
+		return this.impressions;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public Publisher getPublisher() {
-		return publisher;
+		return this.publisher;
 	}
 
 	public Long getReach() {
-		return reach;
+		return this.reach;
 	}
 
 	public BigDecimal getSalesCpm() {
-		return salesCpm;
+		return this.salesCpm;
 	}
 
 	public Date getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 
 	public String getState() {
-		return state;
+		return this.state;
 	}
 
 	public String getVariant() {
-		return variant;
+		return this.variant;
 	}
 
 	public List<Message> remove() {
@@ -235,7 +235,7 @@ public class CampaignPackage extends Model {
 
 	@Override
 	public String toString() {
-		return "CampaignPackage(" + name + ")";
+		return "CampaignPackage(" + this.name + ")";
 	}
 
 	public CampaignPackage updateFromMap(Map<String, Object> data) {
