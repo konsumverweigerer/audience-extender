@@ -101,9 +101,9 @@ public class Admin extends Model {
 		final Long id = publisherid != null ? Long.parseLong(publisherid) : 0L;
 		for (final Publisher publisher : Publisher.findByAdmin(admin)) {
 			if (id.equals(publisher.id)) {
-				admin.publisher = publisher;
+				admin.setPublisher(publisher);
 				admin.save();
-				publisher.active = true;
+				publisher.setActive(true);
 				return new Some<Publisher>(publisher);
 			}
 		}
@@ -145,9 +145,9 @@ public class Admin extends Model {
 		for (final Admin c : admins) {
 			final List<Publisher> p = Publisher.findByAdmin(c);
 			if (p != null) {
-				c.publishers = p;
+				c.setPublishers(p);
 			} else {
-				c.publishers = Collections.emptyList();
+				c.setPublishers(Collections.<Publisher>emptyList());
 			}
 		}
 		return admins;
@@ -282,7 +282,7 @@ public class Admin extends Model {
 	}
 
 	public boolean checkPwd(String password) {
-		return UnixMD5Crypt.check(this.password, password);
+		return UnixMD5Crypt.check(getPassword(), password);
 	}
 
 	public String getAdminRoles() {

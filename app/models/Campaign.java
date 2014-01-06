@@ -22,8 +22,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.avaje.ebean.Ebean;
-
 import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -32,65 +30,51 @@ import scala.Some;
 import scala.Tuple4;
 import services.StatsHandler;
 
+import com.avaje.ebean.Ebean;
+
 @Entity
 public class Campaign extends Model {
 	public static final long DAY = 24 * 60 * 60 * 1000L;
 
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Required
-	public String name;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Publisher publisher;
-
-	@Column(precision = 6, scale = 4)
-	public BigDecimal value;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date startDate;
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date endDate;
-
-	/*
-	 * allowed: values pending, active, cancelled
-	 *
+	/**
+	 * Retrieve all users.
 	 */
-	public String state;
-	public String variant;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	public CampaignPackage campaignPackage;
+	public static List<Campaign> findAll() {
+		return find.all();
+	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	public List<Audience> audiences;
+	public static List<Campaign> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("publisher.owners.id", admin.getId()).findList();
+	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "campaign")
-	public List<Creative> creatives;
+	public static Option<Campaign> findById(Long id, Admin admin) {
+		List<Campaign> ret = null;
+		if (admin.isSysAdmin()) {
+			ret = find.where().eq("id", id).findList();
+		} else {
+			ret = find.where().eq("publisher.owners.id", admin.getId())
+					.eq("id", id).findList();
+		}
+		if (!ret.isEmpty()) {
+			return new Some<Campaign>(ret.get(0));
+		}
+		return Option.empty();
+	}
 
-	public Campaign(String name) {
-		this.name = name;
-		this.created = new Date();
+	public static Option<Campaign> findById(String campaignid, Admin admin) {
+		final Long id = campaignid != null ? Long.valueOf(campaignid) : 0L;
+		return findById(id, admin);
 	}
 
 	public static Campaign fromMap(Map<String, Object> data) {
 		final Campaign campaign = new Campaign("New Campaign");
 		campaign.updateFromMap(data);
 		return campaign;
-	}
-
-	public static Finder<Long, Campaign> find = new Finder<Long, Campaign>(
-			Long.class, Campaign.class);
-
-	public static List<Dataset> statsByAdmin(Admin admin) {
-		final List<Dataset> stats = new ArrayList<Dataset>();
-		return stats;
 	}
 
 	private static Map<Number, Number> initValues(long from, long to,
@@ -110,6 +94,11 @@ public class Campaign extends Model {
 		return map;
 	}
 
+	public static List<Dataset> statsByAdmin(Admin admin) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
 	public static List<Dataset> statsByAdmin(Admin admin, Long from, Long to) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
 		if (from != null && to != null) {
@@ -118,11 +107,11 @@ public class Campaign extends Model {
 			String timeframe = "months";
 			DateFormat df = new SimpleDateFormat("yyyyMM");
 			int prec = 6;
-			if ((to - from) < (2 * DAY)) {
+			if (to - from < 2 * DAY) {
 				timeframe = "hours";
 				prec = 10;
 				df = new SimpleDateFormat("yyyyMMddHH");
-			} else if ((to - from) < (3500 * DAY)) {
+			} else if (to - from < 3500 * DAY) {
 				timeframe = "days";
 				prec = 8;
 				df = new SimpleDateFormat("yyyyMMdd");
@@ -163,7 +152,7 @@ public class Campaign extends Model {
 							} else {
 								revenues.put(t, s);
 							}
-						} catch (ParseException e) {
+						} catch (final ParseException e) {
 						}
 					}
 				}
@@ -178,64 +167,172 @@ public class Campaign extends Model {
 		return stats;
 	}
 
-	/**
-	 * Retrieve all users.
+	@Id
+	private Long id;
+
+	@Required
+	private String name;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Publisher publisher;
+
+	@Column(precision = 6, scale = 4)
+	private BigDecimal value;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endDate;
+
+	/*
+	 * allowed: values pending, active, cancelled
 	 */
-	public static List<Campaign> findAll() {
-		return find.all();
+	private String state;
+
+	private String variant;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private CampaignPackage campaignPackage;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Audience> audiences;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "campaign")
+	private List<Creative> creatives;
+
+	public static Finder<Long, Campaign> find = new Finder<Long, Campaign>(
+			Long.class, Campaign.class);
+
+	public Campaign(String name) {
+		this.name = name;
+		created = new Date();
 	}
 
-	public static List<Campaign> findByAdmin(Admin admin) {
-		if (admin.isSysAdmin()) {
-			return find.findList();
-		}
-		return find.where().eq("publisher.owners.id", admin.getId()).findList();
+	public List<Audience> getAudiences() {
+		return audiences;
+	}
+
+	public CampaignPackage getCampaignPackage() {
+		return campaignPackage;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public List<Creative> getCreatives() {
+		return creatives;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public BigDecimal getValue() {
+		return value;
+	}
+
+	public String getVariant() {
+		return variant;
 	}
 
 	public List<Message> remove() {
 		return Collections.emptyList();
 	}
 
-	public List<Message> write() {
-		save();
-		for (final Creative creative : this.creatives) {
-			creative.save();
-			creative.campaign = this;
-			creative.update();
-		}
-		if (this.campaignPackage != null) {
-			this.campaignPackage.save();
-		}
-		Ebean.saveManyToManyAssociations(this, "audiences");
-		update();
-		return Collections.emptyList();
+	public void setAudiences(List<Audience> audiences) {
+		this.audiences = audiences;
+	}
+
+	public void setCampaignPackage(CampaignPackage campaignPackage) {
+		this.campaignPackage = campaignPackage;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setCreatives(List<Creative> creatives) {
+		this.creatives = creatives;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setValue(BigDecimal value) {
+		this.value = value;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	@Override
+	public String toString() {
+		return "Campaign(" + name + ")";
 	}
 
 	public Campaign updateFromMap(Map<String, Object> data) {
 		return this;
 	}
 
-	public static Option<Campaign> findById(String campaignid, Admin admin) {
-		final Long id = campaignid != null ? Long.valueOf(campaignid) : 0L;
-		return findById(id, admin);
-	}
-
-	public static Option<Campaign> findById(Long id, Admin admin) {
-		List<Campaign> ret = null;
-		if (admin.isSysAdmin()) {
-			ret = find.where().eq("id", id).findList();
-		} else {
-			ret = find.where().eq("publisher.owners.id", admin.getId()).eq("id", id)
-					.findList();
+	public List<Message> write() {
+		save();
+		for (final Creative creative : getCreatives()) {
+			creative.save();
+			creative.campaign = this;
+			creative.update();
 		}
-		if (!ret.isEmpty()) {
-			return new Some<Campaign>(ret.get(0));
+		if (getCampaignPackage() != null) {
+			getCampaignPackage().save();
 		}
-		return Option.empty();
-	}
-
-	@Override
-	public String toString() {
-		return "Campaign(" + name + ")";
+		Ebean.saveManyToManyAssociations(this, "audiences");
+		update();
+		return Collections.emptyList();
 	}
 }

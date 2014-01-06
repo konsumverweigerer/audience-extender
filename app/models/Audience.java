@@ -39,57 +39,43 @@ public class Audience extends Model {
 
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Required
-	public String name;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
-
-	/*
-	 * allowed: values pending, active, cancelled
-	 * 
-	 * pending: not all needed cookies are active yet
-	 * 
-	 * active: all needed cookies are active
-	 * 
-	 * cancelled: deleted
+	/**
+	 * Retrieve all users.
 	 */
-	public String state;
-	public String tracking;
+	public static List<Audience> findAll() {
+		return find.all();
+	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Publisher publisher;
+	public static List<Audience> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("publisher.owners.id", admin.getId()).findList();
+	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	public List<Website> websites = new ArrayList<Website>();
+	public static Option<Audience> findById(Long id, Admin admin) {
+		List<Object> ret = null;
+		if (admin.isSysAdmin()) {
+			ret = find.where().eq("id", id).findIds();
+		} else {
+			ret = find.where().eq("publisher.owners.id", admin.getId())
+					.eq("id", id).findIds();
+		}
+		if (!ret.isEmpty()) {
+			return new Some<Audience>(find.byId((Long) ret.get(0)));
+		}
+		return Option.empty();
+	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "audience")
-	public List<PathTarget> pathTargets = new ArrayList<PathTarget>();
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "audience")
-	public List<Cookie> cookies = new ArrayList<Cookie>();
-
-	public Audience(String name) {
-		this.name = name;
-		this.state = "P";
-		this.created = new Date();
+	public static Option<Audience> findById(String audienceid, Admin admin) {
+		final Long id = audienceid != null ? Long.valueOf(audienceid) : 0L;
+		return findById(id, admin);
 	}
 
 	public static Audience fromMap(Map<String, Object> data) {
 		final Audience audience = new Audience("New Audience");
 		audience.updateFromMap(data);
 		return audience;
-	}
-
-	public static Finder<Long, Audience> find = new Finder<Long, Audience>(
-			Long.class, Audience.class);
-
-	public static List<Dataset> statsByAdmin(Admin admin) {
-		final List<Dataset> stats = new ArrayList<Dataset>();
-		return stats;
 	}
 
 	private static Map<Number, Number> initValues(long from, long to,
@@ -109,6 +95,11 @@ public class Audience extends Model {
 		return map;
 	}
 
+	public static List<Dataset> statsByAdmin(Admin admin) {
+		final List<Dataset> stats = new ArrayList<Dataset>();
+		return stats;
+	}
+
 	public static List<Dataset> statsByAdmin(Admin admin, Long from, Long to) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
 		if (from != null && to != null) {
@@ -117,11 +108,11 @@ public class Audience extends Model {
 			String timeframe = "months";
 			DateFormat df = new SimpleDateFormat("yyyyMM");
 			int prec = 6;
-			if ((to - from) < (2 * DAY)) {
+			if (to - from < 2 * DAY) {
 				timeframe = "hours";
 				prec = 10;
 				df = new SimpleDateFormat("yyyyMMddHH");
-			} else if ((to - from) < (3500 * DAY)) {
+			} else if (to - from < 3500 * DAY) {
 				timeframe = "days";
 				prec = 8;
 				df = new SimpleDateFormat("yyyyMMdd");
@@ -148,7 +139,7 @@ public class Audience extends Model {
 							} else {
 								values.put(t, s);
 							}
-						} catch (ParseException e) {
+						} catch (final ParseException e) {
 						}
 					}
 				}
@@ -159,98 +150,172 @@ public class Audience extends Model {
 		return stats;
 	}
 
-	/**
-	 * Retrieve all users.
+	@Id
+	private Long id;
+
+	@Required
+	private String name;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+
+	/*
+	 * allowed: values pending, active, cancelled
+	 * 
+	 * pending: not all needed cookies are active yet
+	 * 
+	 * active: all needed cookies are active
+	 * 
+	 * cancelled: deleted
 	 */
-	public static List<Audience> findAll() {
-		return find.all();
+	private String state;
+
+	private String tracking;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Publisher publisher;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Website> websites = new ArrayList<Website>();
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "audience")
+	private List<PathTarget> pathTargets = new ArrayList<PathTarget>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "audience")
+	private List<Cookie> cookies = new ArrayList<Cookie>();
+
+	public static Finder<Long, Audience> find = new Finder<Long, Audience>(
+			Long.class, Audience.class);
+
+	public Audience(String name) {
+		this.name = name;
+		state = "P";
+		created = new Date();
 	}
 
-	public List<Message> remove() {
-		return Collections.emptyList();
+	public List<Cookie> getCookies() {
+		return cookies;
 	}
 
-	public List<PathTarget> getWebsitePathTargets(Website website) {
-		final List<PathTarget> ret = new ArrayList<PathTarget>();
-		for (final PathTarget pathTarget : this.pathTargets) {
-			if (website != null && pathTarget.website != null
-					&& website.id.equals(pathTarget.website.id)) {
-				ret.add(pathTarget);
-			}
-		}
-		return ret;
+	public Date getCreated() {
+		return created;
 	}
 
-	public List<Message> write() {
-		// TODO: check website/paths if new cookies are needed
-		save();
-		for (final PathTarget pathTarget : this.pathTargets) {
-			pathTarget.save();
-			pathTarget.update();
-		}
-		Ebean.saveManyToManyAssociations(this, "websites");
-		for (final Website website : this.websites) {
-			boolean valid = false;
-			final Collection<PathTarget> paths = getWebsitePathTargets(website);
-			for (final Cookie cookie : this.cookies) {
-				if (cookie.checkCookie(this, website, paths)) {
-					valid = true;
-				} else if (website.id.equals(cookie.website.id)) {
-					cookie.state = "C";
-					cookie.update();
-				}
-			}
-			if (!valid) {
-				final Cookie cookie = Cookie
-						.instance("Cookie for " + this.name, "code", this,
-								website, paths);
-				cookie.save();
-			}
-		}
-		update();
-		return Collections.emptyList();
-	}
-
-	public Audience updateFromMap(Map<String, Object> data) {
-		return this;
-	}
-
-	public static List<Audience> findByAdmin(Admin admin) {
-		if (admin.isSysAdmin()) {
-			return find.findList();
-		}
-		return find.where().eq("publisher.owners.id", admin.getId()).findList();
-	}
-
-	public static Option<Audience> findById(String audienceid, Admin admin) {
-		final Long id = audienceid != null ? Long.valueOf(audienceid) : 0L;
-		return findById(id, admin);
-	}
-
-	public static Option<Audience> findById(Long id, Admin admin) {
-		List<Object> ret = null;
-		if (admin.isSysAdmin()) {
-			ret = find.where().eq("id", id).findIds();
-		} else {
-			ret = find.where().eq("publisher.owners.id", admin.getId()).eq("id", id)
-					.findIds();
-		}
-		if (!ret.isEmpty()) {
-			return new Some<Audience>(find.byId((Long) ret.get(0)));
-		}
-		return Option.empty();
+	public Long getId() {
+		return id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public List<PathTarget> getPathTargets() {
+		return pathTargets;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public String getTracking() {
+		return tracking;
+	}
+
+	public List<PathTarget> getWebsitePathTargets(Website website) {
+		final List<PathTarget> ret = new ArrayList<PathTarget>();
+		for (final PathTarget pathTarget : getPathTargets()) {
+			if (website != null && pathTarget.getWebsite() != null
+					&& website.getId().equals(pathTarget.getWebsite().getId())) {
+				ret.add(pathTarget);
+			}
+		}
+		return ret;
+	}
+
+	public List<Website> getWebsites() {
+		return websites;
+	}
+
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
+
+	public void setCookies(List<Cookie> cookies) {
+		this.cookies = cookies;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setPathTargets(List<PathTarget> pathTargets) {
+		this.pathTargets = pathTargets;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setTracking(String tracking) {
+		this.tracking = tracking;
+	}
+
+	public void setWebsites(List<Website> websites) {
+		this.websites = websites;
 	}
 
 	@Override
 	public String toString() {
 		return "Audience(" + name + ")";
+	}
+
+	public Audience updateFromMap(Map<String, Object> data) {
+		return this;
+	}
+
+	public List<Message> write() {
+		// TODO: check website/paths if new cookies are needed
+		save();
+		for (final PathTarget pathTarget : pathTargets) {
+			pathTarget.save();
+			pathTarget.update();
+		}
+		Ebean.saveManyToManyAssociations(this, "websites");
+		for (final Website website : getWebsites()) {
+			boolean valid = false;
+			final Collection<PathTarget> paths = getWebsitePathTargets(website);
+			for (final Cookie cookie : getCookies()) {
+				if (cookie.checkCookie(this, website, paths)) {
+					valid = true;
+				} else if (website.getId().equals(cookie.getWebsite().getId())) {
+					cookie.setState("C");
+					cookie.update();
+				}
+			}
+			if (!valid) {
+				final Cookie cookie = Cookie
+						.instance("Cookie for " + getName(), "code", this,
+								website, paths);
+				cookie.save();
+			}
+		}
+		update();
+		return Collections.emptyList();
 	}
 }

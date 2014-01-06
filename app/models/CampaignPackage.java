@@ -23,56 +23,12 @@ import scala.Some;
 public class CampaignPackage extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Required
-	public String name;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
-
-	/*
-	 * allowed values: custom, monthly, weekly, daily
+	/**
+	 * Retrieve all packages.
 	 */
-	public String variant;
-	public String state;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date startDate;
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date endDate;
-
-	public Long impressions;
-	public Long reach;
-	public Long goal;
-
-	@Column(precision = 6, scale = 6)
-	public BigDecimal buyCpm;
-	@Column(precision = 6, scale = 6)
-	public BigDecimal salesCpm;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Publisher publisher;
-	@ManyToOne(fetch = FetchType.EAGER)
-	public Campaign campaign;
-	@ManyToOne(fetch = FetchType.EAGER)
-	public CampaignPackage campaignPackage;
-
-	public CampaignPackage(String name) {
-		this.name = name;
-		this.created = new Date();
+	public static List<CampaignPackage> findAll() {
+		return find.all();
 	}
-
-	public static CampaignPackage fromMap(Map<String, Object> data) {
-		final CampaignPackage campaignPackage = new CampaignPackage(
-				"New Package");
-		campaignPackage.updateFromMap(data);
-		return campaignPackage;
-	}
-
-	public static Finder<Long, CampaignPackage> find = new Finder<Long, CampaignPackage>(
-			Long.class, CampaignPackage.class);
 
 	public static List<CampaignPackage> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {
@@ -80,25 +36,6 @@ public class CampaignPackage extends Model {
 		}
 		// TODO: search spezific packages
 		return find.where().isNull("campaign.id").findList();
-	}
-
-	public List<Message> remove() {
-		return Collections.emptyList();
-	}
-
-	public List<Message> write() {
-		save();
-		update();
-		return Collections.emptyList();
-	}
-
-	public CampaignPackage updateFromMap(Map<String, Object> data) {
-		return this;
-	}
-
-	public static Option<CampaignPackage> findById(String packageid, Admin admin) {
-		final Long id = packageid != null ? Long.valueOf(packageid) : 0L;
-		return findById(id, admin);
 	}
 
 	public static Option<CampaignPackage> findById(Long id, Admin admin) {
@@ -115,15 +52,199 @@ public class CampaignPackage extends Model {
 		return Option.empty();
 	}
 
-	/**
-	 * Retrieve all packages.
+	public static Option<CampaignPackage> findById(String packageid, Admin admin) {
+		final Long id = packageid != null ? Long.valueOf(packageid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static CampaignPackage fromMap(Map<String, Object> data) {
+		final CampaignPackage campaignPackage = new CampaignPackage(
+				"New Package");
+		campaignPackage.updateFromMap(data);
+		return campaignPackage;
+	}
+
+	@Id
+	private Long id;
+	@Required
+	private String name;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+	/*
+	 * allowed values: custom, monthly, weekly, daily
 	 */
-	public static List<CampaignPackage> findAll() {
-		return find.all();
+	private String variant;
+	private String state;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endDate;
+
+	private Long impressions;
+	private Long reach;
+	private Long goal;
+
+	@Column(precision = 6, scale = 6)
+	private BigDecimal buyCpm;
+
+	@Column(precision = 6, scale = 6)
+	private BigDecimal salesCpm;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Publisher publisher;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Campaign campaign;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private CampaignPackage campaignPackage;
+
+	public static Finder<Long, CampaignPackage> find = new Finder<Long, CampaignPackage>(
+			Long.class, CampaignPackage.class);
+
+	public CampaignPackage(String name) {
+		this.name = name;
+		created = new Date();
+	}
+
+	public BigDecimal getBuyCpm() {
+		return buyCpm;
+	}
+
+	public Campaign getCampaign() {
+		return campaign;
+	}
+
+	public CampaignPackage getCampaignPackage() {
+		return campaignPackage;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public Long getGoal() {
+		return goal;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public Long getImpressions() {
+		return impressions;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public Long getReach() {
+		return reach;
+	}
+
+	public BigDecimal getSalesCpm() {
+		return salesCpm;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
+
+	public void setBuyCpm(BigDecimal buyCpm) {
+		this.buyCpm = buyCpm;
+	}
+
+	public void setCampaign(Campaign campaign) {
+		this.campaign = campaign;
+	}
+
+	public void setCampaignPackage(CampaignPackage campaignPackage) {
+		this.campaignPackage = campaignPackage;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setGoal(Long goal) {
+		this.goal = goal;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setImpressions(Long impressions) {
+		this.impressions = impressions;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public void setReach(Long reach) {
+		this.reach = reach;
+	}
+
+	public void setSalesCpm(BigDecimal salesCpm) {
+		this.salesCpm = salesCpm;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
 	}
 
 	@Override
 	public String toString() {
 		return "CampaignPackage(" + name + ")";
+	}
+
+	public CampaignPackage updateFromMap(Map<String, Object> data) {
+		return this;
+	}
+
+	public List<Message> write() {
+		save();
+		update();
+		return Collections.emptyList();
 	}
 }

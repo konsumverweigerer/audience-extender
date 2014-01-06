@@ -30,27 +30,27 @@ public class Creative extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
-	public Long id;
+	private Long id;
 
 	@Required
-	public String name;
+	private String name;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	private Date created;
 
 	/*
 	 * allowed values: pending, active, removed
 	 */
-	public String state;
+	private String state;
 	/*
 	 * allowed values: image/png, image/gif, video/flv, external
 	 */
-	public String variant;
+	private String variant;
 
-	public String uuid;
-	public String url;
+	private String uuid;
+	private String url;
 
-	public byte[] data;
+	private byte[] data;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Campaign campaign;
@@ -127,6 +127,78 @@ public class Creative extends Model {
 	 */
 	public static List<Creative> findAll() {
 		return find.all();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public Campaign getCampaign() {
+		return campaign;
+	}
+
+	public void setCampaign(Campaign campaign) {
+		this.campaign = campaign;
 	}
 
 	public static Option<Creative> findByUUID(String uuid) {

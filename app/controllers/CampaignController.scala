@@ -35,7 +35,7 @@ object CampaignController extends Controller with Secured with Formats with Util
       Admin.findById(adminid).map { admin =>
         Publisher.findById(publisherid, admin).map { publisher =>
           Creative.findById(creativeid, admin).map { creative =>
-            creative.state = "R"
+            creative.setState("R")
             creative.update();
             Ok(Json.toJson(creative))
           }.getOrElse(Forbidden)
@@ -80,28 +80,31 @@ object CampaignController extends Controller with Secured with Formats with Util
           data =>
             data._1.map { id =>
               Campaign.findById(id, admin).map { campaign =>
-                campaign.name = data._2
-                if (campaign.campaignPackage != null) {
-                  if (campaign.campaignPackage.campaignPackage == null ||
-                    !campaign.campaignPackage.campaignPackage.id.equals(data._3.get)) {
+                campaign.setName(data._2)
+                campaign.setStartDate(data._6.getOrElse(null))
+                campaign.setEndDate(data._7.getOrElse(null))
+                campaign.setVariant(data._8)
+                if (campaign.getCampaignPackage != null) {
+                  if (campaign.getCampaignPackage.getCampaignPackage == null ||
+                    !campaign.getCampaignPackage.getCampaignPackage.getId.equals(data._3.get)) {
                     data._3.map { packid =>
                       CampaignPackage.findById(packid, admin).map { pack =>
-                        campaign.campaignPackage = new CampaignPackage("")
-                        campaign.campaignPackage.campaignPackage = pack
+                        campaign.setCampaignPackage(new CampaignPackage(""))
+                        campaign.getCampaignPackage.setCampaignPackage(pack)
                       }
                     }
                   }
                 }
-                campaign.audiences.clear()
+                campaign.getAudiences.clear()
                 data._4.map { audienceid =>
                   Audience.findById(audienceid, admin).map { audience =>
-                    campaign.audiences.add(audience)
+                    campaign.getAudiences.add(audience)
                   }
                 }
-                campaign.creatives.clear()
+                campaign.getCreatives.clear()
                 data._4.map { creativeid =>
                   Creative.findById(creativeid, admin).map { creative =>
-                    campaign.creatives.add(creative)
+                    campaign.getCreatives.add(creative)
                   }
                 }
                 val msgs = campaign.write().asScala
@@ -111,27 +114,30 @@ object CampaignController extends Controller with Secured with Formats with Util
               }.getOrElse(NotFound)
             }.getOrElse {
               val campaign = new Campaign("")
-              campaign.name = data._2
+              campaign.setName(data._2)
+              campaign.setStartDate(data._6.getOrElse(null))
+              campaign.setEndDate(data._7.getOrElse(null))
+              campaign.setVariant(data._8)
               data._3.map { packid =>
                 CampaignPackage.findById(packid, admin).map { pack =>
-                  campaign.campaignPackage = new CampaignPackage("")
-                  campaign.campaignPackage.campaignPackage = pack
+                  campaign.setCampaignPackage(new CampaignPackage(""))
+                  campaign.getCampaignPackage.setCampaignPackage(pack)
                 }
               }
-              campaign.audiences.clear()
+              campaign.getAudiences.clear()
               data._4.map { audienceid =>
                 Audience.findById(audienceid, admin).map { audience =>
-                  campaign.audiences.add(audience)
+                  campaign.getAudiences.add(audience)
                 }
               }
-                campaign.creatives.clear()
+                campaign.getCreatives.clear()
                 data._4.map { creativeid =>
                   Creative.findById(creativeid, admin).map { creative =>
-                    campaign.creatives.add(creative)
+                    campaign.getCreatives.add(creative)
                   }
                 }
               val publisher = Publisher.findById(publisherid, admin)
-              campaign.publisher = publisher.get
+              campaign.setPublisher(publisher.get)
               val msgs = campaign.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(campaign),
@@ -175,18 +181,18 @@ object CampaignController extends Controller with Secured with Formats with Util
           data =>
             data._1.map { id =>
               CampaignPackage.findById(id, admin).map { pack =>
-                pack.name = data._2
-                pack.variant = "custom"
-                pack.startDate = data._3.getOrElse(null)
-                pack.endDate = data._4.getOrElse(null)
-                pack.impressions = data._5
-                pack.reach = data._6
-                pack.goal = data._7
+                pack.setName(data._2)
+                pack.setVariant("custom")
+                pack.setStartDate(data._3.getOrElse(null))
+                pack.setEndDate(data._4.getOrElse(null))
+                pack.setImpressions(data._5)
+                pack.setReach(data._6)
+                pack.setGoal(data._7)
                 if (data._8 != null) {
-                  pack.buyCpm = new java.math.BigDecimal(data._8.toString)
+                  pack.setBuyCpm(new java.math.BigDecimal(data._8.toString))
                 }
                 if (data._9 != null) {
-                  pack.salesCpm = new java.math.BigDecimal(data._9.toString)
+                  pack.setSalesCpm(new java.math.BigDecimal(data._9.toString))
                 }
                 val msgs = pack.write().asScala
                 Ok(JsObject(Seq(
@@ -195,21 +201,21 @@ object CampaignController extends Controller with Secured with Formats with Util
               }.getOrElse(NotFound)
             }.getOrElse {
               val pack = new CampaignPackage("")
-              pack.name = data._2
-              pack.variant = "custom"
-              pack.startDate = data._3.getOrElse(null)
-              pack.endDate = data._4.getOrElse(null)
-              pack.impressions = data._5
-              pack.reach = data._6
-              pack.goal = data._7
+              pack.setName(data._2)
+              pack.setVariant("custom")
+              pack.setStartDate(data._3.getOrElse(null))
+              pack.setEndDate(data._4.getOrElse(null))
+              pack.setImpressions(data._5)
+              pack.setReach(data._6)
+              pack.setGoal(data._7)
               if (data._8 != null) {
-                pack.buyCpm = new java.math.BigDecimal(data._8.toString)
+                pack.setBuyCpm(new java.math.BigDecimal(data._8.toString))
               }
               if (data._9 != null) {
-                pack.salesCpm = new java.math.BigDecimal(data._9.toString)
+                pack.setSalesCpm(new java.math.BigDecimal(data._9.toString))
               }
               val campaign = Campaign.findById(campaignid, admin)
-              pack.campaign = campaign.get
+              pack.setCampaign(campaign.get)
               val msgs = pack.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(pack),
@@ -223,7 +229,7 @@ object CampaignController extends Controller with Secured with Formats with Util
       Admin.findById(adminid).map { admin =>
         CampaignPackage.findById(packageid, admin).map { pack =>
           var msgs = Seq[Message]()
-          if (pack.campaign != null && java.lang.Long.toString(pack.campaign.id).equals(campaignid)) {
+          if (pack.getCampaign != null && java.lang.Long.toString(pack.getCampaign.getId).equals(campaignid)) {
             msgs = pack.remove()
             if (msgs.isEmpty()) {
               pack.save()

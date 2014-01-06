@@ -24,31 +24,31 @@ public class Cookie extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
-	public Long id;
+	private Long id;
 
 	@Required
-	public String name;
+	private String name;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	private Date created;
 
 	/*
 	 * allowed values: pending, active, cancelled
 	 */
-	public String state;
+	private String state;
 	/*
 	 * allowed values: code, url
 	 */
-	public String variant;
+	private String variant;
 
-	public String uuid;
-	public Integer pathhash;
-	public String content;
+	private String uuid;
+	private Integer pathhash;
+	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	public Audience audience;
+	private Audience audience;
 	@ManyToOne(fetch = FetchType.LAZY)
-	public Website website;
+	private Website website;
 
 	public Cookie(String name) {
 		this.name = name;
@@ -59,18 +59,18 @@ public class Cookie extends Model {
 	public static Cookie instance(String name, String variant, Audience audience,
 			Website website, Collection<PathTarget> paths) {
 		final Cookie cookie = new Cookie(name);
-		cookie.variant = variant;
-		cookie.pathhash = calculateHash(paths);
-		cookie.website = website;
-		cookie.audience = audience;
+		cookie.setVariant(variant);
+		cookie.setPathhash(calculateHash(paths));
+		cookie.setWebsite(website);
+		cookie.setAudience(audience);
 		return cookie;
 	}
 
 	public static Cookie instance(Cookie cookie, String name, String variant,
 			Audience audience, Website website, Collection<PathTarget> paths) {
-		if (cookie.audience.id.equals(audience.id)
-				&& cookie.website.id.equals(website.id)
-				&& cookie.pathhash == calculateHash(paths)) {
+		if (cookie.getAudience().getId().equals(audience.getId())
+				&& cookie.getWebsite().getId().equals(website.getId())
+				&& cookie.getPathhash() == calculateHash(paths)) {
 			return cookie;
 		}
 		return instance(name, variant, audience, website, paths);
@@ -78,9 +78,9 @@ public class Cookie extends Model {
 
 	public boolean checkCookie(Audience audience,
 			Website website, Collection<PathTarget> paths) {
-		if (this.audience.id.equals(audience.id)
-				&& this.website.id.equals(website.id)
-				&& this.pathhash == calculateHash(paths)) {
+		if (this.getAudience().getId().equals(audience.getId())
+				&& getWebsite().getId().equals(website.getId())
+				&& getPathhash() == calculateHash(paths)) {
 			return true;
 		}
 		return false;
@@ -89,8 +89,8 @@ public class Cookie extends Model {
 	public static int calculateHash(Collection<PathTarget> paths) {
 		int h = 0;
 		for (final PathTarget path : paths) {
-			h = h ^ path.variant.hashCode();
-			h = h ^ path.urlPath.hashCode();
+			h = h ^ path.getVariant().hashCode();
+			h = h ^ path.getUrlPath().hashCode();
 		}
 		return h;
 	}
@@ -165,6 +165,78 @@ public class Cookie extends Model {
 			return new Some<Cookie>(ret.get(0));
 		}
 		return Option.empty();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Integer getPathhash() {
+		return pathhash;
+	}
+
+	public void setPathhash(Integer pathhash) {
+		this.pathhash = pathhash;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public void setAudience(Audience audience) {
+		this.audience = audience;
+	}
+
+	public void setWebsite(Website website) {
+		this.website = website;
 	}
 
 	public static List<Cookie> findByUuid(String uuid) {

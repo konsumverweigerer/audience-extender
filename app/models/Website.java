@@ -28,23 +28,23 @@ public class Website extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
-	public Long id;
+	private Long id;
 
 	@Required
-	public String name;
+	private String name;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	private Date created;
 
-	public String uuid;
-	public String url;
-	public String email;
+	private String uuid;
+	private String url;
+	private String email;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	public Publisher publisher;
+	private Publisher publisher;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "website")
-	public List<PathTarget> pathTargets = new ArrayList<PathTarget>();
+	private List<PathTarget> pathTargets = new ArrayList<PathTarget>();
 
 	public Website(String name) {
 		this.name = name;
@@ -80,9 +80,9 @@ public class Website extends Model {
 
 	public List<Message> write() {
 		save();
-		if (this.uuid == null || this.uuid.isEmpty()) {
-			this.uuid = UuidHelper
-					.randomUUIDString("com.audienceextender.website");
+		if (getUuid() == null || getUuid().isEmpty()) {
+			setUuid(UuidHelper
+					.randomUUIDString("com.audienceextender.website"));
 		}
 		update();
 		return Collections.emptyList();
@@ -96,7 +96,7 @@ public class Website extends Model {
 		final Option<String> domain = Play.configuration(app).getString(
 				"cookiedomain", Option.<Set<String>> empty());
 		final String url = controllers.routes.ContentController.cookie(
-				this.uuid, "sub").url();
+				getUuid(), "sub").url();
 		return String
 				.format("<script type=\"text/javascript\">\n"
 						+ "(function(){\n"
@@ -113,7 +113,7 @@ public class Website extends Model {
 		final Option<String> domain = Play.configuration(app).getString(
 				"cookiedomain", Option.<Set<String>> empty());
 		final String url = controllers.routes.ContentController.cookie(
-				this.uuid, "sub").url();
+				getUuid(), "sub").url();
 		return String.format(
 				"<script type=\"text/javascript\" src=\"//%s%s\">\n"
 						+ "</script>\n", domain.nonEmpty() ? domain.get()
@@ -147,6 +147,70 @@ public class Website extends Model {
 			return new Some<Website>(ret.get(0));
 		}
 		return Option.empty();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public List<PathTarget> getPathTargets() {
+		return pathTargets;
+	}
+
+	public void setPathTargets(List<PathTarget> pathTargets) {
+		this.pathTargets = pathTargets;
 	}
 
 	@Override

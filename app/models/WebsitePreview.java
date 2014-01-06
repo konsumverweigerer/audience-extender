@@ -20,49 +20,9 @@ import scala.Some;
 public class WebsitePreview extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
-
-	/*
-	 * allowed values: image/png, image/gif
-	 */
-	public String variant;
-
-	public byte[] data;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Website website;
-
-	public WebsitePreview() {
-	}
-
-	public static WebsitePreview fromMap(Map<String, Object> data) {
-		final WebsitePreview creative = new WebsitePreview();
-		creative.updateFromMap(data);
-		return creative;
-	}
-
-	public static Finder<Long, WebsitePreview> find = new Finder<Long, WebsitePreview>(
-			Long.class, WebsitePreview.class);
-
-	public static List<WebsitePreview> findByAdmin(Admin admin) {
-		if (admin.isSysAdmin()) {
-			return find.findList();
-		}
-		return find.where().eq("website.publisher.owners.id", admin.getId())
-				.findList();
-	}
-
 	public static Option<WebsitePreview> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {
 		return null;
-	}
-
-	public WebsitePreview updateFromMap(Map<String, Object> data) {
-		return this;
 	}
 
 	/**
@@ -72,9 +32,12 @@ public class WebsitePreview extends Model {
 		return find.all();
 	}
 
-	public static Option<WebsitePreview> findById(String creativeid, Admin admin) {
-		final Long id = creativeid != null ? Long.valueOf(creativeid) : 0L;
-		return findById(id, admin);
+	public static List<WebsitePreview> findByAdmin(Admin admin) {
+		if (admin.isSysAdmin()) {
+			return find.findList();
+		}
+		return find.where().eq("website.publisher.owners.id", admin.getId())
+				.findList();
 	}
 
 	public static Option<WebsitePreview> findById(Long id, Admin admin) {
@@ -91,8 +54,85 @@ public class WebsitePreview extends Model {
 		return Option.empty();
 	}
 
+	public static Option<WebsitePreview> findById(String creativeid, Admin admin) {
+		final Long id = creativeid != null ? Long.valueOf(creativeid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static WebsitePreview fromMap(Map<String, Object> data) {
+		final WebsitePreview creative = new WebsitePreview();
+		creative.updateFromMap(data);
+		return creative;
+	}
+
+	@Id
+	private Long id;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+
+	/*
+	 * allowed values: image/png, image/gif
+	 */
+	private String variant;
+
+	private byte[] data;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Website website;
+
+	public static Finder<Long, WebsitePreview> find = new Finder<Long, WebsitePreview>(
+			Long.class, WebsitePreview.class);
+
+	public WebsitePreview() {
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public Website getWebsite() {
+		return website;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public void setWebsite(Website website) {
+		this.website = website;
+	}
+
 	@Override
 	public String toString() {
 		return "WebsitePreview()";
+	}
+
+	public WebsitePreview updateFromMap(Map<String, Object> data) {
+		return this;
 	}
 }
