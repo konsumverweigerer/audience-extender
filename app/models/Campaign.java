@@ -85,8 +85,8 @@ public class Campaign extends Model {
 		return campaign;
 	}
 
-	public static Finder<String, Campaign> find = new Finder<String, Campaign>(
-			String.class, Campaign.class);
+	public static Finder<Long, Campaign> find = new Finder<Long, Campaign>(
+			Long.class, Campaign.class);
 
 	public static List<Dataset> statsByAdmin(Admin admin) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
@@ -189,7 +189,7 @@ public class Campaign extends Model {
 		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("publisher.owners.id", admin.id).findList();
+		return find.where().eq("publisher.owners.id", admin.getId()).findList();
 	}
 
 	public List<Message> remove() {
@@ -225,7 +225,7 @@ public class Campaign extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("publisher.owners.id", admin.id).eq("id", id)
+			ret = find.where().eq("publisher.owners.id", admin.getId()).eq("id", id)
 					.findList();
 		}
 		if (!ret.isEmpty()) {

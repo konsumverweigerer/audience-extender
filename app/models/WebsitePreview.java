@@ -45,14 +45,14 @@ public class WebsitePreview extends Model {
 		return creative;
 	}
 
-	public static Finder<String, WebsitePreview> find = new Finder<String, WebsitePreview>(
-			String.class, WebsitePreview.class);
+	public static Finder<Long, WebsitePreview> find = new Finder<Long, WebsitePreview>(
+			Long.class, WebsitePreview.class);
 
 	public static List<WebsitePreview> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("website.publisher.owners.id", admin.id)
+		return find.where().eq("website.publisher.owners.id", admin.getId())
 				.findList();
 	}
 
@@ -82,7 +82,7 @@ public class WebsitePreview extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("website.publisher.owners.id", admin.id)
+			ret = find.where().eq("website.publisher.owners.id", admin.getId())
 					.eq("id", id).findList();
 		}
 		if (!ret.isEmpty()) {

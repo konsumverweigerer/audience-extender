@@ -70,14 +70,14 @@ public class Creative extends Model {
 		return creative;
 	}
 
-	public static Finder<String, Creative> find = new Finder<String, Creative>(
-			String.class, Creative.class);
+	public static Finder<Long, Creative> find = new Finder<Long, Creative>(
+			Long.class, Creative.class);
 
 	public static List<Creative> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("campaign.publisher.owners.id", admin.id)
+		return find.where().eq("campaign.publisher.owners.id", admin.getId())
 				.findList();
 	}
 
@@ -147,7 +147,7 @@ public class Creative extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("campaign.publisher.owners.id", admin.id)
+			ret = find.where().eq("campaign.publisher.owners.id", admin.getId())
 					.eq("id", id).findList();
 		}
 		if (!ret.isEmpty()) {

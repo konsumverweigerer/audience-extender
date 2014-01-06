@@ -71,8 +71,8 @@ public class CampaignPackage extends Model {
 		return campaignPackage;
 	}
 
-	public static Finder<String, CampaignPackage> find = new Finder<String, CampaignPackage>(
-			String.class, CampaignPackage.class);
+	public static Finder<Long, CampaignPackage> find = new Finder<Long, CampaignPackage>(
+			Long.class, CampaignPackage.class);
 
 	public static List<CampaignPackage> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {

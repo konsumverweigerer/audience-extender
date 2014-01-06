@@ -84,8 +84,8 @@ public class Audience extends Model {
 		return audience;
 	}
 
-	public static Finder<String, Audience> find = new Finder<String, Audience>(
-			String.class, Audience.class);
+	public static Finder<Long, Audience> find = new Finder<Long, Audience>(
+			Long.class, Audience.class);
 
 	public static List<Dataset> statsByAdmin(Admin admin) {
 		final List<Dataset> stats = new ArrayList<Dataset>();
@@ -219,7 +219,7 @@ public class Audience extends Model {
 		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("publisher.owners.id", admin.id).findList();
+		return find.where().eq("publisher.owners.id", admin.getId()).findList();
 	}
 
 	public static Option<Audience> findById(String audienceid, Admin admin) {
@@ -228,17 +228,25 @@ public class Audience extends Model {
 	}
 
 	public static Option<Audience> findById(Long id, Admin admin) {
-		List<Audience> ret = null;
+		List<Object> ret = null;
 		if (admin.isSysAdmin()) {
-			ret = find.where().eq("id", id).findList();
+			ret = find.where().eq("id", id).findIds();
 		} else {
-			ret = find.where().eq("publisher.owners.id", admin.id).eq("id", id)
-					.findList();
+			ret = find.where().eq("publisher.owners.id", admin.getId()).eq("id", id)
+					.findIds();
 		}
 		if (!ret.isEmpty()) {
-			return new Some<Audience>(ret.get(0));
+			return new Some<Audience>(find.byId((Long) ret.get(0)));
 		}
 		return Option.empty();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override

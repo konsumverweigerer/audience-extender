@@ -5,7 +5,7 @@
 		<ul class="dropdown-menu">
 			<li><a href="@routes.MainController.dashboard">Dashboard</a></li>
 			<li class="divider"></li>
-			<li class="dropdown-header">@{current.email} (@current.name)</li>
+			<li class="dropdown-header">@{current.getEmail()} (@current.getName())</li>
 			<li><a href="@routes.MainController.logout()" class="navbar-link">Logout</a></li>
 		</ul>
 	</li>

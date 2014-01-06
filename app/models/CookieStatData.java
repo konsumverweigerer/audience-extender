@@ -32,8 +32,8 @@ public class CookieStatData extends Model {
 		this.timestep = timestep;
 	}
 
-	public static Finder<String, CookieStatData> find = new Finder<String, CookieStatData>(
-			String.class, CookieStatData.class);
+	public static Finder<Long, CookieStatData> find = new Finder<Long, CookieStatData>(
+			Long.class, CookieStatData.class);
 
 	/**
 	 * Retrieve all cookies.

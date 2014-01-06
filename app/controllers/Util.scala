@@ -151,8 +151,8 @@ trait Formats {
       "url" -> JsString(website.url),
       "email" -> JsString(website.email),
       "uuid" -> JsString(website.uuid),
-      "code" -> JsString(website.code(current)),
-      "codeextended" -> JsString(website.extendedCode(current)),
+      "codesimple" -> JsString(website.code(current)),
+      "code" -> JsString(website.extendedCode(current)),
       "name" -> JsString(website.name)))
   }
 
@@ -307,10 +307,10 @@ trait Formats {
       "active" -> JsString(if (publisher.active) "true" else "false"),
       "admins" -> Json.toJson(publisher.getAdmins().asScala.map { admin =>
         JsObject(Seq(
-          "id" -> JsNumber(BigDecimal(admin.id)),
-          "name" -> JsString(admin.name),
+          "id" -> JsNumber(BigDecimal(admin.getId)),
+          "name" -> JsString(admin.getName),
           "roles" -> Json.toJson(admin.getRoles().asScala),
-          "email" -> JsString(admin.email)))
+          "email" -> JsString(admin.getEmail)))
       }),
       "url" -> JsString(publisher.url)))
   }
@@ -322,11 +322,11 @@ trait Formats {
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(admin: Admin) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(admin.id)),
-      "name" -> JsString(admin.name),
+      "id" -> JsNumber(BigDecimal(admin.getId)),
+      "name" -> JsString(admin.getName),
       "roles" -> Json.toJson(admin.getRoles().asScala),
       "publishers" -> Json.toJson(admin.getPublishers().asScala),
-      "email" -> JsString(admin.email)))
+      "email" -> JsString(admin.getEmail)))
   }
 }
 

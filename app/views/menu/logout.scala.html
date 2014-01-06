@@ -3,7 +3,7 @@
 	<li class="dropdown">
 		<a data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="glyphicon glyphicon-user"></span> My Account <b class="caret"></b></a>
 		<ul class="dropdown-menu">
-			<li class="dropdown-header">@{current.email} (@current.name)</li>
+			<li class="dropdown-header">@{current.getEmail()} (@current.getName())</li>
 			<li class="divider"></li>
 			<li><a href="@routes.AdminController.current">Edit My Account</a></li>
 			@options

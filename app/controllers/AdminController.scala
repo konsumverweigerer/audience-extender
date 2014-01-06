@@ -35,9 +35,9 @@ object AdminController extends Controller with Secured with Formats with Utils {
           streetaddress1, streetaddress2, streetaddress3, state, country, telephone) =>
           new Admin(email, name, null))(
           (admin: Admin) => {
-            val id: Long = admin.id
-            val t = (id, admin.name, admin.email, NullSome(admin.url), NullSome(admin.streetaddress1), NullSome(admin.streetaddress2),
-              NullSome(admin.streetaddress3), NullSome(admin.state), NullSome(admin.country), NullSome(admin.telephone))
+            val id: Long = admin.getId
+            val t = (id, admin.getName, admin.getEmail, NullSome(admin.getUrl), NullSome(admin.getStreetaddress1), NullSome(admin.getStreetaddress2),
+              NullSome(admin.getStreetaddress3), NullSome(admin.getState), NullSome(admin.getCountry), NullSome(admin.getTelephone))
             Some(t)
           }))
 
@@ -262,7 +262,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
       Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
           publisher.owners.remove(admin)
-          if (admin.publisher.equals(publisher)) { admin.publisher = null }
+          if (admin.getPublisher.equals(publisher)) { admin.setPublisher(null) }
           val msgs = (admin.write().asScala)
           msgs.addAll(publisher.write().asScala)
           Ok(Json.toJson(JsObject(Seq(

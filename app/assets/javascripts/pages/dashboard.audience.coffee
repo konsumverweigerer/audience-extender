@@ -89,6 +89,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         $('#editAudience').modal 'hide'
 
       @clearwebsite = ->
+        self.currentwebsite().editing false
         self.currentwebsite(new mod.Website {name:'',id:-1})
 
       @cleardeleteaudience = ->

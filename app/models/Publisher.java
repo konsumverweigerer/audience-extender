@@ -101,7 +101,7 @@ public class Publisher extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("owners.id", admin.id).eq("id", id)
+			ret = find.where().eq("owners.id", admin.getId()).eq("id", id)
 					.findList();
 		}
 		if (!ret.isEmpty()) {
@@ -115,11 +115,11 @@ public class Publisher extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.findList();
 		} else {
-			ret = find.fetch("owners").where().eq("owners.id", admin.id).findList();
+			ret = find.fetch("owners").where().eq("owners.id", admin.getId()).findList();
 		}
 		for (final Publisher publisher : ret) {
-			if (admin.publisher != null
-					&& admin.publisher.id.equals(publisher.id)) {
+			if (admin.getPublisher() != null
+					&& admin.getPublisher().id.equals(publisher.id)) {
 				publisher.active = true;
 			}
 		}

@@ -45,8 +45,8 @@ public class CampaignPackagePreview extends Model {
 		return creative;
 	}
 
-	public static Finder<String, CampaignPackagePreview> find = new Finder<String, CampaignPackagePreview>(
-			String.class, CampaignPackagePreview.class);
+	public static Finder<Long, CampaignPackagePreview> find = new Finder<Long, CampaignPackagePreview>(
+			Long.class, CampaignPackagePreview.class);
 
 	public static Option<CampaignPackagePreview> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {

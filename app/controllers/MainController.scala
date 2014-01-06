@@ -123,7 +123,7 @@ object MainController extends Controller with Secured with Formats with Utils {
           admin.login(request.id.toString)
           Logger.info("logging in: " + user._1)
           Redirect(routes.MainController.dashboard).withSession(
-            Security.username -> admin.id.toString(),
+            Security.username -> admin.getId.toString(),
             LOGINDATE -> loginDf.print({ new java.util.Date }.getTime))
         }.getOrElse {
           BadRequest(html.login(loginForm.fillAndValidate(user).withError("", "Invalid email or password")))

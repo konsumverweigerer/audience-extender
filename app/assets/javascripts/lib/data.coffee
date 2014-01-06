@@ -11,6 +11,7 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
         r = routes.controllers.AudienceController.websiteList id
         r.ajax {
           success: (d) ->
+            models.websites []
             models.websites.push new mod.Website x for x in tojson d
             v.refresh models.websites() for v in models.audiences()
             models.audiencetablesearchbar?.search()
@@ -25,6 +26,7 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
         r = routes.controllers.AudienceController.audienceList id
         r.ajax {
           success: (d) ->
+            models.audiences []
             models.audiences.push new mod.Audience x for x in tojson d
             if models.websites?
               v.refresh models.websites() for v in models.audiences()
@@ -40,6 +42,7 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
         r = routes.controllers.CampaignController.packageList id
         r.ajax {
           success: (d) ->
+            models.packages []
             models.packages.push new mod.Package x for x in tojson d
         }
     models.publisher.subscribe = (nv) -> packages nv
@@ -52,6 +55,7 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
         r = routes.controllers.CampaignController.campaignList id
         r.ajax {
           success: (d) ->
+            models.campaigns []
             models.campaigns.push new mod.Campaign x for x in tojson d
             models.campaigntablesearchbar?.search()
         }

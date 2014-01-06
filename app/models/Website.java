@@ -57,8 +57,8 @@ public class Website extends Model {
 		return website;
 	}
 
-	public static Finder<String, Website> find = new Finder<String, Website>(
-			String.class, Website.class);
+	public static Finder<Long, Website> find = new Finder<Long, Website>(
+			Long.class, Website.class);
 
 	/**
 	 * Retrieve all website.
@@ -71,7 +71,7 @@ public class Website extends Model {
 		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("publisher.owners.id", admin.id).findList();
+		return find.where().eq("publisher.owners.id", admin.getId()).findList();
 	}
 
 	public List<Message> remove() {
@@ -95,6 +95,8 @@ public class Website extends Model {
 	public String extendedCode(Application app) {
 		final Option<String> domain = Play.configuration(app).getString(
 				"cookiedomain", Option.<Set<String>> empty());
+		final String url = controllers.routes.ContentController.cookie(
+				this.uuid, "sub").url();
 		return String
 				.format("<script type=\"text/javascript\">\n"
 						+ "(function(){\n"
@@ -103,22 +105,19 @@ public class Website extends Model {
 						+ "var dom='%s'\n;"
 						+ "var loc=encodeURIComponent(document.location);\n"
 						+ "document.write('<script src=\"'+prot+'//'+dom+path+'?l='+loc+'\"></scripts>');\n"
-						+ "})()\n</script>\n",
-						controllers.routes.ContentController.cookie(this.uuid,
-								"<sub>").url(),
-						domain.nonEmpty() ? domain.get()
-								: "cookiedomain.com");
+						+ "})()\n</script>\n", url,
+						domain.nonEmpty() ? domain.get() : "cookiedomain.com");
 	}
 
 	public String code(Application app) {
 		final Option<String> domain = Play.configuration(app).getString(
 				"cookiedomain", Option.<Set<String>> empty());
+		final String url = controllers.routes.ContentController.cookie(
+				this.uuid, "sub").url();
 		return String.format(
 				"<script type=\"text/javascript\" src=\"//%s%s\">\n"
 						+ "</script>\n", domain.nonEmpty() ? domain.get()
-						: "cookiedomain.com",
-				controllers.routes.ContentController.cookie(this.uuid, "<sub>")
-						.url());
+						: "cookiedomain.com", url);
 	}
 
 	public static Option<Website> findByUUID(String uuid) {
@@ -141,8 +140,8 @@ public class Website extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("publisher.owners.id", admin.id).eq("id", id)
-					.findList();
+			ret = find.where().eq("publisher.owners.id", admin.getId())
+					.eq("id", id).findList();
 		}
 		if (!ret.isEmpty()) {
 			return new Some<Website>(ret.get(0));

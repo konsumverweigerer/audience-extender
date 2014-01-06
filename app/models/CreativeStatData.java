@@ -36,8 +36,8 @@ public class CreativeStatData extends Model {
 		this.timestep = timestep;
 	}
 
-	public static Finder<String, CreativeStatData> find = new Finder<String, CreativeStatData>(
-			String.class, CreativeStatData.class);
+	public static Finder<Long, CreativeStatData> find = new Finder<Long, CreativeStatData>(
+			Long.class, CreativeStatData.class);
 
 	/**
 	 * Retrieve all cookies.

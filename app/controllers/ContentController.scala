@@ -27,17 +27,17 @@ object ContentController extends Controller with Utils {
   val domainRegex = Pattern.compile("^(http:|https:)?//[A-Za-z0-9.:@_-]")
 
   def checkPaths(reqPath: String, paths: Seq[PathTarget]): HashSet[Long] = {
-    val inc: Seq[Long] = ArrayBuffer()
-    val exc: Seq[Long] = ArrayBuffer()
-    val audiences: HashSet[Long] = HashSet[Long]()
+    val inc = ArrayBuffer[Long]()
+    val exc = ArrayBuffer[Long]()
+    val audiences = HashSet[Long]()
     paths.filter(p => "*".equals(p.urlPath)).foreach { p =>
       if ("include".equals(p.variant)) {
-        inc.add(p.audience.id)
+        inc += p.audience.id
       } else if ("exclude".equals(p.variant)) {
-        exc.add(p.audience.id)
+        exc += p.audience.id
       }
     }
-    audiences.addAll(inc);
+    audiences ++= inc;
     paths.filter(p => !"*".equals(p.urlPath)).foreach { p =>
       val id = p.audience.id
       val pat = Pattern.compile(p.urlPath)
@@ -45,11 +45,11 @@ object ContentController extends Controller with Utils {
         Logger.debug("pattern " + p.urlPath + " not matching " + reqPath)
       } else if ("include".equals(p.variant)) {
         if (exc.contains(id)) {
-          audiences.add(id)
+          audiences += id
         }
       } else if ("exclude".equals(p.variant)) {
         if (inc.contains(id)) {
-          audiences.remove(id)
+          audiences += id
         }
       }
     }
@@ -93,7 +93,7 @@ object ContentController extends Controller with Utils {
       checkPaths(extractPath(request.headers, request.queryString), website.pathTargets.asScala).map { audienceid =>
         models.Cookie.findByWebsite(website.id, audienceid).asScala.foreach { cookie =>
           if ("A".equals(cookie.state) && "code".equals(cookie.variant)) {
-            cookies.add(cookie.content)
+            cookies += cookie.content
             countCookie(cookie, sub)
           }
         }
@@ -101,8 +101,10 @@ object ContentController extends Controller with Utils {
         website.pathTargets.map { target =>
           if (audienceid.equals(target.audience.id)) {
             if (!tracking.contains(target.audience.id)) {
-              cookies.add(target.audience.tracking)
-              tracking.add(target.audience.id)
+              if (target.audience.tracking != null) {
+                cookies += target.audience.tracking
+              }
+              tracking += target.audience.id
             }
           }
         }
@@ -111,7 +113,7 @@ object ContentController extends Controller with Utils {
     }.getOrElse {
       models.Cookie.findByUUID(uuid).map { cookie =>
         var cookies = ArrayBuffer[String]()
-        cookies.add(cookie.content)
+        cookies += cookie.content
         countCookie(cookie, sub)
         sendCookie(cookies)
       }.getOrElse(NotFound.as("text/javascript"))

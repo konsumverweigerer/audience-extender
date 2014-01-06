@@ -42,8 +42,8 @@ public class PathTarget extends Model {
 		return pathTarget;
 	}
 
-	public static Finder<String, PathTarget> find = new Finder<String, PathTarget>(
-			String.class, PathTarget.class);
+	public static Finder<Long, PathTarget> find = new Finder<Long, PathTarget>(
+			Long.class, PathTarget.class);
 
 	public PathTarget updateFromMap(Map<String, Object> data) {
 		return this;

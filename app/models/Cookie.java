@@ -61,6 +61,8 @@ public class Cookie extends Model {
 		final Cookie cookie = new Cookie(name);
 		cookie.variant = variant;
 		cookie.pathhash = calculateHash(paths);
+		cookie.website = website;
+		cookie.audience = audience;
 		return cookie;
 	}
 
@@ -99,8 +101,8 @@ public class Cookie extends Model {
 		return website;
 	}
 
-	public static Finder<String, Cookie> find = new Finder<String, Cookie>(
-			String.class, Cookie.class);
+	public static Finder<Long, Cookie> find = new Finder<Long, Cookie>(
+			Long.class, Cookie.class);
 
 	public List<Message> write() {
 		if (this.uuid == null || this.uuid.isEmpty()) {
@@ -127,7 +129,7 @@ public class Cookie extends Model {
 			return find.fetch("audience").fetch("website").findList();
 		}
 		return find.fetch("audience").fetch("website").where()
-				.eq("audience.publisher.owners.id", admin.id).findList();
+				.eq("audience.publisher.owners.id", admin.getId()).findList();
 	}
 
 	public static List<Cookie> findByWebsite(Long websiteid, Long audienceid) {
@@ -156,7 +158,7 @@ public class Cookie extends Model {
 					.findList();
 		} else {
 			ret = find.fetch("audience").fetch("website").where()
-					.eq("audience.publisher.owners.id", admin.id).eq("id", id)
+					.eq("audience.publisher.owners.id", admin.getId()).eq("id", id)
 					.findList();
 		}
 		if (!ret.isEmpty()) {
