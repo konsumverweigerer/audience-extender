@@ -23,96 +23,13 @@ import services.UuidHelper;
 public class Cookie extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Required
-	public String name;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
-
-	/*
-	 * allowed values: pending, active, cancelled
-	 */
-	public String state;
-	/*
-	 * allowed values: code, url
-	 */
-	public String variant;
-
-	public String uuid;
-	public Integer pathhash;
-	public String content;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Audience audience;
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Website website;
-
-	public Cookie(String name) {
-		this.name = name;
-		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");
-		this.created = new Date();
-	}
-
-	public static Cookie instance(String name, String variant, Audience audience,
-			Website website, Collection<PathTarget> paths) {
-		final Cookie cookie = new Cookie(name);
-		cookie.variant = variant;
-		cookie.pathhash = calculateHash(paths);
-		return cookie;
-	}
-
-	public static Cookie instance(Cookie cookie, String name, String variant,
-			Audience audience, Website website, Collection<PathTarget> paths) {
-		if (cookie.audience.id.equals(audience.id)
-				&& cookie.website.id.equals(website.id)
-				&& cookie.pathhash == calculateHash(paths)) {
-			return cookie;
-		}
-		return instance(name, variant, audience, website, paths);
-	}
-
-	public boolean checkCookie(Audience audience,
-			Website website, Collection<PathTarget> paths) {
-		if (this.audience.id.equals(audience.id)
-				&& this.website.id.equals(website.id)
-				&& this.pathhash == calculateHash(paths)) {
-			return true;
-		}
-		return false;
-	}
-
 	public static int calculateHash(Collection<PathTarget> paths) {
 		int h = 0;
 		for (final PathTarget path : paths) {
-			h = h ^ path.variant.hashCode();
-			h = h ^ path.urlPath.hashCode();
+			h = h ^ path.getVariant().hashCode();
+			h = h ^ path.getUrlPath().hashCode();
 		}
 		return h;
-	}
-
-	public static Cookie fromMap(Map<String, Object> data) {
-		final Cookie website = new Cookie("New Cookie");
-		website.updateFromMap(data);
-		return website;
-	}
-
-	public static Finder<String, Cookie> find = new Finder<String, Cookie>(
-			String.class, Cookie.class);
-
-	public List<Message> write() {
-		if (this.uuid == null || this.uuid.isEmpty()) {
-			this.uuid = UuidHelper
-					.randomUUIDString("com.audienceextender.cookie");
-		}
-		save();
-		return Collections.emptyList();
-	}
-
-	public Cookie updateFromMap(Map<String, Object> data) {
-		return this;
 	}
 
 	/**
@@ -127,17 +44,19 @@ public class Cookie extends Model {
 			return find.fetch("audience").fetch("website").findList();
 		}
 		return find.fetch("audience").fetch("website").where()
-				.eq("audience.publisher.owners.id", admin.id).findList();
+				.eq("audience.publisher.owners.id", admin.getId()).findList();
 	}
 
-	public static List<Cookie> findByWebsite(Long websiteid, Long audienceid) {
-		final List<Cookie> ret = find.where().eq("website.id", websiteid)
-				.eq("audience.id", audienceid).findList();
-		return ret;
-	}
-
-	public static Option<Cookie> findByUUID(String uuid) {
-		final List<Cookie> ret = find.where().eq("uuid", uuid).findList();
+	public static Option<Cookie> findById(Long id, Admin admin) {
+		List<Cookie> ret = null;
+		if (admin.isSysAdmin()) {
+			ret = find.fetch("audience").fetch("website").where().eq("id", id)
+					.findList();
+		} else {
+			ret = find.fetch("audience").fetch("website").where()
+					.eq("audience.publisher.owners.id", admin.getId())
+					.eq("id", id).findList();
+		}
 		if (!ret.isEmpty()) {
 			return new Some<Cookie>(ret.get(0));
 		}
@@ -149,36 +68,194 @@ public class Cookie extends Model {
 		return findById(id, admin);
 	}
 
-	public static Option<Cookie> findById(Long id, Admin admin) {
-		List<Cookie> ret = null;
-		if (admin.isSysAdmin()) {
-			ret = find.fetch("audience").fetch("website").where().eq("id", id)
-					.findList();
-		} else {
-			ret = find.fetch("audience").fetch("website").where()
-					.eq("audience.publisher.owners.id", admin.id).eq("id", id)
-					.findList();
-		}
+	public static List<Cookie> findByUuid(String uuid) {
+		return find.where().eq("uuid", uuid).findList();
+	}
+
+	public static Option<Cookie> findByUUID(String uuid) {
+		final List<Cookie> ret = find.where().eq("uuid", uuid).findList();
 		if (!ret.isEmpty()) {
 			return new Some<Cookie>(ret.get(0));
 		}
 		return Option.empty();
 	}
 
-	public static List<Cookie> findByUuid(String uuid) {
-		return find.where().eq("uuid", uuid).findList();
+	public static List<Cookie> findByWebsite(Long websiteid, Long audienceid) {
+		final List<Cookie> ret = find.where().eq("website.id", websiteid)
+				.eq("audience.id", audienceid).findList();
+		return ret;
+	}
+
+	public static Cookie fromMap(Map<String, Object> data) {
+		final Cookie website = new Cookie("New Cookie");
+		website.updateFromMap(data);
+		return website;
+	}
+
+	public static Cookie instance(Cookie cookie, String name, String variant,
+			Audience audience, Website website, Collection<PathTarget> paths) {
+		if (cookie.getAudience().getId().equals(audience.getId())
+				&& cookie.getWebsite().getId().equals(website.getId())
+				&& cookie.getPathhash() == calculateHash(paths)) {
+			return cookie;
+		}
+		return instance(name, variant, audience, website, paths);
+	}
+
+	public static Cookie instance(String name, String variant,
+			Audience audience, Website website, Collection<PathTarget> paths) {
+		final Cookie cookie = new Cookie(name);
+		cookie.setVariant(variant);
+		cookie.setPathhash(calculateHash(paths));
+		cookie.setWebsite(website);
+		cookie.setAudience(audience);
+		return cookie;
+	}
+
+	@Id
+	private Long id;
+
+	@Required
+	private String name;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+
+	/*
+	 * allowed values: pending, active, cancelled
+	 */
+	private String state;
+
+	/*
+	 * allowed values: code, url
+	 */
+	private String variant;
+
+	private String uuid;
+
+	private Integer pathhash;
+
+	private String content;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Audience audience;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Website website;
+
+	public static Finder<Long, Cookie> find = new Finder<Long, Cookie>(
+			Long.class, Cookie.class);
+
+	public Cookie(String name) {
+		this.name = name;
+		this.uuid = UuidHelper.randomUUIDString("com.audienceextender.cookie");
+		this.created = new Date();
+	}
+
+	public boolean checkCookie(Audience audience, Website website,
+			Collection<PathTarget> paths) {
+		if (this.getAudience().getId().equals(audience.getId())
+				&& getWebsite().getId().equals(website.getId())
+				&& getPathhash() == calculateHash(paths)) {
+			return true;
+		}
+		return false;
 	}
 
 	public Audience getAudience() {
-		return audience;
+		return this.audience;
+	}
+
+	public String getContent() {
+		return this.content;
+	}
+
+	public Date getCreated() {
+		return this.created;
+	}
+
+	public Long getId() {
+		return this.id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public Integer getPathhash() {
+		return this.pathhash;
+	}
+
+	public String getState() {
+		return this.state;
+	}
+
+	public String getUuid() {
+		return this.uuid;
+	}
+
+	public String getVariant() {
+		return this.variant;
 	}
 
 	public Website getWebsite() {
-		return website;
+		return this.website;
+	}
+
+	public void setAudience(Audience audience) {
+		this.audience = audience;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPathhash(Integer pathhash) {
+		this.pathhash = pathhash;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public void setWebsite(Website website) {
+		this.website = website;
 	}
 
 	@Override
 	public String toString() {
-		return "Cookie(" + name + ")";
+		return "Cookie(" + this.name + ")";
+	}
+
+	public Cookie updateFromMap(Map<String, Object> data) {
+		return this;
+	}
+
+	public List<Message> write() {
+		if (getUuid() == null || getUuid().isEmpty()) {
+			setUuid(UuidHelper.randomUUIDString("com.audienceextender.cookie"));
+		}
+		save();
+		return Collections.emptyList();
 	}
 }

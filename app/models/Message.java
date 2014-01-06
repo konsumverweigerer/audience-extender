@@ -8,9 +8,9 @@ import java.util.Set;
 
 public class Message extends AbstractMap<String, Object> implements
 		Map<String, Object> {
-	public String title;
-	public String content;
-	public String priority = "info";
+	private String title;
+	private String content;
+	private String priority = "info";
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {

@@ -120,9 +120,9 @@ trait Formats {
       (json \ "priority").as[String]))
 
     def writes(message: Message) = JsObject(Seq(
-      "title" -> JsString(message.title),
-      "content" -> JsString(message.content),
-      "priority" -> JsString(message.priority)))
+      "title" -> JsString(message.getTitle),
+      "content" -> JsString(message.getContent),
+      "priority" -> JsString(message.getPriority)))
   }
 
   implicit object PathTargetFormat extends Format[PathTarget] {
@@ -133,10 +133,11 @@ trait Formats {
       "urlPath" -> (json \ "url").as[String]).asJava))
 
     def writes(pathTarget: PathTarget) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(pathTarget.id)),
-      "website" -> JsNumber(BigDecimal(pathTarget.website.id)),
-      "path" -> JsString(pathTarget.urlPath),
-      "variant" -> JsString(pathTarget.variant)))
+      "id" -> JsNumber(BigDecimal(pathTarget.getId)),
+      "website" -> JsNumber(BigDecimal(pathTarget.getWebsite.getId)),
+      "path" -> JsString(pathTarget.getUrlPath),
+      "active" -> JsString(if ("include".equals(pathTarget.getVariant)) "on" else "off"),
+      "variant" -> JsString(pathTarget.getVariant)))
   }
 
   implicit object WebsiteFormat extends Format[Website] {
@@ -147,13 +148,13 @@ trait Formats {
       "email" -> (json \ "email").as[String]).asJava))
 
     def writes(website: Website) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(website.id)),
-      "url" -> JsString(website.url),
-      "email" -> JsString(website.email),
-      "uuid" -> JsString(website.uuid),
-      "code" -> JsString(website.code(current)),
-      "codeextended" -> JsString(website.extendedCode(current)),
-      "name" -> JsString(website.name)))
+      "id" -> JsNumber(BigDecimal(website.getId)),
+      "url" -> JsString(website.getUrl),
+      "email" -> JsString(website.getEmail),
+      "uuid" -> JsString(website.getUuid),
+      "codesimple" -> JsString(website.code(current)),
+      "code" -> JsString(website.extendedCode(current)),
+      "name" -> JsString(website.getName)))
   }
 
   implicit object AudienceFormat extends Format[Audience] {
@@ -165,15 +166,15 @@ trait Formats {
       "state" -> (json \ "state").as[String]).asJava))
 
     def writes(audience: Audience) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(audience.id)),
-      "name" -> JsString(audience.name),
-      "tracking" -> JsString(audience.tracking),
-      "paths" -> Json.toJson(audience.pathTargets.asScala.filter(p => (!"*".equals(p.urlPath)))),
-      "allpaths" -> JsObject(audience.pathTargets.asScala.filter(p => "*".equals(p.urlPath)).map { p =>
-        p.website.id.toString -> JsString(if ("include".equals(p.variant)) "on" else "off")
+      "id" -> JsNumber(BigDecimal(audience.getId)),
+      "name" -> JsString(audience.getName),
+      "tracking" -> JsString(audience.getTracking),
+      "paths" -> Json.toJson(audience.getPathTargets.asScala.filter(p => (!"*".equals(p.getUrlPath)))),
+      "allpaths" -> JsObject(audience.getPathTargets.asScala.filter(p => "*".equals(p.getUrlPath)).map { p =>
+        p.getWebsite.getId.toString -> JsString(if ("include".equals(p.getVariant)) "on" else "off")
       }),
-      "websites" -> Json.toJson(audience.websites.asScala),
-      "state" -> JsString(audience.state)))
+      "websites" -> Json.toJson(audience.getWebsites.asScala),
+      "state" -> JsString(audience.getState)))
   }
 
   implicit object CampaignPackageFormat extends Format[CampaignPackage] {
@@ -190,16 +191,16 @@ trait Formats {
       "salesCpm" -> (json \ "salesCpm").as[String]).asJava))
 
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(campaignPackage.id)),
-      "name" -> JsString(campaignPackage.name),
-      "variant" -> JsString(campaignPackage.variant),
-      "startDate" -> (if (campaignPackage.startDate != null) Json.toJson(campaignPackage.startDate) else JsString("")),
-      "endDate" -> (if (campaignPackage.endDate != null) Json.toJson(campaignPackage.endDate) else JsString("")),
-      "count" -> (if (campaignPackage.impressions != null) JsNumber(BigDecimal(campaignPackage.impressions)) else JsNumber(0)),
-      "reach" -> (if (campaignPackage.reach != null) JsNumber(BigDecimal(campaignPackage.reach)) else JsNumber(0)),
-      "goal" -> (if (campaignPackage.goal != null) JsNumber(BigDecimal(campaignPackage.goal)) else JsNumber(0)),
-      "buyCpm" -> (if (campaignPackage.buyCpm != null) JsNumber(BigDecimal(campaignPackage.buyCpm)) else JsNumber(0)),
-      "salesCpm" -> (if (campaignPackage.salesCpm != null) JsNumber(BigDecimal(campaignPackage.salesCpm)) else JsNumber(0))))
+      "id" -> JsNumber(BigDecimal(campaignPackage.getId)),
+      "name" -> JsString(campaignPackage.getName),
+      "variant" -> JsString(campaignPackage.getVariant),
+      "startDate" -> (if (campaignPackage.getStartDate != null) Json.toJson(campaignPackage.getStartDate) else JsString("")),
+      "endDate" -> (if (campaignPackage.getEndDate != null) Json.toJson(campaignPackage.getEndDate) else JsString("")),
+      "count" -> (if (campaignPackage.getImpressions != null) JsNumber(BigDecimal(campaignPackage.getImpressions)) else JsNumber(0)),
+      "reach" -> (if (campaignPackage.getReach != null) JsNumber(BigDecimal(campaignPackage.getReach)) else JsNumber(0)),
+      "goal" -> (if (campaignPackage.getGoal != null) JsNumber(BigDecimal(campaignPackage.getGoal)) else JsNumber(0)),
+      "buyCpm" -> (if (campaignPackage.getBuyCpm != null) JsNumber(BigDecimal(campaignPackage.getBuyCpm)) else JsNumber(0)),
+      "salesCpm" -> (if (campaignPackage.getSalesCpm != null) JsNumber(BigDecimal(campaignPackage.getSalesCpm)) else JsNumber(0))))
   }
 
   implicit object CookieFormat extends Format[models.Cookie] {
@@ -208,14 +209,14 @@ trait Formats {
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(cookie: models.Cookie) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(cookie.id)),
-      "name" -> JsString(cookie.name),
-      "content" -> JsString(cookie.content),
-      "state" -> JsString(cookie.state),
-      "uuid" -> JsString(cookie.uuid),
-      "variant" -> JsString(cookie.variant),
-      "audience" -> Json.toJson(cookie.getAudience()),
-      "website" -> Json.toJson(cookie.getWebsite())))
+      "id" -> JsNumber(BigDecimal(cookie.getId)),
+      "name" -> JsString(cookie.getName),
+      "content" -> JsString(cookie.getContent),
+      "state" -> JsString(cookie.getState),
+      "uuid" -> JsString(cookie.getUuid),
+      "variant" -> JsString(cookie.getVariant),
+      "audience" -> Json.toJson(cookie.getAudience),
+      "website" -> Json.toJson(cookie.getWebsite)))
   }
 
   implicit object CreativeFormat extends Format[Creative] {
@@ -225,13 +226,13 @@ trait Formats {
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(creative: Creative) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(creative.id)),
-      "name" -> JsString(creative.name),
-      "previewUrl" -> JsString(creative.getPreview()),
-      "state" -> JsString(creative.state),
-      "variant" -> JsString(creative.variant),
-      "uuid" -> JsString(creative.uuid),
-      "url" -> JsString(creative.getCreativeUrl())))
+      "id" -> JsNumber(BigDecimal(creative.getId)),
+      "name" -> JsString(creative.getName),
+      "previewUrl" -> JsString(creative.getPreview),
+      "state" -> JsString(creative.getState),
+      "variant" -> JsString(creative.getVariant),
+      "uuid" -> JsString(creative.getUuid),
+      "url" -> JsString(creative.getCreativeUrl)))
   }
 
   implicit object CampaignFormat extends Format[Campaign] {
@@ -247,18 +248,18 @@ trait Formats {
       "value" -> (json \ "value").as[String]).asJava))
 
     def writes(campaign: Campaign) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(campaign.id)),
-      "name" -> JsString(campaign.name),
-      "value" -> JsNumber(BigDecimal(campaign.value)),
-      "startDate" -> (if (campaign.startDate != null) Json.toJson(campaign.startDate) else JsString("")),
-      "endDate" -> (if (campaign.endDate != null) Json.toJson(campaign.endDate) else JsString("")),
-      "package" -> Json.toJson(campaign.campaignPackage),
-      "audiences" -> Json.toJson(campaign.audiences.asScala),
-      "creatives" -> Json.toJson(campaign.creatives.asScala.filter(c => !"R".equals(c.state))),
+      "id" -> JsNumber(BigDecimal(campaign.getId)),
+      "name" -> JsString(campaign.getName),
+      "value" -> JsNumber(BigDecimal(campaign.getValue)),
+      "startDate" -> (if (campaign.getStartDate != null) Json.toJson(campaign.getStartDate) else JsString("")),
+      "endDate" -> (if (campaign.getEndDate != null) Json.toJson(campaign.getEndDate) else JsString("")),
+      "package" -> Json.toJson(campaign.getCampaignPackage),
+      "audiences" -> Json.toJson(campaign.getAudiences.asScala),
+      "creatives" -> Json.toJson(campaign.getCreatives.asScala.filter(c => !"R".equals(c.getState))),
       "revenue" -> JsNumber(0),
       "cost" -> JsNumber(0),
-      "variant" -> JsString(campaign.variant),
-      "state" -> JsString(campaign.state)))
+      "variant" -> JsString(campaign.getVariant),
+      "state" -> JsString(campaign.getState)))
   }
 
   implicit object StringMapFormat extends Format[java.util.Map[String, String]] {
@@ -302,17 +303,17 @@ trait Formats {
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(publisher: Publisher) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(publisher.id)),
-      "name" -> JsString(publisher.name),
-      "active" -> JsString(if (publisher.active) "true" else "false"),
+      "id" -> JsNumber(BigDecimal(publisher.getId)),
+      "name" -> JsString(publisher.getName),
+      "active" -> JsString(if (publisher.isActive) "true" else "false"),
       "admins" -> Json.toJson(publisher.getAdmins().asScala.map { admin =>
         JsObject(Seq(
-          "id" -> JsNumber(BigDecimal(admin.id)),
-          "name" -> JsString(admin.name),
+          "id" -> JsNumber(BigDecimal(admin.getId)),
+          "name" -> JsString(admin.getName),
           "roles" -> Json.toJson(admin.getRoles().asScala),
-          "email" -> JsString(admin.email)))
+          "email" -> JsString(admin.getEmail)))
       }),
-      "url" -> JsString(publisher.url)))
+      "url" -> JsString(publisher.getUrl)))
   }
 
   implicit object AdminFormat extends Format[Admin] {
@@ -322,11 +323,11 @@ trait Formats {
       "id" -> (json \ "id").as[String]).asJava))
 
     def writes(admin: Admin) = JsObject(Seq(
-      "id" -> JsNumber(BigDecimal(admin.id)),
-      "name" -> JsString(admin.name),
+      "id" -> JsNumber(BigDecimal(admin.getId)),
+      "name" -> JsString(admin.getName),
       "roles" -> Json.toJson(admin.getRoles().asScala),
       "publishers" -> Json.toJson(admin.getPublishers().asScala),
-      "email" -> JsString(admin.email)))
+      "email" -> JsString(admin.getEmail)))
   }
 }
 

@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import play.Logger;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
@@ -30,27 +31,27 @@ public class Creative extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
-	public Long id;
+	private Long id;
 
 	@Required
-	public String name;
+	private String name;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	private Date created;
 
 	/*
 	 * allowed values: pending, active, removed
 	 */
-	public String state;
+	private String state;
 	/*
 	 * allowed values: image/png, image/gif, video/flv, external
 	 */
-	public String variant;
+	private String variant;
 
-	public String uuid;
-	public String url;
+	private String uuid;
+	private String url;
 
-	public byte[] data;
+	private byte[] data;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Campaign campaign;
@@ -70,14 +71,14 @@ public class Creative extends Model {
 		return creative;
 	}
 
-	public static Finder<String, Creative> find = new Finder<String, Creative>(
-			String.class, Creative.class);
+	public static Finder<Long, Creative> find = new Finder<Long, Creative>(
+			Long.class, Creative.class);
 
 	public static List<Creative> findByAdmin(Admin admin) {
 		if (admin.isSysAdmin()) {
 			return find.findList();
 		}
-		return find.where().eq("campaign.publisher.owners.id", admin.id)
+		return find.where().eq("campaign.publisher.owners.id", admin.getId())
 				.findList();
 	}
 
@@ -86,8 +87,8 @@ public class Creative extends Model {
 		if (publisher != null && file != null) {
 			final Creative creative = new Creative(filename,
 					Option.<String> empty());
-			creative.variant = contentType;
-			creative.state = "P";
+			creative.setVariant(contentType);
+			creative.setState("P");
 			final ByteArrayOutputStream os = new ByteArrayOutputStream();
 			final Path path = file.toPath();
 			try {
@@ -97,11 +98,11 @@ public class Creative extends Model {
 					buf.rewind();
 					os.write(buf.array());
 				}
-				creative.data = os.toByteArray();
+				creative.setData(os.toByteArray());
 				creative.save();
 				return new Some<Creative>(creative);
 			} catch (IOException x) {
-				System.out.println("caught exception: " + x);
+				Logger.info("caught exception: " + x);
 			} finally {
 				file.delete();
 			}
@@ -129,6 +130,78 @@ public class Creative extends Model {
 		return find.all();
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public Campaign getCampaign() {
+		return campaign;
+	}
+
+	public void setCampaign(Campaign campaign) {
+		this.campaign = campaign;
+	}
+
 	public static Option<Creative> findByUUID(String uuid) {
 		final List<Creative> ret = find.where().eq("uuid", uuid).findList();
 		if (!ret.isEmpty()) {
@@ -147,7 +220,8 @@ public class Creative extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
-			ret = find.where().eq("campaign.publisher.owners.id", admin.id)
+			ret = find.where()
+					.eq("campaign.publisher.owners.id", admin.getId())
 					.eq("id", id).findList();
 		}
 		if (!ret.isEmpty()) {
@@ -158,7 +232,7 @@ public class Creative extends Model {
 
 	public String getPreview() {
 		if ("external".equals(this.variant)) {
-			return this.url != null ? this.url : "";
+			return getUrl() != null ? getUrl() : "";
 		}
 		return controllers.routes.ContentController.creativeContent(this.uuid,
 				"preview").url();

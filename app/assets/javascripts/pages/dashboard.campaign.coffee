@@ -81,6 +81,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @campaignstep.currentValue.subscribe (nv) ->
         if nv>=3
           self.currentcampaign()?.refreshdata()
+          if !self.currentcampaign().startDate()?
+            self.currentcampaign().startDate(new Date())
+          if !self.currentcampaign().endDate()?
+            self.currentcampaign().endDate(new Date())
       
       @currentpackage = ko.observable(new mod.Package {name:''})
 
@@ -161,6 +165,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.packageposition.maxValue self.packages().length
         self.packageposition.currentValue ''
         self.checkmaxstep()
+        self.currentcampaign().selected true
 
       @clearcampaign = ->
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
@@ -207,6 +212,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.packageposition.maxValue self.packages().length
         self.packageposition.currentValue ''
         self.checkmaxstep()
+        self.currentcampaign().selected true
 
       @selectaudience = (c) ->
         if not c.active()

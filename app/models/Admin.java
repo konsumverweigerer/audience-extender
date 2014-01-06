@@ -31,77 +31,60 @@ public class Admin extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
 	@Id
-	public Long id;
+	private Long id;
 
 	@Required
 	@NonEmpty
 	@Email
-	public String email;
+	private String email;
 
 	@Required
-	public String name;
+	private String name;
 
 	@Required(groups = {})
-	public String password;
+	private String password;
 
-	public String emailConfirmToken;
-	public String passwordChangeToken;
+	private String emailConfirmToken;
+	private String passwordChangeToken;
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date passwordChangeTokenDate;
+	private Date passwordChangeTokenDate;
 
-	public Boolean locked;
-	public Boolean needPasswordChange;
+	private Boolean locked;
+	private Boolean needPasswordChange;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	private Date created;
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date loggedIn;
+	private Date loggedIn;
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date changed;
+	private Date changed;
 
-	public String url;
-	public String streetaddress1;
-	public String streetaddress2;
-	public String streetaddress3;
-	public String state;
-	public String country;
-	public String telephone;
+	private String url;
+	private String streetaddress1;
+	private String streetaddress2;
+	private String streetaddress3;
+	private String state;
+	private String country;
+	private String telephone;
 
 	@Transient
-	public String pwdClear;
+	private String pwdClear;
 	@Transient
-	public String pwdVerify;
+	private String pwdVerify;
 
 	@MaxLength(512)
-	public String adminRoles;
+	private String adminRoles;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	public Publisher publisher;
+	private Publisher publisher;
 
 	@Transient
-	public List<Publisher> publishers = new ArrayList<Publisher>();
+	private List<Publisher> publishers = new ArrayList<Publisher>();
 
-	public Admin() {
-		this.created = new Date();
-	}
+	public static Finder<Long, Admin> find = new Finder<Long, Admin>(
+			Long.class, Admin.class);
 
-	public Admin(String name, String email) {
-		this(email, name, null);
-	}
-
-	public Admin(String email, String name, String password) {
-		this.email = email;
-		this.name = name;
-		this.password = password;
-		this.adminRoles = "";
-		this.created = new Date();
-	}
-
-	public static Admin fromMap(Map<String, Object> data) {
-		final Admin admin = new Admin("New Admin", "");
-		admin.updateFromMap(data);
-		return admin;
-	}
+	private static final String TOKEN_ALPHABET = "ABCDEFGHKLMNPQRSTUWXYZ23456789";
 
 	public static Option<Admin> authenticate(String email, String password) {
 		email = email.toLowerCase();
@@ -113,37 +96,61 @@ public class Admin extends Model {
 		return Option.empty();
 	}
 
-	public static Admin forgotPassword(String email) {
-		email = email.toLowerCase();
-		for (final Admin admin : find.where().eq("email", email).findList()) {
-			// TODO: send password change link
-			return admin;
-		}
-		return null;
-	}
-
 	public static Option<Publisher> changePublisher(String publisherid,
 			Admin admin) {
 		final Long id = publisherid != null ? Long.parseLong(publisherid) : 0L;
 		for (final Publisher publisher : Publisher.findByAdmin(admin)) {
-			if (id.equals(publisher.id)) {
-				admin.publisher = publisher;
+			if (id.equals(publisher.getId())) {
+				admin.setPublisher(publisher);
 				admin.save();
-				publisher.active = true;
+				publisher.setActive(true);
 				return new Some<Publisher>(publisher);
 			}
 		}
 		return Option.empty();
 	}
 
-	public static Finder<Long, Admin> find = new Finder<Long, Admin>(
-			Long.class, Admin.class);
+	public static String createToken() {
+		final int l = TOKEN_ALPHABET.length();
+		final char[] c = TOKEN_ALPHABET.toCharArray();
+		final Random random = new Random();
+		final StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < 40; i++) {
+			sb.append(c[random.nextInt(l)]);
+		}
+		return sb.toString();
+	}
+
+	public static void delete(Long id) {
+		final Admin admin = find.byId(id);
+		admin.delete();
+	}
 
 	/**
 	 * Retrieve all admins.
 	 */
 	public static List<Admin> findAll() {
 		return find.all();
+	}
+
+	public static List<Admin> findByAdmin(Admin admin) {
+		final List<Admin> admins = new ArrayList<Admin>();
+		if (admin != null) {
+			if (admin.isSysAdmin()) {
+				admins.addAll(findAll());
+			} else {
+				admins.add(admin);
+			}
+		}
+		for (final Admin c : admins) {
+			final List<Publisher> p = Publisher.findByAdmin(c);
+			if (p != null) {
+				c.setPublishers(p);
+			} else {
+				c.setPublishers(Collections.<Publisher> emptyList());
+			}
+		}
+		return admins;
 	}
 
 	/**
@@ -156,70 +163,9 @@ public class Admin extends Model {
 		return null;
 	}
 
-	public static Admin updateBasic(Long id, Admin admin) {
-		return updateBasic(find.byId(id), admin);
-	}
-
-	public static Admin updateBasic(Admin current, Admin admin) {
-		if (current != null) {
-			current.name = admin.name;
-			current.email = admin.email;
-			current.save();
-		}
-		return current;
-	}
-
-	public static Admin updatePassword(Long id, Admin admin) {
-		return updatePassword(find.byId(id), admin);
-	}
-
-	public static Admin updatePassword(Admin current, Admin admin) {
-		if (current != null) {
-			if (admin.pwdClear != null && admin.pwdVerify != null
-					&& admin.pwdClear.equals(admin.pwdVerify)) {
-				final String salt = UnixMD5Crypt.generateSalt(4);
-				admin.password = UnixMD5Crypt.crypt(admin.pwdClear, salt);
-			}
-			current.save();
-		}
-		return current;
-	}
-
-	public static boolean hasRole(String adminid, String role) {
-		final Option<Admin> o = findById(adminid);
-		final Admin admin = o.nonEmpty() ? o.get() : null;
-		if (admin != null) {
-			return admin.getRoles().contains(role);
-		}
-		return false;
-	}
-
-	public void login(String session) {
-	}
-
-	public boolean is(String role) {
-		return getRoles().contains(role);
-	}
-
-	public List<Message> remove() {
-		return Collections.emptyList();
-	}
-
-	public List<Message> write() {
-		save();
-		update();
-		return Collections.emptyList();
-	}
-
-	public Admin updateFromMap(Map<String, Object> data) {
-		return this;
-	}
-
-	public static Option<Admin> findById(String id) {
-		if (id != null && !id.isEmpty()) {
-			return findById(Long.parseLong(id));
-		}
-		return Option.empty();
+	public static Option<Admin> findByEmailOption(String email) {
+		final Admin admin = findByEmail(email);
+		return new Some<Admin>(admin);
 	}
 
 	public static Option<Admin> findById(Long id) {
@@ -228,6 +174,13 @@ public class Admin extends Model {
 			if (admin != null) {
 				return new Some<Admin>(admin);
 			}
+		}
+		return Option.empty();
+	}
+
+	public static Option<Admin> findById(String id) {
+		if (id != null && !id.isEmpty()) {
+			return findById(Long.parseLong(id));
 		}
 		return Option.empty();
 	}
@@ -246,93 +199,329 @@ public class Admin extends Model {
 		return Option.empty();
 	}
 
-	private static final String TOKEN_ALPHABET = "ABCDEFGHKLMNPQRSTUWXYZ23456789";
-
-	public static String createToken() {
-		final int l = TOKEN_ALPHABET.length();
-		final char[] c = TOKEN_ALPHABET.toCharArray();
-		final Random random = new Random();
-		final StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 40; i++) {
-			sb.append(c[random.nextInt(l)]);
+	public static Admin forgotPassword(String email) {
+		email = email.toLowerCase();
+		for (final Admin admin : find.where().eq("email", email).findList()) {
+			// TODO: send password change link
+			return admin;
 		}
-		return sb.toString();
+		return null;
+	}
+
+	public static Admin fromMap(Map<String, Object> data) {
+		final Admin admin = new Admin("New Admin", "");
+		admin.updateFromMap(data);
+		return admin;
+	}
+
+	public static boolean hasRole(String adminid, String role) {
+		final Option<Admin> o = findById(adminid);
+		final Admin admin = o.nonEmpty() ? o.get() : null;
+		if (admin != null) {
+			return admin.getRoles().contains(role);
+		}
+		return false;
 	}
 
 	public static Admin newAdmin(Admin admin) {
 		if (admin != null && admin.isSysAdmin()) {
 			final Admin newAdmin = new Admin("email@provider.com", "New Login",
 					"");
-			admin.created = new Date();
-			admin.locked = true;
-			admin.emailConfirmToken = createToken();
+			admin.setCreated(new Date());
+			admin.setLocked(true);
+			admin.setEmailConfirmToken(createToken());
 			admin.save();
 			return newAdmin;
 		}
 		return null;
 	}
 
-	public static List<Admin> findByAdmin(Admin admin) {
-		final List<Admin> admins = new ArrayList<Admin>();
-		if (admin != null) {
-			if (admin.isSysAdmin()) {
-				admins.addAll(findAll());
-			} else {
-				admins.add(admin);
-			}
+	public static Admin updateBasic(Admin current, Admin admin) {
+		if (current != null) {
+			current.setName(admin.name);
+			current.setEmail(admin.email);
+			current.save();
 		}
-		for (final Admin c : admins) {
-			final List<Publisher> p = Publisher.findByAdmin(c);
-			if (p != null) {
-				c.publishers = p;
-			} else {
-				c.publishers = Collections.emptyList();
+		return current;
+	}
+
+	public static Admin updateBasic(Long id, Admin admin) {
+		return updateBasic(find.byId(id), admin);
+	}
+
+	public static Admin updatePassword(Admin current, Admin admin) {
+		if (current != null) {
+			if (admin.getPwdClear() != null && admin.getPwdVerify() != null
+					&& admin.getPwdClear().equals(admin.getPwdVerify())) {
+				final String salt = UnixMD5Crypt.generateSalt(4);
+				admin.setPassword(UnixMD5Crypt.crypt(admin.getPwdClear(), salt));
 			}
+			current.save();
 		}
-		return admins;
+		return current;
 	}
 
-	public static void delete(Long id) {
-		final Admin admin = find.byId(id);
-		admin.delete();
+	public static Admin updatePassword(Long id, Admin admin) {
+		return updatePassword(find.byId(id), admin);
 	}
 
-	public static Option<Admin> findByEmailOption(String email) {
-		final Admin admin = findByEmail(email);
-		return new Some<Admin>(admin);
+	public Admin() {
+		this.created = new Date();
 	}
 
-	public List<Publisher> getPublishers() {
-		return publishers != null ? publishers : new ArrayList<Publisher>();
+	public Admin(String name, String email) {
+		this(email, name, null);
+	}
+
+	public Admin(String email, String name, String password) {
+		this.email = email;
+		this.name = name;
+		this.password = password;
+		this.adminRoles = "";
+		this.created = new Date();
 	}
 
 	public boolean checkPwd(String password) {
-		return UnixMD5Crypt.check(this.password, password);
+		return UnixMD5Crypt.check(getPassword(), password);
 	}
 
-	public boolean isSysAdmin() {
-		return getRoles().contains("sysadmin");
+	public String getAdminRoles() {
+		return this.adminRoles;
 	}
 
-	public void setRoles(List<String> roles) {
-		if (roles != null) {
-			this.adminRoles = StringUtils.join(roles, ",");
-		}
-		this.adminRoles = "";
+	public Date getChanged() {
+		return this.changed;
+	}
+
+	public String getCountry() {
+		return this.country;
+	}
+
+	public Date getCreated() {
+		return this.created;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public String getEmailConfirmToken() {
+		return this.emailConfirmToken;
+	}
+
+	public Long getId() {
+		return this.id;
+	}
+
+	public Boolean getLocked() {
+		return this.locked;
+	}
+
+	public Date getLoggedIn() {
+		return this.loggedIn;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public Boolean getNeedPasswordChange() {
+		return this.needPasswordChange;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public String getPasswordChangeToken() {
+		return this.passwordChangeToken;
+	}
+
+	public Date getPasswordChangeTokenDate() {
+		return this.passwordChangeTokenDate;
+	}
+
+	public Publisher getPublisher() {
+		return this.publisher;
+	}
+
+	public List<Publisher> getPublishers() {
+		return this.publishers != null ? this.publishers
+				: new ArrayList<Publisher>();
+	}
+
+	public String getPwdClear() {
+		return this.pwdClear;
+	}
+
+	public String getPwdVerify() {
+		return this.pwdVerify;
 	}
 
 	public List<String> getRoles() {
 		final List<String> roles = new ArrayList<String>();
-		if (this.adminRoles != null) {
-			for (final String role : this.adminRoles.split("[,]")) {
+		if (getAdminRoles() != null) {
+			for (final String role : getAdminRoles().split("[,]")) {
 				roles.add(role);
 			}
 		}
 		return roles;
 	}
 
+	public String getState() {
+		return this.state;
+	}
+
+	public String getStreetaddress1() {
+		return this.streetaddress1;
+	}
+
+	public String getStreetaddress2() {
+		return this.streetaddress2;
+	}
+
+	public String getStreetaddress3() {
+		return this.streetaddress3;
+	}
+
+	public String getTelephone() {
+		return this.telephone;
+	}
+
+	public String getUrl() {
+		return this.url;
+	}
+
+	public boolean is(String role) {
+		return getRoles().contains(role);
+	}
+
+	public boolean isSysAdmin() {
+		return getRoles().contains("sysadmin");
+	}
+
+	public void login(String session) {
+	}
+
+	public List<Message> remove() {
+		return Collections.emptyList();
+	}
+
+	public void setAdminRoles(String adminRoles) {
+		this.adminRoles = adminRoles;
+	}
+
+	public void setChanged(Date changed) {
+		this.changed = changed;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setEmailConfirmToken(String emailConfirmToken) {
+		this.emailConfirmToken = emailConfirmToken;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setLocked(Boolean locked) {
+		this.locked = locked;
+	}
+
+	public void setLoggedIn(Date loggedIn) {
+		this.loggedIn = loggedIn;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setNeedPasswordChange(Boolean needPasswordChange) {
+		this.needPasswordChange = needPasswordChange;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setPasswordChangeToken(String passwordChangeToken) {
+		this.passwordChangeToken = passwordChangeToken;
+	}
+
+	public void setPasswordChangeTokenDate(Date passwordChangeTokenDate) {
+		this.passwordChangeTokenDate = passwordChangeTokenDate;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public void setPublishers(List<Publisher> publishers) {
+		this.publishers = publishers;
+	}
+
+	public void setPwdClear(String pwdClear) {
+		this.pwdClear = pwdClear;
+	}
+
+	public void setPwdVerify(String pwdVerify) {
+		this.pwdVerify = pwdVerify;
+	}
+
+	public void setRoles(List<String> roles) {
+		if (roles != null) {
+			setAdminRoles(StringUtils.join(roles, ","));
+		}
+		setAdminRoles("");
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setStreetaddress1(String streetaddress1) {
+		this.streetaddress1 = streetaddress1;
+	}
+
+	public void setStreetaddress2(String streetaddress2) {
+		this.streetaddress2 = streetaddress2;
+	}
+
+	public void setStreetaddress3(String streetaddress3) {
+		this.streetaddress3 = streetaddress3;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	@Override
 	public String toString() {
-		return "Admin(" + email + ")";
+		return "Admin(" + this.email + ")";
+	}
+
+	public Admin updateFromMap(Map<String, Object> data) {
+		return this;
+	}
+
+	public List<Message> write() {
+		save();
+		update();
+		return Collections.emptyList();
 	}
 }

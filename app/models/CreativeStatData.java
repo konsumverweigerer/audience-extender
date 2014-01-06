@@ -16,34 +16,82 @@ import play.db.ebean.Model;
 public class CreativeStatData extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Required
-	public String timestep;
-
-	@Required
-	public long views = 0;
-	@Column(precision = 6, scale = 6)
-	public BigDecimal revenue;
-	@Column(precision = 6, scale = 6)
-	public BigDecimal cost;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Creative creative;
-
-	public CreativeStatData(String timestep) {
-		this.timestep = timestep;
-	}
-
-	public static Finder<String, CreativeStatData> find = new Finder<String, CreativeStatData>(
-			String.class, CreativeStatData.class);
-
 	/**
 	 * Retrieve all cookies.
 	 */
 	public static List<CreativeStatData> findAll() {
 		return find.all();
+	}
+
+	@Id
+	private Long id;
+
+	@Required
+	private String timestep;
+	@Required
+	private long views = 0;
+	@Column(precision = 6, scale = 6)
+	private BigDecimal revenue;
+
+	@Column(precision = 6, scale = 6)
+	private BigDecimal cost;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Creative creative;
+
+	public static Finder<Long, CreativeStatData> find = new Finder<Long, CreativeStatData>(
+			Long.class, CreativeStatData.class);
+
+	public CreativeStatData(String timestep) {
+		this.timestep = timestep;
+	}
+
+	public BigDecimal getCost() {
+		return cost;
+	}
+
+	public Creative getCreative() {
+		return creative;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public BigDecimal getRevenue() {
+		return revenue;
+	}
+
+	public String getTimestep() {
+		return timestep;
+	}
+
+	public long getViews() {
+		return views;
+	}
+
+	public void setCost(BigDecimal cost) {
+		this.cost = cost;
+	}
+
+	public void setCreative(Creative creative) {
+		this.creative = creative;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setRevenue(BigDecimal revenue) {
+		this.revenue = revenue;
+	}
+
+	public void setTimestep(String timestep) {
+		this.timestep = timestep;
+	}
+
+	public void setViews(long views) {
+		this.views = views;
 	}
 
 	@Override

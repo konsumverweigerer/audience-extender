@@ -2,6 +2,7 @@ define(["knockout"], (ko) ->
   rnd = (f,t) -> f+Math.floor((1+t-f)*Math.random())
 
   generatewebsites = (mod,models) ->
+    models.websites []
     ws = models.websites
     m = 10+Math.ceil(10*Math.random())
     for i in [1...m]
@@ -14,21 +15,22 @@ define(["knockout"], (ko) ->
     v.refresh models.websites() for v in models.audiences()
 
   generateaudiences = (mod,models) ->
+    models.audiences []
+    as = models.audiences
     n = new Date()
-    val = []
     j = 1
     for i in [0..(rnd(40,140))]
       d = mod.truncateToDay(n,rnd(1,10),-rnd(1,10))
       ws = ({id: l} for l in [1..(rnd(1,10))])
       ps = ({id: j++, path: '/my/'+l+'/path',active: ['on','off'][rnd(0,1)],website: ws[rnd(1,ws.length)-1]} for l in [0..(rnd(1,10))])
-      val[i++] = new mod.Audience
+      a = new mod.Audience
         id: i
         name:'Audience '+rnd(1,1000)
         state: ['A','P','C'][rnd(0,2)]
         websites: ws
         count: Math.ceil 10000*Math.random()
         paths: ps
-    models.audiences val
+     as.push a
 
   generateschedulechart = (campaigns,campaign,mod,models) ->
     data = -> []

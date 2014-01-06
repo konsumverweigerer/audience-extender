@@ -24,6 +24,7 @@ define("jquery.dataTables", [ "webjars!jquery.dataTables.js" ], -> )
 define("bootstrap-datepicker", [ "webjars!bootstrap-datepicker.js" ], -> )
 define("bootstrap-editable", [ "webjars!bootstrap-editable.js" ], -> )
 define("jqBootstrapValidation", [ "webjars!jqBootstrapValidation.js" ], -> )
+define("momentjs", [ "webjars!moment.js" ], -> )
 
 define("jsRoutes", ["/routes.js"], -> )
 

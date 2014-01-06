@@ -89,6 +89,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         $('#editAudience').modal 'hide'
 
       @clearwebsite = ->
+        self.currentwebsite().editing false
         self.currentwebsite(new mod.Website {name:'',id:-1})
 
       @cleardeleteaudience = ->
@@ -104,29 +105,33 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @saveaudience = ->
         a = self.currentaudience()
         self.currentaudience().refresh self.currentwebsites()
-        l = self.audiencetable.data
+        l = self.audiences
         if a.id() && a.id()>0
-          a.save(self)
-          l.remove byId a.id()
-          l.push a
+          a.save(self, ->
+            l.remove byId a.id()
+            l.push a
+          )
         else
-          a.save(self)
-          l.push a
+          a.save(self, ->
+            l.push a
+          )
         self.currentaudience(new mod.Audience {name:'',id:-1})
         $('#editAudience').modal 'hide'
+        self.audiencetablesearchbar.filldata
 
       @savewebsite = ->
         a = self.currentwebsite()
         l = self.websites
         if a.id() && a.id() > 0
-          a.editing false
-          a.save self
-          l.remove byId a.id()
-          l.push a
-          self.currentwebsite(new mod.Website {name:'',id:-1})
-          self.currentwebsites.push a
+          a.save(self, ->
+            a.editing false
+            l.remove byId a.id()
+            l.push a
+            self.currentwebsite(new mod.Website {name:'',id:-1})
+            self.currentwebsites.push a
+          )
         else
-          a.save(self, () -> 
+          a.save(self, -> 
             a.editing false
             l.push a
             self.currentwebsites.push a

@@ -27,29 +27,29 @@ object ContentController extends Controller with Utils {
   val domainRegex = Pattern.compile("^(http:|https:)?//[A-Za-z0-9.:@_-]")
 
   def checkPaths(reqPath: String, paths: Seq[PathTarget]): HashSet[Long] = {
-    val inc: Seq[Long] = ArrayBuffer()
-    val exc: Seq[Long] = ArrayBuffer()
-    val audiences: HashSet[Long] = HashSet[Long]()
-    paths.filter(p => "*".equals(p.urlPath)).foreach { p =>
-      if ("include".equals(p.variant)) {
-        inc.add(p.audience.id)
-      } else if ("exclude".equals(p.variant)) {
-        exc.add(p.audience.id)
+    val inc = ArrayBuffer[Long]()
+    val exc = ArrayBuffer[Long]()
+    val audiences = HashSet[Long]()
+    paths.filter(p => "*".equals(p.getUrlPath)).foreach { p =>
+      if ("include".equals(p.getVariant)) {
+        inc += p.getAudience.getId
+      } else if ("exclude".equals(p.getVariant)) {
+        exc += p.getAudience.getId
       }
     }
-    audiences.addAll(inc);
-    paths.filter(p => !"*".equals(p.urlPath)).foreach { p =>
-      val id = p.audience.id
-      val pat = Pattern.compile(p.urlPath)
+    audiences ++= inc;
+    paths.filter(p => !"*".equals(p.getUrlPath)).foreach { p =>
+      val id = p.getAudience.getId
+      val pat = Pattern.compile(p.getUrlPath)
       if (!pat.matcher(reqPath).find()) {
-        Logger.debug("pattern " + p.urlPath + " not matching " + reqPath)
-      } else if ("include".equals(p.variant)) {
+        Logger.debug("pattern " + p.getUrlPath + " not matching " + reqPath)
+      } else if ("include".equals(p.getVariant)) {
         if (exc.contains(id)) {
-          audiences.add(id)
+          audiences += id
         }
-      } else if ("exclude".equals(p.variant)) {
+      } else if ("exclude".equals(p.getVariant)) {
         if (inc.contains(id)) {
-          audiences.remove(id)
+          audiences += id
         }
       }
     }
@@ -70,13 +70,13 @@ object ContentController extends Controller with Utils {
 
   def countCookie(cookie: models.Cookie, sub: String) = {
     future {
-      StatsHandler.countcookie(cookie.id, sub)
+      StatsHandler.countcookie(cookie.getId, sub)
     }
   }
 
   def countCreative(creative: models.Creative) = {
     future {
-      StatsHandler.countcreative(creative.id)
+      StatsHandler.countcreative(creative.getId)
     }
   }
 
@@ -90,19 +90,22 @@ object ContentController extends Controller with Utils {
   def cookie = (uuid: String, sub: String) => Action { implicit request =>
     Website.findByUUID(uuid).map { website =>
       var cookies = ArrayBuffer[String]()
-      checkPaths(extractPath(request.headers, request.queryString), website.pathTargets.asScala).map { audienceid =>
-        models.Cookie.findByWebsite(website.id, audienceid).asScala.foreach { cookie =>
-          if ("A".equals(cookie.state) && "code".equals(cookie.variant)) {
-            cookies.add(cookie.content)
+      checkPaths(extractPath(request.headers, request.queryString), website.getPathTargets.asScala).map { audienceid =>
+        models.Cookie.findByWebsite(website.getId, audienceid).asScala.foreach { cookie =>
+          if ("A".equals(cookie.getState) && "code".equals(cookie.getVariant)) {
+            cookies += cookie.getContent
             countCookie(cookie, sub)
           }
         }
         var tracking = ArrayBuffer[Long]()
-        website.pathTargets.map { target =>
-          if (audienceid.equals(target.audience.id)) {
-            if (!tracking.contains(target.audience.id)) {
-              cookies.add(target.audience.tracking)
-              tracking.add(target.audience.id)
+        website.getPathTargets.map { target =>
+          val audience = target.getAudience
+          if (audienceid.equals(audience.getId)) {
+            if (!tracking.contains(audience.getId)) {
+              if (audience.getTracking != null) {
+                cookies += audience.getTracking
+              }
+              tracking += audience.getId
             }
           }
         }
@@ -111,7 +114,7 @@ object ContentController extends Controller with Utils {
     }.getOrElse {
       models.Cookie.findByUUID(uuid).map { cookie =>
         var cookies = ArrayBuffer[String]()
-        cookies.add(cookie.content)
+        cookies += cookie.getContent
         countCookie(cookie, sub)
         sendCookie(cookies)
       }.getOrElse(NotFound.as("text/javascript"))
@@ -120,12 +123,12 @@ object ContentController extends Controller with Utils {
 
   def creativeContent = (uuid: String, t: String) => Action { implicit request =>
     Creative.findByUUID(uuid).map { creative =>
-      if ("external".equals(creative.variant)) {
-        Redirect(creative.url)
-      } else if (creative.data != null && "preview".equals(t)) {
-        Ok(Image(creative.data).fit(176, 74).write(com.sksamuel.scrimage.Format.PNG)).as("image/png")
-      } else if (creative.data != null) {
-        Ok(creative.data).as(creative.variant)
+      if ("external".equals(creative.getVariant)) {
+        Redirect(creative.getUrl)
+      } else if (creative.getData != null && "preview".equals(t)) {
+        Ok(Image(creative.getData).fit(176, 74).write(com.sksamuel.scrimage.Format.PNG)).as("image/png")
+      } else if (creative.getData != null) {
+        Ok(creative.getData).as(creative.getVariant)
       } else {
         Ok("").as("application/octet-steam")
       }
@@ -143,7 +146,7 @@ object ContentController extends Controller with Utils {
   def creative = (uuid: String) => Action { implicit request =>
     Creative.findByUUID(uuid).map { creative =>
       countCreative(creative)
-      Ok(creative.data).as(creative.variant)
+      Ok(creative.getData).as(creative.getVariant)
     }.getOrElse(NotFound)
   }
 }

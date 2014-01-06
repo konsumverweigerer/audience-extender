@@ -15,25 +15,11 @@ import play.db.ebean.Model;
 public class PathTarget extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Required
-	public String urlPath;
-
-	/*
-	 * allowed values: include, exclude
+	/**
+	 * Retrieve all packages.
 	 */
-	public String variant;
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	public Audience audience;
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	public Website website;
-
-	public PathTarget(String urlPath) {
-		this.urlPath = urlPath;
+	public static List<PathTarget> findAll() {
+		return find.all();
 	}
 
 	public static PathTarget fromMap(Map<String, Object> data) {
@@ -42,22 +28,76 @@ public class PathTarget extends Model {
 		return pathTarget;
 	}
 
-	public static Finder<String, PathTarget> find = new Finder<String, PathTarget>(
-			String.class, PathTarget.class);
+	@Id
+	private Long id;
 
-	public PathTarget updateFromMap(Map<String, Object> data) {
-		return this;
+	@Required
+	private String urlPath;
+
+	/*
+	 * allowed values: include, exclude
+	 */
+	private String variant;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Audience audience;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Website website;
+
+	public static Finder<Long, PathTarget> find = new Finder<Long, PathTarget>(
+			Long.class, PathTarget.class);
+
+	public PathTarget(String urlPath) {
+		this.urlPath = urlPath;
 	}
 
-	/**
-	 * Retrieve all packages.
-	 */
-	public static List<PathTarget> findAll() {
-		return find.all();
+	public Audience getAudience() {
+		return audience;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getUrlPath() {
+		return urlPath;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public Website getWebsite() {
+		return website;
+	}
+
+	public void setAudience(Audience audience) {
+		this.audience = audience;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setUrlPath(String urlPath) {
+		this.urlPath = urlPath;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public void setWebsite(Website website) {
+		this.website = website;
 	}
 
 	@Override
 	public String toString() {
 		return "PathTarget(" + urlPath + ")";
+	}
+
+	public PathTarget updateFromMap(Map<String, Object> data) {
+		return this;
 	}
 }

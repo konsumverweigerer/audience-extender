@@ -7,7 +7,7 @@
 	//<![CDATA[
 	window.data = {};
 	window.data.publishers = @{import play.api.libs.json._;import controllers.PublisherController.PublisherFormat;Html(Json.toJson(publishers).toString());};
-	window.data.admin = {email:'@current.email',roles:@{import play.api.libs.json._;Html(Json.toJson(current.getRoles().asScala).toString());}};
+	window.data.admin = {email:'@current.getEmail()',roles:@{import play.api.libs.json._;Html(Json.toJson(current.getRoles().asScala).toString());}};
 	//]]>
 </script>
 } {

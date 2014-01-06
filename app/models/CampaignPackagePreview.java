@@ -20,41 +20,9 @@ import scala.Some;
 public class CampaignPackagePreview extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
 
-	@Id
-	public Long id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
-
-	/*
-	 * allowed values: image/png, image/gif
-	 */
-	public String variant;
-
-	public byte[] data;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public CampaignPackage campaignPackage;
-
-	public CampaignPackagePreview() {
-	}
-
-	public static CampaignPackagePreview fromMap(Map<String, Object> data) {
-		final CampaignPackagePreview creative = new CampaignPackagePreview();
-		creative.updateFromMap(data);
-		return creative;
-	}
-
-	public static Finder<String, CampaignPackagePreview> find = new Finder<String, CampaignPackagePreview>(
-			String.class, CampaignPackagePreview.class);
-
 	public static Option<CampaignPackagePreview> addUpload(Publisher publisher,
 			String contentType, String filename, File file) {
 		return null;
-	}
-
-	public CampaignPackagePreview updateFromMap(Map<String, Object> data) {
-		return this;
 	}
 
 	/**
@@ -62,12 +30,6 @@ public class CampaignPackagePreview extends Model {
 	 */
 	public static List<CampaignPackagePreview> findAll() {
 		return find.all();
-	}
-
-	public static Option<CampaignPackagePreview> findById(String creativeid,
-			Admin admin) {
-		final Long id = creativeid != null ? Long.valueOf(creativeid) : 0L;
-		return findById(id, admin);
 	}
 
 	public static Option<CampaignPackagePreview> findById(Long id, Admin admin) {
@@ -79,8 +41,86 @@ public class CampaignPackagePreview extends Model {
 		return Option.empty();
 	}
 
+	public static Option<CampaignPackagePreview> findById(String creativeid,
+			Admin admin) {
+		final Long id = creativeid != null ? Long.valueOf(creativeid) : 0L;
+		return findById(id, admin);
+	}
+
+	public static CampaignPackagePreview fromMap(Map<String, Object> data) {
+		final CampaignPackagePreview creative = new CampaignPackagePreview();
+		creative.updateFromMap(data);
+		return creative;
+	}
+
+	@Id
+	private Long id;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+
+	/*
+	 * allowed values: image/png, image/gif
+	 */
+	private String variant;
+
+	private byte[] data;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private CampaignPackage campaignPackage;
+
+	public static Finder<Long, CampaignPackagePreview> find = new Finder<Long, CampaignPackagePreview>(
+			Long.class, CampaignPackagePreview.class);
+
+	public CampaignPackagePreview() {
+	}
+
+	public CampaignPackage getCampaignPackage() {
+		return campaignPackage;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public void setCampaignPackage(CampaignPackage campaignPackage) {
+		this.campaignPackage = campaignPackage;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
 	@Override
 	public String toString() {
 		return "CampaignPackage()";
+	}
+
+	public CampaignPackagePreview updateFromMap(Map<String, Object> data) {
+		return this;
 	}
 }
