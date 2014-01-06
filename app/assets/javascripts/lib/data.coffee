@@ -48,6 +48,39 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
     models.publisher.subscribe = (nv) -> packages nv
     packages models.publisher()
 
+  loadschedulechart = (campaigns,campaign,mod,models) ->
+    data = -> []
+    campaign.dataloader = (ca)->
+      ca.schedulechart.chartcontent data ca
+
+    require(["nv.d3"], ->
+      data = (campaign) ->
+        ret = []
+        if campaign.startDate()? && campaign.endDate()
+          days = mod.dayrange(campaign.startDate(),20,90)
+          now = (new Date()).getTime()
+          day = 24*60*60*1000
+          maxc = 0
+          aus = (ko.unwrap a.id for a in campaign.audiences())
+          rd = mod.rangedays(campaign.startDate(),campaign.endDate())
+          for pa in models.currentpackages() when pa.id()==(campaign.package()?.id)
+            c = pa.count()/(rd.length)
+            maxc = maxc+c
+            ps = for d in days
+              if rd.indexOf(d)>=0
+                {x:d,y:c}
+              else
+                {x:d,y:0}
+            ret.push
+              key: campaign.name()
+              cls: 'campaign'
+              type: 'area'
+              values: ps
+              color: '#a00'
+              timeframe: 'days'
+        return ret
+    )
+
   loadcampaigns = (mod,models) ->
     campaigns = (nv) ->
       if nv?.id?
@@ -58,6 +91,8 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
             models.campaigns []
             models.campaigns.push new mod.Campaign x for x in tojson d
             models.campaigntablesearchbar?.search()
+            for ca in models.campaigns()
+              loadschedulechart(models.campaigns(),ca,mod,models)
         }
     models.publisher.subscribe = (nv) -> campaigns nv
     campaigns models.publisher()

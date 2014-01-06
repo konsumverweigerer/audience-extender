@@ -165,9 +165,11 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @maxPage = ko.computed -> Math.ceil(self.maxIndex() / self.pageSize())
 
-      @hasData = ko.computed(-> self.maxIndex() > 0).extend({ throttle: 200 })
+      @hasData = ko.computed(-> self.maxIndex() > 0).extend
+        throttle: 200
 
-      @hasPages = ko.computed(-> self.maxPage() > 1).extend({ throttle: 200 })
+      @hasPages = ko.computed(-> self.maxPage() > 1).extend
+        throttle: 200
 
       @hasNoPrev = ko.computed -> self.currentPage() < 2
 
@@ -598,7 +600,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Campaign extends ServerModels
     typeOf: (name) ->
-      if ['messages','uploadprogress','schedulechart'].indexOf(name)>=0
+      if ['messages','uploadprogress','selected','schedulechart'].indexOf(name)>=0
         return { isIgnored: true, isSend: false }
       super name
 
@@ -614,6 +616,8 @@ define(['knockout', 'jsRoutes'], (ko) ->
       @messages = ko.observableArray []
 
       @uploadprogress = new Counter {wrap:false,minValue:0,maxValue:100}
+
+      @selected = ko.observable false
 
       @name = ko.observable d?.name
 
@@ -631,9 +635,13 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @creatives = ko.observableArray(new Creative x for x in (d?.creatives || []))
 
-      @startDate = ko.observable d?.startDate
+      @startDate = ko.observable().extend
+        datetime: 'full'
+      @startDate(d?.startDate)
 
-      @endDate = ko.observable d?.endDate
+      @endDate = ko.observable().extend
+        datetime: 'full'
+      @endDate(d?.startDate)
 
       @schedulechart = new Chartdata
 
@@ -731,9 +739,13 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @active = ko.observable false
 
-      @startDate = ko.observable d?.startDate
+      @startDate = ko.observable().extend
+        datetime: 'full'
+      @startDate(d?.startDate)
 
-      @endDate = ko.observable d?.endDate
+      @endDate = ko.observable().extend
+        datetime: 'full'
+      @endDate(d?.startDate)
 
       @dates = ko.computed
         read: ->

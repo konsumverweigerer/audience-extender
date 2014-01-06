@@ -44,6 +44,7 @@ define("jquery.fileupload-process", [ "webjars!jquery.fileupload-process.js" ], 
 define("jquery.fileupload-validate", [ "webjars!jquery.fileupload-validate.js" ], -> )
 define("d3", [ "webjars!d3.js" ], ->  d3 )
 define("nv.d3", [ "webjars!nv.d3.js" ], -> nv )
+define("momentjs", [ "webjars!moment.js" ], -> )
 
 define("load-image", [ "ext/load-image" ], (loadImage) -> loadImage)
 define("load-image-meta", [ "ext/load-image-meta" ], -> )

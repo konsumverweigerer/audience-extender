@@ -1,4 +1,38 @@
-define([ "knockout" ], (ko) ->
+define([ "knockout", "momentjs" ], (ko) ->
+  ko.extenders.datetime = (target,mode) ->
+    result = ko.computed(
+      read: ->
+        v = target()
+        if v instanceof Date
+          return v
+        return undefined
+      write: (newValue) ->
+        current = target()
+        require(['moment'], (moment) ->
+          if newValue instanceof Date
+            valueToWrite = newValue
+          else if (newValue instanceof String || typeof(newValue)=='string') && newValue.length>0
+            valueToWrite = moment(newValue)
+            if !valueToWrite.isValid()
+              valueToWrite = moment(newValue,'MM/DD/YYYY')
+            if !valueToWrite.isValid()
+              valueToWrite = moment(newValue,'MM/DD/YY')
+            if !valueToWrite.isValid()
+              valueToWrite = moment(newValue,'DD.MM.YYYY')
+            if !valueToWrite.isValid()
+              valueToWrite = moment(newValue,'DD.MM.YY')
+            if !valueToWrite.isValid()
+              valueToWrite = undefined
+          if valueToWrite!=current
+            target valueToWrite
+          else if newValue!=current
+            target.notifySubscribers valueToWrite
+        )
+    ).extend { notify: 'always' }
+ 
+    result target()
+    return result
+
   ko.extenders.numeric = (target,precision) ->
     result = ko.computed(
       read: target
@@ -11,9 +45,8 @@ define([ "knockout" ], (ko) ->
         valueToWrite = Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier
         if valueToWrite!=current
           target valueToWrite
-        else
-          if newValue!=current
-            target.notifySubscribers valueToWrite
+        else if newValue!=current
+          target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
  
     result target()
@@ -30,8 +63,7 @@ define([ "knockout" ], (ko) ->
         valueToWrite = Math.abs Math.round newValueAsNum
         if valueToWrite!=current
           target valueToWrite
-        else
-          if newValue!=current
+        else if newValue!=current
             target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
  
@@ -55,8 +87,7 @@ define([ "knockout" ], (ko) ->
         valueToWrite = Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier
         if valueToWrite!=current
           target valueToWrite
-        else
-          if newValue!=current
+        else if newValue!=current
             target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
  
@@ -72,16 +103,15 @@ define([ "knockout" ], (ko) ->
         symbolPre = ''
         symbolPost = ''
         if lang=='us'
-            roundingMultiplier = 100
-            symbolPre = '$'
+          roundingMultiplier = 100
+          symbolPre = '$'
         newValueAsNum = parseFloat +((''+newValue).replace(/[^0-9,.-]/,''))
         if isNaN newValueAsNum
           newValueAsNum = 0
         valueToWrite = symbolPre+(Math.round(newValueAsNum*roundingMultiplier)/roundingMultiplier)+symbolPost
         if valueToWrite!=current
           target valueToWrite
-        else
-          if newValue!=current
+        else if newValue!=current
             target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
  
