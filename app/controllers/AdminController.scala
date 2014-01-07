@@ -187,19 +187,25 @@ object AdminController extends Controller with Secured with Formats with Utils {
           },
           data =>
             Some(data._1).map { id =>
-              Admin.findById(id).map { admin =>
-                //TODO: fill from form
-                val msgs = admin.write()
+              models.Cookie.findById(id, current).map { cookie =>
+                if (data._3.nonEmpty) {
+                  cookie.setContent(data._3.get)
+                  cookie.setState("A")
+                }
+                val msgs = cookie.write()
                 Ok(JsObject(Seq(
-                  "data" -> Json.toJson(admin),
+                  "data" -> Json.toJson(cookie),
                   "messages" -> Json.toJson(msgs.asScala))))
               }.getOrElse(NotFound)
             }.getOrElse {
-              val admin = new Admin()
-              //TODO: fill from form
-              val msgs = admin.write()
+              val cookie = new models.Cookie(data._2)
+              if (data._3.nonEmpty) {
+                cookie.setContent(data._3.get)
+                cookie.setState("A")
+              }
+              val msgs = cookie.write()
               Ok(JsObject(Seq(
-                "data" -> Json.toJson(admin),
+                "data" -> Json.toJson(cookie),
                 "messages" -> Json.toJson(msgs.asScala))))
             })
       }.getOrElse(Forbidden)

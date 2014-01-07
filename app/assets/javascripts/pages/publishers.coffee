@@ -10,6 +10,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
+      byId = (id) -> ((w) -> (ko.unwrap w.id)==id)
+
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
@@ -28,6 +30,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @publishers = ko.observableArray []
 
       @currentpublisher = ko.observable(new mod.Publisher {name:'',id:-1})
+
+      @clearpublisher = ->
+        self.currentpublisher(new mod.Publisher {name:'',id:-1})
+        $('#editPublisher').modal 'hide'
 
       @selectpublisher = (p) ->
         self.currentpublisher (new mod.Publisher()).copyFrom p

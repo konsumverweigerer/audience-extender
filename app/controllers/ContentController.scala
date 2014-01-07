@@ -80,12 +80,17 @@ object ContentController extends Controller with Utils {
     }
   }
 
-  def sendCookie(cookies: Seq[String]): SimpleResult =
-    Ok("(function(){\nvar b = document.getElementsByTagName('body');\n" +
-      "if (b.length!=0){var d = document.createElement('div');\n" +
-      "d.style.display='none';d.innerHTML='" + (cookies.mkString("\\n")
+  def sendCookie(uuid: String, cookies: ArrayBuffer[String]): SimpleResult = {
+    if (cookies.isEmpty) {
+      cookies += "<!-- ae marker -->";
+    }
+    cookies += "<!-- ae://" + uuid + " -->"
+    Ok("(function(){\n setTimeout(function(){\n  var b = document.getElementsByTagName('body');\n" +
+      "  if (b.length!=0){\n   var d = document.createElement('div');\n" +
+      "   d.style.display='none';d.innerHTML='" + (cookies.mkString("\\n")
         .replace("\n", "\\n").replace("\r", "\\n")
-        .replace("'", "\\'")) + "';\nb[0].appendChild(d);\n}})();").as("text/javascript")
+        .replace("'", "\\'")) + "';\n   b[0].appendChild(d);\n  }\n },100)})();").as("text/javascript")
+  }
 
   def cookie = (uuid: String, sub: String) => Action { implicit request =>
     Website.findByUUID(uuid).map { website =>
@@ -110,13 +115,13 @@ object ContentController extends Controller with Utils {
           }
         }
       }
-      sendCookie(cookies)
+      sendCookie(uuid + "/website", cookies)
     }.getOrElse {
       models.Cookie.findByUUID(uuid).map { cookie =>
         var cookies = ArrayBuffer[String]()
         cookies += cookie.getContent
         countCookie(cookie, sub)
-        sendCookie(cookies)
+        sendCookie(uuid + "/cookie", cookies)
       }.getOrElse(NotFound.as("text/javascript"))
     }
   }

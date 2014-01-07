@@ -10,6 +10,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
+      byId = (id) -> ((w) -> (ko.unwrap w.id)==id)
+
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
@@ -34,6 +36,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @publishers = ko.observableArray []
 
       @currentcookie = ko.observable(new mod.Cookie {name:'',id:-1})
+
+      @clearcookie = ->
+        self.currentcookie(new mod.Cookie {name:'',id:-1})
+        $('#editCookie').modal 'hide'
 
       @selectcookie = (c) ->
         self.currentcookie (new mod.Cookie()).copyFrom c

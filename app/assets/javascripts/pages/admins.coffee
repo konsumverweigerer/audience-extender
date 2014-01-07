@@ -10,6 +10,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
+      byId = (id) -> ((w) -> (ko.unwrap w.id)==id)
+
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
@@ -31,6 +33,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @publishers = ko.observableArray []
 
       @currentadmin = ko.observable(new mod.Admin {name:'',id:-1})
+
+      @clearadmin = ->
+        self.currentadmin(new mod.Admin {name:'',id:-1})
+        $('#editAdmin').modal 'hide'
 
       @selectadmin = (a) ->
         self.currentadmin (new mod.Admin()).copyFrom a

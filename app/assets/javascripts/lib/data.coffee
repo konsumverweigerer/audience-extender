@@ -51,7 +51,10 @@ define(["knockout", "lib/models", "jsRoutes", "jquery"], (ko,mod) ->
   loadschedulechart = (campaigns,campaign,mod,models) ->
     data = -> []
     campaign.dataloader = (ca)->
-      ca.schedulechart.chartcontent data ca
+      if ca.selected()
+        ca.schedulechart.chartcontent data ca
+      else
+        ca.schedulechart.chartcontent []
 
     require(["nv.d3"], ->
       data = (campaign) ->

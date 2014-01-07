@@ -30,12 +30,15 @@ define(["knockout"], (ko) ->
         websites: ws
         count: Math.ceil 10000*Math.random()
         paths: ps
-    as.push a
+      as.push a
 
   generateschedulechart = (campaigns,campaign,mod,models) ->
     data = -> []
     campaign.dataloader = (ca)->
-      ca.schedulechart.chartcontent data ca
+      if ca.selected()
+        ca.schedulechart.chartcontent data ca
+      else
+        ca.schedulechart.chartcontent []
 
     require(["nv.d3"], ->
       data = (campaign) ->

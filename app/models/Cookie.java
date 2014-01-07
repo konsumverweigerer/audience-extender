@@ -109,6 +109,7 @@ public class Cookie extends Model {
 		cookie.setPathhash(calculateHash(paths));
 		cookie.setWebsite(website);
 		cookie.setAudience(audience);
+		cookie.setState("P");
 		return cookie;
 	}
 
