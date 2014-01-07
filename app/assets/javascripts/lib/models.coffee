@@ -538,6 +538,8 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @content = ko.observable content
 
+      @actions = ko.observableArray []
+
       @dismissed = ko.observable 0
 
       @priority = ko.observable(priority || 'info')

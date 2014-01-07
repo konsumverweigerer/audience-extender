@@ -121,6 +121,8 @@ public class Cookie extends Model {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date modified;
 
 	/*
 	 * allowed values: pending, active, cancelled
@@ -140,7 +142,6 @@ public class Cookie extends Model {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Audience audience;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Website website;
 
@@ -177,6 +178,10 @@ public class Cookie extends Model {
 
 	public Long getId() {
 		return this.id;
+	}
+
+	public Date getModified() {
+		return this.modified;
 	}
 
 	public String getName() {
@@ -219,6 +224,10 @@ public class Cookie extends Model {
 		this.id = id;
 	}
 
+	public void setModified(Date modified) {
+		this.modified = modified;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -228,6 +237,11 @@ public class Cookie extends Model {
 	}
 
 	public void setState(String state) {
+		if (state != null && state.equals(this.state)) {
+			this.modified = new Date();
+		} else if (state == null && this.state != null) {
+			this.modified = new Date();
+		}
 		this.state = state;
 	}
 
