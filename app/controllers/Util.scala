@@ -206,6 +206,8 @@ trait Formats {
       "state" -> JsString(cookie.getState),
       "uuid" -> JsString(cookie.getUuid),
       "variant" -> JsString(cookie.getVariant),
+      "created" -> (if (cookie.getCreated != null) Json.toJson(cookie.getCreated) else JsString("")),
+      "modified" -> (if (cookie.getModified != null) Json.toJson(cookie.getModified) else JsString("")),
       "audience" -> Json.toJson(cookie.getAudience),
       "website" -> Json.toJson(cookie.getWebsite)))
   }
