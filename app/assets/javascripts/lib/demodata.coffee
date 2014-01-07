@@ -30,7 +30,7 @@ define(["knockout"], (ko) ->
         websites: ws
         count: Math.ceil 10000*Math.random()
         paths: ps
-     as.push a
+    as.push a
 
   generateschedulechart = (campaigns,campaign,mod,models) ->
     data = -> []

@@ -815,7 +815,7 @@ nv.models.mylinePlusStackedAreaChart = function() {
       } else {
         container.selectAll('.nv-noData').remove();
       }
-      
+
       var availableWidth = (width  || parseInt(container.style('width')) || 960)
                              - margin.left - margin.right,
           availableHeight = (height || parseInt(container.style('height')) || 400)
@@ -851,7 +851,7 @@ nv.models.mylinePlusStackedAreaChart = function() {
           legend.width(availableWidth);
 
         g.select('.nv-legendWrap')
-            .datum(data.filter(function(d) {return !d.disabled && d.type == 'line'}).map(function(series) {
+            .datum(data.filter(function(d) {return d.type == 'line'}).map(function(series) {
               series.originalKey = series.originalKey === undefined ? series.key : series.originalKey;
               series.key = series.originalKey;
               return series;
