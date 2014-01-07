@@ -59,7 +59,7 @@ define(["jquery", "bootstrap"], ->
         $('.scroll-next').fadeIn()
     )
     $('.scroll-next,.scroll-prev').hide().css('visibility','visible')
-    $('body').on('click.ae','.navbar-collapse a', ->
+    $('body').on('click.ae','.navbar-collapse a[data-toggle!=dropdown]', ->
       el = $(@)
       setTimeout( ->
         el.closest('.navbar-collapse').not('.collapse').collapse 'hide'
