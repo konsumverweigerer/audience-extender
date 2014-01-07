@@ -643,7 +643,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @endDate = ko.observable().extend
         datetime: 'full'
-      @endDate(d?.startDate)
+      @endDate(d?.endDate)
 
       @schedulechart = new Chartdata
 
@@ -747,7 +747,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @endDate = ko.observable().extend
         datetime: 'full'
-      @endDate(d?.startDate)
+      @endDate(d?.endDate)
 
       @dates = ko.computed
         read: ->
