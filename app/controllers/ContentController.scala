@@ -24,7 +24,7 @@ import play.Logger
 import java.util.regex.Pattern
 
 object ContentController extends Controller with Utils {
-  val domainRegex = Pattern.compile("^(http:|https:)?//[A-Za-z0-9.:@_-]")
+  val domainRegex = Pattern.compile("^(http:|https:)?//[A-Za-z0-9.:@_-]*")
 
   def checkPaths(reqPath: String, paths: Seq[PathTarget]): HashSet[Long] = {
     val inc = ArrayBuffer[Long]()
