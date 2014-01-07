@@ -47,14 +47,16 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @savepublisher = ->
         p = self.currentpublisher()
-        l = self.datatable.data
+        l = self.publishers
         if p.id() && p.id()>0
-          p.save self
-          l.remove byId p.id()
-          l.push p
+          p.save(self, ->
+            l.remove byId p.id()
+            l.push p
+          )
         else
-          p.save self
-          l.push p
+          p.save(self, ->
+            l.push p
+          )
         self.currentpublisher(new mod.Publisher {name:'',id:-1})
         $('#editPublisher').modal 'hide'
 

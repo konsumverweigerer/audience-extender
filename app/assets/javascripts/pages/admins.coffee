@@ -50,14 +50,16 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @saveadmin = ->
         a = self.currentadmin()
-        l = self.datatable.data
+        l = self.admins
         if a.id() && a.id()>0
-          a.save self
-          l.remove byId a.id()
-          l.push a
+          a.save(self, ->
+            l.remove byId a.id()
+            l.push a
+          )
         else
-          a.save self
-          l.push a
+          a.save(self, ->
+            l.push a
+          )
         self.currentadmin(new mod.Admin {name:'',id:-1})
         $('#editAdmin').modal 'hide'
 

@@ -946,9 +946,13 @@ define(['knockout', 'jsRoutes'], (ko) ->
         self.selected campaign.package()?.id==self.id()
         return self
 
-      @startDate = ko.observable(d?.startDate ? new Date())
+      @startDate = ko.observable().extend
+        datetime: 'full'
+      @startDate(d?.startDate ? new Date())
 
-      @endDate = ko.observable(d?.endDate ? new Date())
+      @endDate = ko.observable().extend
+        datetime: 'full'
+      @endDate(d?.endDate ? new Date())
 
       @dates = ko.computed
         read: ->

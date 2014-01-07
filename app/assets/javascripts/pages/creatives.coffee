@@ -27,7 +27,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           else if 'cancelled' == v || 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
-            v
+            ''
       )
 
       @creatives = ko.observableArray []
@@ -47,14 +47,16 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @savecreative = ->
         c = self.currentcreative()
-        l = self.datatable.data
+        l = self.creatives
         if c.id() && c.id()>0
-          c.save self
-          l.remove byId c.id()
-          l.push c
+          c.save(self, ->
+            l.remove byId c.id()
+            l.push c
+          )
         else
-          c.save self
-          l.push c
+          c.save(self, ->
+            l.push c
+          )
         self.currentcreative(new mod.Creative {name:'',id:-1})
         $('#editCreative').modal 'hide'
 

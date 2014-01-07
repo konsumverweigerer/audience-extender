@@ -27,7 +27,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           else if 'cancelled' == v || 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
-            ""
+            ''
       )
 
       @cookies = ko.observableArray []
@@ -47,7 +47,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @savecookie = ->
         c = self.currentcookie()
-        l = self.datatable.data
+        l = self.cookies
         if c.id() && c.id()>0
           c.save(self, ->
             l.remove byId c.id()
