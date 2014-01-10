@@ -1,6 +1,87 @@
 define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
   nvdddDefaults = -> {}
 
+  #fix for bootstrap modals
+  nv.tooltip.calcTooltipPosition = (pos, gravity, dist, container) ->
+    height = parseInt container.offsetHeight
+    width = parseInt container.offsetWidth
+    windowWidth = nv.utils.windowSize().width
+    windowHeight = nv.utils.windowSize().height
+    scrollTop = window.pageYOffset
+    scrollLeft = window.pageXOffset
+
+    if window.innerWidth >= document.body.scrollWidth
+      windowHeight = windowHeight - 16
+    if window.innerHeight >= document.body.scrollHeight
+      windowWidth = windowWidth - 16
+
+    if $(container).parents('.modal')[0]
+      scrollTop = $(container).parents('.modal')[0].scrollTop
+      scrollLeft = $(container).parents('.modal')[0].scrollLeft
+    gravity = gravity || 's'
+    dist = dist || 20
+
+    tooltipTop = (Elem) -> nv.tooltip.findTotalOffsetTop(Elem,top)
+    tooltipLeft = (Elem) -> nv.tooltip.findTotalOffsetLeft(Elem,left)
+
+    switch gravity
+      when 'e'
+        left = pos[0]-width-dist
+        top = pos[1]-(height/2)
+        tLeft = tooltipLeft container
+        tTop = tooltipTop container
+        if tLeft < scrollLeft
+          if pos[0]+dist > scrollLeft then left = pos[0]+dist else left = scrollLeft-tLeft+left
+        if tTop < scrollTop
+          top = scrollTop-tTop+top
+        if tTop+height > scrollTop+windowHeight
+          top = scrollTop+windowHeight-tTop+top-height
+      when 'w'
+        left = pos[0]+dist
+        top = pos[1]-(height/2)
+        tLeft = tooltipLeft container
+        tTop = tooltipTop container
+        if tLeft+width > windowWidth
+          left = pos[0]-width-dist
+        if tTop < scrollTop
+          top = scrollTop+5
+        if tTop+height > scrollTop+windowHeight
+          top = scrollTop+windowHeight-tTop+top-height
+      when 'n'
+        left = pos[0]-(width/2)-5
+        top = pos[1]+dist
+        tLeft = tooltipLeft container
+        tTop = tooltipTop container
+        if tLeft < scrollLeft
+          left = scrollLeft+5
+        if tLeft+width > windowWidth
+          left = left-width/2+5
+        if tTop+height > scrollTop+windowHeight
+          top = scrollTop+windowHeight-tTop+top-height
+      when 's'
+        left = pos[0]-(width/2)
+        top = pos[1]-height-dist
+        tLeft = tooltipLeft container
+        tTop = tooltipTop container
+        if tLeft<scrollLeft
+          left = scrollLeft+5
+        if tLeft+width > windowWidth
+          left = left-width/2+5
+        if scrollTop > tTop
+          top = scrollTop
+      when 'none'
+        left = pos[0]
+        top = pos[1]-dist
+        tLeft = tooltipLeft container
+        tTop = tooltipTop container
+
+    container.style.left = left+'px'
+    container.style.top = top+'px'
+    container.style.opacity = 1
+    container.style.position = 'absolute'
+
+    container;
+
   cumulate = (options,data) ->
     if data? && options.cumulateOther && options.cumulateOther<data.length
       sums = data.map (n,i) -> [n.values.map((a) -> a.y).reduce(((a,b) -> a+b),0),i]

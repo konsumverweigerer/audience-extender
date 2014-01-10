@@ -57,8 +57,9 @@ public class Campaign extends Model {
 		if (admin.isSysAdmin()) {
 			ret = find.fetch("audiences").where().eq("id", id).findList();
 		} else {
-			ret = find.fetch("audiences").where().eq("publisher.owners.id", admin.getId())
-					.eq("id", id).findList();
+			ret = find.fetch("audiences").where()
+					.eq("publisher.owners.id", admin.getId()).eq("id", id)
+					.findList();
 		}
 		if (!ret.isEmpty()) {
 			return new Some<Campaign>(ret.get(0));
@@ -218,6 +219,13 @@ public class Campaign extends Model {
 
 	public CampaignPackage getCampaignPackage() {
 		return this.campaignPackage;
+	}
+
+	public Option<CampaignPackage> getCampaignPackageOption() {
+		if (this.campaignPackage != null) {
+			return new Some<CampaignPackage>(campaignPackage);
+		}
+		return Option.empty();
 	}
 
 	public Date getCreated() {

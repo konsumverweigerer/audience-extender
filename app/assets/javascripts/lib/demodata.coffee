@@ -73,10 +73,12 @@ define(["knockout"], (ko) ->
               c = pa.count()/(rd.length)
               maxc = maxc+(c/2)
               ps = for d in days
-                if rd.indexOf(d)>=0
-                  {x:d,y:c}
-                else
+                if rd.indexOf(d)<0
                   {x:d,y:0}
+                else if d<=now
+                  {x:d,y:c+rnd(-c/4,c/4)}
+                else
+                  {x:d,y:c}
               ret.push
                 key: ca.name()
                 cls: 'campaign'
@@ -137,6 +139,7 @@ define(["knockout"], (ko) ->
     for i in [0..(rnd(5,15))]
       val[i++] = new mod.Package
         id: i
+        packid: i
         name: 'Package '+rnd(1,1000)
         count: 1000*(i+1)
         salesCpm: 20+10*Math.random()
