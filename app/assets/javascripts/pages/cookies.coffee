@@ -10,6 +10,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     constructor: (d) ->
       self = @
 
+      byId = (id) -> ((w) -> (ko.unwrap w.id)==id)
+
       @loader = new mod.Counter {wrap:false,minValue:0}
       @alert = new mod.Message()
       @messages = ko.observableArray []
@@ -25,7 +27,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           else if 'cancelled' == v || 'C' == v
             '<span class="label label-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancelled</span>'
           else
-            v
+            ''
       )
 
       @cookies = ko.observableArray []
@@ -35,20 +37,26 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentcookie = ko.observable(new mod.Cookie {name:'',id:-1})
 
+      @clearcookie = ->
+        self.currentcookie(new mod.Cookie {name:'',id:-1})
+        $('#editCookie').modal 'hide'
+
       @selectcookie = (c) ->
         self.currentcookie (new mod.Cookie()).copyFrom c
         $('#editCookie').modal 'show'
 
       @savecookie = ->
         c = self.currentcookie()
-        l = self.datatable.data
+        l = self.cookies
         if c.id() && c.id()>0
-          c.save self
-          l.remove byId c.id()
-          l.push c
+          c.save(self, ->
+            l.remove byId c.id()
+            l.push c
+          )
         else
-          c.save self
-          l.push c
+          c.save(self, ->
+            l.push c
+          )
         self.currentcookie(new mod.Cookie {name:'',id:-1})
         $('#editCookie').modal 'hide'
 

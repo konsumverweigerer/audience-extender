@@ -29,7 +29,9 @@ define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko)
 
       $datatable = $element.dataTable datatableOptions
       if value.rows && ko.isObservable value.rows
-        value.rows.subscribe (nv) ->
+        value.rows.extend
+          throttle:100
+        .subscribe (nv) ->
           ko.bindingHandlers.datatable.update(element,value.rows,allBindingsAccessor,viewModel,bindingContext)
         if datatableOptions.rowClick || value.rowClick
           $datatable.on('click.ko-datatables','tbody tr',(e) ->

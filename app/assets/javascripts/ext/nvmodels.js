@@ -74,7 +74,7 @@ nv.models.mycumulativeLineChart = function() {
 
   function chart(selection) {
     selection.each(function(data) {
-      var container = d3.select(this).classed('nv-chart-' + id, true),
+      var container = d3.select(this),
           that = this;
 
       var availableWidth = (width  || parseInt(container.style('width')) || 960)
@@ -481,7 +481,7 @@ nv.models.mycumulativeLineChart = function() {
                   })
                   .data(
                       {
-                        value: xValue,
+                        value: '<h3>'+xValue+'</h3>',
                         series: allData
                       }
                   )();
@@ -984,8 +984,8 @@ nv.models.mylinePlusStackedAreaChart = function() {
         }
 
         var xValue = xAxis.tickFormat()(chart.x()(singlePoint,pointIndex), pointIndex);
-        allData = allData.filter(function(series,i){return series.highlight});
-        allData.forEach(function(series,i){
+        allData.reverse();
+        allData.filter(function(series,i){return series.highlight}).forEach(function(series,i){
           interactiveLayer.tooltip
             .position({left: e.mouseX + margin.left, top: e.mouseY + margin.top})
             .chartContainer(that.parentNode)
@@ -995,7 +995,7 @@ nv.models.mylinePlusStackedAreaChart = function() {
             })
             .data(
                 {
-                  value: xValue,
+                  value: '<h3>'+xValue+'</h3>',
                   series: allData
                 }
             )();

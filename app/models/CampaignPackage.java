@@ -117,6 +117,13 @@ public class CampaignPackage extends Model {
 		return this.campaign;
 	}
 
+	public Option<Campaign> getCampaignOption() {
+		if (this.campaign != null) {
+			return new Some<Campaign>(this.campaign);
+		}
+		return Option.empty();
+	}
+
 	public CampaignPackage getCampaignPackage() {
 		return this.campaignPackage;
 	}

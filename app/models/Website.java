@@ -98,14 +98,14 @@ public class Website extends Model {
 		final String url = controllers.routes.ContentController.cookie(
 				getUuid(), "sub").url();
 		return String
-				.format("<script type=\"text/javascript\">\n"
+				.format("<script type=\"text/javascript\">\n//<![CDATA[\n"
 						+ "(function(){\n"
 						+ "var path='%s';\n"
 						+ "var prot=document.location.protocol;\n"
-						+ "var dom='%s'\n;"
+						+ "var dom='%s';\n"
 						+ "var loc=encodeURIComponent(document.location);\n"
-						+ "document.write('<script src=\"'+prot+'//'+dom+path+'?l='+loc+'\"></scripts>');\n"
-						+ "})()\n</script>\n", url,
+						+ "document.write('<script src=\"'+prot+'//'+dom+path+'?l='+loc+'\" async><'+'/script>');\n"
+						+ "})()\n//]]>\n</script>\n", url,
 						domain.nonEmpty() ? domain.get() : "cookiedomain.com");
 	}
 

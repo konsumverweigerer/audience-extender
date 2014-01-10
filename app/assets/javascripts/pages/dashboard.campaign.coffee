@@ -116,7 +116,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @newpackage = ->
         ca = self.currentcampaign()
-        self.currentpackage(new mod.Package {name:'Custom Package',id:0,campaign:ca.id()})
+        self.currentpackage(new mod.Package {name:'Custom Package',id:0,campaign:{id:ca.id(),name:ca.name()}})
 
       @clearpackage = ->
         self.currentpackage(new mod.Package {name:'',id:-1})
@@ -134,13 +134,15 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         a = self.currentpackage()
         l = self.packages
         if a.id() && a.id() > 0
-          a.save(self)
-          l.remove byId a.id()
-          l.push a
-          self.currentpackage(new mod.Package {name:'',id:-1})
+          a.save(self, ->
+            l.remove byId a.id()
+            l.push a
+            self.currentpackage(new mod.Package {name:'',id:-1})
+          )
         else
-          a.save(self)
-          l.push a
+          a.save(self, ->
+            l.push a
+          )
         ca = self.currentcampaign()
         ca.package {id: a.id()}
         self.currentpackages.push a
@@ -157,7 +159,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         $('#editCampaign').modal 'show'
         ca = self.currentcampaign()
         self.currentaudiences (a.refreshSelf ca for a in self.audiences())
-        self.currentpackages (p.refreshSelf ca for p in self.packages() when ca.id()==p.campaign() or not p.campaign()?)
+        self.currentpackages (p.refreshSelf ca for p in self.packages() when p.selectable ca)
         self.campaignstep.maxValue 1
         self.campaignstep.currentValue 1
         self.audienceposition.maxValue self.audiences().length
@@ -186,12 +188,14 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         a.refresh(self.currentaudiences(),self.currentpackages())
         l = self.campaigntable.data
         if a.id() && a.id()>0
-          a.save(self)
-          l.remove byId a.id()
-          l.push a
+          a.save(self, ->
+            l.remove byId a.id()
+            l.push a
+          )
         else
-          a.save(self)
-          l.push a
+          a.save(self, ->
+            l.push a
+          )
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
         $('#editCampaign').modal 'hide'
 

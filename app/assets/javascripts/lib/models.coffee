@@ -104,33 +104,31 @@ define(['knockout', 'jsRoutes'], (ko) ->
         owner: self
 
       @dates = ko.computed
-      	read: ->
-      	  [self.startDate(),self.endDate()]
-      	write: (v) ->
-      	  if v.length == 2
-      	    self.startDate v[0]
-      	    self.endDate v[1]
-      	owner: self
-      	deferEvaluation: true
+        read: ->
+          [self.startDate(),self.endDate()]
+        write: (v) ->
+          if v.length == 2
+            self.startDate v[0]
+            self.endDate v[1]
+        owner: self
+        deferEvaluation: true
 
       @sameRange = (a,b) ->
         Math.abs(a[0].getTime()-b[0].getTime())<3600001 && Math.abs(a[1].getTime()-b[1].getTime())<3600001
 
       @dateRange = ko.computed
-      	read: ->
-      	  nd = new Date()
-      	  cr = [self.startDate(),self.endDate()]
-      	  nrs = (n.name for n in ranges when self.sameRange(cr,truncateToDay(nd,n.from,n.to,n.unit)))
-      	  return nrs[0] || ''
-      	write: (v) ->
+        read: ->
+          nd = new Date()
+          cr = [self.startDate(),self.endDate()]
+          nrs = (n.name for n in ranges when self.sameRange(cr,truncateToDay(nd,n.from,n.to,n.unit)))
+          return nrs[0] || ''
+        write: (v) ->
           if not self.updating
             ranges.map (n,i)->
               if v == n.name
                 t = truncateToDay(new Date(),n.from,n.to,n.unit)
                 self.startDate t[0]
                 self.endDate t[1]
-#      	owner: self
-#      	deferEvaluation: true
 
       @lastDay = ->
         t = truncateToDay(new Date(),2,1)
@@ -381,7 +379,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class ServerModels
     typeOf: (name) ->
-      if ['real','persisted','transientnew'].indexOf(name)>=0
+      if name in ['real','persisted','transientnew']
         return { isIgnored: true, isSend: false }
       { isIgnored: false, isSend: true, isArray: false, isModel: false, model: null }
 
@@ -518,7 +516,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Message extends ServerModels
     typeOf: (name) ->
-      if ['name','dismissed'].indexOf(name)>=0
+      if name in ['name','dismissed']
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -537,6 +535,8 @@ define(['knockout', 'jsRoutes'], (ko) ->
       @title = ko.observable title
 
       @content = ko.observable content
+
+      @actions = ko.observableArray []
 
       @dismissed = ko.observable 0
 
@@ -600,7 +600,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Campaign extends ServerModels
     typeOf: (name) ->
-      if ['messages','uploadprogress','selected','schedulechart'].indexOf(name)>=0
+      if name in ['messages','uploadprogress','selected','schedulechart']
         return { isIgnored: true, isSend: false }
       super name
 
@@ -641,7 +641,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @endDate = ko.observable().extend
         datetime: 'full'
-      @endDate(d?.startDate)
+      @endDate(d?.endDate)
 
       @schedulechart = new Chartdata
 
@@ -709,11 +709,11 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Audience extends ServerModels
     typeOf: (name) ->
-      if name=='paths'
+      if name in ['paths']
         return { isIgnored: false, isSend: true, isArray: true, isModel: true, model: PathTarget }
-      else if ['websitePaths'].indexOf(name)>=0
+      else if name in ['websitePaths']
         return { isIgnored: true, isSend: true }
-      else if ['currentpaths','activewebsite','currentallpath','path','nonempty','messages','selected','active'].indexOf(name)>=0
+      else if name in ['currentpaths','activewebsite','currentallpath','path','nonempty','messages','selected','active']
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -745,7 +745,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @endDate = ko.observable().extend
         datetime: 'full'
-      @endDate(d?.startDate)
+      @endDate(d?.endDate)
 
       @dates = ko.computed
         read: ->
@@ -851,7 +851,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Website extends ServerModels
     typeOf: (name) ->
-      if ['active','inactive','editing','selected','emailSent','emailFail','emailStatus','messages','codeCopied'].indexOf(name)>=0
+      if name in ['active','inactive','editing','selected','emailSent','emailFail','emailStatus','messages','codeCopied']
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -922,7 +922,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Package extends ServerModels
     typeOf: (name) ->
-      if ['messages','selected','active'].indexOf(name)>=0
+      if name in ['messages','selected','active']
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -934,19 +934,32 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @name = ko.observable d?.name
 
+      @name = ko.observable d?.packid
+
       @selected = ko.observable false
 
       @active = ko.observable false
 
-      @campaign = ko.observable d?.campaign
+      @campaign = ko.observable(d?.campaign || null)
+
+      @selectable = (ca) ->
+        if self.id()!=self.packid()
+          return false
+        if self.campaign()?
+          return (ko.unwrap self.campaign().id)==(ko.unwrap ca.id)
+        return true
 
       @refreshSelf = (campaign) ->
         self.selected campaign.package()?.id==self.id()
         return self
 
-      @startDate = ko.observable(d?.startDate ? new Date())
+      @startDate = ko.observable().extend
+        datetime: 'full'
+      @startDate(d?.startDate ? new Date())
 
-      @endDate = ko.observable(d?.endDate ? new Date())
+      @endDate = ko.observable().extend
+        datetime: 'full'
+      @endDate(d?.endDate ? new Date())
 
       @dates = ko.computed
         read: ->
@@ -991,7 +1004,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Publisher extends ServerModels
     typeOf: (name) ->
-      if name=='messages'
+      if name in ['messages']
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -1026,7 +1039,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Admin extends ServerModels
     typeOf: (name) ->
-      if name=='messages'
+      if name in ['messages']
         return { isIgnored: true, isSend: false }
       super(name)
 

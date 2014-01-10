@@ -97,21 +97,12 @@ trait Formats {
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
-      "package" -> longNumber,
-      "audiences" -> list(
-        longNumber),
-      "creatives" -> list(
-        longNumber)))
+      "content" -> optional(text)))
 
   val creativeForm = Form(
     tuple(
       "id" -> longNumber,
-      "name" -> nonEmptyText,
-      "package" -> longNumber,
-      "audiences" -> list(
-        longNumber),
-      "creatives" -> list(
-        longNumber)))
+      "name" -> nonEmptyText))
 
   implicit object MessageFormat extends Format[Message] {
     def reads(json: JsValue) = JsSuccess(new Message(
@@ -193,9 +184,15 @@ trait Formats {
     def writes(campaignPackage: CampaignPackage) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(campaignPackage.getId)),
       "name" -> JsString(campaignPackage.getName),
+      "packid" -> JsNumber(BigDecimal(if (campaignPackage.getCampaignPackage != null) campaignPackage.getCampaignPackage.getId else campaignPackage.getId)),
       "variant" -> JsString(campaignPackage.getVariant),
       "startDate" -> (if (campaignPackage.getStartDate != null) Json.toJson(campaignPackage.getStartDate) else JsString("")),
       "endDate" -> (if (campaignPackage.getEndDate != null) Json.toJson(campaignPackage.getEndDate) else JsString("")),
+      "campaign" -> Json.toJson(campaignPackage.getCampaignOption.map { campaign =>
+        JsObject(Seq(
+          "id" -> JsNumber(BigDecimal(campaign.getId)),
+          "name" -> JsString(campaign.getName)))
+      }),
       "count" -> (if (campaignPackage.getImpressions != null) JsNumber(BigDecimal(campaignPackage.getImpressions)) else JsNumber(0)),
       "reach" -> (if (campaignPackage.getReach != null) JsNumber(BigDecimal(campaignPackage.getReach)) else JsNumber(0)),
       "goal" -> (if (campaignPackage.getGoal != null) JsNumber(BigDecimal(campaignPackage.getGoal)) else JsNumber(0)),
@@ -215,6 +212,8 @@ trait Formats {
       "state" -> JsString(cookie.getState),
       "uuid" -> JsString(cookie.getUuid),
       "variant" -> JsString(cookie.getVariant),
+      "created" -> (if (cookie.getCreated != null) Json.toJson(cookie.getCreated) else JsString("")),
+      "modified" -> (if (cookie.getModified != null) Json.toJson(cookie.getModified) else JsString("")),
       "audience" -> Json.toJson(cookie.getAudience),
       "website" -> Json.toJson(cookie.getWebsite)))
   }
@@ -253,8 +252,16 @@ trait Formats {
       "value" -> JsNumber(BigDecimal(campaign.getValue)),
       "startDate" -> (if (campaign.getStartDate != null) Json.toJson(campaign.getStartDate) else JsString("")),
       "endDate" -> (if (campaign.getEndDate != null) Json.toJson(campaign.getEndDate) else JsString("")),
-      "package" -> Json.toJson(campaign.getCampaignPackage),
-      "audiences" -> Json.toJson(campaign.getAudiences.asScala),
+      "package" -> Json.toJson(campaign.getCampaignPackageOption.map { pack =>
+        JsObject(Seq(
+          "id" -> JsNumber(BigDecimal(if (pack.getCampaignPackage != null) pack.getCampaignPackage.getId else pack.getId)),
+          "name" -> JsString(pack.getName)))
+      }),
+      "audiences" -> Json.toJson(campaign.getAudiences.asScala.map { audience =>
+        JsObject(Seq(
+          "id" -> JsNumber(BigDecimal(audience.getId)),
+          "name" -> JsString(audience.getName)))
+      }),
       "creatives" -> Json.toJson(campaign.getCreatives.asScala.filter(c => !"R".equals(c.getState))),
       "revenue" -> JsNumber(0),
       "cost" -> JsNumber(0),
@@ -266,8 +273,8 @@ trait Formats {
     def reads(json: JsValue) = JsSuccess(null)
 
     def writes(map: java.util.Map[String, String]) = JsObject(
-      map.entrySet().asScala.toSeq.map(e =>
-        e.getKey() -> JsString(e.getValue())))
+      map.entrySet.asScala.toSeq.map(e =>
+        e.getKey -> JsString(e.getValue)))
   }
 
   implicit object DecimalFormat extends Format[java.math.BigDecimal] {
@@ -280,20 +287,20 @@ trait Formats {
     def reads(json: JsValue) = JsSuccess(null)
 
     def writes(map: java.util.Map[String, java.math.BigDecimal]) = JsObject(
-      map.entrySet().asScala.toSeq.map(e =>
-        e.getKey() -> Json.toJson(e.getValue())))
+      map.entrySet.asScala.toSeq.map(e =>
+        e.getKey -> Json.toJson(e.getValue)))
   }
 
   implicit object DatasetFormat extends Format[Dataset] {
     def reads(json: JsValue) = JsSuccess(null)
 
     def writes(dataset: Dataset) = JsObject(Seq(
-      "values" -> Json.toJson(dataset.getContent().asScala),
-      "type" -> JsString(dataset.getType()),
-      "cls" -> JsString(dataset.getCls()),
-      "timeframe" -> JsString(dataset.getTimeframe()),
-      "name" -> JsString(dataset.getName()),
-      "key" -> JsString(dataset.getName())))
+      "values" -> Json.toJson(dataset.getContent.asScala),
+      "type" -> JsString(dataset.getType),
+      "cls" -> JsString(dataset.getCls),
+      "timeframe" -> JsString(dataset.getTimeframe),
+      "name" -> JsString(dataset.getName),
+      "key" -> JsString(dataset.getName)))
   }
 
   implicit object PublisherFormat extends Format[Publisher] {
@@ -306,11 +313,11 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(publisher.getId)),
       "name" -> JsString(publisher.getName),
       "active" -> JsString(if (publisher.isActive) "true" else "false"),
-      "admins" -> Json.toJson(publisher.getAdmins().asScala.map { admin =>
+      "admins" -> Json.toJson(publisher.getAdmins.asScala.map { admin =>
         JsObject(Seq(
           "id" -> JsNumber(BigDecimal(admin.getId)),
           "name" -> JsString(admin.getName),
-          "roles" -> Json.toJson(admin.getRoles().asScala),
+          "roles" -> Json.toJson(admin.getRoles.asScala),
           "email" -> JsString(admin.getEmail)))
       }),
       "url" -> JsString(publisher.getUrl)))
@@ -325,8 +332,8 @@ trait Formats {
     def writes(admin: Admin) = JsObject(Seq(
       "id" -> JsNumber(BigDecimal(admin.getId)),
       "name" -> JsString(admin.getName),
-      "roles" -> Json.toJson(admin.getRoles().asScala),
-      "publishers" -> Json.toJson(admin.getPublishers().asScala),
+      "roles" -> Json.toJson(admin.getRoles.asScala),
+      "publishers" -> Json.toJson(admin.getPublishers.asScala),
       "email" -> JsString(admin.getEmail)))
   }
 }
