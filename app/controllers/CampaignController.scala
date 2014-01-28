@@ -67,6 +67,29 @@ object CampaignController extends Controller with Secured with Formats with Util
       }.getOrElse(Forbidden)
   }
 
+  def creativeSave(campaignid: String, publisherid: String) = IsAuthenticated { adminid =>
+    implicit request =>
+      Admin.findById(adminid).map { admin =>
+        Campaign.findById(campaignid, admin).map { campaign =>
+          creativeForm.bindFromRequest.fold(
+            errors => {
+              val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+              BadRequest(JsObject(Seq(
+                "data" -> Json.toJson(Map[String, String]()),
+                "messages" -> Json.toJson(msgs))))
+            },
+            data =>
+              Creative.findById(data._1, admin).filter(c => c.getCampaign.getId.equals(campaign.getId)).map { creative =>
+              	creative.setUrl(data._3.orNull)
+                val msgs = campaign.write().asScala
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(creative),
+                  "messages" -> Json.toJson(msgs))))
+              }.getOrElse(NotFound))
+        }.getOrElse(Forbidden)
+      }.getOrElse(Forbidden)
+  }
+
   def campaignSave(publisherid: String) = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
@@ -130,12 +153,12 @@ object CampaignController extends Controller with Secured with Formats with Util
                   campaign.getAudiences.add(audience)
                 }
               }
-                campaign.getCreatives.clear()
-                data._4.map { creativeid =>
-                  Creative.findById(creativeid, admin).map { creative =>
-                    campaign.getCreatives.add(creative)
-                  }
+              campaign.getCreatives.clear()
+              data._4.map { creativeid =>
+                Creative.findById(creativeid, admin).map { creative =>
+                  campaign.getCreatives.add(creative)
                 }
+              }
               val publisher = Publisher.findById(publisherid, admin)
               campaign.setPublisher(publisher.get)
               val msgs = campaign.write().asScala

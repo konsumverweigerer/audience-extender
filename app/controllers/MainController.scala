@@ -200,6 +200,7 @@ object MainController extends Controller with Secured with Formats with Utils {
         routes.javascript.PublisherController.uploadCreative,
         routes.javascript.CampaignController.campaignList,
         routes.javascript.CampaignController.campaignSave,
+        routes.javascript.CampaignController.creativeSave,
         routes.javascript.CampaignController.campaignRemove,
         routes.javascript.CampaignController.packageList,
         routes.javascript.CampaignController.packageSave,

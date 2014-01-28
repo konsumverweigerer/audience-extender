@@ -102,7 +102,8 @@ trait Formats {
   val creativeForm = Form(
     tuple(
       "id" -> longNumber,
-      "name" -> nonEmptyText))
+      "name" -> nonEmptyText,
+      "url" -> optional(text)))
 
   implicit object MessageFormat extends Format[Message] {
     def reads(json: JsValue) = JsSuccess(new Message(

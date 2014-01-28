@@ -596,7 +596,10 @@ define(['knockout', 'jsRoutes'], (ko) ->
       @data = ko.observable d?.data
 
       @saveRoute = (page) ->
-        routes.controllers.AdminController.creativeSave()
+        if page.currentcampaign?
+          routes.controllers.CampaignController.creativeSave(page.currentcampaign().id(),page.publisher().id())
+        else
+          routes.controllers.AdminController.creativeSave()
 
   class Campaign extends ServerModels
     typeOf: (name) ->
