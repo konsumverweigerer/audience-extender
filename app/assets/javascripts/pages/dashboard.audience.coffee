@@ -110,10 +110,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           a.save(self, ->
             l.remove byId a.id()
             l.push a
+            self.audiencetablesearchbar.filldata()
           )
         else
           a.save(self, ->
             l.push a
+            self.audiencetablesearchbar.filldata()
           )
         self.currentaudience(new mod.Audience {name:'',id:-1})
         $('#editAudience').modal 'hide'

@@ -191,10 +191,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
           a.save(self, ->
             l.remove byId a.id()
             l.push a
+            self.campaigntablesearchbar.filldata()
           )
         else
           a.save(self, ->
             l.push a
+            self.campaigntablesearchbar.filldata()
           )
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
         $('#editCampaign').modal 'hide'
