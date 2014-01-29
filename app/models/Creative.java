@@ -50,6 +50,7 @@ public class Creative extends Model {
 
 	private String uuid;
 	private String url;
+	private String externalUrl;
 
 	private byte[] data;
 
@@ -190,6 +191,14 @@ public class Creative extends Model {
 		return data;
 	}
 
+	public String getExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(String externalUrl) {
+		this.externalUrl = externalUrl;
+	}
+
 	public void setData(byte[] data) {
 		this.data = data;
 	}
@@ -240,7 +249,7 @@ public class Creative extends Model {
 
 	public String getCreativeUrl() {
 		if ("external".equals(this.variant)) {
-			return this.url != null ? this.url : "";
+			return getUrl() != null ? getUrl() : "";
 		}
 		return controllers.routes.ContentController.creativeContent(this.uuid,
 				"full").url();
