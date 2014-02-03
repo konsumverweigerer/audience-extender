@@ -39,9 +39,15 @@ define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko)
             if r?
               (datatableOptions.rowClick || value.rowClick) value.data()[r.row]
           )
+          $datatable.on('mouseenter.ko-datatables','tbody tr',(e) ->
+            $(e.target).css('cursor','pointer')
+          )
       else if datatableOptions.rowClick || value.rowClick
         $datatable.on('click.ko-datatables','tbody tr',(e) ->
           (datatableOptions.rowClick || value.rowClick) $datatable.fnGetData @
+        )
+        $datatable.on('mouseenter.ko-datatables','tbody tr',(e) ->
+          $(e.target).css('cursor','pointer')
         )
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       $element = $(element)
@@ -58,7 +64,7 @@ define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko)
       if datatableScroller
         datatableScroller.updating true
       $datatable.fnClearTable()
-      dat = ($.extend({row:i},d) for d,i in val)        
+      dat = ($.extend({row:i},d) for d,i in val)
       $datatable.fnAddData dat
       if datatableScroller
         datatableScroller.updating false

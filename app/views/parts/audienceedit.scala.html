@@ -49,6 +49,8 @@
 								</div>
 								<a href="#" class="jcarousel-control-prev" data-bind="click: websiteposition.previous, css: { 'inactive': websiteposition.isFirst }">&lsaquo;</a>
 								<a href="#" class="jcarousel-control-next" data-bind="click: websiteposition.next, css: { 'inactive': websiteposition.isLast }">&rsaquo;</a>
+								<div class="jcarousel-pagination">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -85,7 +87,7 @@
 							</div>
 							<label for="websiteurl" class="col-sm-3 control-label">Website Url</label>
 							<div class="col-sm-9">
-								<input type="text" required data-validation-required-message="Enter a website URL" data-validation-regex-regex="^http\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,5}(/\S*)?$" data-validation-regex-message="Enter valid URL" class="form-control" id="websiteurl" placeholder="Website Url" data-bind="attr: {disabled: persisted}, value: url">
+								<input type="text" required data-validation-required-message="Enter a website URL" data-validation-regex-regex="^http\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,5}(/\S*)?$" data-validation-regex-message="Enter valid URL" class="form-control" id="websiteurl" placeholder="Website Url" data-bind="attr: {disabled: persisted}, value: url.extend({'trim':'both'})">
 							</div>
 						</div>
 						<div class="form-group" data-bind="visible: persisted">
