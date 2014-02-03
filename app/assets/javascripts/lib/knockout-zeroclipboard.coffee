@@ -38,6 +38,8 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
         if zeroclipboardOptions.oncomplete?
           if typeof zeroclipboardOptions.oncomplete == 'string'
             $element[zeroclipboardOptions.oncomplete]('show')
+            if zeroclipboardOptions.oncompletehide?
+              setTimeout(( -> $element[zeroclipboardOptions.oncomplete]('hide')),zeroclipboardOptions.oncompletehide)
           else
             zeroclipboardOptions.oncomplete($element,e)
       )
@@ -71,6 +73,8 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
           if zeroclipboardOptions.oncomplete?
             if typeof zeroclipboardOptions.oncomplete == 'string'
               $element[zeroclipboardOptions.oncomplete]('show')
+              if zeroclipboardOptions.oncompletehide?
+                setTimeout(( -> $element[zeroclipboardOptions.oncomplete]('hide')),zeroclipboardOptions.oncompletehide)
             else
               zeroclipboardOptions.oncomplete($element,e)
         )
