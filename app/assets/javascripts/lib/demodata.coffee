@@ -31,6 +31,8 @@ define(["knockout"], (ko) ->
         count: Math.ceil 10000*Math.random()
         paths: ps
       as.push a
+    if models.websites?
+      v.refresh models.websites() for v in models.audiences()
 
   generateschedulechart = (campaigns,campaign,mod,models) ->
     data = -> []
