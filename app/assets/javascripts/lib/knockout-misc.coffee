@@ -1,4 +1,30 @@
 define([ "knockout", "momentjs" ], (ko) ->
+  ko.extenders.trim = (target,mode) ->
+    result = ko.computed(
+      read: ->
+        v = target()
+        nv = v?.trim?()
+        if mode=='right'
+          nv = v?.trimRight?()
+        if mode=='left'
+          nv = v?.trimLeft?()
+        return nv
+      write: (newValue) ->
+        current = target()
+        valueToWrite = newValue?.trim?()
+        if mode=='right'
+          valueToWrite = newValue?.trimRight?()
+        if mode=='left'
+          valueToWrite = newValue?.trimLeft?()
+        if valueToWrite!=current
+          target valueToWrite
+        else if newValue!=current
+          target.notifySubscribers valueToWrite
+    ).extend { notify: 'always' }
+
+    result target()
+    return result
+
   ko.extenders.datetime = (target,mode) ->
     result = ko.computed(
       read: ->
@@ -29,7 +55,7 @@ define([ "knockout", "momentjs" ], (ko) ->
             target.notifySubscribers valueToWrite
         )
     ).extend { notify: 'always' }
- 
+
     result target()
     return result
 
@@ -48,7 +74,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         else if newValue!=current
           target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
- 
+
     result target()
     return result
 
@@ -66,7 +92,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         else if newValue!=current
             target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
- 
+
     result target()
     return result
 
@@ -90,7 +116,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         else if newValue!=current
             target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
- 
+
     result target()
     return result
 
@@ -114,7 +140,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         else if newValue!=current
             target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
- 
+
     result target()
     return result
 
@@ -131,7 +157,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         return val
       write: (newValue) ->
     ).extend { notify: 'always' }
- 
+
     result target()
     return result
 
@@ -215,7 +241,7 @@ define([ "knockout", "momentjs" ], (ko) ->
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
       value = valueAccessor()
       if ko.unwrap value
-        setTimeout( -> 
+        setTimeout( ->
           $(element).fadeIn(400)
         ,105)
       else
