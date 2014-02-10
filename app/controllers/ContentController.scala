@@ -85,11 +85,18 @@ object ContentController extends Controller with Utils {
       cookies += "<!-- ae marker -->";
     }
     cookies += "<!-- ae://" + uuid + " -->"
-    Ok("(function(){\n setTimeout(function(){\n  var b = document.getElementsByTagName('body');\n" +
-      "  if (b.length!=0){\n   var d = document.createElement('div');\n" +
-      "   d.style.display='none';d.innerHTML='" + (cookies.mkString("\\n")
+    Ok("(function(){\n" +
+      " function ex_scripts(e){function t(e,t){return e.nodeName&&e.nodeName.toUpperCase()===t.toUpperCase()}function n(e){var t=e[0],n=t.text||t.textContent||t.innerHTML||'',r=(document.getElementsByTagName('head')||[null])[0]||document.documentElement,i=document.createElement('script');i.type=e[1];try{i.appendChild(document.createTextNode(n))}catch(s){i.text=n}r.appendChild(i)}var r=[],i,s=e.childNodes,o,u;for(u=0;s[u];u++)o=s[u],t(o,'script')&&r.push([o,o.type]);for(u=0;r[u];u++)i=r[u],i[0].parentNode&&i[0].parentNode.removeChild(i[0]),n(i)};" +
+      " var b = ((document.getElementsByTagName('head') || [null])[0] || document.getElementsByTagName('script')[0].parentNode);\n" +
+      " if (b.length!=0){\n" +
+      "  var d = document.createElement('div');\n" +
+      "  d.style.display='none';d.innerHTML='" + (cookies.mkString("\\n")
         .replace("\n", "\\n").replace("\r", "\\n")
-        .replace("'", "\\'")) + "';\n   b[0].appendChild(d);\n  }\n },100)})();").as("text/javascript")
+        .replace("'", "\\'")) + "';\n" +
+      "  b.appendChild(d);\n" +
+      "  ex_scripts(b);\n" +
+      " }\n" +
+      "})();").as("text/javascript")
   }
 
   def cookie = (uuid: String, sub: String) => Action { implicit request =>
