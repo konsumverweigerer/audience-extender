@@ -19,6 +19,40 @@
 								<div class="popover-title"><span class="glyphicon glyphicon-exclamation-sign"></span><span> </span><span class="help-block"></span></div>
 							</div>
 						</div>
+						<div class="form-group control-group">
+							<div class="col-sm-3 control-label">Roles</div>
+							<div class="col-sm-9">
+								<!-- ko foreach: roles -->
+								<div class="label-selects label label-success">
+									<a class="glyphicon glyphicon-remove" data-bind="click: $root.removerole"></a>
+									<span data-bind="text: $data"></span>
+								</div>
+								<!-- /ko -->
+								<!-- ko foreach: availableRoles -->
+								<div class="label-selects label label-info">
+									<a class="glyphicon glyphicon-plus" data-bind="click: $root.addrole"></a>
+									<span data-bind="text: $data"></span>
+								</div>
+								<!-- /ko -->
+							</div>
+						</div>
+						<div class="form-group control-group">
+							<div class="col-sm-3 control-label">Publishers</div>
+							<div class="col-sm-9">
+								<!-- ko foreach: publishers -->
+								<div class="label-selects label label-success">
+									<a class="glyphicon glyphicon-remove" data-bind="click: $root.delpublisher"></a>
+									<span data-bind="text: name"></span>
+								</div>
+								<!-- /ko -->
+								<!-- ko foreach: $root.availablePublishers -->
+								<div class="label-selects label label-info">
+									<a class="glyphicon glyphicon-plus" data-bind="click: $root.addpublisher"></a>
+									<span data-bind="text: name"></span>
+								</div>
+								<!-- /ko -->
+							</div>
+						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save Admin</button>

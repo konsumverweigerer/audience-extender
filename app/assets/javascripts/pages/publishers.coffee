@@ -39,11 +39,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         self.currentpublisher (new mod.Publisher()).copyFrom p
         $('#editPublisher').modal 'show'
 
-      @addadmin = (a) ->
-        self.currentpublisher.addadmin(a,self.messages)
-
       @deladmin = (a) ->
-        self.currentpublisher.deladmin(a,self.messages)
+        self.currentpublisher.admins.remove byId ko.unwrap a.id
 
       @savepublisher = ->
         p = self.currentpublisher()

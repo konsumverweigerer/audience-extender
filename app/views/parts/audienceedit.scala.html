@@ -32,7 +32,7 @@
 								</a>
 							</div>
 							<div class="jcarousel-wrapper with-add-block" data-bind="fadeVisible: currentwebsites().length!=0">
-								<div class="jcarousel" data-bind="carousel: websiteposition">
+								<div class="jcarousel" data-bind="carousel: websiteposition, carouselOptions: {'pagination': '.jcarousel-pagination', 'paginationOptions': {'itemType': 'bullet'}}">
 									<ul data-bind="foreach: currentwebsites">
 										<li>
 											<a href="javascript:void(0)" class="website-block" data-bind="click: $root.activatewebsite, css: {'selected': selected(), 'active': active()}">
@@ -49,7 +49,7 @@
 								</div>
 								<a href="#" class="jcarousel-control-prev" data-bind="click: websiteposition.previous, css: { 'inactive': websiteposition.isFirst }">&lsaquo;</a>
 								<a href="#" class="jcarousel-control-next" data-bind="click: websiteposition.next, css: { 'inactive': websiteposition.isLast }">&rsaquo;</a>
-								<div class="jcarousel-pagination">
+								<div class="jcarousel-pagination text-center">
 								</div>
 							</div>
 						</div>

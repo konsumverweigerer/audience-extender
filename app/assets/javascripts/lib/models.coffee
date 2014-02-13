@@ -1042,7 +1042,7 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
   class Admin extends ServerModels
     typeOf: (name) ->
-      if name in ['messages']
+      if name in ['messages', 'availableRoles']
         return { isIgnored: true, isSend: false }
       super(name)
 
@@ -1050,6 +1050,8 @@ define(['knockout', 'jsRoutes'], (ko) ->
       super d
       self = @
 
+      @allRoles = ko.observableArray ['sysadmin','dummy','none','publisher']
+      
       @messages = ko.observableArray []
 
       @name = ko.observable d?.name
@@ -1075,6 +1077,9 @@ define(['knockout', 'jsRoutes'], (ko) ->
       @telephone = ko.observable d?.telephone
 
       @roles = ko.observableArray d?.roles
+
+      @availableRoles = ko.computed ->
+        role for role in self.allRoles() when self.roles().indexOf(role)<0
 
       @publishers = ko.observableArray (d?.publishers || []).map (v) -> new Publisher v
 
