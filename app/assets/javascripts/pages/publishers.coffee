@@ -40,7 +40,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         $('#editPublisher').modal 'show'
 
       @deladmin = (a) ->
-        self.currentpublisher.admins.remove byId ko.unwrap a.id
+        self.currentpublisher().admins.remove byId ko.unwrap a.id
 
       @savepublisher = ->
         p = self.currentpublisher()
