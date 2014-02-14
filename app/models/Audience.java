@@ -307,6 +307,7 @@ public class Audience extends Model {
 				} else if (website.getId().equals(cookie.getWebsite().getId())) {
 					cookie.setState("C");
 					cookie.update();
+					setState("P");
 				}
 			}
 			if (!valid) {
@@ -314,6 +315,7 @@ public class Audience extends Model {
 						.instance("Cookie for " + getName(), "code", this,
 								website, paths);
 				cookie.save();
+				setState("P");
 			}
 		}
 		update();
