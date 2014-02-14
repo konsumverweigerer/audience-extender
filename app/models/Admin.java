@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.avaje.ebean.Ebean;
+
 import play.data.format.Formats.NonEmpty;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
@@ -172,6 +174,16 @@ public class Admin extends Model {
 		if (id != null) {
 			final Admin admin = find.byId(id);
 			if (admin != null) {
+				return new Some<Admin>(admin);
+			}
+		}
+		return Option.empty();
+	}
+
+	public static Option<Admin> findAllById(Long id) {
+		if (id != null) {
+			for (final Admin admin : find.fetch("publishers").where()
+					.eq("id", id).findList()) {
 				return new Some<Admin>(admin);
 			}
 		}
@@ -521,6 +533,7 @@ public class Admin extends Model {
 
 	public List<Message> write() {
 		save();
+		Ebean.saveManyToManyAssociations(this, "publishers");
 		update();
 		return Collections.emptyList();
 	}

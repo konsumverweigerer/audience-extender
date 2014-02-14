@@ -33,6 +33,10 @@ import services.StatsHandler;
 
 import com.avaje.ebean.Ebean;
 
+/**
+ * @author grp14818
+ * 
+ */
 @Entity
 public class Audience extends Model {
 	public static final long DAY = 24 * 60 * 60 * 1000L;
@@ -288,6 +292,16 @@ public class Audience extends Model {
 
 	public Audience updateFromMap(Map<String, Object> data) {
 		return this;
+	}
+
+	/**
+	 * check if all required cookies are active
+	 * 
+	 * @return
+	 */
+	public boolean checkState() {
+		// TODO: implement
+		return false;
 	}
 
 	public List<Message> write() {
