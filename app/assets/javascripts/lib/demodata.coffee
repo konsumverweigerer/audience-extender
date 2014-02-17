@@ -54,11 +54,14 @@ define(["knockout"], (ko) ->
         for pa in models.currentpackages() when pa.id()==(campaign.package()?.id)
           c = pa.count()/(rd.length)
           maxc = maxc+c
-          ps = for d in days
+          ps = []
+          for d in days
             if rd.indexOf(d)>=0
-              {x:d,y:c}
+              ps.push {x:d,y:c}
+              ps.push {x:(d+day),y:c}
             else
-              {x:d,y:0}
+              ps.push {x:d,y:0}
+              ps.push {x:(d+day),y:0}
           ret.push
             key: campaign.name()
             cls: 'campaign'
@@ -74,13 +77,17 @@ define(["knockout"], (ko) ->
             for pa in models.currentpackages() when pa.id()==(ca.package()?.id)
               c = pa.count()/(rd.length)
               maxc = maxc+(c/2)
-              ps = for d in days
+              ps = []
+              for d in days
                 if rd.indexOf(d)<0
-                  {x:d,y:0}
+                  ps.push {x:d,y:0}
+                  ps.push {x:(d+day),y:0}
                 else if d<=now
-                  {x:d,y:c+rnd(-c/4,c/4)}
+                  ps.push {x:d,y:c+rnd(-c/4,c/4)}
+                  ps.push {x:(d+day),y:c+rnd(-c/4,c/4)}
                 else
-                  {x:d,y:c}
+                  ps.push {x:d,y:c}
+                  ps.push {x:(d+day),y:c}
               ret.push
                 key: ca.name()
                 cls: 'campaign'
