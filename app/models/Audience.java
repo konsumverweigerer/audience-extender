@@ -297,11 +297,20 @@ public class Audience extends Model {
 	/**
 	 * check if all required cookies are active
 	 * 
-	 * @return
+	 * @return true if all cookies are active
 	 */
 	public boolean checkState() {
-		// TODO: implement
-		return false;
+		for (final Website website : getWebsites()) {
+			final Collection<PathTarget> paths = getWebsitePathTargets(website);
+			for (final Cookie cookie : getCookies()) {
+				if (cookie.checkCookie(this, website, paths)) {
+					if (!"A".equals(cookie.getState())) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	public List<Message> write() {
