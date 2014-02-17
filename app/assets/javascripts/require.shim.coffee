@@ -25,6 +25,10 @@ requirejs.config
       deps: [ 'jquery', 'bootstrap' ]
     'jqBootstrapValidation':
       deps: [ 'jquery', 'bootstrap' ]
+    'bootstrap-tour':
+      deps: [ 'jquery', 'bootstrap' ]
+    'chardin':
+      deps: [ 'jquery' ]
     'jsRoutes':
       deps: []
       exports: 'jsRoutes'
@@ -64,6 +68,8 @@ define("d3", [ "webjars!d3.js" ], -> d3 )
 define("nv.d3", [ "webjars!nv.d3.js" ], -> nv )
 define("momentjs", [ "webjars!moment.js" ], -> )
 
+define("chardin", [ "ext/chardin.js" ], -> )
+define("bootstrap-tour", [ "ext/bootstrap-tour.js" ], -> )
 define("load-image", [ "ext/load-image" ], (loadImage) -> loadImage)
 define("load-image-meta", [ "ext/load-image-meta" ], -> )
 define("load-image-exif", [ "ext/load-image-exif" ], -> )

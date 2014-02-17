@@ -17,8 +17,6 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.avaje.ebean.Ebean;
-
 import play.data.format.Formats.NonEmpty;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
@@ -28,9 +26,21 @@ import scala.Option;
 import scala.Some;
 import services.UnixMD5Crypt;
 
+import com.avaje.ebean.Ebean;
+
 @Entity
 public class Admin extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
+
+	public static Option<Admin> findAllById(Long id) {
+		if (id != null) {
+			for (final Admin admin : find.fetch("publishers").where()
+					.eq("id", id).findList()) {
+				return new Some<Admin>(admin);
+			}
+		}
+		return Option.empty();
+	}
 
 	@Id
 	private Long id;
@@ -45,37 +55,40 @@ public class Admin extends Model {
 
 	@Required(groups = {})
 	private String password;
-
 	private String emailConfirmToken;
 	private String passwordChangeToken;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date passwordChangeTokenDate;
-
 	private Boolean locked;
-	private Boolean needPasswordChange;
 
+	private Boolean needPasswordChange;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date loggedIn;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date changed;
-
 	private String url;
 	private String streetaddress1;
 	private String streetaddress2;
 	private String streetaddress3;
 	private String state;
 	private String country;
-	private String telephone;
 
+	private String telephone;
 	@Transient
 	private String pwdClear;
+
 	@Transient
 	private String pwdVerify;
 
 	@MaxLength(512)
 	private String adminRoles;
+
+	@MaxLength(1024)
+	private String features;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Publisher publisher;
@@ -174,16 +187,6 @@ public class Admin extends Model {
 		if (id != null) {
 			final Admin admin = find.byId(id);
 			if (admin != null) {
-				return new Some<Admin>(admin);
-			}
-		}
-		return Option.empty();
-	}
-
-	public static Option<Admin> findAllById(Long id) {
-		if (id != null) {
-			for (final Admin admin : find.fetch("publishers").where()
-					.eq("id", id).findList()) {
 				return new Some<Admin>(admin);
 			}
 		}
@@ -321,6 +324,10 @@ public class Admin extends Model {
 		return this.emailConfirmToken;
 	}
 
+	public String getFeatures() {
+		return this.features;
+	}
+
 	public Long getId() {
 		return this.id;
 	}
@@ -441,6 +448,10 @@ public class Admin extends Model {
 
 	public void setEmailConfirmToken(String emailConfirmToken) {
 		this.emailConfirmToken = emailConfirmToken;
+	}
+
+	public void setFeatures(String features) {
+		this.features = features;
 	}
 
 	public void setId(Long id) {
