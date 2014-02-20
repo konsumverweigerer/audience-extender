@@ -43,22 +43,22 @@
 				<div class="col-sm-4 hidden-xs">
 					<form class="form-horizontal" role="form">
 						<div class="form-group well-fix">
-							<label for="selectDate" class="col-sm-2 control-label">Dates</label>
-							<div class="col-sm-10">
+							<label for="selectDate" class="col-sm-3 control-label">Dates</label>
+							<div class="col-sm-9">
 								<select class="form-control" data-bind="options: campaignchartdaterange.availableDateRanges, value: campaignchartdaterange.dateRange" id="selectDate">
 								</select>
 							</div>
 						</div>
 					</form>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-lg-6 col-sm-5">
 					<div data-bind="datepicker: campaignchartdaterange, datepickerOptions: { calendarWeeks: true, autoclose: true, todayHighlight: true }" class="well well-sm m-null input-daterange">
 						<div class="row">
 							<div class="col-sm-6">
 								<form class="form-horizontal" role="form">
 									<div class="form-group m-null">
-										<label for="selectDateFrom" class="col-sm-2 control-label hidden-md hidden-sm">From</label>
-										<div class="col-sm-10">
+										<label for="selectDateFrom" class="col-lg-3 control-label hidden-md hidden-sm">From</label>
+										<div class="col-lg-9 col-md-12">
 											<input class="form-control date-picker" id="selectDateFrom" name="start"/>
 										</div>
 									</div>
@@ -67,8 +67,8 @@
 							<div class="col-sm-6">
 								<form class="form-horizontal" role="form">
 									<div class="form-group m-null">
-										<label for="selectDateTo" class="col-sm-2 control-label hidden-md hidden-sm">To</label>
-										<div class="col-sm-10">
+										<label for="selectDateTo" class="col-lg-3 control-label hidden-md hidden-sm">To</label>
+										<div class="col-lg-9 col-md-12">
 											<input class="form-control date-picker" id="selectDateTo" name="end"/>
 										</div>
 									</div>
@@ -77,8 +77,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-2 hidden-xs">
-					<div class="btn-group" data-toggle="buttons">
+				<div class="col-lg-2 col-sm-3 hidden-xs">
+					<div class="btn-group well-fix" data-toggle="buttons">
 						<label class="btn btn-default active btn-sm">
 							<input type="radio" name="charttype" value="cumulativeline" data-bind="checkedChange: campaigncharttype">Sum
 						</label>
@@ -108,7 +108,7 @@
 <div class="secondary">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-lg-9 col-md-8">
 				<div class="row">
 					@elements.searchbar("campaigntablesearchbar")
 				</div>
@@ -139,7 +139,7 @@
 					@elements.pagination("campaigntablescroller")
 				</div>
 			</div>
-			<div class="col-md-3">
+			<div class="col-lg-3 col-md-4">
 				<p>
 					<button type="button" class="btn btn-default btn-lg btn-block btn-plus" data-bind="click: newcampaign"><span></span><span class="glyphicon glyphicon-plus-sign"></span> New Campaign</button>
 				</p>
