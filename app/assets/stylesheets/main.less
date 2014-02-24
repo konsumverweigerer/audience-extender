@@ -345,9 +345,9 @@ h3 {
 .website-block-wrapper {
 	background:rgba(255, 255, 255, 0.5);
 	border:1px solid #eee;
-	margin:10px;
+	margin:10px 9px;
 	&.simple {
-		margin:10px 20px;
+		margin:10px 21px;
 		min-height:172px;
 	}
 }
@@ -357,32 +357,32 @@ h3 {
 }
 
 .jcarousel-wrapper {
-	border-right:1px solid #eee;
 	padding:0 60px;
 	position:relative;
 }
 .jcarousel-wrapper.with-add-block {
+	border-right:1px solid #eee;
 	margin-right:190px;
 }
 .jcarousel {
 	overflow:hidden;
 	position:relative;
 	width:100%;
-}
-.jcarousel ul {
-	list-style:none outside none;
-	margin:0;
-	padding:0;
-	position:relative;
-	width:20000em;
-}
-.jcarousel li {
-	-moz-box-sizing:border-box;
-	border-right:1px solid #eee;
-	float:left;
-	width:188px;
-	&:first-child {
+	ul {
+		list-style:none outside none;
+		margin:0;
+		padding:0;
+		position:relative;
+		width:20000em;
+	}
+	li {
+		-moz-box-sizing:border-box;
 		border-left:1px solid #eee;
+		float:left;
+		width:193px;
+		&:last-child {
+			border-right:1px solid #eee;
+		}
 	}
 }
 .jcarousel-control-prev {
@@ -415,6 +415,9 @@ h3 {
 		background:@btn-default-bg;
 		cursor:default;
 	}
+}
+.pagination-bullet:hover {
+	text-decoration:none;
 }
 
 .header {
@@ -653,7 +656,7 @@ div.legend-profit {
 .website-audience,
 .website-actions {
 	display:block;
-	max-width:188px;
+	max-width:193px;
 	text-align:center;
 }
 .website-name {
