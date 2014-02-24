@@ -147,6 +147,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         ca.package {id: a.id()}
         self.currentpackages.push a
 
+      @startnewcampaign = ->
+        $('#selectCampaign').modal 'show'
+
       @newcampaign = ->
         if self.campaigns().length==0
           self.alert.show('Missing audiences','Before creating campaigns, you have to create audiences first','error')
