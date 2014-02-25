@@ -175,6 +175,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap", "chardin", "bootstrap
       @clearcampaign = ->
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
         $('#editCampaign').modal 'hide'
+        $('#selectCampaign').modal 'hide'
 
       @cleardeletecampaign = ->
         self.confirmcampaigndelete 0
