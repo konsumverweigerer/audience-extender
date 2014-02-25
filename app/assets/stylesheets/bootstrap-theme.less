@@ -12,9 +12,11 @@
 @font3:'Oswald',sans-serif;
 
 @color-blue:#275980;
+@color-light-blue:#4f7ca5;
 @color-red:#bf0c0c;
 @color-yellow:#f3b300;
 @color-green:#81c53e;
+@color-light-brown:#afab98;
 
 .rounded-corners (@radius:5px) {
 	border-radius:@radius;
@@ -23,16 +25,16 @@
 }
 
 @btn-default-color:#fff;
-@btn-default-bg:#afab98;
-@btn-default-border:#afab98;
-@btn-default-bg-hover:#275980;
-@btn-default-border-hover:#275980;
+@btn-default-bg:@color-light-brown;
+@btn-default-border:@color-light-brown;
+@btn-default-bg-hover:@color-blue;
+@btn-default-border-hover:@color-blue;
 
 @btn-primary-color:#fff;
-@btn-primary-bg:#275980;
-@btn-primary-border:#275980;
-@btn-primary-bg-hover:#4f7ca5;
-@btn-primary-border-hover:#4f7ca5;
+@btn-primary-bg:@color-blue;
+@btn-primary-border:@color-blue;
+@btn-primary-bg-hover:@color-light-blue;
+@btn-primary-border-hover:@color-light-blue;
 
 
 
@@ -58,7 +60,7 @@ a {color:@color-blue;}
 .table-striped > thead > tr:nth-child(2n+1) > th:hover,
 .table-striped > thead > tr:nth-child(2n+1) > th.sorting_asc,
 .table-striped > thead > tr:nth-child(2n+1) > th.sorting_desc {
-	background-color:#275980;
+	background-color:@color-blue;
 }
 
 //buttons colors

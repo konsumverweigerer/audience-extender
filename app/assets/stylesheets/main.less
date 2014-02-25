@@ -412,13 +412,37 @@ h3 {
 		text-decoration:none;
 	}
 	&.inactive {
-		background:@btn-default-bg;
+		background:@color-light-brown;
 		cursor:default;
 	}
 }
 .pagination-bullet:hover {
 	text-decoration:none;
 }
+
+
+
+.img-option {
+	border:15px solid #e3e3e3;
+	display:inline-block;
+	margin:0 20px 20px;
+	&:hover {
+		border:15px solid @color-light-blue;
+	}
+	&:active {
+		border:15px solid @color-blue;
+	}
+}
+.img-option-name {
+	color:@color-blue;
+	font-family:@font1;
+	margin:0 20px 10px;
+}
+.img-option-text {
+	text-align:center;
+}
+
+
 
 .header {
 	background:#1c5078 url("/assets/images/bg-header.jpg") no-repeat top center;
@@ -915,6 +939,12 @@ nav.loginbar {
 }
 
 @media (max-width: 767px) {
+}
+@media (min-width: 768px) {
+	.img-option-text {
+		line-height:200px;
+		margin:20px 0;
+	}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
