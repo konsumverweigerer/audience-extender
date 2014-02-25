@@ -21,6 +21,10 @@ requirejs.config
       exports: 'd3'
     'bootstrap-datepicker':
       deps: [ 'jquery', 'bootstrap' ]
+    'bootstrap-tour':
+      deps: [ 'jquery', 'bootstrap' ]
+    'chardin':
+      deps: [ 'jquery' ]
     'bootstrap-editable':
       deps: [ 'jquery', 'bootstrap' ]
     'jqBootstrapValidation':
@@ -46,6 +50,8 @@ define("d3", [ "webjars!d3.js" ], -> d3 )
 define("nv.d3", [ "webjars!nv.d3.js" ], -> nv )
 define("momentjs", [ "webjars!moment.js" ], -> )
 
+define("chardin", [ "ext/chardinjs" ], -> )
+define("bootstrap-tour", [ "ext/bootstrap-tour" ], -> )
 define("load-image", [ "ext/load-image" ], (loadImage) -> loadImage)
 define("load-image-meta", [ "ext/load-image-meta" ], -> )
 define("load-image-exif", [ "ext/load-image-exif" ], -> )

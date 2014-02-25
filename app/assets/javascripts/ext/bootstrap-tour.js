@@ -1,3 +1,4 @@
+define(["bootstrap", "jquery"], function() {
 /* ===========================================================
 # bootstrap-tour - v0.9.0
 # http://bootstraptour.com
@@ -696,3 +697,4 @@
   })();
   return window.Tour = Tour;
 })(jQuery, window);
+});
