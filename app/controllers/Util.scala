@@ -341,6 +341,7 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(admin.getId)),
       "name" -> JsString(admin.getName),
       "roles" -> Json.toJson(admin.getRoles.asScala),
+      "features" -> Json.toJson(admin.getFeatureList.asScala),
       "publishers" -> Json.toJson(admin.getPublishers.asScala),
       "email" -> JsString(admin.getEmail)))
   }

@@ -1078,6 +1078,8 @@ define(['knockout', 'jsRoutes'], (ko) ->
 
       @roles = ko.observableArray d?.roles
 
+      @features = ko.observableArray d?.features
+
       @availableRoles = ko.computed ->
         role for role in self.allRoles() when self.roles().indexOf(role)<0
 

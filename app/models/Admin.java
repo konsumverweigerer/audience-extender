@@ -296,6 +296,17 @@ public class Admin extends Model {
 		this.created = new Date();
 	}
 
+	public boolean addFeature(String feature) {
+		boolean added = false;
+		final List<String> features = getFeatureList();
+		if (!features.contains(feature)) {
+			features.add(feature);
+			added = true;
+		}
+		setFeatures(StringUtils.join(features, ","));
+		return added;
+	}
+
 	public boolean checkPwd(String password) {
 		return UnixMD5Crypt.check(getPassword(), password);
 	}
@@ -322,6 +333,16 @@ public class Admin extends Model {
 
 	public String getEmailConfirmToken() {
 		return this.emailConfirmToken;
+	}
+
+	public List<String> getFeatureList() {
+		final List<String> features = new ArrayList<String>();
+		if (getFeatures() != null) {
+			for (final String feature : getFeatures().split("[,]")) {
+				features.add(feature);
+			}
+		}
+		return features;
 	}
 
 	public String getFeatures() {
