@@ -11,7 +11,7 @@ define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko)
     }
   ko.bindingHandlers.datatable =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       allBindings = allBindingsAccessor()
       datatableScroller = allBindings.datatableScroller || value.scroller
@@ -34,23 +34,23 @@ define([ "knockout", "jquery.dataTables", "jquery", "lib/datatables-ext" ], (ko)
         .subscribe (nv) ->
           ko.bindingHandlers.datatable.update(element,value.rows,allBindingsAccessor,viewModel,bindingContext)
         if datatableOptions.rowClick || value.rowClick
-          $datatable.on('click.ko-datatables','tbody tr',(e) ->
+          $datatable.on('click.datatables.ko','tbody tr',(e) ->
             r = $datatable.fnGetData @
             if r?
               (datatableOptions.rowClick || value.rowClick) value.data()[r.row]
           )
-          $datatable.on('mouseenter.ko-datatables','tbody tr',(e) ->
+          $datatable.on('mouseenter.datatables.ko','tbody tr',(e) ->
             $(e.target).css('cursor','pointer')
           )
       else if datatableOptions.rowClick || value.rowClick
-        $datatable.on('click.ko-datatables','tbody tr',(e) ->
+        $datatable.on('click.datatables.ko','tbody tr',(e) ->
           (datatableOptions.rowClick || value.rowClick) $datatable.fnGetData @
         )
-        $datatable.on('mouseenter.ko-datatables','tbody tr',(e) ->
+        $datatable.on('mouseenter.datatables.ko','tbody tr',(e) ->
           $(e.target).css('cursor','pointer')
         )
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       allBindings = allBindingsAccessor()
       datatableScroller = allBindings.datatableScroller || value.scroller
 

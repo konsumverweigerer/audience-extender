@@ -3,21 +3,22 @@ define([ "knockout", "ext/bootstrap-slider" ], (ko) ->
 
   ko.bindingHandlers.slider =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       allBindings = allBindingsAccessor()
       sliderOptions = $.extend(sliderDefaults(),allBindings.sliderOptions || {})
 
       $slider = $element.slider sliderOptions
+      $slider.off 'slide.slider.ko'
       if ko.isObservable value
-        $slider.on('slide.ko', (e) ->
+        $slider.on('slide.slider.ko', (e) ->
           valueAccessor() e.value
         )
 
       if sliderOptions.slide
-        $slider.on('slide',sliderOptions.slide)
+        $slider.on('slide.slider.ko',sliderOptions.slide)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       allBindings = allBindingsAccessor()
 

@@ -10,8 +10,8 @@ define([ "knockout", "ext/jquery.jcarousel" ], (ko) ->
               '<a href="#' + page + '" class="pagination-bullet h3">&bullet;</a>'
       $(carouselOptions.pagination).jcarouselPagination o
     if carouselOptions.previousButton?
-      $(carouselOptions.previousButton).off 'click.ko-carousel'
-      $(carouselOptions.previousButton).on('click.ko-carousel',(e) =>
+      $(carouselOptions.previousButton).off 'click.carousel.ko'
+      $(carouselOptions.previousButton).on('click.carousel.ko',(e) =>
         val = ko.unwrap valueAccessor()
         if val.previous
           val.previous()
@@ -19,8 +19,8 @@ define([ "knockout", "ext/jquery.jcarousel" ], (ko) ->
           $element.jcarousel('scroll','-=1')
       )
     if carouselOptions.nextButton?
-      $(carouselOptions.nextButton).off 'click.ko-carousel'
-      $(carouselOptions.nextButton).on('click.ko-carousel',(e) =>
+      $(carouselOptions.nextButton).off 'click.carousel.ko'
+      $(carouselOptions.nextButton).on('click.carousel.ko',(e) =>
         val = ko.unwrap valueAccessor()
         if val.next
           val.next()
@@ -29,20 +29,20 @@ define([ "knockout", "ext/jquery.jcarousel" ], (ko) ->
       )
   ko.bindingHandlers.carousel =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       allBindings = allBindingsAccessor()
       carouselOptions = $.extend(carouselDefaults(),allBindings.carouselOptions || {})
       $carousel = $element.jcarousel carouselOptions
       setup(valueAccessor,$carousel,carouselOptions)
-      $element.off 'jcarousel:animateend.ko-carousel'
-      $element.on('jcarousel:animateend.ko-carousel',(e,v) =>
+      $element.off 'jcarousel:animateend.carousel.ko'
+      $element.on('jcarousel:animateend.carousel.ko',(e,v) =>
         p = v.items().index v.closest()
         val = ko.unwrap valueAccessor()
         if val.currentValue?
           val.currentValue p
       )
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       val = ko.unwrap valueAccessor()
       fval = val
       if val.currentValue
@@ -71,8 +71,8 @@ define([ "knockout", "ext/jquery.jcarousel" ], (ko) ->
         fval.maxValue ai-fi
         $element.data('jcarousel').reload()
       c = $element.jcarousel('scroll',val || 0)
-      $element.off 'jcarousel:animateend.ko-carousel'
-      $element.on('jcarousel:animateend.ko-carousel',(e,v) =>
+      $element.off 'jcarousel:animateend.carousel.ko'
+      $element.on('jcarousel:animateend.carousel.ko',(e,v) =>
         p = v.items().index v.closest()
         val = ko.unwrap valueAccessor()
         if val.currentValue?

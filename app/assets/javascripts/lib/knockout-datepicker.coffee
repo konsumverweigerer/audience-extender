@@ -16,7 +16,7 @@ define([ "knockout", "bootstrap-datepicker", "jquery" ], (ko) ->
 
   ko.bindingHandlers.datepicker =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       allBindings = allBindingsAccessor()
       datepickerOptions = allBindings.datepickerOptions || {}
@@ -60,7 +60,7 @@ define([ "knockout", "bootstrap-datepicker", "jquery" ], (ko) ->
       if datepickerOptions.changeData
         $datepicker.on('changeDate',datepickerOptions.changeDate)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
 
       $datepicker = $element.datepicker()

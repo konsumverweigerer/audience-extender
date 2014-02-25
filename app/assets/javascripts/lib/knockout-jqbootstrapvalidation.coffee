@@ -3,7 +3,7 @@ define([ "knockout", "jqBootstrapValidation" ], (ko) ->
 
   ko.bindingHandlers.jqvalidation =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       allBindings = allBindingsAccessor()
       jqvalidationOptions = $.extend(validationDefaults(),ko.unwrap(value) || {})

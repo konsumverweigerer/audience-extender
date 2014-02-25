@@ -53,14 +53,14 @@ define([ "knockout", "ext/jquery.noty" ], (ko) ->
 
   ko.bindingHandlers.noty =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
       notyOptions = $.extend(notyDefaults(), allBindings.notyOptions || {})
       notyOptions.container = $element
       sendnoty(val,notyOptions)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
       notyOptions = $.extend(notyDefaults(), allBindings.notyOptions || {})
