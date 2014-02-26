@@ -124,7 +124,7 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="button" class="btn btn-primary" data-bind="visible: persisted, zeroclipboard: code, zeroclipboardOptions: {copied: codeCopied, oncomplete: 'popover'}, attr: {'data-content': codeCopied}" data-placement="left" data-original-title="Copied code" title="">Copy Tracking Code</button>
+								<button type="button" class="btn btn-primary" data-bind="visible: persisted, zeroclipboard: code, zeroclipboardOptions: {copied: codeCopied, oncomplete: 'popover', oncompletehide: 3000}, attr: {'data-content': codeCopied}" data-placement="left" data-original-title="Copied code" title="">Copy Tracking Code</button>
 								<button type="button" class="btn btn-default" data-bind="click: $root.clearwebsite">Cancel</button>
 								<button type="submit" class="btn btn-primary" data-bind="visible: transientnew"><span class="glyphicon glyphicon-floppy-disk"></span> Save Settings</button>
 							</div>
