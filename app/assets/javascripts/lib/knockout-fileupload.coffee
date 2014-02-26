@@ -12,10 +12,10 @@ define([ "knockout", "jquery.fileupload", "jquery",
     }
 
   attachfileupload = ($fileupload,fileuploadOptions,valueAccessor) ->
-    $fileupload.off '.ko'
+    $fileupload.off '.fileupload.ko'
 
     if fileuploadOptions.progress?
-      $fileupload.on('fileuploadprogressall.ko', (e,data) ->
+      $fileupload.on('fileuploadprogressall.fileupload.ko', (e,data) ->
         progress = parseInt(data.loaded/data.total*100,10)
         if ko.isObservable fileuploadOptions.progress
           fileuploadOptions.progress progress
@@ -23,39 +23,39 @@ define([ "knockout", "jquery.fileupload", "jquery",
           $(fileuploadOptions.progress).css('width',progress + '%')
       )
     else if fileuploadOptions.fileuploadprogressall?
-      $fileupload.on('fileuploadprogressall.ko', (e,data) ->
+      $fileupload.on('fileuploadprogressall.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploadprogressall(e,data)
       )
     if fileuploadOptions.fileuploadadd?
-      $fileupload.on('fileuploadadd.ko', (e,data) ->
+      $fileupload.on('fileuploadadd.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploadadd(e,data)
       )
     if fileuploadOptions.fileuploadprocessalways?
-      $fileupload.on('fileuploadprocessalways.ko', (e,data) ->
+      $fileupload.on('fileuploadprocessalways.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploadprocessalways(e,data)
       )
     if fileuploadOptions.fileuploadprocessfail?
-      $fileupload.on('fileuploadprocessfail.ko', (e,data) ->
+      $fileupload.on('fileuploadprocessfail.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploadprocessfail(e,data)
       )
     if fileuploadOptions.fileuploadprocessdone?
-      $fileupload.on('fileuploadprocessdone.ko', (e,data) ->
+      $fileupload.on('fileuploadprocessdone.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploadprocessdone(e,data)
       )
     if fileuploadOptions.fileuploaddone?
-      $fileupload.on('fileuploaddone.ko', (e,data) ->
+      $fileupload.on('fileuploaddone.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploaddone(e,data.result)
       )
     if valueAccessor()?
-      $fileupload.on('fileuploaddone.ko.va', (e,data) ->
+      $fileupload.on('fileuploaddone.fileupload.ko.va', (e,data) ->
         valueAccessor() data.result
       )
     if fileuploadOptions.fileuploadfail?
-      $fileupload.on('fileuploadfail.ko', (e,data) ->
+      $fileupload.on('fileuploadfail.fileupload.ko', (e,data) ->
         fileuploadOptions.fileuploadfail(e,data)
       )
     if ko.isObservable fileuploadOptions.errors
-      $fileupload.on('fileuploadfail.ko.va', (e,data) ->
+      $fileupload.on('fileuploadfail.fileupload.ko.va', (e,data) ->
         fileuploadOptions.errors (f.error for f in data.result.files)
       )
 
@@ -69,14 +69,14 @@ define([ "knockout", "jquery.fileupload", "jquery",
 
   ko.bindingHandlers.fileupload =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       allBindings = allBindingsAccessor()
       fileuploadOptions = $.extend(fileuploadDefaults(),allBindings.fileuploadOptions || {})
       preprocess fileuploadOptions
       $fileupload = $element.fileupload fileuploadOptions
       attachfileupload($fileupload,fileuploadOptions,valueAccessor)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       allBindings = allBindingsAccessor()
       fileuploadOptions = $.extend(fileuploadDefaults(),allBindings.fileuploadOptions || {})
       preprocess fileuploadOptions

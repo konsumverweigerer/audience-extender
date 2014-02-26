@@ -54,7 +54,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
     implicit request =>
       Admin.findById(currentid).map { current =>
         Admin.findById(adminid).map { admin =>
-          admin.delete()
+          admin.delete
           Ok(html.admins(
             Admin.findByAdmin(current),
             Publisher.findByAdmin(admin).asScala,
@@ -127,17 +127,39 @@ object AdminController extends Controller with Secured with Formats with Utils {
           },
           data =>
             Some(data._1).map { id =>
-              Admin.findById(id).map { admin =>
-                //TODO: fill from form
-                val msgs = admin.write()
+              Admin.findAllById(id).map { admin =>
+                admin.setName(data._2)
+                admin.setEmail(data._3)
+                admin.setRoles(data._4)
+                admin.getPublishers.clear
+                data._5.map { pub =>
+                  Publisher.findById(pub._1, admin).map { publisher =>
+                    admin.getPublishers.add(publisher)
+                  }
+                }
+                data._6.map { url => admin.setUrl(url) }
+                data._7.map { s => admin.setStreetaddress1(s) }
+                data._8.map { s => admin.setStreetaddress2(s) }
+                data._9.map { s => admin.setStreetaddress3(s) }
+                data._10.map { s => admin.setState(s) }
+                data._11.map { c => admin.setCountry(c) }
+                data._12.map { t => admin.setTelephone(t) }
+                val msgs = admin.write
                 Ok(JsObject(Seq(
                   "data" -> Json.toJson(admin),
                   "messages" -> Json.toJson(msgs.asScala))))
               }.getOrElse(NotFound)
             }.getOrElse {
-              val admin = new Admin()
-              //TODO: fill from form
-              val msgs = admin.write()
+              val admin = new Admin(data._2, data._3)
+              admin.setRoles(data._4)
+              data._6.map { url => admin.setUrl(url) }
+              data._7.map { s => admin.setStreetaddress1(s) }
+              data._8.map { s => admin.setStreetaddress2(s) }
+              data._9.map { s => admin.setStreetaddress3(s) }
+              data._10.map { s => admin.setState(s) }
+              data._11.map { c => admin.setCountry(c) }
+              data._12.map { t => admin.setTelephone(t) }
+              val msgs = admin.write
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(admin),
                 "messages" -> Json.toJson(msgs.asScala))))
@@ -157,19 +179,19 @@ object AdminController extends Controller with Secured with Formats with Utils {
           },
           data =>
             Some(data._1).map { id =>
-              Admin.findById(id).map { admin =>
-                //TODO: fill from form
-                val msgs = admin.write()
+              Creative.findById(id, current).map { creative =>
+                creative.setName(data._2)
+                data._3.map { url => creative.setUrl(url) }
+                val msgs = creative.write
                 Ok(JsObject(Seq(
-                  "data" -> Json.toJson(admin),
+                  "data" -> Json.toJson(creative),
                   "messages" -> Json.toJson(msgs.asScala))))
               }.getOrElse(NotFound)
             }.getOrElse {
-              val admin = new Admin()
-              //TODO: fill from form
-              val msgs = admin.write()
+              val creative = new Creative(data._2, data._3)
+              val msgs = creative.write
               Ok(JsObject(Seq(
-                "data" -> Json.toJson(admin),
+                "data" -> Json.toJson(creative),
                 "messages" -> Json.toJson(msgs.asScala))))
             })
       }.getOrElse(Forbidden)
@@ -192,7 +214,11 @@ object AdminController extends Controller with Secured with Formats with Utils {
                   cookie.setContent(data._3.get)
                   cookie.setState("A")
                 }
-                val msgs = cookie.write()
+                val msgs = cookie.write
+                if (cookie.getAudience.checkState) {
+                  cookie.getAudience.setState("A")
+                  msgs.addAll(cookie.getAudience.write)
+                }
                 Ok(JsObject(Seq(
                   "data" -> Json.toJson(cookie),
                   "messages" -> Json.toJson(msgs.asScala))))
@@ -203,7 +229,11 @@ object AdminController extends Controller with Secured with Formats with Utils {
                 cookie.setContent(data._3.get)
                 cookie.setState("A")
               }
-              val msgs = cookie.write()
+              val msgs = cookie.write
+              if (cookie.getAudience.checkState) {
+                cookie.getAudience.setState("A")
+                msgs.addAll(cookie.getAudience.write)
+              }
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(cookie),
                 "messages" -> Json.toJson(msgs.asScala))))
@@ -223,7 +253,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
             },
             (admindata) => {
               //TODO: copy changes
-              admin.save()
+              admin.save
               Ok(html.admin(admin, current))
             })
         }.getOrElse(NotFound)
@@ -254,11 +284,11 @@ object AdminController extends Controller with Secured with Formats with Utils {
     implicit request =>
       Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
-          publisher.getOwners().add(admin)
-          val msgs = publisher.write().asScala
+          publisher.getOwners.add(admin)
+          val msgs = publisher.write
           Ok(Json.toJson(JsObject(Seq(
-            "data" -> Json.toJson(msgs.isEmpty()),
-            "messages" -> Json.toJson(msgs)))))
+            "data" -> Json.toJson(msgs.isEmpty),
+            "messages" -> Json.toJson(msgs.asScala)))))
         }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
   }
@@ -267,13 +297,13 @@ object AdminController extends Controller with Secured with Formats with Utils {
     implicit request =>
       Admin.findById(adminid).map { admin =>
         Admin.changePublisher(publisherid, admin).map { publisher =>
-          publisher.getOwners().remove(admin)
+          publisher.getOwners.remove(admin)
           if (admin.getPublisher.equals(publisher)) { admin.setPublisher(null) }
-          val msgs = (admin.write().asScala)
-          msgs.addAll(publisher.write().asScala)
+          val msgs = admin.write
+          msgs.addAll(publisher.write)
           Ok(Json.toJson(JsObject(Seq(
-            "data" -> Json.toJson(msgs.isEmpty()),
-            "messages" -> Json.toJson(msgs)))))
+            "data" -> Json.toJson(msgs.isEmpty),
+            "messages" -> Json.toJson(msgs.asScala)))))
         }.getOrElse(Forbidden)
       }.getOrElse(Forbidden)
   }
@@ -305,7 +335,7 @@ object AdminController extends Controller with Secured with Formats with Utils {
           },
           (admindata) => {
             //TODO: copy changes
-            current.save()
+            current.save
             Ok(html.admin(current, current))
           })
       }.getOrElse(NotFound)

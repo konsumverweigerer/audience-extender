@@ -5,24 +5,24 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
 
   ko.bindingHandlers.zeroclipboard =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       allBindings = allBindingsAccessor()
       zeroclipboardOptions = $.extend(zeroclipboardDefaults(),allBindings.zeroclipboardOptions || {})
 
       $clipboard = new zc($element, zeroclipboardOptions)
-      $clipboard.on('wrongflash', (e)->
+      $clipboard.on('wrongflash.zeroclipboard.ko', (e)->
         $element.addClass 'disabled'
         $element.attr('disabled','true')
         $element.addClass 'zeroclipboard-wrongflash'
       )
-      $clipboard.on('noflash', (e)->
+      $clipboard.on('noflash.zeroclipboard.ko', (e)->
         $element.addClass 'disabled'
         $element.attr('disabled','true')
         $element.addClass 'zeroclipboard-noflash'
       )
-      $clipboard.off 'datarequested'
-      $clipboard.on('datarequested', (e)->
+      $clipboard.off 'datarequested.zeroclipboard.ko'
+      $clipboard.on('datarequested.zeroclipboard.ko', (e)->
         v = (ko.unwrap valueAccessor())?.replace(/\n/g, '\r\n')
         if v?
           $clipboard.setText v
@@ -48,7 +48,7 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
       $element.data('zeroclipboard',$clipboard)
       $element.data('zeroclipboardOptions',zeroclipboardOptions)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
 
       $clipboard = $element.data 'zeroclipboard'
@@ -56,8 +56,8 @@ define([ "knockout", "ext/ZeroClipboard", "jquery" ], (ko, zc) ->
       if $clipboard?
         v = (ko.unwrap value)?.replace(/\n/g, '\r\n')
         $clipboard.setText v
-        $clipboard.off 'datarequested'
-        $clipboard.on('datarequested', (e)->
+        $clipboard.off 'datarequested.zeroclipboard.ko'
+        $clipboard.on('datarequested.zeroclipboard.ko', (e)->
           v = (ko.unwrap valueAccessor())?.replace(/\n/g, '\r\n')
           if v?
             $clipboard.setText v

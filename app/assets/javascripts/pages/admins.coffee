@@ -34,6 +34,10 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
 
       @currentadmin = ko.observable(new mod.Admin {name:'',id:-1})
 
+      @availablePublishers = ko.computed ->
+        ids = (ko.unwrap(p.id) for p in self.currentadmin().publishers())
+        publisher for publisher in self.publishers() when ids.indexOf(publisher.id())<0
+
       @clearadmin = ->
         self.currentadmin(new mod.Admin {name:'',id:-1})
         $('#editAdmin').modal 'hide'
@@ -43,10 +47,16 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         $('#editAdmin').modal 'show'
 
       @addpublisher = (p) ->
-        self.currentadmin.addpublisher(p,self.messages)
+        self.currentadmin().publishers.push p
 
       @delpublisher = (p) ->
-        self.currentadmin.delpublisher(p,self.messages)
+        self.currentadmin().publishers.remove byId ko.unwrap p.id
+
+      @addrole = (r) ->
+        self.currentadmin().roles.push r
+
+      @removerole = (r) ->
+        self.currentadmin().roles.remove r
 
       @saveadmin = ->
         a = self.currentadmin()
@@ -74,6 +84,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
     data.admins?.map (a,i) ->
       am = new mod.Admin a
       models.admins.push am
+    data.publishers?.map (p,i) ->
+      pm = new mod.Publisher p
+      models.publishers.push pm
     models.credential(new mod.Admin data.admin)
 
   require(["lib/data"],(demo) ->

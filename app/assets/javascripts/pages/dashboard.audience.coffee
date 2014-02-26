@@ -1,4 +1,4 @@
-require([ "knockout", "lib/models", "jquery", "bootstrap",
+require([ "knockout", "lib/models", "jquery", "bootstrap", "chardin", "bootstrap-tour",
 "lib/knockout-misc",
 "lib/knockout-carousel",
 "lib/knockout-editable",

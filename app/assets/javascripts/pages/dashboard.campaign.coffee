@@ -1,4 +1,4 @@
-require([ "knockout", "lib/models", "jquery", "bootstrap",
+require([ "knockout", "lib/models", "jquery", "bootstrap", "chardin", "bootstrap-tour",
 "lib/knockout-misc",
 "lib/knockout-carousel",
 "lib/knockout-fileupload",
@@ -147,6 +147,9 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
         ca.package {id: a.id()}
         self.currentpackages.push a
 
+      @startnewcampaign = ->
+        $('#selectCampaign').modal 'show'
+
       @newcampaign = ->
         if self.campaigns().length==0
           self.alert.show('Missing audiences','Before creating campaigns, you have to create audiences first','error')
@@ -172,6 +175,7 @@ require([ "knockout", "lib/models", "jquery", "bootstrap",
       @clearcampaign = ->
         self.currentcampaign(new mod.Campaign {name:'',id:-1})
         $('#editCampaign').modal 'hide'
+        $('#selectCampaign').modal 'hide'
 
       @cleardeletecampaign = ->
         self.confirmcampaigndelete 0

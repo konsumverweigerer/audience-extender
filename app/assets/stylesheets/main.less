@@ -106,7 +106,10 @@ h3 {
 	vertical-align:middle;
 }
 
-
+.label-selects {
+	margin: 0.4em 0.2ex;
+	display: inline-block;
+}
 
 //wizard
 .wizard {
@@ -338,14 +341,17 @@ h3 {
 	}
 }
 
-
+.help-activator {
+  margin: 20px;
+  z-index: 100;
+}
 
 .website-block-wrapper {
 	background:rgba(255, 255, 255, 0.5);
 	border:1px solid #eee;
-	margin:10px;
+	margin:10px 9px;
 	&.simple {
-		margin:10px 20px;
+		margin:10px 21px;
 		min-height:172px;
 	}
 }
@@ -355,32 +361,32 @@ h3 {
 }
 
 .jcarousel-wrapper {
-	border-right:1px solid #eee;
 	padding:0 60px;
 	position:relative;
 }
 .jcarousel-wrapper.with-add-block {
+	border-right:1px solid #eee;
 	margin-right:190px;
 }
 .jcarousel {
 	overflow:hidden;
 	position:relative;
 	width:100%;
-}
-.jcarousel ul {
-	list-style:none outside none;
-	margin:0;
-	padding:0;
-	position:relative;
-	width:20000em;
-}
-.jcarousel li {
-	-moz-box-sizing:border-box;
-	border-right:1px solid #eee;
-	float:left;
-	width:188px;
-	&:first-child {
+	ul {
+		list-style:none outside none;
+		margin:0;
+		padding:0;
+		position:relative;
+		width:20000em;
+	}
+	li {
+		-moz-box-sizing:border-box;
 		border-left:1px solid #eee;
+		float:left;
+		width:193px;
+		&:last-child {
+			border-right:1px solid #eee;
+		}
 	}
 }
 .jcarousel-control-prev {
@@ -410,10 +416,37 @@ h3 {
 		text-decoration:none;
 	}
 	&.inactive {
-		background:@btn-default-bg;
+		background:@color-light-brown;
 		cursor:default;
 	}
 }
+.pagination-bullet:hover {
+	text-decoration:none;
+}
+
+
+
+.img-option {
+	border:15px solid #e3e3e3;
+	display:inline-block;
+	margin:0 20px 20px;
+	&:hover {
+		border:15px solid @color-light-blue;
+	}
+	&:active {
+		border:15px solid @color-blue;
+	}
+}
+.img-option-name {
+	color:@color-blue;
+	font-family:@font1;
+	margin:0 20px 10px;
+}
+.img-option-text {
+	text-align:center;
+}
+
+
 
 .header {
 	background:#1c5078 url("/assets/images/bg-header.jpg") no-repeat top center;
@@ -651,7 +684,7 @@ div.legend-profit {
 .website-audience,
 .website-actions {
 	display:block;
-	max-width:188px;
+	max-width:193px;
 	text-align:center;
 }
 .website-name {
@@ -778,6 +811,12 @@ nav.loginbar {
 .dashboard svg {
 	height:300px;
 	margin-top:15px;
+}
+
+.dashboard .nvd3 .nv-groups path.nv-line {
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+  stroke-opacity: 0.7;
 }
 
 .schedule svg {
@@ -910,6 +949,12 @@ nav.loginbar {
 }
 
 @media (max-width: 767px) {
+}
+@media (min-width: 768px) {
+	.img-option-text {
+		line-height:200px;
+		margin:20px 0;
+	}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {

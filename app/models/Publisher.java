@@ -55,9 +55,8 @@ public class Publisher extends Model {
 		return find.byId(id);
 	}
 
-	public static Option<Publisher> findById(String publisherid, Admin admin) {
+	public static Option<Publisher> findById(Long id, Admin admin) {
 		List<Publisher> ret = null;
-		final Long id = publisherid != null ? Long.valueOf(publisherid) : 0L;
 		if (admin.isSysAdmin()) {
 			ret = find.where().eq("id", id).findList();
 		} else {
@@ -68,6 +67,11 @@ public class Publisher extends Model {
 			return new Some<Publisher>(ret.get(0));
 		}
 		return Option.empty();
+	}
+
+	public static Option<Publisher> findById(String publisherid, Admin admin) {
+		final Long id = publisherid != null ? Long.valueOf(publisherid) : 0L;
+		return findById(id, admin);
 	}
 
 	public static Publisher fromMap(Map<String, Object> data) {
@@ -125,7 +129,7 @@ public class Publisher extends Model {
 
 	public Publisher(String name) {
 		this.name = name;
-		created = new Date();
+		this.created = new Date();
 	}
 
 	public Publisher(String name, Option<String> url) {
@@ -134,59 +138,59 @@ public class Publisher extends Model {
 	}
 
 	public List<Admin> getAdmins() {
-		return owners != null ? owners : new ArrayList<Admin>();
+		return this.owners != null ? this.owners : new ArrayList<Admin>();
 	}
 
 	public Date getChanged() {
-		return changed;
+		return this.changed;
 	}
 
 	public String getCountry() {
-		return country;
+		return this.country;
 	}
 
 	public Date getCreated() {
-		return created;
+		return this.created;
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public List<Admin> getOwners() {
-		return owners;
+		return this.owners;
 	}
 
 	public String getState() {
-		return state;
+		return this.state;
 	}
 
 	public String getStreetaddress1() {
-		return streetaddress1;
+		return this.streetaddress1;
 	}
 
 	public String getStreetaddress2() {
-		return streetaddress2;
+		return this.streetaddress2;
 	}
 
 	public String getStreetaddress3() {
-		return streetaddress3;
+		return this.streetaddress3;
 	}
 
 	public String getTelephone() {
-		return telephone;
+		return this.telephone;
 	}
 
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 
 	public boolean isActive() {
-		return active;
+		return this.active;
 	}
 
 	public List<Message> remove() {
@@ -247,7 +251,7 @@ public class Publisher extends Model {
 
 	@Override
 	public String toString() {
-		return "Publisher(" + name + ")";
+		return "Publisher(" + this.name + ")";
 	}
 
 	public Publisher updateFromMap(Map<String, Object> data) {

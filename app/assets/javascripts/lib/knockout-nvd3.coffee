@@ -195,7 +195,7 @@ define([ "knockout", "jquery", "nv.d3", "ext/nvmodels" ], (ko) ->
         val.chartcontent.subscribe (nv) ->
           ko.bindingHandlers.nvddd.update(element,val.chartcontent,allBindingsAccessor,viewModel,bindingContext)
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      val = ko.unwrap(valueAccessor())
+      val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
       nvdddOptions = $.extend(nvdddDefaults(),allBindings.nvdddOptions || {})
       if val == null

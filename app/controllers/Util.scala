@@ -71,8 +71,12 @@ trait Formats {
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
+      "email" -> nonEmptyText,
       "roles" -> list(
         text),
+      "publishers" -> list(tuple(
+        "id" -> longNumber,
+        "name" -> optional(text))),
       "url" -> optional(text),
       "streetaddress1" -> optional(text),
       "streetaddress2" -> optional(text),
@@ -85,6 +89,9 @@ trait Formats {
     tuple(
       "id" -> longNumber,
       "name" -> nonEmptyText,
+      "admins" -> list(tuple(
+        "id" -> longNumber,
+        "name" -> optional(text))),
       "url" -> optional(text),
       "streetaddress1" -> optional(text),
       "streetaddress2" -> optional(text),
@@ -334,6 +341,7 @@ trait Formats {
       "id" -> JsNumber(BigDecimal(admin.getId)),
       "name" -> JsString(admin.getName),
       "roles" -> Json.toJson(admin.getRoles.asScala),
+      "features" -> Json.toJson(admin.getFeatureList.asScala),
       "publishers" -> Json.toJson(admin.getPublishers.asScala),
       "email" -> JsString(admin.getEmail)))
   }

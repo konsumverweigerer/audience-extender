@@ -114,7 +114,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         if valueToWrite!=current
           target valueToWrite
         else if newValue!=current
-            target.notifySubscribers valueToWrite
+          target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
 
     result target()
@@ -138,7 +138,7 @@ define([ "knockout", "momentjs" ], (ko) ->
         if valueToWrite!=current
           target valueToWrite
         else if newValue!=current
-            target.notifySubscribers valueToWrite
+          target.notifySubscribers valueToWrite
     ).extend { notify: 'always' }
 
     result target()
@@ -210,13 +210,13 @@ define([ "knockout", "momentjs" ], (ko) ->
         else
           $element.prop('checked',checkedValue()==modelValue)
 
-      isCheckbox = element.type == "checkbox"
-      isRadio = element.type == "radio"
+      isCheckbox = element.type=='checkbox'
+      isRadio = element.type=='radio'
 
       if !isCheckbox && !isRadio
         return
 
-      $element = $(element)
+      $element = $ element
       isValueArray = isCheckbox && (ko.utils.unwrapObservable valueAccessor() instanceof Array)
       oldElemValue = undefined
       if isValueArray
@@ -235,7 +235,7 @@ define([ "knockout", "momentjs" ], (ko) ->
 
   ko.bindingHandlers.fadeVisible =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       value = valueAccessor()
       $element.toggle ko.unwrap value
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->

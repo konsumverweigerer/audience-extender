@@ -60,23 +60,43 @@ object PublisherController extends Controller with Secured with Formats with Uti
   def publisherSave = IsAuthenticated { adminid =>
     implicit request =>
       Admin.findById(adminid).map { admin =>
-        request.body.asFormUrlEncoded.map { data =>
-          data.get("id").map { ids =>
-            Publisher.findById(ids(0), admin).map { publisher =>
-              publisher.updateFromMap(mapToMap(data))
+        publisherForm.bindFromRequest.fold(
+          errors => {
+            val msgs = Seq(new Message("error", errors.globalError.map(e => e.message).getOrElse("error"), "error"))
+            BadRequest(JsObject(Seq(
+              "data" -> Json.toJson(Map[String, String]()),
+              "messages" -> Json.toJson(msgs))))
+          },
+          data =>
+            Some(data._1).map { id =>
+              Publisher.findById(id, admin).map { publisher =>
+                publisher.setName(data._2)
+                data._4.map { url => publisher.setUrl(url) }
+                data._5.map { s => publisher.setStreetaddress1(s) }
+                data._6.map { s => publisher.setStreetaddress2(s) }
+                data._7.map { s => publisher.setStreetaddress3(s) }
+                data._8.map { s => publisher.setState(s) }
+                data._9.map { c => publisher.setCountry(c) }
+                data._10.map { t => publisher.setTelephone(t) }
+                val msgs = publisher.write().asScala
+                Ok(JsObject(Seq(
+                  "data" -> Json.toJson(publisher),
+                  "messages" -> Json.toJson(msgs))))
+              }.getOrElse(NotFound)
+            }.getOrElse {
+              val publisher = new Publisher(data._2)
+              data._4.map { url => publisher.setUrl(url) }
+              data._5.map { s => publisher.setStreetaddress1(s) }
+              data._6.map { s => publisher.setStreetaddress2(s) }
+              data._7.map { s => publisher.setStreetaddress3(s) }
+              data._8.map { s => publisher.setState(s) }
+              data._9.map { c => publisher.setCountry(c) }
+              data._10.map { t => publisher.setTelephone(t) }
               val msgs = publisher.write().asScala
               Ok(JsObject(Seq(
                 "data" -> Json.toJson(publisher),
                 "messages" -> Json.toJson(msgs))))
-            }.getOrElse(NotFound)
-          }.getOrElse {
-            val publisher = Publisher.fromMap(mapToMap(data))
-            val msgs = publisher.write().asScala
-            Ok(JsObject(Seq(
-              "data" -> Json.toJson(publisher),
-              "messages" -> Json.toJson(msgs))))
-          }
-        }.getOrElse(Forbidden)
+            })
       }.getOrElse(Forbidden)
   }
 

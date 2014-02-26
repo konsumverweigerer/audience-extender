@@ -33,6 +33,10 @@ import services.StatsHandler;
 
 import com.avaje.ebean.Ebean;
 
+/**
+ * @author grp14818
+ * 
+ */
 @Entity
 public class Audience extends Model {
 	public static final long DAY = 24 * 60 * 60 * 1000L;
@@ -290,6 +294,25 @@ public class Audience extends Model {
 		return this;
 	}
 
+	/**
+	 * check if all required cookies are active
+	 * 
+	 * @return true if all cookies are active
+	 */
+	public boolean checkState() {
+		for (final Website website : getWebsites()) {
+			final Collection<PathTarget> paths = getWebsitePathTargets(website);
+			for (final Cookie cookie : getCookies()) {
+				if (cookie.checkCookie(this, website, paths)) {
+					if (!"A".equals(cookie.getState())) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	public List<Message> write() {
 		// TODO: check website/paths if new cookies are needed
 		save();
@@ -307,6 +330,7 @@ public class Audience extends Model {
 				} else if (website.getId().equals(cookie.getWebsite().getId())) {
 					cookie.setState("C");
 					cookie.update();
+					setState("P");
 				}
 			}
 			if (!valid) {
@@ -314,6 +338,7 @@ public class Audience extends Model {
 						.instance("Cookie for " + getName(), "code", this,
 								website, paths);
 				cookie.save();
+				setState("P");
 			}
 		}
 		update();

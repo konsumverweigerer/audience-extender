@@ -26,9 +26,21 @@ import scala.Option;
 import scala.Some;
 import services.UnixMD5Crypt;
 
+import com.avaje.ebean.Ebean;
+
 @Entity
 public class Admin extends Model {
 	private static final long serialVersionUID = 2627475585121741565L;
+
+	public static Option<Admin> findAllById(Long id) {
+		if (id != null) {
+			for (final Admin admin : find.fetch("publishers").where()
+					.eq("id", id).findList()) {
+				return new Some<Admin>(admin);
+			}
+		}
+		return Option.empty();
+	}
 
 	@Id
 	private Long id;
@@ -43,37 +55,40 @@ public class Admin extends Model {
 
 	@Required(groups = {})
 	private String password;
-
 	private String emailConfirmToken;
 	private String passwordChangeToken;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date passwordChangeTokenDate;
-
 	private Boolean locked;
-	private Boolean needPasswordChange;
 
+	private Boolean needPasswordChange;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date loggedIn;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date changed;
-
 	private String url;
 	private String streetaddress1;
 	private String streetaddress2;
 	private String streetaddress3;
 	private String state;
 	private String country;
-	private String telephone;
 
+	private String telephone;
 	@Transient
 	private String pwdClear;
+
 	@Transient
 	private String pwdVerify;
 
 	@MaxLength(512)
 	private String adminRoles;
+
+	@MaxLength(1024)
+	private String features;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Publisher publisher;
@@ -281,6 +296,17 @@ public class Admin extends Model {
 		this.created = new Date();
 	}
 
+	public boolean addFeature(String feature) {
+		boolean added = false;
+		final List<String> features = getFeatureList();
+		if (!features.contains(feature)) {
+			features.add(feature);
+			added = true;
+		}
+		setFeatures(StringUtils.join(features, ","));
+		return added;
+	}
+
 	public boolean checkPwd(String password) {
 		return UnixMD5Crypt.check(getPassword(), password);
 	}
@@ -307,6 +333,20 @@ public class Admin extends Model {
 
 	public String getEmailConfirmToken() {
 		return this.emailConfirmToken;
+	}
+
+	public List<String> getFeatureList() {
+		final List<String> features = new ArrayList<String>();
+		if (getFeatures() != null) {
+			for (final String feature : getFeatures().split("[,]")) {
+				features.add(feature);
+			}
+		}
+		return features;
+	}
+
+	public String getFeatures() {
+		return this.features;
 	}
 
 	public Long getId() {
@@ -431,6 +471,10 @@ public class Admin extends Model {
 		this.emailConfirmToken = emailConfirmToken;
 	}
 
+	public void setFeatures(String features) {
+		this.features = features;
+	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -521,6 +565,7 @@ public class Admin extends Model {
 
 	public List<Message> write() {
 		save();
+		Ebean.saveManyToManyAssociations(this, "publishers");
 		update();
 		return Collections.emptyList();
 	}

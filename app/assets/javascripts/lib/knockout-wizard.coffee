@@ -3,7 +3,7 @@ define([ "knockout", "ext/wizard" ], (ko) ->
 
   ko.bindingHandlers.wizard =
     init: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
       wizardOptions = $.extend(wizardDefaults(), allBindings.wizardOptions || {})
@@ -26,7 +26,7 @@ define([ "knockout", "ext/wizard" ], (ko) ->
           valueAccessor() cs.step
       )
     update: (element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) ->
-      $element = $(element)
+      $element = $ element
       val = ko.unwrap valueAccessor()
       allBindings = allBindingsAccessor()
       $element.off 'changed.ko'

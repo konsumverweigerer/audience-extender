@@ -94,7 +94,7 @@ object ContentController extends Controller with Utils {
         .replace("\n", "\\n").replace("\r", "\\n")
         .replace("'", "\\'")) + "';\n" +
       "  b.appendChild(d);\n" +
-      "  ex_scripts(b);\n" +
+      "  ex_scripts(d);\n" +
       " }\n" +
       "})();").as("text/javascript")
   }
