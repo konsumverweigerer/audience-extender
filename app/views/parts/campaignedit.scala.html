@@ -218,6 +218,17 @@
 					<button class="btn btn-prev" type="button" data-bind="css: {'disabled': campaignstep.isFirst }"><span class="glyphicon glyphicon-arrow-left"></span> Prev</button>
 					<button class="btn btn-next" type="button" data-last="Finish" data-bind="css: {'disabled': campaignstep.isLast }">Next <span class="glyphicon glyphicon-arrow-right"></span></button>
 				</div>
+				<div class="well m-top-btm" data-bind="visible: campaignstep.maxValue()<3 || currentcampaign().state()!='A'">
+					<div data-bind="visible: campaignstep.maxValue()==1">
+					  Select audience and Package
+					</div>
+					<div data-bind="visible: campaignstep.maxValue()==2">
+					  Upload creatives
+					</div>
+					<div data-bind="visible: campaignstep.maxValue()==3">
+						Schedule campaign and activate
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger pull-left" data-bind="visible: currentcampaign().state()=='active', click: pausecampaign"><span class="glyphicon glyphicon-pause"></span> Pause</button>

@@ -8,6 +8,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap", "chardin", "bootstrap
 "lib/knockout-jqbootstrapvalidation",
 "lib/knockout-datepicker",
 "lib/knockout-nvd3",
+"lib/knockout-chardin",
+"lib/knockout-bootstraptour",
 "lib/knockout-datatables",
 "lib/knockout-noty",
 "jsRoutes" ], (ko, mod) ->

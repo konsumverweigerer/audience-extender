@@ -6,6 +6,8 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clearaudience">&times;</button>
 				<h4 class="modal-title"><span data-bind="text: currentaudience().persisted ? 'Edit' : 'New'">New/Edit</span> Audience: <a href="#" id="audiencename" data-bind="editable: currentaudience().name" data-type="text" data-pk="1" data-title="Enter Audience Name">New Audience</a></h4>
 			</div>
+			<div class="help-activator glyphicon glyphicon-question-sign pull-right" data-bind="bootstraptour: 'audienceedit'"></div>
+
 			<div class="modal-body" data-bind="fadeVisible: confirmaudiencedelete()==1">
 				<div class="m-top-btm">
 					<div class="alert alert-danger">
@@ -20,7 +22,7 @@
 
 			<div class="modal-body" data-bind="fadeVisible: confirmaudiencedelete()==0">
 				<h3 class="m-null-top">Select Website</h3>
-				<div class="box-strips">
+				<div class="box-strips" data-tour-name="audienceedit" data-tour-index="1" data-tour-title="Select/Create Websites" data-tour-content="Select or create websites for this audience">
 					<div class="clearfix">
 						<div class="website-block-wrapper simple">
 							<div class="website-block-add-wrapper">
@@ -142,7 +144,7 @@
 					<div class="alert alert-info m-null-btm"><span class="glyphicon glyphicon-info-sign"></span> Select website to edit path targeting</div>
 				</div>
 
-				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().selected() && !currentwebsite().editing(), with: currentaudience">
+				<div class="m-top-btm" data-bind="fadeVisible: currentwebsite().selected() && !currentwebsite().editing(), with: currentaudience" data-tour-name="audienceedit" data-tour-index="2" data-tour-title="Configure path targets" data-tour-content="Configure paths (include/exclude)">
 					<h3>Path targeting for <span data-bind="text: $root.currentwebsite().name"></span></h3>
 					<div class="row">
 						<div class="col-md-6">
@@ -211,6 +213,13 @@
 				</div>
 				<!-- /ko -->
 
+				<div class="well m-top-btm">
+				<ul data-bind="foreach: selectedwebsites">
+					<li data-bind="text: $data.name"></li>
+					<ul>
+					</ul>
+				</ul>
+				</div>
 			</div>
 			<div class="modal-footer" data-bind="fadeVisible: confirmaudiencedelete()==0">
 				<button type="button" class="btn btn-danger pull-left" data-bind="click: deleteaudience, visible: currentaudience().persisted"><span class="glyphicon glyphicon-remove"></span> Delete</button>

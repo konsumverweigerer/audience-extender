@@ -5,6 +5,8 @@ require([ "knockout", "lib/models", "jquery", "bootstrap", "chardin", "bootstrap
 "lib/knockout-jqbootstrapvalidation",
 "lib/knockout-datepicker",
 "lib/knockout-nvd3",
+"lib/knockout-chardin",
+"lib/knockout-bootstraptour",
 "lib/knockout-zeroclipboard",
 "lib/knockout-datatables",
 "lib/knockout-noty",
@@ -234,6 +236,12 @@ require([ "knockout", "lib/models", "jquery", "bootstrap", "chardin", "bootstrap
         c.editing true
         self.currentwebsite().active true
         self.currentaudience().activewebsite c.id()
+
+      @selectedwebsites = ko.computed
+        read: ->
+          ids = (ko.unwrap wb.id for wb in self.currentaudience().websites())
+          wb for wb in self.currentwebsites() when 0<=ids.indexOf ko.unwrap wb.id
+        owner: self.currentaudience
 
       @currentaudiencemessages = ko.computed
         read: ->
