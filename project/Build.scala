@@ -34,7 +34,7 @@ object ApplicationBuild extends Build {
 
     "org.webjars" %% "webjars-play" % "2.2.1" exclude("org.scala-lang", "scala-library"),
     "org.webjars" % "requirejs" % "[2.1.8,)",
-    "org.webjars" % "bootstrap" % "[3.0.0,)" exclude("org.webjars", "jquery"),
+    "org.webjars" % "bootstrap" % "3.0.3" exclude("org.webjars", "jquery"),
     "org.webjars" % "knockout" % "[2.3.0,)",
 //    "org.webjars" % "nvd3" % "[8415ee55d3,)",
     "org.webjars" % "momentjs" % "2.4.0",
